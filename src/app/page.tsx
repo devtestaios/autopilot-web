@@ -12,14 +12,12 @@ export default function Home() {
           setApi('❌ Missing NEXT_PUBLIC_API_URL');
           return;
         }
-        const res = await fetch(`${base}/health`, { cache: 'no-store' });
+        const res = await fetch(`${base}/health`);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const json: { ok?: boolean } = await res.json();
-        setApi(json.ok ? '✅ API healthy' : '❌ API not healthy');
-      } catch (e: unknown) {
-        const msg =
-          e instanceof Error ? e.message : typeof e === 'string' ? e : 'Unknown error';
-        setApi('❌ API error: ' + msg);
+        const json = await res.json() as { ok?: boolean };
+        setApi(json?.ok ? '✅ API healthy' : '❌ API not healthy');
+      } catch (e: any) {
+        setApi('❌ API error: ' + e.message);
       }
     })();
   }, []);
