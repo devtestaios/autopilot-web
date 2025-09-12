@@ -1,85 +1,50 @@
 'use client';
+
 import { useEffect, useState } from 'react';
 
-type PingResult =
-  | { ok: true; status?: number; url?: string; extra?: Record<string, unknown> }
-  | { ok: false; error: string; status?: number };
+const API = process.env.NEXT_PUBLIC_API_URL || 'https://autopilot-api-1.onrender.com';
 
-const api = process.env.NEXT_PUBLIC_API_URL ?? '';
+type EnvCheck = { SUPABASE_URL_present: boolean; SUPABASE_ANON_KEY_present: boolean };
+
 export default function StatusPage() {
-  const [health, setHealth] = useState<PingResult | null>(null);
-  const [version, setVersion] = useState<PingResult | null>(null);
-  const [env, setEnv] = useState<PingResult | null>(null);
+  const [health, setHealth] = useState<string>('Checking…');
+  const [version, setVersion] = useState<string>('Checking…');
+  const [env, setEnv] = useState<string>('Checking…');
+  const [raw, setRaw] = useState<any>(null);
 
   useEffect(() => {
-    if (!api) {
-      const err: PingResult = { ok: false, error: 'NEXT_PUBLIC_API_URL is missing' };
-      setHealth(err);
-      setVersion(err);
-      setEnv(err);
-      return;
-    }
-
-    const fetchJson = async (path: string) => {
-      try {
-        const res = await fetch(`${api}${path}`, { cache: 'no-store' });
-        const json = (await res.json()) as unknown as Record<string, unknown>;
-        return { ok: res.ok, status: res.status, extra: json } as PingResult;
-      } catch (e) {
-        const msg = e instanceof Error ? e.message : String(e);
-        return { ok: false, error: msg } as PingResult;
-      }
-    };
-
     (async () => {
-      const [h, v, e] = await Promise.all([
-        fetchJson('/health'),
-        fetchJson('/version'),
-        fetchJson('/env-check'),
-      ]);
-      setHealth(h);
-      setVersion(v);
-      setEnv(e);
+      try {
+        const [h, v, e] = await Promise.all([
+          fetch(`${API}/health`).then(r => r.json()),
+          fetch(`${API}/version`).then(r => r.json()),
+          fetch(`${API}/env-check`).then(r => r.json()),
+        ]);
+
+        setHealth(h?.ok ? '✅ /health OK' : '❌ /health FAIL');
+        setVersion(v?.version ? `✅ /version ${v.version}` : '❌ /version FAIL');
+
+        const ec = e as EnvCheck;
+        setEnv(
+          ec && typeof ec === 'object'
+            ? `Env: URL=${ec.SUPABASE_URL_present ? '✅' : '❌'}  ANON=${ec.SUPABASE_ANON_KEY_present ? '✅' : '❌'}`
+            : '❌ /env-check FAIL'
+        );
+
+        setRaw({ health: h, version: v, env: e });
+      } catch (err: any) {
+        setHealth(`❌ Error: ${err.message}`);
+      }
     })();
   }, []);
 
-  const Tile = ({ title, data }: { title: string; data: PingResult | null }) => (
-    <div className="rounded-2xl border p-4 shadow-sm">
-      <div className="mb-2 text-sm text-gray-500">{title}</div>
-      {!data ? (
-        <div>Checking…</div>
-      ) : data.ok ? (
-        <div className="font-medium">✅ OK {data.status ? `(HTTP ${data.status})` : ''}</div>
-      ) : (
-        <div className="font-medium text-red-600">
-          ❌ {data.error} {data.status ? `(HTTP ${data.status})` : ''}
-        </div>
-      )}
-      {data?.ok && data.extra ? (
-        <pre className="mt-2 overflow-auto rounded-md bg-gray-50 p-3 text-xs">
-          {JSON.stringify(data.extra, null, 2)}
-        </pre>
-      ) : null}
-      {!data?.ok && (data as any)?.extra ? (
-        <pre className="mt-2 overflow-auto rounded-md bg-gray-50 p-3 text-xs">
-          {JSON.stringify((data as any).extra, null, 2)}
-        </pre>
-      ) : null}
-    </div>
-  );
-
   return (
-    <main className="mx-auto max-w-3xl space-y-6 p-6">
-      <h1 className="text-2xl font-bold">System Status</h1>
-      <div className="grid gap-4 sm:grid-cols-2">
-        <Tile title={`Health (${api || 'API URL not set'})`} data={health} />
-        <Tile title="Version" data={version} />
-        <Tile title="Env Check (server)" data={env} />
-      </div>
-      <p className="text-sm text-gray-500">
-        Tip: set <code>NEXT_PUBLIC_API_URL</code> in Vercel → Project → Settings → Environment
-        Variables (Production &amp; Preview).
-      </p>
+    <main className="min-h-screen p-8 flex flex-col gap-4">
+      <h1 className="text-2xl font-bold">Status</h1>
+      <div>{health}</div>
+      <div>{version}</div>
+      <div>{env}</div>
+      <pre className="p-4 bg-gray-100 rounded">{JSON.stringify(raw, null, 2)}</pre>
     </main>
   );
 }
