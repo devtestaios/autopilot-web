@@ -2,6 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import { Zap, TrendingUp, AlertTriangle, CheckCircle, RefreshCw } from 'lucide-react';
+import { 
+  googleAdsService, 
+  type GoogleAdsConnectionStatus 
+} from '@/lib/services/googleAdsService';
 
 interface GoogleAdsIntegrationProps {
   onSync?: () => void;
@@ -9,7 +13,10 @@ interface GoogleAdsIntegrationProps {
 }
 
 export default function GoogleAdsIntegration({ onSync, loading }: GoogleAdsIntegrationProps) {
-  const [connectionStatus, setConnectionStatus] = useState<'checking' | 'connected' | 'disconnected' | 'error'>('checking');
+  const [connectionStatus, setConnectionStatus] = useState<GoogleAdsConnectionStatus>({
+    connected: false,
+    status: 'checking'
+  });
   const [lastSync, setLastSync] = useState<string | null>(null);
   const [syncStatus, setSyncStatus] = useState<'idle' | 'syncing' | 'success' | 'error'>('idle');
   const [syncMessage, setSyncMessage] = useState<string>('');
@@ -20,26 +27,8 @@ export default function GoogleAdsIntegration({ onSync, loading }: GoogleAdsInteg
   }, []);
 
   const checkConnection = async () => {
-    setConnectionStatus('checking');
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://autopilot-api-1.onrender.com'}/google-ads/status`);
-      
-      if (response.status === 404) {
-        // Endpoint not implemented yet - show setup needed
-        setConnectionStatus('disconnected');
-        return;
-      }
-      
-      const data = await response.json();
-      
-      if (data.connected === true) {
-        setConnectionStatus('connected');
-      } else {
-        setConnectionStatus('disconnected');
-      }
-    } catch {
-      setConnectionStatus('disconnected');
-    }
+    const status = await googleAdsService.checkConnection();
+    setConnectionStatus(status);
   };
 
   const handleSync = async () => {
@@ -47,28 +36,11 @@ export default function GoogleAdsIntegration({ onSync, loading }: GoogleAdsInteg
     setSyncMessage('Syncing campaigns from Google Ads...');
     
     try {
-      // Check if Google Ads endpoints exist
-      const statusCheck = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://autopilot-api-1.onrender.com'}/google-ads/status`);
+      const result = await googleAdsService.syncCampaigns();
       
-      if (statusCheck.status === 404) {
-        // Demo mode - create sample Google Ads campaigns
-        await createDemoCampaigns();
-        return;
-      }
-      
-      // Call real sync endpoint
-      const campaignSync = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://autopilot-api-1.onrender.com'}/google-ads/sync-campaigns`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
-      
-      const result = await campaignSync.json();
-      
-      if (campaignSync.ok) {
+      if (result.success) {
         setSyncStatus('success');
-        setSyncMessage(`Successfully synced ${result.synced || 0} campaigns`);
+        setSyncMessage(result.message);
         setLastSync(new Date().toLocaleString());
         
         // Call the onSync callback to refresh the UI
@@ -83,7 +55,7 @@ export default function GoogleAdsIntegration({ onSync, loading }: GoogleAdsInteg
         }, 3000);
       } else {
         setSyncStatus('error');
-        setSyncMessage(result.detail || 'Sync failed');
+        setSyncMessage(result.message);
       }
     } catch (error) {
       setSyncStatus('error');
@@ -92,94 +64,8 @@ export default function GoogleAdsIntegration({ onSync, loading }: GoogleAdsInteg
     }
   };
 
-  const createDemoCampaigns = async () => {
-    // Sample Google Ads campaigns with realistic data
-    const sampleCampaigns = [
-      {
-        name: 'Google Ads - Brand Search Campaign',
-        platform: 'google_ads',
-        client_name: 'Demo Google Ads Account',
-        budget: 2500,
-        status: 'active',
-        metrics: {
-          impressions: 12450,
-          clicks: 892,
-          conversions: 34,
-          ctr: 7.17,
-          channel_type: 'SEARCH'
-        }
-      },
-      {
-        name: 'Google Ads - Shopping Campaign',
-        platform: 'google_ads', 
-        client_name: 'Demo Google Ads Account',
-        budget: 1800,
-        status: 'active',
-        metrics: {
-          impressions: 8230,
-          clicks: 445,
-          conversions: 28,
-          ctr: 5.41,
-          channel_type: 'SHOPPING'
-        }
-      },
-      {
-        name: 'Google Ads - Display Remarketing',
-        platform: 'google_ads',
-        client_name: 'Demo Google Ads Account', 
-        budget: 1200,
-        status: 'active',
-        metrics: {
-          impressions: 15680,
-          clicks: 234,
-          conversions: 12,
-          ctr: 1.49,
-          channel_type: 'DISPLAY'
-        }
-      }
-    ];
-
-    try {
-      let createdCount = 0;
-      
-      for (const campaign of sampleCampaigns) {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://autopilot-api-1.onrender.com'}/campaigns`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(campaign)
-        });
-        
-        if (response.ok) {
-          createdCount++;
-        }
-      }
-      
-      setSyncStatus('success');
-      setSyncMessage(`Demo: Created ${createdCount} sample Google Ads campaigns`);
-      setLastSync(new Date().toLocaleString());
-      
-      // Call the onSync callback to refresh the UI
-      if (onSync) {
-        onSync();
-      }
-      
-      // Reset status after 5 seconds for demo
-      setTimeout(() => {
-        setSyncStatus('idle');
-        setSyncMessage('');
-      }, 5000);
-      
-    } catch (error) {
-      setSyncStatus('error');
-      setSyncMessage('Demo mode failed - please try again');
-      console.error('Demo campaign creation failed:', error);
-    }
-  };
-
   const getStatusIcon = () => {
-    switch (connectionStatus) {
+    switch (connectionStatus.status) {
       case 'connected':
         return <CheckCircle className="w-5 h-5 text-green-500" />;
       case 'disconnected':
@@ -192,7 +78,7 @@ export default function GoogleAdsIntegration({ onSync, loading }: GoogleAdsInteg
   };
 
   const getStatusText = () => {
-    switch (connectionStatus) {
+    switch (connectionStatus.status) {
       case 'connected':
         return 'Connected to Google Ads';
       case 'disconnected':
@@ -213,7 +99,7 @@ export default function GoogleAdsIntegration({ onSync, loading }: GoogleAdsInteg
         </div>
         <button
           onClick={checkConnection}
-          disabled={connectionStatus === 'checking'}
+          disabled={connectionStatus.status === 'checking'}
           className="text-sm text-blue-600 hover:text-blue-800 disabled:opacity-50"
         >
           Check Status
@@ -275,7 +161,7 @@ export default function GoogleAdsIntegration({ onSync, loading }: GoogleAdsInteg
                 <RefreshCw className="w-4 h-4 animate-spin" />
                 Syncing...
               </>
-            ) : connectionStatus === 'connected' ? (
+            ) : connectionStatus.status === 'connected' ? (
               'Sync Campaigns'
             ) : (
               'Try Demo Sync'
@@ -290,12 +176,12 @@ export default function GoogleAdsIntegration({ onSync, loading }: GoogleAdsInteg
         </div>
       </div>
 
-            {/* Demo Mode Instructions */}
-      {connectionStatus === 'disconnected' && (
+      {/* Demo Mode Instructions */}
+      {connectionStatus.status === 'disconnected' && (
         <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-md">
           <h4 className="text-sm font-medium text-blue-800 mb-2">🚀 Demo Mode Active</h4>
           <p className="text-sm text-blue-700 mb-3">
-            Try the demo sync to see how Google Ads campaigns will appear. Ready to connect your real Google Ads account?
+            {connectionStatus.message || 'Try the demo sync to see how Google Ads campaigns will appear. Ready to connect your real Google Ads account?'}
           </p>
           <div className="flex gap-2">
             <a
@@ -317,11 +203,11 @@ export default function GoogleAdsIntegration({ onSync, loading }: GoogleAdsInteg
       )}
 
       {/* Error State */}
-      {connectionStatus === 'error' && (
+      {connectionStatus.status === 'error' && (
         <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-md">
           <h4 className="text-sm font-medium text-red-800 mb-2">Connection Error</h4>
           <p className="text-sm text-red-700 mb-3">
-            Unable to connect to Google Ads API. Check your credentials and try again.
+            {connectionStatus.error || 'Unable to connect to Google Ads API. Check your credentials and try again.'}
           </p>
           <button
             onClick={checkConnection}
@@ -332,13 +218,18 @@ export default function GoogleAdsIntegration({ onSync, loading }: GoogleAdsInteg
         </div>
       )}
 
-      {/* Connection Error */}
-      {connectionStatus === 'error' && (
-        <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-md">
-          <h4 className="text-sm font-medium text-red-800 mb-2">Connection Error</h4>
-          <p className="text-sm text-red-700">
-            Unable to connect to Google Ads API. Please check your configuration and try again.
+      {/* Connected State - Show additional info */}
+      {connectionStatus.status === 'connected' && connectionStatus.customer_id && (
+        <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-md">
+          <h4 className="text-sm font-medium text-green-800 mb-2">✅ Google Ads Connected</h4>
+          <p className="text-sm text-green-700">
+            Customer ID: {connectionStatus.customer_id}
           </p>
+          {connectionStatus.last_checked && (
+            <p className="text-xs text-green-600 mt-1">
+              Last checked: {new Date(connectionStatus.last_checked).toLocaleString()}
+            </p>
+          )}
         </div>
       )}
     </div>
