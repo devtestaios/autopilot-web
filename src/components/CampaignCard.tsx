@@ -1,6 +1,6 @@
 'use client';
 
-import { Campaign } from '@/lib/api';
+import type { Campaign } from '@/types';
 
 interface CampaignCardProps {
   campaign: Campaign;

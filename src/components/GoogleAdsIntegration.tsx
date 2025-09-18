@@ -23,7 +23,7 @@ export default function GoogleAdsIntegration({ onSync, loading }: GoogleAdsInteg
       } else {
         setConnectionStatus('disconnected');
       }
-    } catch (error) {
+    } catch {
       setConnectionStatus('error');
     }
   };

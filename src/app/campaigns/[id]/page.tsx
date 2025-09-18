@@ -1,9 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
-import { Campaign, PerformanceSnapshot, fetchCampaign, fetchCampaignPerformance, deleteCampaign } from '@/lib/api';
+import type { Campaign, PerformanceSnapshot } from '@/types';
+import { fetchCampaign, fetchCampaignPerformance, deleteCampaign } from '@/lib/api';
 
 export default function CampaignDetailsPage() {
   const params = useParams();
@@ -14,7 +15,7 @@ export default function CampaignDetailsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  async function loadCampaignData() {
+  const loadCampaignData = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -26,18 +27,19 @@ export default function CampaignDetailsPage() {
       
       setCampaign(campaignData);
       setPerformance(performanceData);
-    } catch (err: any) {
-      setError(err.message || 'Failed to load campaign data');
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to load campaign data';
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
-  }
+  }, [campaignId]);
 
   useEffect(() => {
     if (campaignId) {
       loadCampaignData();
     }
-  }, [campaignId]);
+  }, [campaignId, loadCampaignData]);
 
   const handleDeleteCampaign = async () => {
     if (!confirm('Are you sure you want to delete this campaign? This action cannot be undone.')) return;
@@ -45,8 +47,9 @@ export default function CampaignDetailsPage() {
     try {
       await deleteCampaign(campaignId);
       window.location.href = '/campaigns';
-    } catch (err: any) {
-      alert(`Failed to delete campaign: ${err.message}`);
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to delete campaign';
+      alert(`Failed to delete campaign: ${errorMessage}`);
     }
   };
 

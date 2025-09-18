@@ -19,7 +19,7 @@ export default function StatusPage() {
       try {
         const healthData = await checkApiHealth();
         setStatus(healthData);
-      } catch (error) {
+      } catch {
         setStatus({
           health: '❌ Connection Failed',
           version: '❌ Unreachable',
@@ -113,7 +113,7 @@ export default function StatusPage() {
         <div className="mt-8 bg-blue-50 border border-blue-200 rounded-md p-4">
           <h3 className="text-sm font-medium text-blue-900 mb-2">Need help?</h3>
           <p className="text-sm text-blue-800 mb-3">
-            If you're experiencing issues, try these quick actions:
+            If you&apos;re experiencing issues, try these quick actions:
           </p>
           <div className="flex flex-wrap gap-2">
             <button

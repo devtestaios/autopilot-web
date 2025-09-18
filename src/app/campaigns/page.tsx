@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { Campaign, fetchCampaigns, deleteCampaign } from '@/lib/api';
+import type { Campaign } from '@/types';
+import { fetchCampaigns, deleteCampaign } from '@/lib/api';
 import CampaignTable from '@/components/CampaignTable';
 import { Plus } from 'lucide-react';
 
@@ -17,8 +18,9 @@ export default function CampaignsPage() {
       setError(null);
       const data = await fetchCampaigns();
       setCampaigns(data);
-    } catch (err: any) {
-      setError(err.message || 'Failed to load campaigns');
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to load campaigns';
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -39,8 +41,9 @@ export default function CampaignsPage() {
     try {
       await deleteCampaign(campaignId);
       await loadCampaigns();
-    } catch (err: any) {
-      alert(`Failed to delete campaign: ${err.message}`);
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to delete campaign';
+      alert(`Failed to delete campaign: ${errorMessage}`);
     }
   };
 

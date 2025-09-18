@@ -1,39 +1,17 @@
 // API Helper Functions for Autopilot Campaign Management
+import type { 
+  Campaign, 
+  PerformanceSnapshot, 
+  CampaignFormData
+} from '@/types';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'https://autopilot-api-1.onrender.com';
 
-// Types matching backend models
-export type Campaign = {
-  id: string;
-  name: string;
-  platform: string;
-  client_name: string;
-  budget?: number;
-  spend?: number;
-  metrics?: Record<string, any>;
-  created_at?: string;
-};
-
-export type CampaignInput = {
-  name: string;
-  platform: string;
-  client_name: string;
-  budget?: number;
-  spend?: number;
-  metrics?: Record<string, any>;
-};
-
-export type PerformanceSnapshot = {
-  id: string;
-  campaign_id: string;
-  snapshot_date: string;
-  metrics: Record<string, any>;
-  created_at?: string;
-};
-
+// Legacy types for backward compatibility (remove when all components updated)
+export type CampaignInput = CampaignFormData;
 export type PerformanceInput = {
   snapshot_date: string;
-  metrics: Record<string, any>;
+  metrics: Record<string, unknown>;
 };
 
 // Campaign API Functions
@@ -132,9 +110,10 @@ export async function checkApiHealth() {
       database: envCheck?.SUPABASE_URL_present && envCheck?.SUPABASE_ANON_KEY_present 
         ? '✅ Database Connected' : '❌ Database Issues'
     };
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     return {
-      health: `❌ Error: ${error.message}`,
+      health: `❌ Error: ${errorMessage}`,
       version: '❌ Unreachable',
       database: '❌ Unreachable'
     };

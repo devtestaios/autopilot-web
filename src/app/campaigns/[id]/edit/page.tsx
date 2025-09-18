@@ -1,9 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Campaign, CampaignInput, fetchCampaign, updateCampaign } from '@/lib/api';
+import type { Campaign, CampaignFormData } from '@/types';
+import { fetchCampaign, updateCampaign } from '@/lib/api';
 import CampaignForm from '@/components/CampaignForm';
 
 export default function EditCampaignPage() {
@@ -16,26 +17,27 @@ export default function EditCampaignPage() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  async function loadCampaign() {
+  const loadCampaign = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
       const data = await fetchCampaign(campaignId);
       setCampaign(data);
-    } catch (err: any) {
-      setError(err.message || 'Failed to load campaign');
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to load campaign';
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
-  }
+  }, [campaignId]);
 
   useEffect(() => {
     if (campaignId) {
       loadCampaign();
     }
-  }, [campaignId]);
+  }, [campaignId, loadCampaign]);
 
-  const handleSubmit = async (campaignData: CampaignInput) => {
+  const handleSubmit = async (campaignData: CampaignFormData) => {
     try {
       setSubmitting(true);
       setError(null);
@@ -44,8 +46,9 @@ export default function EditCampaignPage() {
       
       // Redirect back to campaign details
       router.push(`/campaigns/${campaignId}`);
-    } catch (err: any) {
-      setError(err.message || 'Failed to update campaign');
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to update campaign';
+      setError(errorMessage);
     } finally {
       setSubmitting(false);
     }
@@ -97,8 +100,8 @@ export default function EditCampaignPage() {
     );
   }
 
-  // Convert Campaign to CampaignInput for the form
-  const campaignInput: CampaignInput = {
+  // Convert Campaign to CampaignFormData for the form
+  const campaignFormData: CampaignFormData = {
     name: campaign.name,
     platform: campaign.platform,
     client_name: campaign.client_name,
@@ -134,7 +137,7 @@ export default function EditCampaignPage() {
 
         {/* Campaign Form */}
         <CampaignForm
-          campaign={campaignInput}
+          campaign={campaignFormData}
           onSubmit={handleSubmit}
           onCancel={handleCancel}
           loading={submitting}

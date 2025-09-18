@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { Campaign, fetchCampaigns, deleteCampaign } from '@/lib/api';
+import type { Campaign } from '@/types';
+import { fetchCampaigns, deleteCampaign } from '@/lib/api';
 import DashboardStats from '@/components/DashboardStats';
 import CampaignCard from '@/components/CampaignCard';
 import GoogleAdsIntegration from '@/components/GoogleAdsIntegration';
@@ -19,8 +20,9 @@ export default function DashboardPage() {
       setError(null);
       const data = await fetchCampaigns();
       setCampaigns(data);
-    } catch (err: any) {
-      setError(err.message || 'Failed to load campaigns');
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to load campaigns';
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -36,8 +38,9 @@ export default function DashboardPage() {
     try {
       await deleteCampaign(campaignId);
       await loadCampaigns(); // Refresh the list
-    } catch (err: any) {
-      alert(`Failed to delete campaign: ${err.message}`);
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to delete campaign';
+      alert(`Failed to delete campaign: ${errorMessage}`);
     }
   };
 

@@ -3,7 +3,8 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { CampaignInput, createCampaign } from '@/lib/api';
+import type { CampaignFormData } from '@/types';
+import { createCampaign } from '@/lib/api';
 import CampaignForm from '@/components/CampaignForm';
 
 export default function NewCampaignPage() {
@@ -11,17 +12,18 @@ export default function NewCampaignPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = async (campaignData: CampaignInput) => {
+  const handleSubmit = async (campaignData: CampaignFormData) => {
     try {
       setLoading(true);
       setError(null);
       
-      const newCampaign = await createCampaign(campaignData);
+      await createCampaign(campaignData);
       
       // Redirect to the campaign details page or campaigns list
       router.push('/campaigns');
-    } catch (err: any) {
-      setError(err.message || 'Failed to create campaign');
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to create campaign';
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -66,7 +68,7 @@ export default function NewCampaignPage() {
           <h3 className="text-sm font-medium text-blue-900 mb-2">Tips for creating campaigns:</h3>
           <ul className="text-sm text-blue-800 space-y-1">
             <li>• Use clear, descriptive names that identify the campaign purpose</li>
-            <li>• Set realistic budgets based on your client's goals</li>
+            <li>• Set realistic budgets based on your client&apos;s goals</li>
             <li>• Choose the platform where your target audience is most active</li>
             <li>• You can always edit these details later as the campaign evolves</li>
           </ul>

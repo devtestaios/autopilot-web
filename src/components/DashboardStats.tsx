@@ -1,6 +1,7 @@
 'use client';
 
-import { Campaign, checkApiHealth } from '@/lib/api';
+import type { Campaign } from '@/types';
+import { checkApiHealth } from '@/lib/api';
 import { useEffect, useState } from 'react';
 
 interface DashboardStatsProps {

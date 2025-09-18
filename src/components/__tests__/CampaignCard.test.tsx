@@ -1,6 +1,7 @@
-import { render, screen, fireEvent } from '@testing-library/react'
-import CampaignCard from '../CampaignCard'
-import { Campaign } from '@/lib/api'
+import React from 'react';
+import { render, screen, fireEvent } from '@testing-library/react';
+import type { Campaign } from '@/types';
+import CampaignCard from '../CampaignCard';
 
 const mockCampaign: Campaign = {
   id: '1',
@@ -9,7 +10,10 @@ const mockCampaign: Campaign = {
   platform: 'google',
   budget: 1000,
   spend: 250,
+  status: 'active' as const,
+  metrics: {},
   created_at: '2024-01-01T00:00:00Z',
+  updated_at: '2024-01-01T00:00:00Z',
 }
 
 describe('CampaignCard', () => {

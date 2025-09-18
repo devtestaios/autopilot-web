@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { Campaign } from '@/lib/api';
+import React from 'react';
+import type { Campaign } from '@/types';
 import { Download, Filter, Search, RefreshCw } from 'lucide-react';
 
 interface CampaignTableProps {

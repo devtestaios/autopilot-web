@@ -1,17 +1,17 @@
 'use client';
 
 import { useState } from 'react';
-import { CampaignInput } from '@/lib/api';
+import type { CampaignFormData } from '@/types';
 
 interface CampaignFormProps {
-  campaign?: CampaignInput;
-  onSubmit: (campaign: CampaignInput) => void;
+  campaign?: CampaignFormData;
+  onSubmit: (campaign: CampaignFormData) => void;
   onCancel: () => void;
   loading?: boolean;
 }
 
 export default function CampaignForm({ campaign, onSubmit, onCancel, loading }: CampaignFormProps) {
-  const [formData, setFormData] = useState<CampaignInput>({
+  const [formData, setFormData] = useState<CampaignFormData>({
     name: campaign?.name || '',
     platform: campaign?.platform || 'google_ads',
     client_name: campaign?.client_name || '',
@@ -25,7 +25,7 @@ export default function CampaignForm({ campaign, onSubmit, onCancel, loading }: 
     onSubmit(formData);
   };
 
-  const handleInputChange = (field: keyof CampaignInput, value: any) => {
+  const handleInputChange = (field: keyof CampaignFormData, value: string | number | undefined) => {
     setFormData(prev => ({
       ...prev,
       [field]: value

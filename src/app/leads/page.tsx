@@ -1,14 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-
-type Lead = {
-  id: string;
-  email: string;
-  name: string | null;
-  source: string | null;
-  created_at: string;
-};
+import type { Lead } from "@/types";
 
 export default function LeadsPage() {
   const API = process.env.NEXT_PUBLIC_API_URL as string; // must be set in Vercel
@@ -27,8 +20,9 @@ export default function LeadsPage() {
       if (!r.ok) throw new Error(`GET /leads -> ${r.status}`);
       const data = await r.json();
       setLeads(data);
-    } catch (e: any) {
-      setErr(e.message || "Failed to load leads");
+    } catch (e: unknown) {
+      const errorMessage = e instanceof Error ? e.message : "Failed to load leads";
+      setErr(errorMessage);
     }
   }
 
@@ -59,8 +53,9 @@ export default function LeadsPage() {
       setName("");
       setSource("web");
       await load();
-    } catch (e: any) {
-      setErr(e.message || "Failed to save lead");
+    } catch (e: unknown) {
+      const errorMessage = e instanceof Error ? e.message : "Failed to save lead";
+      setErr(errorMessage);
     } finally {
       setLoading(false);
     }
