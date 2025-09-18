@@ -1,0 +1,50 @@
+import { render, screen, fireEvent } from '@testing-library/react'
+import CampaignCard from '../CampaignCard'
+import { Campaign } from '@/lib/api'
+
+const mockCampaign: Campaign = {
+  id: '1',
+  name: 'Test Campaign',
+  client_name: 'Test Client',
+  platform: 'google',
+  budget: 1000,
+  spend: 250,
+  created_at: '2024-01-01T00:00:00Z',
+}
+
+describe('CampaignCard', () => {
+  test('renders campaign information correctly', () => {
+    render(<CampaignCard campaign={mockCampaign} />)
+    
+    expect(screen.getByText('Test Campaign')).toBeDefined()
+    expect(screen.getByText('Test Client')).toBeDefined()
+    expect(screen.getByText('google')).toBeDefined()
+  })
+
+  test('calls onEdit when edit button is clicked', () => {
+    const mockOnEdit = jest.fn()
+    render(<CampaignCard campaign={mockCampaign} onEdit={mockOnEdit} />)
+    
+    const editButton = screen.getByText('Edit')
+    fireEvent.click(editButton)
+    
+    expect(mockOnEdit).toHaveBeenCalledWith(mockCampaign)
+  })
+
+  test('calls onDelete when delete button is clicked', () => {
+    const mockOnDelete = jest.fn()
+    render(<CampaignCard campaign={mockCampaign} onDelete={mockOnDelete} />)
+    
+    const deleteButton = screen.getByText('Delete')
+    fireEvent.click(deleteButton)
+    
+    expect(mockOnDelete).toHaveBeenCalledWith('1')
+  })
+
+  test('handles different platforms correctly', () => {
+    const facebookCampaign = { ...mockCampaign, platform: 'facebook' }
+    render(<CampaignCard campaign={facebookCampaign} />)
+    
+    expect(screen.getByText('facebook')).toBeDefined()
+  })
+})
