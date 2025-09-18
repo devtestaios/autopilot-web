@@ -7,6 +7,8 @@ import { fetchCampaigns, deleteCampaign } from '@/lib/api';
 import DashboardStats from '@/components/DashboardStats';
 import CampaignCard from '@/components/CampaignCard';
 import GoogleAdsIntegration from '@/components/GoogleAdsIntegration';
+import GoogleAdsPerformanceDashboard from '@/components/GoogleAdsPerformanceDashboard';
+import CampaignOptimizationEngine from '@/components/CampaignOptimizationEngine';
 import PerformanceChart from '@/components/PerformanceChart';
 
 export default function DashboardPage() {
@@ -86,6 +88,16 @@ export default function DashboardPage() {
             metric="spend"
             title="Campaign Performance Overview"
           />
+        </div>
+
+        {/* Google Ads Performance Analytics */}
+        <div className="mt-8">
+          <GoogleAdsPerformanceDashboard campaigns={campaigns} />
+        </div>
+
+        {/* AI Campaign Optimization */}
+        <div className="mt-8">
+          <CampaignOptimizationEngine campaigns={campaigns} />
         </div>
 
         {/* Error State */}
