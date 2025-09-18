@@ -144,7 +144,7 @@ export class IntelligentSyncOrchestrator {
     }
 
     const actionsApplied: string[] = [];
-    let estimatedImpact = '';
+    const estimatedImpact = '';
 
     // Apply specific optimizations based on insight types
     for (const insight of highConfidenceInsights) {

@@ -574,7 +574,7 @@ export class LinkedInAdsAdapter implements PlatformAdapter {
   }
 
   private async getCreatives(campaignId?: string): Promise<any[]> {
-    let query: any = {
+    const query: any = {
       q: 'account',
       account: `urn:li:sponsoredAccount:${this.credentials!.adAccountId}`,
       projection: '(elements*(id,name,status,type,content,review))'
