@@ -69,22 +69,22 @@ export default function DashboardStats({ campaigns, loading }: DashboardStatsPro
                 </svg>
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">System Status</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-300">All systems operational</p>
+                <h3 className="text-lg font-bold text-black dark:text-white">System Status</h3>
+                <p className="text-sm text-black dark:text-gray-300">All systems operational</p>
               </div>
             </div>
             <div className="grid grid-cols-3 gap-4 text-sm">
               <div className="text-center">
-                <div className="font-medium text-gray-900 dark:text-white">{healthStatus.health}</div>
-                <div className="text-gray-500 dark:text-gray-400">Health</div>
+                <div className="font-bold text-black dark:text-white">{healthStatus.health}</div>
+                <div className="text-black dark:text-gray-400">Health</div>
               </div>
               <div className="text-center">
-                <div className="font-medium text-gray-900 dark:text-white">{healthStatus.version}</div>
-                <div className="text-gray-500 dark:text-gray-400">Version</div>
+                <div className="font-bold text-black dark:text-white">{healthStatus.version}</div>
+                <div className="text-black dark:text-gray-400">Version</div>
               </div>
               <div className="text-center">
-                <div className="font-medium text-gray-900 dark:text-white">{healthStatus.database}</div>
-                <div className="text-gray-500 dark:text-gray-400">Database</div>
+                <div className="font-bold text-black dark:text-white">{healthStatus.database}</div>
+                <div className="text-black dark:text-gray-400">Database</div>
               </div>
             </div>
           </div>
@@ -97,12 +97,12 @@ export default function DashboardStats({ campaigns, loading }: DashboardStatsPro
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 p-6 group border border-gray-200 dark:border-gray-700">
           <div className="flex items-center justify-between">
             <div className="flex-1">
-              <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide">Total Campaigns</p>
-              <p className="text-3xl font-bold text-gray-900 dark:text-white mt-2">{totalCampaigns}</p>
+              <p className="text-sm font-bold text-black dark:text-gray-300 uppercase tracking-wide">Total Campaigns</p>
+              <p className="text-3xl font-bold text-black dark:text-white mt-2">{totalCampaigns}</p>
               <div className="flex items-center mt-3">
                 <span className="text-sm text-green-700 dark:text-green-400 font-semibold bg-green-100 dark:bg-green-900/30 px-2 py-1 rounded-full">{activeCampaigns} active</span>
                 <span className="text-gray-400 mx-2">•</span>
-                <span className="text-sm text-gray-700 dark:text-gray-300 font-medium">{totalCampaigns - activeCampaigns} paused</span>
+                <span className="text-sm text-black dark:text-gray-300 font-bold">{totalCampaigns - activeCampaigns} paused</span>
               </div>
             </div>
             <div className="p-4 bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-800 dark:to-blue-900 rounded-xl group-hover:scale-110 transition-transform duration-300">
@@ -117,8 +117,8 @@ export default function DashboardStats({ campaigns, loading }: DashboardStatsPro
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 p-6 group border border-gray-200 dark:border-gray-700">
           <div className="flex items-center justify-between">
             <div className="flex-1">
-              <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide">Total Budget</p>
-              <p className="text-3xl font-bold text-gray-900 dark:text-white mt-2">${totalBudget.toLocaleString()}</p>
+              <p className="text-sm font-bold text-black dark:text-gray-300 uppercase tracking-wide">Total Budget</p>
+              <p className="text-3xl font-bold text-black dark:text-white mt-2">${totalBudget.toLocaleString()}</p>
               <div className="flex items-center mt-3">
                 <span className="text-sm text-blue-700 dark:text-blue-400 font-semibold bg-blue-100 dark:bg-blue-900/30 px-2 py-1 rounded-full">${totalSpend.toLocaleString()} spent</span>
               </div>
@@ -135,8 +135,8 @@ export default function DashboardStats({ campaigns, loading }: DashboardStatsPro
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 p-6 group border border-gray-200 dark:border-gray-700">
           <div className="flex items-center justify-between">
             <div className="flex-1">
-              <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide">Total Spend</p>
-              <p className="text-3xl font-bold text-gray-900 dark:text-white mt-2">{formatCurrency(totalSpend)}</p>
+              <p className="text-sm font-bold text-black dark:text-gray-300 uppercase tracking-wide">Total Spend</p>
+              <p className="text-3xl font-bold text-black dark:text-white mt-2">{formatCurrency(totalSpend)}</p>
               <div className="flex items-center mt-3">
                 <span className={`text-sm font-semibold px-2 py-1 rounded-full ${avgSpendPercentage > 80 ? 'text-red-700 bg-red-100 dark:text-red-400 dark:bg-red-900/30' : avgSpendPercentage > 60 ? 'text-yellow-700 bg-yellow-100 dark:text-yellow-400 dark:bg-yellow-900/30' : 'text-green-700 bg-green-100 dark:text-green-400 dark:bg-green-900/30'}`}>
                   {avgSpendPercentage.toFixed(1)}% of budget
@@ -155,8 +155,8 @@ export default function DashboardStats({ campaigns, loading }: DashboardStatsPro
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 p-6 group border border-gray-200 dark:border-gray-700">
           <div className="flex items-center justify-between">
             <div className="flex-1">
-              <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide">Remaining Budget</p>
-              <p className="text-3xl font-bold text-gray-900 dark:text-white mt-2">{formatCurrency(totalBudget - totalSpend)}</p>
+              <p className="text-sm font-bold text-black dark:text-gray-300 uppercase tracking-wide">Remaining Budget</p>
+              <p className="text-3xl font-bold text-black dark:text-white mt-2">{formatCurrency(totalBudget - totalSpend)}</p>
               <div className="flex items-center mt-3">
                 <span className="text-sm font-semibold text-purple-700 dark:text-purple-400 bg-purple-100 dark:bg-purple-900/30 px-2 py-1 rounded-full">
                   {((totalBudget - totalSpend) / totalBudget * 100).toFixed(1)}% available
@@ -176,14 +176,14 @@ export default function DashboardStats({ campaigns, loading }: DashboardStatsPro
       {Object.keys(platformCounts).length > 0 && (
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8">
           <div className="flex items-center justify-between mb-6">
-            <h3 className="text-xl font-bold text-gray-900 dark:text-white">Campaigns by Platform</h3>
-            <span className="text-sm text-gray-500 dark:text-gray-400">{totalCampaigns} total campaigns</span>
+            <h3 className="text-xl font-bold text-black dark:text-white">Campaigns by Platform</h3>
+            <span className="text-sm text-black dark:text-gray-400">{totalCampaigns} total campaigns</span>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {Object.entries(platformCounts).map(([platform, count]) => (
               <div key={platform} className="text-center p-4 rounded-lg bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
-                <div className="text-3xl font-bold text-gray-900 dark:text-white mb-1">{count}</div>
-                <div className="text-sm font-medium text-gray-600 dark:text-gray-300 capitalize">
+                <div className="text-3xl font-bold text-black dark:text-white mb-1">{count}</div>
+                <div className="text-sm font-bold text-black dark:text-gray-300 capitalize">
                   {platform.replace('_', ' ').replace('ads', 'Ads')}
                 </div>
                 <div className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2 mt-2">
