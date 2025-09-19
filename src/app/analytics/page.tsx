@@ -1,3 +1,5 @@
+'use client';
+
 import AdvancedAnalyticsDashboard from '@/components/AdvancedAnalyticsDashboard';
 import NavigationTabs from '@/components/NavigationTabs';
 

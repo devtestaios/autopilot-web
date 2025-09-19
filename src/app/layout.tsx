@@ -1,11 +1,12 @@
-'use client';
-
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/Navbar";
-import { ThemeProvider } from "@/contexts/ThemeContext";
-import { SearchProvider } from "@/contexts/SearchContext";
+import ClientProviders from "@/components/ClientProviders";
+
+export const metadata: Metadata = {
+  title: "Autopilot - AI Marketing Platform",
+  description: "AI-powered marketing optimization platform for automated campaign management",
+};
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -24,20 +25,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head>
-        <title>Autopilot - AI Marketing Platform</title>
-        <meta name="description" content="AI-powered marketing optimization platform for automated campaign management" />
-      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         suppressHydrationWarning
       >
-        <ThemeProvider>
-          <SearchProvider>
-            <Navbar />
-            {children}
-          </SearchProvider>
-        </ThemeProvider>
+        <ClientProviders>
+          {children}
+        </ClientProviders>
       </body>
     </html>
   );
