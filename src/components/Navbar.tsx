@@ -1,8 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Bell, Settings, User, Search, Menu, Plus, Sun, Moon, ChevronDown, HelpCircle, LogOut } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useGlobalSearch } from '@/hooks/useGlobalSearch';
+import { SearchResults } from '@/components/SearchResults';
 
 interface NavbarProps {
   onMenuToggle?: () => void;
@@ -13,6 +15,24 @@ export default function Navbar({ onMenuToggle }: NavbarProps) {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
+  
+  // Search functionality
+  const { searchTerm, setSearchTerm, isSearching, results, showResults } = useGlobalSearch();
+  const searchRef = useRef<HTMLDivElement>(null);
+  const mobileSearchRef = useRef<HTMLDivElement>(null);
+
+  // Close search results when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (searchRef.current && !searchRef.current.contains(event.target as Node) &&
+          mobileSearchRef.current && !mobileSearchRef.current.contains(event.target as Node)) {
+        setSearchTerm('');
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [setSearchTerm]);
 
   const notifications = [
     { id: 1, title: 'Campaign Performance Alert', message: 'Summer Sale campaign is performing above target', time: '5 min ago', unread: true },
@@ -51,13 +71,23 @@ export default function Navbar({ onMenuToggle }: NavbarProps) {
 
         {/* Center - Enhanced Search */}
         <div className="hidden md:flex flex-1 max-w-2xl mx-8">
-          <div className="relative w-full group">
+          <div ref={searchRef} className="relative w-full group">
             <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 w-5 h-5 group-focus-within:text-blue-500 transition-colors" />
             <input
               type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Search campaigns, clients, keywords, or analytics..."
               className="w-full pl-12 pr-4 py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 hover:border-gray-400 dark:hover:border-gray-500"
             />
+            {showResults && (
+              <SearchResults
+                results={results}
+                isSearching={isSearching}
+                searchTerm={searchTerm}
+                onResultClick={() => setSearchTerm('')}
+              />
+            )}
           </div>
         </div>
 
@@ -168,13 +198,23 @@ export default function Navbar({ onMenuToggle }: NavbarProps) {
 
       {/* Mobile Search */}
       <div className="md:hidden mt-3">
-        <div className="relative">
+        <div ref={mobileSearchRef} className="relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 w-4 h-4" />
           <input
             type="text"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Search..."
             className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
+          {showResults && (
+            <SearchResults
+              results={results}
+              isSearching={isSearching}
+              searchTerm={searchTerm}
+              onResultClick={() => setSearchTerm('')}
+            />
+          )}
         </div>
       </div>
 

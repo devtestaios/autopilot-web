@@ -6,12 +6,17 @@ import type { Campaign } from '@/types';
 import { fetchCampaigns, deleteCampaign } from '@/lib/api';
 import CampaignTable from '@/components/CampaignTable';
 import NavigationTabs from '@/components/NavigationTabs';
+import { CampaignFiltersComponent } from '@/components/CampaignFilters';
+import { useCampaignFilters } from '@/hooks/useCampaignFilters';
 import { Plus } from 'lucide-react';
 
 export default function CampaignsPage() {
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // Add filtering functionality
+  const { filters, setFilters, filteredCampaigns, totalResults } = useCampaignFilters(campaigns);
 
   async function loadCampaigns() {
     try {
@@ -89,9 +94,16 @@ export default function CampaignsPage() {
           </div>
         )}
 
+        {/* Campaign Filters */}
+        <CampaignFiltersComponent
+          filters={filters}
+          onFiltersChange={setFilters}
+          totalResults={totalResults}
+        />
+
         {/* Campaign Table */}
         <CampaignTable
-          campaigns={campaigns}
+          campaigns={filteredCampaigns}
           onEdit={handleEditCampaign}
           onDelete={handleDeleteCampaign}
           onRefresh={loadCampaigns}
