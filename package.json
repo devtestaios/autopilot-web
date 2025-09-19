@@ -1,6 +1,7 @@
 {
   "name": "autopilot-web",
   "version": "0.1.0",
+  "description": "Autopilot (PulseBridge.ai) - AI-powered marketing optimization platform. For complete project context see: .github/copilot-instructions.md",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",

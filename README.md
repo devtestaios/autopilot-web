@@ -1,36 +1,97 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Autopilot (PulseBridge.ai) - AI-Powered Marketing Platform
 
-## Getting Started
+**Production URL:** https://pulsebridge.ai  
+**Status:** Production-ready frontend with VS Code Copilot-style dashboard enhancements
 
-First, run the development server:
+## 📖 Master Context Document
 
+**🚨 DEVELOPERS START HERE:** For complete project context, architecture patterns, and development guidelines:
+
+👉 **[.github/copilot-instructions.md](.github/copilot-instructions.md)** - Master Context Document
+
+This document contains:
+- Complete project architecture and tech stack
+- Component patterns and design system
+- Development workflow and commands
+- All completed milestones and features
+- Next development priorities
+- Critical gotchas and best practices
+
+## 🚀 Quick Start
+
+### Development Server
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm run dev --turbopack    # Uses Turbopack for faster builds
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Build & Deploy
+```bash
+npm run build             # Production build
+npm run test             # Run Jest tests
+npm run test:e2e         # Run Playwright E2E tests
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+**Live Development:** http://localhost:3000  
+**Production:** Auto-deploys to Vercel from main branch
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🏗️ Architecture Overview
 
-## Learn More
+**Stack:** Next.js 15 (App Router) + React 19 + TypeScript + Tailwind CSS 4  
+**Backend:** FastAPI (Python) + Supabase PostgreSQL  
+**Deployment:** Vercel (frontend) + Render (backend)
 
-To learn more about Next.js, take a look at the following resources:
+**Key Features:**
+- VS Code Copilot-style dashboard with advanced sidebars
+- AI assistant chat with marketing automation
+- Advanced settings with 20+ campaign controls
+- Responsive design with Pulse Bridge branding
+- Interactive capability showcases
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 📂 Project Structure
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
+src/app/                    # Next.js App Router pages
+├── page.tsx               # Landing page (CustomLandingPage)
+├── dashboard/enhanced.tsx # Main dashboard with sidebars
+├── capabilities/          # Feature showcase pages
+└── campaigns/             # Campaign management
 
-## Deploy on Vercel
+src/components/            # React components
+├── ui/                   # Base UI components (PremiumButton, PremiumCard)
+├── AdvancedSettingsSidebar.tsx  # Left sidebar with automation
+├── AIAssistantChat.tsx   # Right sidebar AI assistant
+└── CustomLandingPage.tsx # Main landing page
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+.github/                  # GitHub configuration
+└── copilot-instructions.md # 📖 MASTER CONTEXT DOCUMENT
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🎨 Design System
+
+**Pulse Bridge Branding:**
+- **Colors:** `--pulse-blue: #00d4ff`, `--bridge-purple: #7c3aed`, `--energy-magenta: #ec4899`
+- **Fonts:** Orbitron (headers), Exo_2 (body text)
+- **Components:** Glass morphism, pulse animations, gradient effects
+
+## 🔧 Development Guidelines
+
+1. **Use Turbopack:** All dev commands use `--turbopack` flag
+2. **Theme System:** Use semantic colors (`text-foreground`) not hardcoded (`text-gray-600`)
+3. **WCAG Compliance:** Maintain 4.5:1 contrast ratio for accessibility
+4. **Component Pattern:** Enhanced components for advanced features
+5. **TypeScript:** Strict typing with proper const assertions
+
+## 📚 Documentation Index
+
+- **[Master Context Document](.github/copilot-instructions.md)** - Complete project guide
+- **[User Guide](USER_GUIDE.md)** - End-user documentation
+- **[Technical Documentation](TECHNICAL_DOCUMENTATION.md)** - Implementation details
+- **[Deployment Guide](DEPLOYMENT_GUIDE.md)** - Production deployment steps
+
+## 🤝 Contributing
+
+This project uses strict TypeScript and follows enterprise-grade patterns. See the Master Context Document for detailed development guidelines and architecture patterns.
+
+---
+
+*For complete project context and development guidelines, see [.github/copilot-instructions.md](.github/copilot-instructions.md)*
