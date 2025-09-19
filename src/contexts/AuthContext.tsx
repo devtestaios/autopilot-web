@@ -47,11 +47,31 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  // Helper function for safe localStorage access
+  const safeLocalStorage = {
+    getItem: (key: string) => {
+      if (typeof window !== 'undefined') {
+        return localStorage.getItem(key);
+      }
+      return null;
+    },
+    setItem: (key: string, value: string) => {
+      if (typeof window !== 'undefined') {
+        localStorage.setItem(key, value);
+      }
+    },
+    removeItem: (key: string) => {
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem(key);
+      }
+    }
+  };
+
   // Check for existing session on mount
   useEffect(() => {
     const checkAuth = () => {
-      const savedUser = localStorage.getItem('autopilot_user');
-      const savedToken = localStorage.getItem('autopilot_token');
+      const savedUser = safeLocalStorage.getItem('autopilot_user');
+      const savedToken = safeLocalStorage.getItem('autopilot_token');
       
       if (savedUser && savedToken) {
         try {
@@ -59,8 +79,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
           setUser(parsedUser);
         } catch (error) {
           console.error('Error parsing saved user:', error);
-          localStorage.removeItem('autopilot_user');
-          localStorage.removeItem('autopilot_token');
+          safeLocalStorage.removeItem('autopilot_user');
+          safeLocalStorage.removeItem('autopilot_token');
         }
       }
       setIsLoading(false);
@@ -95,8 +115,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
         const mockToken = `token_${Date.now()}`;
         
-        localStorage.setItem('autopilot_user', JSON.stringify(mockUser));
-        localStorage.setItem('autopilot_token', mockToken);
+        safeLocalStorage.setItem('autopilot_user', JSON.stringify(mockUser));
+        safeLocalStorage.setItem('autopilot_token', mockToken);
         
         setUser(mockUser);
         setIsLoading(false);
@@ -137,8 +157,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
         const mockToken = `token_${Date.now()}`;
         
-        localStorage.setItem('autopilot_user', JSON.stringify(mockUser));
-        localStorage.setItem('autopilot_token', mockToken);
+        safeLocalStorage.setItem('autopilot_user', JSON.stringify(mockUser));
+        safeLocalStorage.setItem('autopilot_token', mockToken);
         
         setUser(mockUser);
         setIsLoading(false);
@@ -154,8 +174,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
   };
 
   const logout = () => {
-    localStorage.removeItem('autopilot_user');
-    localStorage.removeItem('autopilot_token');
+    safeLocalStorage.removeItem('autopilot_user');
+    safeLocalStorage.removeItem('autopilot_token');
     setUser(null);
   };
 
@@ -163,7 +183,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     if (user) {
       const updatedUser = { ...user, ...updates };
       setUser(updatedUser);
-      localStorage.setItem('autopilot_user', JSON.stringify(updatedUser));
+      safeLocalStorage.setItem('autopilot_user', JSON.stringify(updatedUser));
     }
   };
 
@@ -174,7 +194,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         preferences: { ...user.preferences, ...preferences }
       };
       setUser(updatedUser);
-      localStorage.setItem('autopilot_user', JSON.stringify(updatedUser));
+      safeLocalStorage.setItem('autopilot_user', JSON.stringify(updatedUser));
     }
   };
 
