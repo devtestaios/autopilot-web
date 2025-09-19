@@ -1,5 +1,5 @@
-import LandingPage from '@/components/LandingPage';
+import AwardWinningLandingPage from '@/components/AwardWinningLandingPage';
 
 export default function HomePage() {
-  return <LandingPage />;
+  return <AwardWinningLandingPage />;
 }
