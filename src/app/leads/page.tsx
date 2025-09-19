@@ -5,6 +5,7 @@ import { Plus, Search, Filter, Download, RefreshCw, Mail, User, Calendar, Globe,
 import NavigationTabs from "@/components/NavigationTabs";
 import { LeadFiltersComponent } from "@/components/LeadFilters";
 import { useLeadFilters } from "@/hooks/useLeadFilters";
+import { useSearchContext } from "@/contexts/SearchContext";
 import type { Lead } from "@/types";
 
 export default function LeadsPage() {
@@ -21,6 +22,12 @@ export default function LeadsPage() {
   // Use the new lead filters hook
   const { filters, setFilters, filteredLeads, totalResults } = useLeadFilters(leads);
 
+  // Provide leads data to search context
+  const { setLeads: setSearchLeads } = useSearchContext();
+
+  // Calculate unique sources for stats
+  const uniqueSources = Array.from(new Set(leads.map(lead => lead.source || 'unknown')));
+
   async function load() {
     setErr(null);
     try {
@@ -28,6 +35,7 @@ export default function LeadsPage() {
       if (!r.ok) throw new Error(`GET /leads -> ${r.status}`);
       const data = await r.json();
       setLeads(data);
+      setSearchLeads(data); // Update search context
     } catch (e: unknown) {
       const errorMessage = e instanceof Error ? e.message : "Failed to load leads";
       setErr(errorMessage);
@@ -139,7 +147,7 @@ export default function LeadsPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Sources</p>
-                <p className="text-2xl font-bold text-gray-900 dark:text-white">{sources.length}</p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-white">{uniqueSources.length}</p>
               </div>
               <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center">
                 <Globe className="w-6 h-6 text-purple-600 dark:text-purple-400" />

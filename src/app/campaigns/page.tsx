@@ -8,6 +8,7 @@ import CampaignTable from '@/components/CampaignTable';
 import NavigationTabs from '@/components/NavigationTabs';
 import { CampaignFiltersComponent } from '@/components/CampaignFilters';
 import { useCampaignFilters } from '@/hooks/useCampaignFilters';
+import { useSearchContext } from '@/contexts/SearchContext';
 import { Plus } from 'lucide-react';
 
 export default function CampaignsPage() {
@@ -18,12 +19,16 @@ export default function CampaignsPage() {
   // Add filtering functionality
   const { filters, setFilters, filteredCampaigns, totalResults } = useCampaignFilters(campaigns);
 
+  // Provide campaigns data to search context
+  const { setCampaigns: setSearchCampaigns } = useSearchContext();
+
   async function loadCampaigns() {
     try {
       setLoading(true);
       setError(null);
       const data = await fetchCampaigns();
       setCampaigns(data);
+      setSearchCampaigns(data); // Update search context
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to load campaigns';
       setError(errorMessage);

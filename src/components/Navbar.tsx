@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Bell, Settings, User, Search, Menu, Plus, Sun, Moon, ChevronDown, HelpCircle, LogOut } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useSearchContext } from '@/contexts/SearchContext';
 import { useGlobalSearch } from '@/hooks/useGlobalSearch';
 import { SearchResults } from '@/components/SearchResults';
 
@@ -16,8 +17,12 @@ export default function Navbar({ onMenuToggle }: NavbarProps) {
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
   
-  // Search functionality
-  const { searchTerm, setSearchTerm, isSearching, results, showResults } = useGlobalSearch();
+  // Search functionality with context data
+  const { campaigns, leads } = useSearchContext();
+  const { searchTerm, setSearchTerm, isSearching, results, showResults } = useGlobalSearch({
+    campaigns,
+    leads
+  });
   const searchRef = useRef<HTMLDivElement>(null);
   const mobileSearchRef = useRef<HTMLDivElement>(null);
 
