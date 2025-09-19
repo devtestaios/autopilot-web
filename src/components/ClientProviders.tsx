@@ -1,9 +1,8 @@
 'use client';
 
 import { ThemeProvider } from "@/contexts/ThemeContext";
+import { AuthProvider } from "@/contexts/AuthContext";
 import { SearchProvider } from "@/contexts/SearchContext";
-import SimplifiedNavbar from "@/components/SimplifiedNavbar";
-import UnifiedSidebar from "@/components/UnifiedSidebar";
 import PageTransition from "@/components/PageTransition";
 
 interface ClientProvidersProps {
@@ -13,15 +12,13 @@ interface ClientProvidersProps {
 export default function ClientProviders({ children }: ClientProvidersProps) {
   return (
     <ThemeProvider>
-      <SearchProvider>
-        <SimplifiedNavbar />
-        <UnifiedSidebar />
-        <div className="md:ml-80 pt-16">
+      <AuthProvider>
+        <SearchProvider>
           <PageTransition>
             {children}
           </PageTransition>
-        </div>
-      </SearchProvider>
+        </SearchProvider>
+      </AuthProvider>
     </ThemeProvider>
   );
 }

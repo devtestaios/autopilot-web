@@ -1,5 +1,5 @@
-import SimplifiedDashboard from '@/components/SimplifiedDashboard';
+import LandingPage from '@/components/LandingPage';
 
 export default function HomePage() {
-  return <SimplifiedDashboard />;
+  return <LandingPage />;
 }
