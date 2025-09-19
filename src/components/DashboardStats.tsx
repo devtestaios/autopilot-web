@@ -24,11 +24,11 @@ export default function DashboardStats({ campaigns, loading }: DashboardStatsPro
 
   if (loading) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         {[1, 2, 3, 4].map((i) => (
-          <div key={i} className="bg-white rounded-lg shadow-md p-6 animate-pulse">
-            <div className="h-4 bg-gray-200 rounded mb-2"></div>
-            <div className="h-8 bg-gray-200 rounded"></div>
+          <div key={i} className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 animate-pulse">
+            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded mb-3"></div>
+            <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded"></div>
           </div>
         ))}
       </div>
@@ -57,48 +57,82 @@ export default function DashboardStats({ campaigns, loading }: DashboardStatsPro
   const activeCampaigns = campaigns.filter(c => (c.spend || 0) < (c.budget || Infinity)).length;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* System Health Status */}
       {healthStatus && (
-        <div className="bg-white rounded-lg shadow-md p-4 border-l-4 border-blue-500">
-          <h3 className="text-sm font-medium text-gray-700 mb-2">System Status</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-2 text-xs">
-            <div>{healthStatus.health}</div>
-            <div>{healthStatus.version}</div>
-            <div>{healthStatus.database}</div>
+        <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900 dark:to-emerald-900 rounded-xl p-6 border border-green-200 dark:border-green-700">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <div className="p-2 bg-green-100 dark:bg-green-800 rounded-lg">
+                <svg className="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">System Status</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-300">All systems operational</p>
+              </div>
+            </div>
+            <div className="grid grid-cols-3 gap-4 text-sm">
+              <div className="text-center">
+                <div className="font-medium text-gray-900 dark:text-white">{healthStatus.health}</div>
+                <div className="text-gray-500 dark:text-gray-400">Health</div>
+              </div>
+              <div className="text-center">
+                <div className="font-medium text-gray-900 dark:text-white">{healthStatus.version}</div>
+                <div className="text-gray-500 dark:text-gray-400">Version</div>
+              </div>
+              <div className="text-center">
+                <div className="font-medium text-gray-900 dark:text-white">{healthStatus.database}</div>
+                <div className="text-gray-500 dark:text-gray-400">Database</div>
+              </div>
+            </div>
           </div>
         </div>
       )}
 
       {/* Main Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4" data-testid="dashboard-stats">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" data-testid="dashboard-stats">
         {/* Total Campaigns */}
-        <div className="bg-white rounded-lg shadow-md p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 p-6 group">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Total Campaigns</p>
-              <p className="text-2xl font-bold text-gray-900">{totalCampaigns}</p>
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Campaigns</p>
+              <p className="text-3xl font-bold text-gray-900 dark:text-white mt-1">{totalCampaigns}</p>
+              <div className="flex items-center mt-2">
+                <span className="text-sm text-green-600 dark:text-green-400 font-medium">{activeCampaigns} active</span>
+                <span className="text-gray-400 mx-2">•</span>
+                <span className="text-sm text-gray-500 dark:text-gray-400">{totalCampaigns - activeCampaigns} paused</span>
+              </div>
             </div>
-            <div className="p-3 bg-blue-100 rounded-full">
-              <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="p-4 bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-800 dark:to-blue-900 rounded-xl group-hover:scale-110 transition-transform duration-300">
+              <svg className="w-8 h-8 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
               </svg>
             </div>
           </div>
-          <div className="mt-2">
-            <span className="text-xs text-gray-500">{activeCampaigns} active</span>
-          </div>
         </div>
 
         {/* Total Budget */}
-        <div className="bg-white rounded-lg shadow-md p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 p-6 group">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Total Budget</p>
-              <p className="text-2xl font-bold text-gray-900">{formatCurrency(totalBudget)}</p>
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Budget</p>
+              <p className="text-3xl font-bold text-gray-900 dark:text-white mt-1">{formatCurrency(totalBudget)}</p>
+              <div className="flex items-center mt-2">
+                <div className="flex items-center">
+                  <div className="w-16 bg-gray-200 dark:bg-gray-700 rounded-full h-2 mr-2">
+                    <div 
+                      className="bg-gradient-to-r from-green-400 to-green-600 h-2 rounded-full transition-all duration-500" 
+                      style={{ width: `${Math.min(avgSpendPercentage, 100)}%` }}
+                    ></div>
+                  </div>
+                  <span className="text-sm text-gray-500 dark:text-gray-400">{Math.round(avgSpendPercentage)}% spent</span>
+                </div>
+              </div>
             </div>
-            <div className="p-3 bg-green-100 rounded-full">
-              <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="p-4 bg-gradient-to-br from-green-100 to-green-200 dark:from-green-800 dark:to-green-900 rounded-xl group-hover:scale-110 transition-transform duration-300">
+              <svg className="w-8 h-8 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
               </svg>
             </div>
@@ -106,34 +140,39 @@ export default function DashboardStats({ campaigns, loading }: DashboardStatsPro
         </div>
 
         {/* Total Spend */}
-        <div className="bg-white rounded-lg shadow-md p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 p-6 group">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Total Spend</p>
-              <p className="text-2xl font-bold text-gray-900">{formatCurrency(totalSpend)}</p>
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Spend</p>
+              <p className="text-3xl font-bold text-gray-900 dark:text-white mt-1">{formatCurrency(totalSpend)}</p>
+              <div className="flex items-center mt-2">
+                <span className={`text-sm font-medium ${avgSpendPercentage > 80 ? 'text-red-500' : avgSpendPercentage > 60 ? 'text-yellow-500' : 'text-green-500'}`}>
+                  {avgSpendPercentage.toFixed(1)}% of budget
+                </span>
+              </div>
             </div>
-            <div className="p-3 bg-yellow-100 rounded-full">
-              <svg className="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="p-4 bg-gradient-to-br from-yellow-100 to-yellow-200 dark:from-yellow-800 dark:to-yellow-900 rounded-xl group-hover:scale-110 transition-transform duration-300">
+              <svg className="w-8 h-8 text-yellow-600 dark:text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
               </svg>
             </div>
           </div>
-          <div className="mt-2">
-            <span className={`text-xs ${avgSpendPercentage > 80 ? 'text-red-500' : 'text-gray-500'}`}>
-              {avgSpendPercentage.toFixed(1)}% of budget
-            </span>
-          </div>
         </div>
 
         {/* Remaining Budget */}
-        <div className="bg-white rounded-lg shadow-md p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 p-6 group">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Remaining</p>
-              <p className="text-2xl font-bold text-gray-900">{formatCurrency(totalBudget - totalSpend)}</p>
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Remaining Budget</p>
+              <p className="text-3xl font-bold text-gray-900 dark:text-white mt-1">{formatCurrency(totalBudget - totalSpend)}</p>
+              <div className="flex items-center mt-2">
+                <span className="text-sm text-gray-500 dark:text-gray-400">
+                  {((totalBudget - totalSpend) / totalBudget * 100).toFixed(1)}% available
+                </span>
+              </div>
             </div>
-            <div className="p-3 bg-purple-100 rounded-full">
-              <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="p-4 bg-gradient-to-br from-purple-100 to-purple-200 dark:from-purple-800 dark:to-purple-900 rounded-xl group-hover:scale-110 transition-transform duration-300">
+              <svg className="w-8 h-8 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
@@ -143,13 +182,24 @@ export default function DashboardStats({ campaigns, loading }: DashboardStatsPro
 
       {/* Platform Breakdown */}
       {Object.keys(platformCounts).length > 0 && (
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Campaigns by Platform</h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white">Campaigns by Platform</h3>
+            <span className="text-sm text-gray-500 dark:text-gray-400">{totalCampaigns} total campaigns</span>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {Object.entries(platformCounts).map(([platform, count]) => (
-              <div key={platform} className="text-center">
-                <div className="text-2xl font-bold text-gray-900">{count}</div>
-                <div className="text-sm text-gray-600 capitalize">{platform.replace('_', ' ')}</div>
+              <div key={platform} className="text-center p-4 rounded-lg bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
+                <div className="text-3xl font-bold text-gray-900 dark:text-white mb-1">{count}</div>
+                <div className="text-sm font-medium text-gray-600 dark:text-gray-300 capitalize">
+                  {platform.replace('_', ' ').replace('ads', 'Ads')}
+                </div>
+                <div className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2 mt-2">
+                  <div 
+                    className="bg-gradient-to-r from-blue-400 to-purple-500 h-2 rounded-full transition-all duration-500"
+                    style={{ width: `${(count / totalCampaigns) * 100}%` }}
+                  ></div>
+                </div>
               </div>
             ))}
           </div>

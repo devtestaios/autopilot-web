@@ -67,37 +67,48 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
       {/* Hero Section */}
-      <div className="bg-gradient-to-r from-purple-600 via-blue-600 to-teal-600 text-white dark:from-purple-800 dark:via-blue-800 dark:to-teal-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="text-center mb-8">
-            <div className="flex items-center justify-center mb-4">
-              <Bot className="h-12 w-12 mr-3" />
-              <h1 className="text-4xl font-bold">AI-Powered Marketing Autopilot</h1>
+      <div className="bg-gradient-to-br from-blue-600 via-purple-600 to-teal-500 text-white dark:from-blue-800 dark:via-purple-800 dark:to-teal-700 relative overflow-hidden">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 bg-black bg-opacity-10">
+          <div className="absolute inset-0" style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+          }}></div>
+        </div>
+        
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+          <div className="text-center mb-12">
+            <div className="flex items-center justify-center mb-6">
+              <div className="p-4 bg-white bg-opacity-20 rounded-2xl backdrop-blur-sm">
+                <Bot className="h-16 w-16 text-white drop-shadow-lg" />
+              </div>
             </div>
-            <p className="text-xl text-blue-100 mb-6">
-              The world's most advanced autonomous campaign optimization platform
+            <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-white to-blue-100">
+              AI-Powered Marketing Autopilot
+            </h1>
+            <p className="text-xl md:text-2xl text-blue-100 mb-8 max-w-3xl mx-auto leading-relaxed">
+              The world's most advanced autonomous campaign optimization platform that surpasses Google & Adobe
             </p>
-            <div className="flex justify-center space-x-4">
+            <div className="flex flex-col sm:flex-row justify-center gap-4">
               <Link 
                 href="/autopilot"
-                className="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors flex items-center space-x-2"
+                className="group bg-white text-blue-600 px-8 py-4 rounded-xl font-semibold hover:bg-blue-50 transition-all duration-300 flex items-center justify-center space-x-3 shadow-xl hover:shadow-2xl transform hover:-translate-y-1"
               >
-                <Zap className="h-5 w-5" />
+                <Zap className="h-6 w-6 group-hover:text-yellow-500 transition-colors" />
                 <span>Launch AI Autopilot</span>
-                <ArrowRight className="h-4 w-4" />
+                <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </Link>
               <Link 
-                href="/optimization"
-                className="bg-blue-500 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-600 transition-colors flex items-center space-x-2"
+                href="/ai"
+                className="group bg-blue-500 bg-opacity-20 backdrop-blur-sm text-white px-8 py-4 rounded-xl font-semibold hover:bg-opacity-30 transition-all duration-300 flex items-center justify-center space-x-3 border border-white border-opacity-20 hover:border-opacity-40"
               >
-                <Brain className="h-5 w-5" />
+                <Brain className="h-6 w-6 group-hover:text-purple-300 transition-colors" />
                 <span>AI Insights</span>
               </Link>
             </div>
           </div>
 
-          {/* Quick Stats */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          {/* Enhanced Quick Stats */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             <div className="bg-white bg-opacity-20 rounded-lg p-4 text-center">
               <TrendingUp className="h-8 w-8 mx-auto mb-2" />
               <div className="text-2xl font-bold">47%</div>

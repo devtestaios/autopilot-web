@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Plus, Search, Filter, Download, RefreshCw, Mail, User, Calendar, Globe, MoreHorizontal, Trash2, Edit3 } from "lucide-react";
 import type { Lead } from "@/types";
 
 export default function LeadsPage() {
@@ -12,6 +13,20 @@ export default function LeadsPage() {
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
   const [err, setErr] = useState<string | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedSource, setSelectedSource] = useState("all");
+  const [showAddForm, setShowAddForm] = useState(false);
+
+  // Filter leads based on search and source
+  const filteredLeads = leads.filter(lead => {
+    const matchesSearch = lead.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         (lead.name && lead.name.toLowerCase().includes(searchTerm.toLowerCase()));
+    const matchesSource = selectedSource === "all" || lead.source === selectedSource;
+    return matchesSearch && matchesSource;
+  });
+
+  // Get unique sources for filter dropdown
+  const sources = Array.from(new Set(leads.map(lead => lead.source || "unknown")));
 
   async function load() {
     setErr(null);
@@ -52,6 +67,7 @@ export default function LeadsPage() {
       setEmail("");
       setName("");
       setSource("web");
+      setShowAddForm(false);
       await load();
     } catch (e: unknown) {
       const errorMessage = e instanceof Error ? e.message : "Failed to save lead";
@@ -62,51 +78,302 @@ export default function LeadsPage() {
   }
 
   return (
-    <div style={{ maxWidth: 720, margin: "2rem auto", padding: "1rem" }}>
-      <h1 style={{ marginBottom: "1rem" }}>Leads</h1>
-
-      <form onSubmit={submit} style={{ display: "grid", gap: "0.5rem", marginBottom: "1rem" }}>
-        <input
-          type="email"
-          required
-          placeholder="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          style={{ padding: "0.5rem" }}
-        />
-        <input
-          type="text"
-          placeholder="name (optional)"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          style={{ padding: "0.5rem" }}
-        />
-        <input
-          type="text"
-          placeholder="source"
-          value={source}
-          onChange={(e) => setSource(e.target.value)}
-          style={{ padding: "0.5rem" }}
-        />
-        <button disabled={loading} type="submit" style={{ padding: "0.6rem 1rem" }}>
-          {loading ? "Saving..." : "Add Lead"}
-        </button>
-      </form>
-
-      {msg && <p style={{ color: "green" }}>{msg}</p>}
-      {err && <p style={{ color: "crimson" }}>{err}</p>}
-
-      <div style={{ display: "grid", gap: "0.75rem" }}>
-        {leads.length === 0 && <p>No leads yet.</p>}
-        {leads.map((l) => (
-          <div key={l.id} style={{ border: "1px solid #ddd", padding: "0.75rem", borderRadius: 8 }}>
-            <div><strong>{l.email}</strong></div>
-            <div>{l.name || "—"}</div>
-            <div style={{ fontSize: 12, color: "#666" }}>
-              source: {l.source || "—"} • {new Date(l.created_at).toLocaleString()}
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-6">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Campaign Leads</h1>
+              <p className="text-gray-600 dark:text-gray-400 mt-1">
+                Manage and track your marketing campaign leads
+              </p>
+            </div>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => load()}
+                className="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+              >
+                <RefreshCw className="w-4 h-4" />
+                Refresh
+              </button>
+              <button className="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                <Download className="w-4 h-4" />
+                Export
+              </button>
+              <button
+                onClick={() => setShowAddForm(!showAddForm)}
+                className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+              >
+                <Plus className="w-4 h-4" />
+                Add Lead
+              </button>
             </div>
           </div>
-        ))}
+        </div>
+
+        {/* Stats Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Leads</p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-white">{leads.length}</p>
+              </div>
+              <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
+                <User className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+              </div>
+            </div>
+          </div>
+          
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">This Month</p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                  {leads.filter(l => new Date(l.created_at).getMonth() === new Date().getMonth()).length}
+                </p>
+              </div>
+              <div className="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center">
+                <Calendar className="w-6 h-6 text-green-600 dark:text-green-400" />
+              </div>
+            </div>
+          </div>
+          
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Sources</p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-white">{sources.length}</p>
+              </div>
+              <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center">
+                <Globe className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+              </div>
+            </div>
+          </div>
+          
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Conversion Rate</p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-white">24.3%</p>
+              </div>
+              <div className="w-12 h-12 bg-orange-100 dark:bg-orange-900/30 rounded-lg flex items-center justify-center">
+                <Mail className="w-6 h-6 text-orange-600 dark:text-orange-400" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Add Lead Form */}
+        {showAddForm && (
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-8">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Add New Lead</h3>
+            <form onSubmit={submit} className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Email Address *
+                </label>
+                <input
+                  type="email"
+                  required
+                  placeholder="email@company.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Full Name
+                </label>
+                <input
+                  type="text"
+                  placeholder="John Doe"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Source
+                </label>
+                <select
+                  value={source}
+                  onChange={(e) => setSource(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  <option value="web">Website</option>
+                  <option value="social">Social Media</option>
+                  <option value="email">Email Campaign</option>
+                  <option value="ads">Paid Ads</option>
+                  <option value="referral">Referral</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+              <div className="md:col-span-3 flex gap-3">
+                <button
+                  disabled={loading}
+                  type="submit"
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white rounded-lg transition-colors"
+                >
+                  {loading ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
+                  {loading ? "Saving..." : "Add Lead"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowAddForm(false)}
+                  className="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        )}
+
+        {/* Messages */}
+        {msg && (
+          <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 text-green-700 dark:text-green-400 px-4 py-3 rounded-lg mb-6">
+            {msg}
+          </div>
+        )}
+        {err && (
+          <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg mb-6">
+            {err}
+          </div>
+        )}
+
+        {/* Filters and Search */}
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-6">
+          <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex-1">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 w-5 h-5" />
+                <input
+                  type="text"
+                  placeholder="Search leads by email or name..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+            </div>
+            <div className="sm:w-48">
+              <div className="relative">
+                <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 w-5 h-5" />
+                <select
+                  value={selectedSource}
+                  onChange={(e) => setSelectedSource(e.target.value)}
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none"
+                >
+                  <option value="all">All Sources</option>
+                  {sources.map(source => (
+                    <option key={source} value={source}>
+                      {source.charAt(0).toUpperCase() + source.slice(1)}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Leads Table */}
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+          <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+              Leads ({filteredLeads.length})
+            </h3>
+          </div>
+          
+          {filteredLeads.length === 0 ? (
+            <div className="p-12 text-center">
+              <div className="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
+                <User className="w-8 h-8 text-gray-400 dark:text-gray-500" />
+              </div>
+              <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">No leads found</h3>
+              <p className="text-gray-600 dark:text-gray-400 mb-6">
+                {searchTerm || selectedSource !== "all" 
+                  ? "Try adjusting your search or filters" 
+                  : "Get started by adding your first lead"}
+              </p>
+              {!searchTerm && selectedSource === "all" && (
+                <button
+                  onClick={() => setShowAddForm(true)}
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+                >
+                  <Plus className="w-4 h-4" />
+                  Add Your First Lead
+                </button>
+              )}
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-gray-50 dark:bg-gray-700">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Contact
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Source
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Date Added
+                    </th>
+                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                  {filteredLeads.map((lead) => (
+                    <tr key={lead.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center">
+                          <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center">
+                            <User className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                          </div>
+                          <div className="ml-4">
+                            <div className="text-sm font-medium text-gray-900 dark:text-white">
+                              {lead.name || "Unknown"}
+                            </div>
+                            <div className="text-sm text-gray-500 dark:text-gray-400">
+                              {lead.email}
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-400">
+                          {lead.source || "unknown"}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                        {new Date(lead.created_at).toLocaleDateString()}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <div className="flex items-center justify-end gap-2">
+                          <button className="p-2 text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
+                            <Edit3 className="w-4 h-4" />
+                          </button>
+                          <button className="p-2 text-gray-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                          <button className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
+                            <MoreHorizontal className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

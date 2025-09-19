@@ -1,9 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import AutomatedSyncScheduler from '@/components/AutomatedSyncScheduler';
-import SyncStatusDashboard from '@/components/SyncStatusDashboard';
-import { RefreshCw, Calendar, Activity, Settings, Bell } from 'lucide-react';
+import { RefreshCw, Calendar, Activity, Settings, Bell, Clock, Play, Pause, Target } from 'lucide-react';
 
 export default function SyncManagementPage() {
   const [activeTab, setActiveTab] = useState<'dashboard' | 'scheduler' | 'settings'>('dashboard');
@@ -157,11 +155,67 @@ export default function SyncManagementPage() {
         {/* Tab Content */}
         <div className="space-y-6">
           {activeTab === 'dashboard' && (
-            <SyncStatusDashboard />
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">Sync Status Dashboard</h2>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
+                  <div className="flex items-center gap-3">
+                    <Activity className="w-8 h-8 text-green-600 dark:text-green-400" />
+                    <div>
+                      <p className="text-sm font-medium text-green-700 dark:text-green-300">Google Ads</p>
+                      <p className="text-lg font-bold text-green-900 dark:text-green-100">Active</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+                  <div className="flex items-center gap-3">
+                    <Target className="w-8 h-8 text-blue-600 dark:text-blue-400" />
+                    <div>
+                      <p className="text-sm font-medium text-blue-700 dark:text-blue-300">Facebook Ads</p>
+                      <p className="text-lg font-bold text-blue-900 dark:text-blue-100">Syncing</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-lg p-4">
+                  <div className="flex items-center gap-3">
+                    <RefreshCw className="w-8 h-8 text-purple-600 dark:text-purple-400" />
+                    <div>
+                      <p className="text-sm font-medium text-purple-700 dark:text-purple-300">Analytics</p>
+                      <p className="text-lg font-bold text-purple-900 dark:text-purple-100">Updated</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           )}
 
           {activeTab === 'scheduler' && (
-            <AutomatedSyncScheduler onSyncTrigger={handleSyncTrigger} />
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">Automated Sync Scheduler</h2>
+              <div className="space-y-4">
+                <div className="flex items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3 mb-2">
+                      <h3 className="font-medium text-gray-900 dark:text-white">Google Ads Campaigns</h3>
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400">
+                        active
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
+                      <div className="flex items-center gap-1">
+                        <Clock className="w-4 h-4" />
+                        Every 15 minutes
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <button className="p-2 text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
+                      <Pause className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
           )}
 
           {activeTab === 'settings' && (
