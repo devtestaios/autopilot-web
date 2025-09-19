@@ -29,7 +29,9 @@ import {
   Activity,
   Globe,
   Shield,
-  Rocket
+  Rocket,
+  Bot,
+  Sliders
 } from 'lucide-react';
 import { PulseWaveLogo } from '@/components/PulseWaveLogo';
 import { PremiumButton } from '@/components/ui/PremiumButton';
@@ -37,6 +39,8 @@ import { PremiumCard } from '@/components/ui/PremiumCard';
 import AdvancedNavigation from '@/components/ui/AdvancedNavigation';
 import FloatingActionButton from '@/components/ui/FloatingActionButton';
 import { useToast } from '@/components/ui/Toast';
+import AdvancedSettingsSidebar from '@/components/AdvancedSettingsSidebar';
+import AIAssistantChat from '@/components/AIAssistantChat';
 
 // Enhanced mock data with more realistic metrics
 const enhancedCampaigns = [
@@ -159,6 +163,11 @@ export default function EnhancedDashboardPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
   const [selectedTimeframe, setSelectedTimeframe] = useState('7d');
+  
+  // Sidebar states
+  const [isSettingsSidebarOpen, setIsSettingsSidebarOpen] = useState(false);
+  const [isAIChatOpen, setIsAIChatOpen] = useState(false);
+  const [isAIChatMinimized, setIsAIChatMinimized] = useState(false);
 
   useEffect(() => {
     if (!user) {
@@ -511,6 +520,44 @@ export default function EnhancedDashboardPage() {
           </PremiumCard>
         </motion.div>
       </main>
+
+      {/* Advanced Settings Sidebar */}
+      <AdvancedSettingsSidebar 
+        isOpen={isSettingsSidebarOpen}
+        onClose={() => setIsSettingsSidebarOpen(false)}
+      />
+
+      {/* AI Assistant Chat */}
+      <AIAssistantChat
+        isOpen={isAIChatOpen}
+        onClose={() => setIsAIChatOpen(false)}
+        isMinimized={isAIChatMinimized}
+        onToggleMinimize={() => setIsAIChatMinimized(!isAIChatMinimized)}
+      />
+
+      {/* Floating Action Buttons for Sidebars */}
+      <div className="fixed bottom-4 left-4 flex flex-col gap-3 z-40">
+        <motion.button
+          onClick={() => setIsSettingsSidebarOpen(true)}
+          className="p-3 bg-gradient-to-br from-bridge-purple to-energy-magenta text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 group"
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.95 }}
+          title="Advanced Settings"
+        >
+          <Sliders className="w-6 h-6 group-hover:rotate-12 transition-transform" />
+        </motion.button>
+        
+        <motion.button
+          onClick={() => setIsAIChatOpen(true)}
+          className="p-3 bg-gradient-to-br from-pulse-blue to-bridge-purple text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 group relative"
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.95 }}
+          title="AI Assistant"
+        >
+          <Bot className="w-6 h-6 group-hover:rotate-12 transition-transform" />
+          <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-white animate-pulse"></div>
+        </motion.button>
+      </div>
 
       {/* Floating Action Button */}
       <FloatingActionButton />
