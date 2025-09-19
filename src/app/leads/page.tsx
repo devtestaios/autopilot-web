@@ -85,7 +85,7 @@ export default function LeadsPage() {
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
               <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Campaign Leads</h1>
-              <p className="text-gray-600 dark:text-gray-400 mt-1">
+              <p className="text-black dark:text-gray-400 mt-1">
                 Manage and track your marketing campaign leads
               </p>
             </div>
@@ -117,7 +117,7 @@ export default function LeadsPage() {
           <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Leads</p>
+                <p className="text-sm font-medium text-black dark:text-gray-400">Total Leads</p>
                 <p className="text-2xl font-bold text-gray-900 dark:text-white">{leads.length}</p>
               </div>
               <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">

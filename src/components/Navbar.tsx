@@ -31,7 +31,7 @@ export default function Navbar({ onMenuToggle }: NavbarProps) {
             onClick={onMenuToggle}
             className="md:hidden p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
           >
-            <Menu className="w-5 h-5 text-gray-600 dark:text-gray-300" />
+            <Menu className="w-5 h-5 text-black dark:text-gray-300" />
           </button>
           
           <div className="flex items-center gap-3">
@@ -42,7 +42,7 @@ export default function Navbar({ onMenuToggle }: NavbarProps) {
               <span className="font-bold text-xl bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                 Autopilot
               </span>
-              <div className="text-xs text-gray-500 dark:text-gray-400 -mt-1">
+              <div className="text-xs text-black dark:text-gray-400 -mt-1">
                 Enterprise Marketing AI
               </div>
             </div>
@@ -65,13 +65,13 @@ export default function Navbar({ onMenuToggle }: NavbarProps) {
         <div className="flex items-center gap-4">
           {/* Quick Action Buttons */}
           <div className="hidden lg:flex items-center gap-2">
-            <button className="p-2 text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-all duration-200 group relative">
+            <button className="p-2 text-black dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-all duration-200 group relative">
               <Plus className="w-5 h-5" />
               <span className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 bg-gray-900 dark:bg-gray-700 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
                 New Campaign
               </span>
             </button>
-            <button className="p-2 text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-all duration-200 group relative">
+            <button className="p-2 text-black dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-all duration-200 group relative">
               <Settings className="w-5 h-5" />
               <span className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 bg-gray-900 dark:bg-gray-700 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity">
                 Settings

@@ -118,8 +118,8 @@ export default function StatusPage() {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
           <div>
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white">AI System Dashboard</h1>
-            <p className="text-gray-600 dark:text-gray-400 mt-1">
-              Monitor AI performance, system health, and optimization metrics
+                        <p className="text-black dark:text-gray-400 mt-1">
+              Monitor system health, API status, and performance metrics in real-time
             </p>
           </div>
           <div className="flex items-center gap-3">
@@ -157,8 +157,8 @@ export default function StatusPage() {
                 </div>
                 <p className="text-lg font-semibold text-gray-900 dark:text-white">{status?.health}</p>
                 <div className="flex items-center gap-2 mt-2">
-                  <Activity className="w-4 h-4 text-gray-500" />
-                  <span className="text-xs text-gray-500 dark:text-gray-400">Live monitoring</span>
+                  <Activity className="w-4 h-4 text-black" />
+                  <span className="text-xs text-black dark:text-gray-400">Live monitoring</span>
                 </div>
               </div>
               
@@ -169,8 +169,8 @@ export default function StatusPage() {
                 </div>
                 <p className="text-lg font-semibold text-gray-900 dark:text-white">{status?.version}</p>
                 <div className="flex items-center gap-2 mt-2">
-                  <Clock className="w-4 h-4 text-gray-500" />
-                  <span className="text-xs text-gray-500 dark:text-gray-400">Updated: {lastUpdated.toLocaleTimeString()}</span>
+                  <Clock className="w-4 h-4 text-black" />
+                  <span className="text-xs text-black dark:text-gray-400">Updated: {lastUpdated.toLocaleTimeString()}</span>
                 </div>
               </div>
               
@@ -181,8 +181,8 @@ export default function StatusPage() {
                 </div>
                 <p className="text-lg font-semibold text-gray-900 dark:text-white">{status?.database}</p>
                 <div className="flex items-center gap-2 mt-2">
-                  <Target className="w-4 h-4 text-gray-500" />
-                  <span className="text-xs text-gray-500 dark:text-gray-400">Connection pool: Active</span>
+                  <Target className="w-4 h-4 text-black" />
+                  <span className="text-xs text-black dark:text-gray-400">Connection pool: Active</span>
                 </div>
               </div>
             </>
@@ -252,7 +252,7 @@ export default function StatusPage() {
               <div>
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-sm font-medium text-gray-700 dark:text-gray-300">CPU Usage</span>
-                  <span className="text-sm text-gray-500 dark:text-gray-400">{systemMetrics.cpuUsage}%</span>
+                  <span className="text-sm text-black dark:text-gray-400">{systemMetrics.cpuUsage}%</span>
                 </div>
                 <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                   <div 
@@ -265,7 +265,7 @@ export default function StatusPage() {
               <div>
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Memory Usage</span>
-                  <span className="text-sm text-gray-500 dark:text-gray-400">{systemMetrics.memoryUsage}%</span>
+                  <span className="text-sm text-black dark:text-gray-400">{systemMetrics.memoryUsage}%</span>
                 </div>
                 <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                   <div 
@@ -278,7 +278,7 @@ export default function StatusPage() {
               <div>
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Network Latency</span>
-                  <span className="text-sm text-gray-500 dark:text-gray-400">{systemMetrics.networkLatency}ms</span>
+                  <span className="text-sm text-black dark:text-gray-400">{systemMetrics.networkLatency}ms</span>
                 </div>
                 <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                   <div 
@@ -335,14 +335,14 @@ export default function StatusPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-4">
               <div>
-                <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">API Endpoint</h3>
+                <h3 className="text-sm font-medium text-black dark:text-gray-400 mb-2">API Endpoint</h3>
                 <p className="text-sm text-gray-900 dark:text-white font-mono bg-gray-100 dark:bg-gray-700 px-3 py-2 rounded-lg">
                   {process.env.NEXT_PUBLIC_API_URL || 'https://autopilot-api-1.onrender.com'}
                 </p>
               </div>
               
               <div>
-                <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">Environment</h3>
+                <h3 className="text-sm font-medium text-black dark:text-gray-400 mb-2">Environment</h3>
                 <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                   process.env.NODE_ENV === 'production' 
                     ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400'
@@ -355,14 +355,14 @@ export default function StatusPage() {
             
             <div className="space-y-4">
               <div>
-                <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">Last Health Check</h3>
+                <h3 className="text-sm font-medium text-black dark:text-gray-400 mb-2">Last Health Check</h3>
                 <p className="text-sm text-gray-900 dark:text-white">
                   {lastUpdated.toLocaleString()}
                 </p>
               </div>
               
               <div>
-                <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">Auto Refresh</h3>
+                <h3 className="text-sm font-medium text-black dark:text-gray-400 mb-2">Auto Refresh</h3>
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
                   <span className="text-sm text-gray-900 dark:text-white">Every 30 seconds</span>

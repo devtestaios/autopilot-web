@@ -54,7 +54,7 @@ export default function CampaignsPage() {
         <div className="flex justify-between items-center mb-8">
           <div>
             <h1 className="text-3xl font-bold text-gray-900">All Campaigns</h1>
-            <p className="text-gray-600 mt-1">Manage and monitor your marketing campaigns</p>
+            <p className="text-black mt-1">Manage and monitor your marketing campaigns</p>
           </div>
           <div className="flex gap-3">
             <Link

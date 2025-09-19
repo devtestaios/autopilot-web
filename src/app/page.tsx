@@ -142,48 +142,48 @@ export default function DashboardPage() {
             >
               Single Platform Dashboard
             </Link>
-            <Link 
+                        <a
               href="/unified"
-              className="border-b-2 border-transparent py-4 px-1 text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600"
+              className="border-b-2 border-transparent py-4 px-1 text-sm font-medium text-black dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600"
             >
               🌐 Unified Platform Command Center
-            </Link>
-            <Link 
+            </a>
+            <a
               href="/platforms"
-              className="border-b-2 border-transparent py-4 px-1 text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600"
+              className="border-b-2 border-transparent py-4 px-1 text-sm font-medium text-black dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600"
             >
               ⚙️ Platform Setup
-            </Link>
-            <Link 
+            </a>
+            <a
               href="/campaigns"
-              className="border-b-2 border-transparent py-4 px-1 text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600"
+              className="border-b-2 border-transparent py-4 px-1 text-sm font-medium text-black dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600"
             >
               📊 Campaign Management
-            </Link>
-            <Link 
+            </a>
+            <a
               href="/leads"
-              className="border-b-2 border-transparent py-4 px-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300"
+              className="border-b-2 border-transparent py-4 px-1 text-sm font-medium text-black hover:text-gray-700 hover:border-gray-300"
             >
               🎯 Lead Management
-            </Link>
-            <Link 
+            </a>
+            <a
               href="/analytics"
-              className="border-b-2 border-transparent py-4 px-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300"
+              className="border-b-2 border-transparent py-4 px-1 text-sm font-medium text-black hover:text-gray-700 hover:border-gray-300"
             >
               📊 Advanced Analytics
-            </Link>
-            <Link 
+            </a>
+            <a
               href="/alerts"
-              className="border-b-2 border-transparent py-4 px-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300"
+              className="border-b-2 border-transparent py-4 px-1 text-sm font-medium text-black hover:text-gray-700 hover:border-gray-300"
             >
               🚨 Smart Alerts
-            </Link>
-            <Link 
+            </a>
+            <a
               href="/status"
-              className="border-b-2 border-transparent py-4 px-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300"
+              className="border-b-2 border-transparent py-4 px-1 text-sm font-medium text-black hover:text-gray-700 hover:border-gray-300"
             >
               📈 System Status
-            </Link>
+            </a>
           </nav>
         </div>
       </div>
@@ -208,7 +208,7 @@ export default function DashboardPage() {
           <div className="flex justify-between items-center mb-8">
             <div>
               <h1 className="text-3xl font-bold text-gray-900">Autopilot Dashboard</h1>
-              <p className="text-gray-600 mt-1">AI-powered marketing campaign management</p>
+              <p className="text-black mt-1">AI-powered marketing campaign management</p>
             </div>
             <div className="flex gap-3">
               <Link
@@ -243,7 +243,7 @@ export default function DashboardPage() {
                 </div>
                 <div>
                   <h3 className="text-lg font-semibold text-gray-900">Smart Alert System</h3>
-                  <p className="text-sm text-gray-600">Proactive monitoring and intelligent notifications</p>
+                  <p className="text-sm text-black">Proactive monitoring and intelligent notifications</p>
                 </div>
               </div>
               <Link
@@ -264,7 +264,7 @@ export default function DashboardPage() {
                 <div className="text-center">
                   <CheckCircle className="h-12 w-12 text-green-600 mx-auto mb-3" />
                   <h4 className="text-lg font-medium text-gray-900 mb-2">All Systems Normal</h4>
-                  <p className="text-gray-600">No active alerts detected. Your campaigns are performing well!</p>
+                  <p className="text-black">No active alerts detected. Your campaigns are performing well!</p>
                 </div>
               </div>
             ) : (

@@ -42,7 +42,7 @@ export default function CampaignCard({ campaign, onEdit, onDelete }: CampaignCar
       <div className="flex justify-between items-start mb-4">
         <div>
           <h3 className="text-lg font-semibold text-gray-900">{campaign.name}</h3>
-          <p className="text-sm text-gray-600">{campaign.client_name}</p>
+          <p className="text-sm text-black">{campaign.client_name}</p>
         </div>
         <div className="flex gap-2">
           {onEdit && (
@@ -73,11 +73,11 @@ export default function CampaignCard({ campaign, onEdit, onDelete }: CampaignCar
 
       {/* Budget vs Spend */}
       <div className="mb-4">
-        <div className="flex justify-between text-sm text-gray-600 mb-1">
+        <div className="flex justify-between text-sm text-black mb-1">
           <span>Budget</span>
           <span>{formatCurrency(campaign.budget)}</span>
         </div>
-        <div className="flex justify-between text-sm text-gray-600 mb-2">
+        <div className="flex justify-between text-sm text-black mb-2">
           <span>Spent</span>
           <span>{formatCurrency(campaign.spend)}</span>
         </div>
@@ -100,7 +100,7 @@ export default function CampaignCard({ campaign, onEdit, onDelete }: CampaignCar
           <div className="grid grid-cols-2 gap-2 text-xs">
             {Object.entries(campaign.metrics).slice(0, 4).map(([key, value]) => (
               <div key={key} className="flex justify-between">
-                <span className="text-gray-600 capitalize">{key.replace('_', ' ')}</span>
+                <span className="text-black capitalize">{key.replace('_', ' ')}</span>
                 <span className="font-medium">{String(value)}</span>
               </div>
             ))}
@@ -109,7 +109,7 @@ export default function CampaignCard({ campaign, onEdit, onDelete }: CampaignCar
       )}
 
       {/* Footer */}
-      <div className="text-xs text-gray-500 pt-2 border-t border-gray-100">
+      <div className="text-xs text-black pt-2 border-t border-gray-100">
         Created: {formatDate(campaign.created_at)}
       </div>
     </div>
