@@ -169,6 +169,7 @@ interface FeatureCard {
   description: string;
   gradient: string;
   delay: number;
+  slug: string;
 }
 
 const features: FeatureCard[] = [
@@ -177,42 +178,48 @@ const features: FeatureCard[] = [
     title: "AI-Powered Marketing Bridge",
     description: "Our AI makes thousands of micro-optimizations every hour, continuously learning and adapting to maximize your campaign performance across all platforms.",
     gradient: "from-blue-500 via-purple-500 to-pink-500",
-    delay: 0.2
+    delay: 0.2,
+    slug: "ai-bridge"
   },
   {
     icon: TrendingUp,
     title: "Predictive Analytics",
     description: "Advanced machine learning algorithms predict market trends and automatically adjust your campaigns 24/7 for maximum ROI and reduced cost per acquisition.",
     gradient: "from-green-500 via-teal-500 to-blue-500",
-    delay: 0.4
+    delay: 0.4,
+    slug: "predictive-analytics"
   },
   {
     icon: Target,
     title: "Multi-Platform Mastery",
     description: "Unified control across Google Ads, Meta, LinkedIn, TikTok, and more. One dashboard to rule them all with seamless cross-platform optimization.",
     gradient: "from-orange-500 via-red-500 to-pink-500",
-    delay: 0.6
+    delay: 0.6,
+    slug: "multi-platform"
   },
   {
     icon: Zap,
     title: "Lightning-Fast Execution",
     description: "Instant campaign deployment and real-time bid adjustments. Our system reacts to market changes faster than humanly possible.",
     gradient: "from-yellow-500 via-orange-500 to-red-500",
-    delay: 0.8
+    delay: 0.8,
+    slug: "lightning-execution"
   },
   {
     icon: Shield,
     title: "Risk Protection",
     description: "Built-in safeguards prevent overspending and automatically pause underperforming campaigns. Your budget is protected 24/7.",
     gradient: "from-indigo-500 via-purple-500 to-pink-500",
-    delay: 1.0
+    delay: 1.0,
+    slug: "risk-protection"
   },
   {
     icon: Globe,
     title: "Global Reach",
     description: "Expand to new markets with AI-powered localization and currency optimization. Scale globally with local precision.",
     gradient: "from-cyan-500 via-blue-500 to-indigo-500",
-    delay: 1.2
+    delay: 1.2,
+    slug: "global-reach"
   }
 ];
 
@@ -558,41 +565,52 @@ export default function AwardWinningLandingPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {features.map((feature, index) => (
-              <motion.div
+              <Link 
                 key={feature.title}
-                className="group relative"
-                initial={{ y: 100, opacity: 0 }}
-                animate={featuresInView ? { y: 0, opacity: 1 } : { y: 100, opacity: 0 }}
-                transition={{ duration: 0.8, delay: feature.delay }}
-                whileHover={{ y: -10 }}
+                href={`/capabilities/${feature.slug}`}
+                className="block group relative"
               >
-                <div className="relative p-8 bg-card rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-500 overflow-hidden border border-border">
-                  <div className={`absolute inset-0 bg-gradient-to-br ${feature.gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-500`} />
-                  
-                  <motion.div
-                    className={`inline-flex p-4 rounded-2xl bg-gradient-to-br ${feature.gradient} mb-6`}
-                    whileHover={{ scale: 1.1, rotate: 5 }}
-                    transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                  >
-                    <feature.icon className="w-8 h-8 text-white" />
-                  </motion.div>
-                  
-                  <h3 className="text-2xl font-bold text-foreground mb-4 group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-blue-600 group-hover:to-purple-600 group-hover:bg-clip-text transition-all duration-300">
-                    {feature.title}
-                  </h3>
-                  
-                  <p className="text-muted-foreground leading-relaxed">
-                    {feature.description}
-                  </p>
-                  
-                  <motion.div
-                    className="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-blue-500 to-purple-500"
-                    initial={{ width: "0%" }}
-                    whileHover={{ width: "100%" }}
-                    transition={{ duration: 0.3 }}
-                  />
-                </div>
-              </motion.div>
+                <motion.div
+                  className="group relative cursor-pointer"
+                  initial={{ y: 100, opacity: 0 }}
+                  animate={featuresInView ? { y: 0, opacity: 1 } : { y: 100, opacity: 0 }}
+                  transition={{ duration: 0.8, delay: feature.delay }}
+                  whileHover={{ y: -10 }}
+                >
+                  <div className="relative p-8 bg-card rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-500 overflow-hidden border border-border group-hover:border-pulse-blue/50">
+                    <div className={`absolute inset-0 bg-gradient-to-br ${feature.gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-500`} />
+                    
+                    <motion.div
+                      className={`inline-flex p-4 rounded-2xl bg-gradient-to-br ${feature.gradient} mb-6`}
+                      whileHover={{ scale: 1.1, rotate: 5 }}
+                      transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                    >
+                      <feature.icon className="w-8 h-8 text-white" />
+                    </motion.div>
+                    
+                    <h3 className="text-2xl font-bold text-foreground mb-4 group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-pulse-blue group-hover:to-bridge-purple group-hover:bg-clip-text transition-all duration-300">
+                      {feature.title}
+                    </h3>
+                    
+                    <p className="text-muted-foreground leading-relaxed mb-4">
+                      {feature.description}
+                    </p>
+                    
+                    {/* Add "Learn More" indicator */}
+                    <div className="flex items-center text-pulse-blue group-hover:text-bridge-purple transition-colors duration-300">
+                      <span className="text-sm font-medium">Learn More</span>
+                      <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform duration-300" />
+                    </div>
+                    
+                    <motion.div
+                      className="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-pulse-blue to-bridge-purple"
+                      initial={{ width: "0%" }}
+                      whileHover={{ width: "100%" }}
+                      transition={{ duration: 0.3 }}
+                    />
+                  </div>
+                </motion.div>
+              </Link>
             ))}
           </div>
         </div>
