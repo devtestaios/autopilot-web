@@ -4,9 +4,9 @@ import { useState } from 'react';
 import React from 'react';
 import type { Campaign } from '@/types';
 import { Download, Filter, Search, RefreshCw, Edit, Trash2, MoreHorizontal, TrendingUp, DollarSign } from 'lucide-react';
-import { PremiumBadge } from './ui/PremiumBadge';
+import { Badge } from './ui/badge';
 import { PremiumButton } from './ui/PremiumButton';
-import { PremiumLoading } from './ui/PremiumLoading';
+import { Button } from './ui/button';
 import { motion } from 'framer-motion';
 
 interface CampaignTableProps {
@@ -74,7 +74,10 @@ export default function CampaignTable({ campaigns, onEdit, onDelete, onRefresh, 
   if (loading) {
     return (
       <div className="card p-8">
-        <PremiumLoading variant="wave" text="Loading campaigns..." size="lg" />
+        <div className="flex items-center justify-center py-8">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-pulse-blue"></div>
+          <span className="ml-3 text-muted-foreground">Loading campaigns...</span>
+        </div>
       </div>
     );
   }
@@ -194,10 +197,17 @@ export default function CampaignTable({ campaigns, onEdit, onDelete, onRefresh, 
                   </td>
                   
                   <td className="p-4">
-                    <PremiumBadge 
-                      status={campaign.status as any} 
-                      animated={campaign.status === 'active'}
-                    />
+                    <Badge 
+                      variant={campaign.status === 'active' ? 'default' : campaign.status === 'paused' ? 'secondary' : 'destructive'}
+                      className={`
+                        ${campaign.status === 'active' ? 'bg-green-100 text-green-800 border-green-200' : ''}
+                        ${campaign.status === 'paused' ? 'bg-yellow-100 text-yellow-800 border-yellow-200' : ''}
+                        ${campaign.status === 'ended' ? 'bg-red-100 text-red-800 border-red-200' : ''}
+                        ${campaign.status === 'active' ? 'animate-pulse' : ''}
+                      `}
+                    >
+                      {campaign.status}
+                    </Badge>
                   </td>
                   
                   <td className="p-4">
