@@ -332,7 +332,7 @@ export default function AwardWinningLandingPage() {
           {/* PulseBridge Logo */}
           <motion.div
             variants={itemVariants}
-            className="mb-12 flex justify-center"
+            className="mb-12 flex justify-center mt-16 md:mt-20"
           >
             <PulseWaveLogo 
               size="large" 
@@ -361,8 +361,8 @@ export default function AwardWinningLandingPage() {
 
           <motion.h1
             variants={itemVariants}
-            className="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-orbitron font-normal tracking-wide mb-8"
-            style={{ letterSpacing: '0.1em' }}
+            className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-orbitron font-normal tracking-wide mb-8 px-4"
+            style={{ letterSpacing: '0.05em' }}
           >
             <span className="bg-gradient-to-r from-pulse-blue via-bridge-purple to-energy-magenta bg-clip-text text-transparent">
               Bridge the Gap to
@@ -441,10 +441,6 @@ export default function AwardWinningLandingPage() {
             </div>
             <div className="flex items-center">
               <CheckCircle className="w-5 h-5 text-green-500 mr-2" />
-              No credit card required
-            </div>
-            <div className="flex items-center">
-              <CheckCircle className="w-5 h-5 text-green-500 mr-2" />
               Cancel anytime
             </div>
           </motion.div>
@@ -458,8 +454,7 @@ export default function AwardWinningLandingPage() {
               transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
               className="flex flex-col items-center cursor-pointer"
             >
-              <span className="text-sm text-muted-foreground mb-2">Scroll to explore</span>
-              <ChevronDown className="w-6 h-6 text-muted-foreground" />
+              <ChevronDown className="w-8 h-8 text-muted-foreground" />
             </motion.div>
           </motion.div>
         </div>
