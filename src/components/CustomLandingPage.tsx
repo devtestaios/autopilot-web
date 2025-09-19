@@ -392,7 +392,7 @@ export default function AwardWinningLandingPage() {
 
           <motion.p
             variants={itemVariants}
-            className="text-xl sm:text-2xl lg:text-3xl text-gray-600 dark:text-gray-300 mb-12 max-w-4xl mx-auto leading-relaxed font-exo-2 font-light"
+            className="text-xl sm:text-2xl lg:text-3xl text-slate-700 dark:text-gray-200 mb-12 max-w-4xl mx-auto leading-relaxed font-exo-2 font-light"
           >
             Connect your marketing potential with{' '}
             <span className="font-semibold text-pulse-blue dark:text-pulse-blue">AI-powered precision</span>
@@ -539,7 +539,7 @@ export default function AwardWinningLandingPage() {
                 Capabilities
               </span>
             </h2>
-            <p className="text-2xl text-gray-600 dark:text-gray-300 max-w-4xl mx-auto leading-relaxed">
+            <p className="text-2xl text-slate-700 dark:text-gray-200 max-w-4xl mx-auto leading-relaxed">
               Advanced AI features that give you an unfair advantage in the digital marketing battlefield
             </p>
           </motion.div>
@@ -569,7 +569,7 @@ export default function AwardWinningLandingPage() {
                     {feature.title}
                   </h3>
                   
-                  <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
+                  <p className="text-slate-700 dark:text-gray-200 leading-relaxed">
                     {feature.description}
                   </p>
                   
@@ -608,7 +608,7 @@ export default function AwardWinningLandingPage() {
           </motion.h2>
           
           <motion.p
-            className="text-xl text-gray-600 dark:text-gray-300 mb-16 max-w-3xl mx-auto"
+            className="text-xl text-slate-700 dark:text-gray-200 mb-16 max-w-3xl mx-auto"
             initial={{ y: 30, opacity: 0 }}
             whileInView={{ y: 0, opacity: 1 }}
             viewport={{ once: true }}
@@ -647,7 +647,7 @@ export default function AwardWinningLandingPage() {
                     <div className="font-bold text-gray-900 dark:text-white text-lg">
                       {testimonials[currentTestimonial].name}
                     </div>
-                    <div className="text-gray-600 dark:text-gray-300">
+                    <div className="text-slate-700 dark:text-gray-200">
                       {testimonials[currentTestimonial].role} • {testimonials[currentTestimonial].company}
                     </div>
                   </div>

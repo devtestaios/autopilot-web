@@ -10,13 +10,13 @@
   
   /* Light Theme - Enhanced Contrast */
   --background: #ffffff;
-  --foreground: #1a1a2e;
+  --foreground: #0f172a;
   --primary: #00d4ff;
   --primary-foreground: #ffffff;
   --secondary: #f1f5f9;
-  --secondary-foreground: #1a1a2e;
+  --secondary-foreground: #0f172a;
   --muted: #f8fafc;
-  --muted-foreground: #475569;
+  --muted-foreground: #334155;
   --accent: #7c3aed;
   --accent-foreground: #ffffff;
   --destructive: #ef4444;
@@ -28,23 +28,23 @@
   
   /* Card and Surface Colors */
   --card: #ffffff;
-  --card-foreground: #1a1a2e;
+  --card-foreground: #0f172a;
   --popover: #ffffff;
-  --popover-foreground: #1a1a2e;
+  --popover-foreground: #0f172a;
 }
 
 .dark {
   /* Dark Theme with PulseBridge Colors - Enhanced Gradients */
   --background: #0f0f23;
-  --foreground: #e0e6ed;
+  --foreground: #f8fafc;
   --primary: #00d4ff;
   --primary-foreground: #1a1a2e;
   --secondary: #1e293b;
-  --secondary-foreground: #e0e6ed;
+  --secondary-foreground: #f8fafc;
   --muted: #1e293b;
-  --muted-foreground: #94a3b8;
+  --muted-foreground: #cbd5e1;
   --accent: #7c3aed;
-  --accent-foreground: #e0e6ed;
+  --accent-foreground: #f8fafc;
   --destructive: #ef4444;
   --destructive-foreground: #ffffff;
   --border: #334155;
@@ -53,21 +53,21 @@
   
   /* Enhanced Card and Surface Colors */
   --card: #1a1a2e;
-  --card-foreground: #e0e6ed;
+  --card-foreground: #f8fafc;
   --popover: #1a1a2e;
-  --popover-foreground: #e0e6ed;
+  --popover-foreground: #f8fafc;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0f0f23;
-    --foreground: #e0e6ed;
+    --foreground: #f8fafc;
     --primary: #00d4ff;
     --primary-foreground: #1a1a2e;
     --secondary: #1a1a2e;
-    --secondary-foreground: #e0e6ed;
+    --secondary-foreground: #f8fafc;
     --muted: #1a1a2e;
-    --muted-foreground: #94a3b8;
+    --muted-foreground: #cbd5e1;
     --accent: #1e293b;
     --accent-foreground: #f8fafc;
     --destructive: #ef4444;
