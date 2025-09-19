@@ -1,0 +1,22 @@
+<svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1a1a2e"/>
+      <stop offset="100%" stop-color="#7c3aed"/>
+    </linearGradient>
+    <linearGradient id="wave" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#00d4ff"/>
+      <stop offset="100%" stop-color="#ec4899"/>
+    </linearGradient>
+  </defs>
+  
+  <rect width="16" height="16" rx="3" fill="url(#bg)"/>
+  
+  <g transform="translate(4, 5)">
+    <rect x="0" y="4" width="1.5" height="3" rx="0.75" fill="url(#wave)"/>
+    <rect x="1.7" y="2.5" width="1.5" height="4.5" rx="0.75" fill="url(#wave)"/>
+    <rect x="3.4" y="1" width="1.5" height="6" rx="0.75" fill="url(#wave)"/>
+    <rect x="5.1" y="3" width="1.5" height="4" rx="0.75" fill="url(#wave)"/>
+    <rect x="6.8" y="4" width="1.5" height="3" rx="0.75" fill="url(#wave)"/>
+  </g>
+</svg>

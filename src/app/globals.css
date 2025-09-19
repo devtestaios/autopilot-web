@@ -1,51 +1,60 @@
 @import "tailwindcss";
 
 :root {
+  /* PulseBridge Official Brand Colors */
+  --pulse-blue: #00d4ff;
+  --bridge-purple: #7c3aed;
+  --energy-magenta: #ec4899;
+  --deep-space: #1a1a2e;
+  --interface-gray: #e0e6ed;
+  
+  /* Light Theme */
   --background: #ffffff;
-  --foreground: #171717;
-  --primary: #2563eb;
-  --primary-foreground: #ffffff;
-  --secondary: #f1f5f9;
-  --secondary-foreground: #0f172a;
+  --foreground: #1a1a2e;
+  --primary: #00d4ff;
+  --primary-foreground: #1a1a2e;
+  --secondary: #e0e6ed;
+  --secondary-foreground: #1a1a2e;
   --muted: #f8fafc;
   --muted-foreground: #64748b;
-  --accent: #f1f5f9;
-  --accent-foreground: #0f172a;
+  --accent: #7c3aed;
+  --accent-foreground: #ffffff;
   --destructive: #ef4444;
   --destructive-foreground: #ffffff;
-  --border: #e2e8f0;
-  --input: #e2e8f0;
-  --ring: #2563eb;
+  --border: #e0e6ed;
+  --input: #e0e6ed;
+  --ring: #00d4ff;
   --radius: 0.5rem;
 }
 
 .dark {
-  --background: #0a0a0a;
-  --foreground: #ededed;
-  --primary: #3b82f6;
-  --primary-foreground: #ffffff;
-  --secondary: #1e293b;
-  --secondary-foreground: #f8fafc;
-  --muted: #1e293b;
+  /* Dark Theme with PulseBridge Colors */
+  --background: #0f0f23;
+  --foreground: #e0e6ed;
+  --primary: #00d4ff;
+  --primary-foreground: #1a1a2e;
+  --secondary: #1a1a2e;
+  --secondary-foreground: #e0e6ed;
+  --muted: #1a1a2e;
   --muted-foreground: #94a3b8;
-  --accent: #1e293b;
-  --accent-foreground: #f8fafc;
+  --accent: #7c3aed;
+  --accent-foreground: #e0e6ed;
   --destructive: #ef4444;
   --destructive-foreground: #ffffff;
   --border: #334155;
   --input: #334155;
-  --ring: #3b82f6;
+  --ring: #00d4ff;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-    --primary: #3b82f6;
-    --primary-foreground: #ffffff;
-    --secondary: #1e293b;
-    --secondary-foreground: #f8fafc;
-    --muted: #1e293b;
+    --background: #0f0f23;
+    --foreground: #e0e6ed;
+    --primary: #00d4ff;
+    --primary-foreground: #1a1a2e;
+    --secondary: #1a1a2e;
+    --secondary-foreground: #e0e6ed;
+    --muted: #1a1a2e;
     --muted-foreground: #94a3b8;
     --accent: #1e293b;
     --accent-foreground: #f8fafc;
@@ -60,7 +69,7 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family: var(--font-exo-2), 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   transition: background-color 0.3s ease, color 0.3s ease;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;

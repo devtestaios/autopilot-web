@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { motion, useScroll, useTransform, useInView, AnimatePresence } from 'framer-motion';
 import { useTheme } from '@/contexts/ThemeContext';
 import Link from 'next/link';
+import { PulseWaveLogo } from './PulseWaveLogo';
 import { 
   Zap, 
   Brain, 
@@ -324,17 +325,31 @@ export default function AwardWinningLandingPage() {
         <FloatingOrbs />
         
         <div className="relative z-10 max-w-7xl mx-auto text-center">
+          {/* PulseBridge Logo */}
+          <motion.div
+            variants={itemVariants}
+            className="mb-12 flex justify-center"
+          >
+            <PulseWaveLogo 
+              size="large" 
+              variant="dark" 
+              animated={true} 
+              showText={true}
+              className="drop-shadow-2xl"
+            />
+          </motion.div>
+
           <motion.div
             variants={itemVariants}
             className="mb-8"
           >
             <motion.div
-              className="inline-flex items-center px-4 py-2 rounded-full bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-200 dark:border-blue-700 mb-6"
+              className="inline-flex items-center px-4 py-2 rounded-full bg-gradient-to-r from-pulse-blue/10 to-bridge-purple/10 border border-pulse-blue/30 dark:border-bridge-purple/50 mb-6"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              <Sparkles className="w-4 h-4 text-blue-500 mr-2" />
-              <span className="text-sm font-medium text-blue-600 dark:text-blue-400">
+              <Sparkles className="w-4 h-4 text-pulse-blue mr-2" />
+              <span className="text-sm font-medium text-pulse-blue dark:text-pulse-blue font-exo-2">
                 AI Bridge Technology
               </span>
             </motion.div>
@@ -342,18 +357,19 @@ export default function AwardWinningLandingPage() {
 
           <motion.h1
             variants={itemVariants}
-            className="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-bold mb-8"
+            className="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-orbitron font-normal tracking-wide mb-8"
+            style={{ letterSpacing: '0.1em' }}
           >
-            <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-pulse-blue via-bridge-purple to-energy-magenta bg-clip-text text-transparent">
               Bridge the Gap to
             </span>
             <br />
-            <span className="bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-deep-space to-interface-gray dark:from-interface-gray dark:to-gray-300 bg-clip-text text-transparent">
               Perfect Marketing
             </span>
             <br />
             <motion.span
-              className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent font-bold"
+              className="bg-gradient-to-r from-pulse-blue via-bridge-purple to-energy-magenta bg-clip-text text-transparent font-bold"
               animate={{
                 backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
               }}
@@ -362,19 +378,22 @@ export default function AwardWinningLandingPage() {
                 repeat: Infinity,
                 ease: "easeInOut"
               }}
+              style={{ 
+                textShadow: '0 0 30px rgba(0, 212, 255, 0.5)' 
+              }}
             >
-              PulseBridge.ai
+              with PulseBridge.ai
             </motion.span>
           </motion.h1>
 
           <motion.p
             variants={itemVariants}
-            className="text-xl sm:text-2xl lg:text-3xl text-gray-600 dark:text-gray-300 mb-12 max-w-4xl mx-auto leading-relaxed"
+            className="text-xl sm:text-2xl lg:text-3xl text-gray-600 dark:text-gray-300 mb-12 max-w-4xl mx-auto leading-relaxed font-exo-2 font-light"
           >
             Connect your marketing potential with{' '}
-            <span className="font-semibold text-blue-600 dark:text-blue-400">AI-powered precision</span>
+            <span className="font-semibold text-pulse-blue dark:text-pulse-blue">AI-powered precision</span>
             {' '}that bridges the gap between strategy and execution. Pulse-driven insights that{' '}
-            <span className="font-semibold text-purple-600 dark:text-purple-400">transform campaigns</span>{' '}
+            <span className="font-semibold text-energy-magenta dark:text-energy-magenta">transform campaigns</span>{' '}
             into unstoppable growth engines.
           </motion.p>
 
