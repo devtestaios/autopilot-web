@@ -247,7 +247,7 @@ export default function AIBridgePage() {
             className="text-center mb-16"
           >
             <h2 className="text-4xl font-bold mb-4">
-              How Our <span className="bg-gradient-to-r from-pulse-blue to-bridge-purple bg-clip-text text-transparent">AI Bridge</span> Works
+              How Our <span className="bg-gradient-to-r from-cyan-300 to-blue-200 bg-clip-text text-transparent">AI Bridge</span> Works
             </h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
               Advanced machine learning algorithms working 24/7 to optimize every aspect of your marketing campaigns
@@ -290,7 +290,7 @@ export default function AIBridgePage() {
       >
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-4xl font-bold mb-6">
-            Ready to Unleash <span className="bg-gradient-to-r from-pulse-blue to-bridge-purple bg-clip-text text-transparent">AI Power</span>?
+            Ready to Unleash <span className="bg-gradient-to-r from-cyan-300 to-blue-200 bg-clip-text text-transparent">AI Power</span>?
           </h2>
           <p className="text-xl text-muted-foreground mb-8">
             Join thousands of marketers who have transformed their campaigns with our AI-powered optimization
