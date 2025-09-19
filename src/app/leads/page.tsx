@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Plus, Search, Filter, Download, RefreshCw, Mail, User, Calendar, Globe, MoreHorizontal, Trash2, Edit3 } from "lucide-react";
+import NavigationTabs from "@/components/NavigationTabs";
 import type { Lead } from "@/types";
 
 export default function LeadsPage() {
@@ -78,8 +79,10 @@ export default function LeadsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-6">
-      <div className="max-w-7xl mx-auto">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <NavigationTabs />
+      <div className="p-6">
+        <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -373,6 +376,7 @@ export default function LeadsPage() {
               </table>
             </div>
           )}
+        </div>
         </div>
       </div>
     </div>

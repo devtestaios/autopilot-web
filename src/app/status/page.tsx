@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import NavigationTabs from '@/components/NavigationTabs';
 import { 
   Activity, 
   Cpu, 
@@ -112,7 +113,9 @@ export default function StatusPage() {
   };
 
   return (
-    <main className="min-h-screen bg-gray-50 dark:bg-gray-900 p-4 md:p-8">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <NavigationTabs />
+      <main className="p-4 md:p-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
@@ -403,6 +406,7 @@ export default function StatusPage() {
           </div>
         </div>
       </div>
-    </main>
+      </main>
+    </div>
   );
 }

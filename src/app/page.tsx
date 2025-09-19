@@ -11,6 +11,7 @@ import GoogleAdsIntegration from '@/components/GoogleAdsIntegration';
 import GoogleAdsPerformanceDashboard from '@/components/GoogleAdsPerformanceDashboard';
 import CampaignOptimizationEngine from '@/components/CampaignOptimizationEngine';
 import PerformanceChart from '@/components/PerformanceChart';
+import NavigationTabs from '@/components/NavigationTabs';
 import { smartAlertEngine, Alert } from '@/lib/smartAlertEngine';
 
 export default function DashboardPage() {
@@ -133,60 +134,7 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 transition-colors">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <nav className="flex space-x-8" aria-label="Tabs">
-            <Link 
-              href="/"
-              className="border-b-2 border-blue-500 py-4 px-1 text-sm font-medium text-blue-600 dark:text-blue-400"
-            >
-              Single Platform Dashboard
-            </Link>
-                        <a
-              href="/unified"
-              className="border-b-2 border-transparent py-4 px-1 text-sm font-medium text-black dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600"
-            >
-              🌐 Unified Platform Command Center
-            </a>
-            <a
-              href="/platforms"
-              className="border-b-2 border-transparent py-4 px-1 text-sm font-medium text-black dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600"
-            >
-              ⚙️ Platform Setup
-            </a>
-            <a
-              href="/campaigns"
-              className="border-b-2 border-transparent py-4 px-1 text-sm font-medium text-black dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600"
-            >
-              📊 Campaign Management
-            </a>
-            <a
-              href="/leads"
-              className="border-b-2 border-transparent py-4 px-1 text-sm font-medium text-black hover:text-gray-700 hover:border-gray-300"
-            >
-              🎯 Lead Management
-            </a>
-            <a
-              href="/analytics"
-              className="border-b-2 border-transparent py-4 px-1 text-sm font-medium text-black hover:text-gray-700 hover:border-gray-300"
-            >
-              📊 Advanced Analytics
-            </a>
-            <a
-              href="/alerts"
-              className="border-b-2 border-transparent py-4 px-1 text-sm font-medium text-black hover:text-gray-700 hover:border-gray-300"
-            >
-              🚨 Smart Alerts
-            </a>
-            <a
-              href="/status"
-              className="border-b-2 border-transparent py-4 px-1 text-sm font-medium text-black hover:text-gray-700 hover:border-gray-300"
-            >
-              📈 System Status
-            </a>
-          </nav>
-        </div>
-      </div>
+      <NavigationTabs />
 
       <div className="p-4 md:p-8">
         <div className="mb-6 bg-blue-50 border border-blue-200 rounded-lg p-4">

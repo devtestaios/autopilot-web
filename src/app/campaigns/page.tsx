@@ -5,6 +5,7 @@ import Link from 'next/link';
 import type { Campaign } from '@/types';
 import { fetchCampaigns, deleteCampaign } from '@/lib/api';
 import CampaignTable from '@/components/CampaignTable';
+import NavigationTabs from '@/components/NavigationTabs';
 import { Plus } from 'lucide-react';
 
 export default function CampaignsPage() {
@@ -48,7 +49,9 @@ export default function CampaignsPage() {
   };
 
   return (
-    <main className="min-h-screen bg-gray-50 p-4 md:p-8">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <NavigationTabs />
+      <main className="p-4 md:p-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
@@ -94,7 +97,8 @@ export default function CampaignsPage() {
           onRefresh={loadCampaigns}
           loading={loading}
         />
-      </div>
-    </main>
+        </div>
+      </main>
+    </div>
   );
 }
