@@ -94,15 +94,15 @@ export default function DashboardStats({ campaigns, loading }: DashboardStatsPro
       {/* Main Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" data-testid="dashboard-stats">
         {/* Total Campaigns */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 p-6 group">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 p-6 group border border-gray-200 dark:border-gray-700">
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Campaigns</p>
-              <p className="text-3xl font-bold text-gray-900 dark:text-white mt-1">{totalCampaigns}</p>
-              <div className="flex items-center mt-2">
-                <span className="text-sm text-green-600 dark:text-green-400 font-medium">{activeCampaigns} active</span>
+            <div className="flex-1">
+              <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide">Total Campaigns</p>
+              <p className="text-3xl font-bold text-gray-900 dark:text-white mt-2">{totalCampaigns}</p>
+              <div className="flex items-center mt-3">
+                <span className="text-sm text-green-700 dark:text-green-400 font-semibold bg-green-100 dark:bg-green-900/30 px-2 py-1 rounded-full">{activeCampaigns} active</span>
                 <span className="text-gray-400 mx-2">•</span>
-                <span className="text-sm text-gray-500 dark:text-gray-400">{totalCampaigns - activeCampaigns} paused</span>
+                <span className="text-sm text-gray-700 dark:text-gray-300 font-medium">{totalCampaigns - activeCampaigns} paused</span>
               </div>
             </div>
             <div className="p-4 bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-800 dark:to-blue-900 rounded-xl group-hover:scale-110 transition-transform duration-300">
@@ -114,21 +114,13 @@ export default function DashboardStats({ campaigns, loading }: DashboardStatsPro
         </div>
 
         {/* Total Budget */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 p-6 group">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 p-6 group border border-gray-200 dark:border-gray-700">
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Budget</p>
-              <p className="text-3xl font-bold text-gray-900 dark:text-white mt-1">{formatCurrency(totalBudget)}</p>
-              <div className="flex items-center mt-2">
-                <div className="flex items-center">
-                  <div className="w-16 bg-gray-200 dark:bg-gray-700 rounded-full h-2 mr-2">
-                    <div 
-                      className="bg-gradient-to-r from-green-400 to-green-600 h-2 rounded-full transition-all duration-500" 
-                      style={{ width: `${Math.min(avgSpendPercentage, 100)}%` }}
-                    ></div>
-                  </div>
-                  <span className="text-sm text-gray-500 dark:text-gray-400">{Math.round(avgSpendPercentage)}% spent</span>
-                </div>
+            <div className="flex-1">
+              <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide">Total Budget</p>
+              <p className="text-3xl font-bold text-gray-900 dark:text-white mt-2">${totalBudget.toLocaleString()}</p>
+              <div className="flex items-center mt-3">
+                <span className="text-sm text-blue-700 dark:text-blue-400 font-semibold bg-blue-100 dark:bg-blue-900/30 px-2 py-1 rounded-full">${totalSpend.toLocaleString()} spent</span>
               </div>
             </div>
             <div className="p-4 bg-gradient-to-br from-green-100 to-green-200 dark:from-green-800 dark:to-green-900 rounded-xl group-hover:scale-110 transition-transform duration-300">
@@ -140,13 +132,13 @@ export default function DashboardStats({ campaigns, loading }: DashboardStatsPro
         </div>
 
         {/* Total Spend */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 p-6 group">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 p-6 group border border-gray-200 dark:border-gray-700">
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Spend</p>
-              <p className="text-3xl font-bold text-gray-900 dark:text-white mt-1">{formatCurrency(totalSpend)}</p>
-              <div className="flex items-center mt-2">
-                <span className={`text-sm font-medium ${avgSpendPercentage > 80 ? 'text-red-500' : avgSpendPercentage > 60 ? 'text-yellow-500' : 'text-green-500'}`}>
+            <div className="flex-1">
+              <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide">Total Spend</p>
+              <p className="text-3xl font-bold text-gray-900 dark:text-white mt-2">{formatCurrency(totalSpend)}</p>
+              <div className="flex items-center mt-3">
+                <span className={`text-sm font-semibold px-2 py-1 rounded-full ${avgSpendPercentage > 80 ? 'text-red-700 bg-red-100 dark:text-red-400 dark:bg-red-900/30' : avgSpendPercentage > 60 ? 'text-yellow-700 bg-yellow-100 dark:text-yellow-400 dark:bg-yellow-900/30' : 'text-green-700 bg-green-100 dark:text-green-400 dark:bg-green-900/30'}`}>
                   {avgSpendPercentage.toFixed(1)}% of budget
                 </span>
               </div>
@@ -160,13 +152,13 @@ export default function DashboardStats({ campaigns, loading }: DashboardStatsPro
         </div>
 
         {/* Remaining Budget */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 p-6 group">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 p-6 group border border-gray-200 dark:border-gray-700">
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Remaining Budget</p>
-              <p className="text-3xl font-bold text-gray-900 dark:text-white mt-1">{formatCurrency(totalBudget - totalSpend)}</p>
-              <div className="flex items-center mt-2">
-                <span className="text-sm text-gray-500 dark:text-gray-400">
+            <div className="flex-1">
+              <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide">Remaining Budget</p>
+              <p className="text-3xl font-bold text-gray-900 dark:text-white mt-2">{formatCurrency(totalBudget - totalSpend)}</p>
+              <div className="flex items-center mt-3">
+                <span className="text-sm font-semibold text-purple-700 dark:text-purple-400 bg-purple-100 dark:bg-purple-900/30 px-2 py-1 rounded-full">
                   {((totalBudget - totalSpend) / totalBudget * 100).toFixed(1)}% available
                 </span>
               </div>

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { Bot, Zap, Brain, TrendingUp, Settings, ArrowRight, AlertTriangle, Bell, CheckCircle } from 'lucide-react';
+import { Bot, Zap, Brain, TrendingUp, Settings, ArrowRight, AlertTriangle, Bell, CheckCircle, Target, Sparkles } from 'lucide-react';
 import type { Campaign } from '@/types';
 import { fetchCampaigns, deleteCampaign } from '@/lib/api';
 import DashboardStats from '@/components/DashboardStats';
@@ -109,25 +109,25 @@ export default function DashboardPage() {
 
           {/* Enhanced Quick Stats */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <div className="bg-white bg-opacity-20 rounded-lg p-4 text-center">
-              <TrendingUp className="h-8 w-8 mx-auto mb-2" />
-              <div className="text-2xl font-bold">47%</div>
-              <div className="text-blue-100">Avg ROI Improvement</div>
+            <div className="bg-white bg-opacity-30 backdrop-blur-sm rounded-lg p-6 text-center border border-white border-opacity-20 hover:bg-opacity-40 transition-all duration-300">
+              <TrendingUp className="h-8 w-8 mx-auto mb-3 text-white" />
+              <div className="text-3xl font-bold text-white">47%</div>
+              <div className="text-blue-50 font-medium">Avg ROI Improvement</div>
             </div>
-            <div className="bg-white bg-opacity-20 rounded-lg p-4 text-center">
-              <Bot className="h-8 w-8 mx-auto mb-2" />
-              <div className="text-2xl font-bold">24/7</div>
-              <div className="text-blue-100">Autonomous Optimization</div>
+            <div className="bg-white bg-opacity-30 backdrop-blur-sm rounded-lg p-6 text-center border border-white border-opacity-20 hover:bg-opacity-40 transition-all duration-300">
+              <Bot className="h-8 w-8 mx-auto mb-3 text-white" />
+              <div className="text-3xl font-bold text-white">24/7</div>
+              <div className="text-blue-50 font-medium">Autonomous Optimization</div>
             </div>
-            <div className="bg-white bg-opacity-20 rounded-lg p-4 text-center">
-              <Brain className="h-8 w-8 mx-auto mb-2" />
-              <div className="text-2xl font-bold">95%</div>
-              <div className="text-blue-100">AI Prediction Accuracy</div>
+            <div className="bg-white bg-opacity-30 backdrop-blur-sm rounded-lg p-6 text-center border border-white border-opacity-20 hover:bg-opacity-40 transition-all duration-300">
+              <Target className="h-8 w-8 mx-auto mb-3 text-white" />
+              <div className="text-3xl font-bold text-white">94%</div>
+              <div className="text-blue-50 font-medium">AI Prediction Accuracy</div>
             </div>
-            <div className="bg-white bg-opacity-20 rounded-lg p-4 text-center">
-              <Zap className="h-8 w-8 mx-auto mb-2" />
-              <div className="text-2xl font-bold">&lt;60s</div>
-              <div className="text-blue-100">Real-time Response</div>
+            <div className="bg-white bg-opacity-30 backdrop-blur-sm rounded-lg p-6 text-center border border-white border-opacity-20 hover:bg-opacity-40 transition-all duration-300">
+              <Sparkles className="h-8 w-8 mx-auto mb-3 text-white" />
+              <div className="text-3xl font-bold text-white">$2.4M</div>
+              <div className="text-blue-50 font-medium">Revenue Optimized</div>
             </div>
           </div>
         </div>
