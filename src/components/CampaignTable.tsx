@@ -3,7 +3,11 @@
 import { useState } from 'react';
 import React from 'react';
 import type { Campaign } from '@/types';
-import { Download, Filter, Search, RefreshCw } from 'lucide-react';
+import { Download, Filter, Search, RefreshCw, Edit, Trash2, MoreHorizontal, TrendingUp, DollarSign } from 'lucide-react';
+import { PremiumBadge } from './ui/PremiumBadge';
+import { PremiumButton } from './ui/PremiumButton';
+import { PremiumLoading } from './ui/PremiumLoading';
+import { motion } from 'framer-motion';
 
 interface CampaignTableProps {
   campaigns: Campaign[];
@@ -51,248 +55,252 @@ export default function CampaignTable({ campaigns, onEdit, onDelete, onRefresh, 
     if (!amount) return '$0';
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: 'USD'
+      currency: 'USD',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
     }).format(amount);
   };
 
-  const formatDate = (dateString?: string) => {
-    if (!dateString) return 'Unknown';
-    return new Date(dateString).toLocaleDateString();
-  };
-
-  const getSpendPercentage = (spend?: number, budget?: number) => {
-    if (!budget || !spend) return 0;
-    return Math.min((spend / budget) * 100, 100);
-  };
-
-  const exportToCsv = () => {
-    const headers = ['Name', 'Client', 'Platform', 'Budget', 'Spend', 'Remaining', 'Created'];
-    const csvData = filteredCampaigns.map(campaign => [
-      campaign.name,
-      campaign.client_name,
-      campaign.platform,
-      campaign.budget || 0,
-      campaign.spend || 0,
-      (campaign.budget || 0) - (campaign.spend || 0),
-      formatDate(campaign.created_at)
-    ]);
-
-    const csvContent = [headers, ...csvData]
-      .map(row => row.map(cell => `"${cell}"`).join(','))
-      .join('\n');
-
-    const blob = new Blob([csvContent], { type: 'text/csv' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `campaigns-${new Date().toISOString().split('T')[0]}.csv`;
-    a.click();
-    window.URL.revokeObjectURL(url);
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
   };
 
   const platforms = [...new Set(campaigns.map(c => c.platform))];
 
+  if (loading) {
+    return (
+      <div className="card p-8">
+        <PremiumLoading variant="wave" text="Loading campaigns..." size="lg" />
+      </div>
+    );
+  }
+
   return (
-    <div className="bg-white rounded-lg shadow-md">
-      {/* Header with controls */}
-      <div className="p-6 border-b border-gray-200">
+    <div className="space-y-6">
+      {/* Enhanced Search and Filter Header */}
+      <div className="card p-6">
         <div className="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
-          <h2 className="text-xl font-semibold">Campaign Management</h2>
+          <div>
+            <h2 className="text-xl font-orbitron font-bold text-foreground mb-2">Campaign Management</h2>
+            <p className="text-muted-foreground">Monitor and optimize your marketing campaigns across platforms</p>
+          </div>
           
-          <div className="flex gap-2">
-            {onRefresh && (
-              <button
-                onClick={onRefresh}
-                disabled={loading}
-                className="flex items-center gap-2 px-3 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors disabled:opacity-50"
-              >
-                <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
-                Refresh
-              </button>
-            )}
-            <button
-              onClick={exportToCsv}
-              className="flex items-center gap-2 px-3 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
+          <div className="flex gap-3">
+            <PremiumButton
+              variant="outline"
+              size="md"
+              onClick={onRefresh}
+              className="flex items-center gap-2"
+            >
+              <RefreshCw className="w-4 h-4" />
+              Refresh
+            </PremiumButton>
+            
+            <PremiumButton
+              variant="ghost"
+              size="md"
+              className="flex items-center gap-2"
             >
               <Download className="w-4 h-4" />
-              Export CSV
-            </button>
+              Export
+            </PremiumButton>
           </div>
         </div>
 
-        {/* Filters */}
-        <div className="mt-4 flex flex-col md:flex-row gap-4">
-          <div className="flex-1 relative">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+        {/* Search and Filters */}
+        <div className="flex flex-col md:flex-row gap-4 mt-6">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
             <input
               type="text"
               placeholder="Search campaigns or clients..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full pl-10 pr-4 py-2 border border-border rounded-lg bg-card text-foreground placeholder-muted-foreground focus:ring-2 focus:ring-pulse-blue focus:border-transparent transition-all"
             />
           </div>
           
-          <div className="flex items-center gap-2">
-            <Filter className="w-4 h-4 text-gray-400" />
-            <select
-              value={platformFilter}
-              onChange={(e) => setPlatformFilter(e.target.value)}
-              className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="all">All Platforms</option>
-              {platforms.map(platform => (
-                <option key={platform} value={platform}>
-                  {platform.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-
-        <div className="mt-2 text-sm text-gray-600">
-          Showing {filteredCampaigns.length} of {campaigns.length} campaigns
+          <select
+            value={platformFilter}
+            onChange={(e) => setPlatformFilter(e.target.value)}
+            className="px-4 py-2 border border-border rounded-lg bg-card text-foreground focus:ring-2 focus:ring-pulse-blue focus:border-transparent transition-all"
+          >
+            <option value="all">All Platforms</option>
+            {platforms.map(platform => (
+              <option key={platform} value={platform}>
+                {platform.charAt(0).toUpperCase() + platform.slice(1).replace('_', ' ')}
+              </option>
+            ))}
+          </select>
         </div>
       </div>
 
-      {/* Table */}
-      <div className="overflow-x-auto">
-        <table className="w-full">
-          <thead className="bg-gray-50">
-            <tr>
-              <th
-                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-                onClick={() => handleSort('name')}
-              >
-                Campaign Name
-                {sortField === 'name' && (
-                  <span className="ml-1">{sortDirection === 'asc' ? '↑' : '↓'}</span>
-                )}
-              </th>
-              <th
-                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-                onClick={() => handleSort('client_name')}
-              >
-                Client
-                {sortField === 'client_name' && (
-                  <span className="ml-1">{sortDirection === 'asc' ? '↑' : '↓'}</span>
-                )}
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Platform
-              </th>
-              <th
-                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-                onClick={() => handleSort('budget')}
-              >
-                Budget
-                {sortField === 'budget' && (
-                  <span className="ml-1">{sortDirection === 'asc' ? '↑' : '↓'}</span>
-                )}
-              </th>
-              <th
-                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-                onClick={() => handleSort('spend')}
-              >
-                Spend
-                {sortField === 'spend' && (
-                  <span className="ml-1">{sortDirection === 'asc' ? '↑' : '↓'}</span>
-                )}
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Progress
-              </th>
-              <th
-                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-                onClick={() => handleSort('created_at')}
-              >
-                Created
-                {sortField === 'created_at' && (
-                  <span className="ml-1">{sortDirection === 'asc' ? '↑' : '↓'}</span>
-                )}
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Actions
-              </th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {filteredCampaigns.map((campaign) => {
-              const spendPercentage = getSpendPercentage(campaign.spend, campaign.budget);
-              
-              return (
-                <tr key={campaign.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-medium text-gray-900">{campaign.name}</div>
+      {/* Enhanced Campaign Table */}
+      <div className="card overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead className="bg-muted/50 border-b border-border">
+              <tr>
+                {[
+                  { key: 'name', label: 'Campaign' },
+                  { key: 'platform', label: 'Platform' },
+                  { key: 'status', label: 'Status' },
+                  { key: 'budget', label: 'Budget' },
+                  { key: 'spend', label: 'Spend' },
+                  { key: 'created_at', label: 'Created' }
+                ].map(({ key, label }) => (
+                  <th
+                    key={key}
+                    className="text-left p-4 font-orbitron font-semibold text-foreground cursor-pointer hover:bg-muted/70 transition-colors"
+                    onClick={() => handleSort(key as keyof Campaign)}
+                  >
+                    <div className="flex items-center gap-2">
+                      {label}
+                      {sortField === key && (
+                        <span className="text-pulse-blue">
+                          {sortDirection === 'asc' ? '↑' : '↓'}
+                        </span>
+                      )}
+                    </div>
+                  </th>
+                ))}
+                <th className="text-right p-4 font-orbitron font-semibold text-foreground">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredCampaigns.map((campaign, index) => (
+                <motion.tr
+                  key={campaign.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.05 }}
+                  className="border-b border-border hover:bg-muted/30 transition-all duration-200"
+                >
+                  <td className="p-4">
+                    <div>
+                      <div className="font-semibold text-foreground font-exo-2">{campaign.name}</div>
+                      <div className="text-sm text-muted-foreground">{campaign.client_name}</div>
+                    </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">{campaign.client_name}</div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                      {campaign.platform}
+                  
+                  <td className="p-4">
+                    <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-pulse-blue/10 text-pulse-blue border border-pulse-blue/20">
+                      {campaign.platform.replace('_', ' ')}
                     </span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {formatCurrency(campaign.budget)}
+                  
+                  <td className="p-4">
+                    <PremiumBadge 
+                      status={campaign.status as any} 
+                      animated={campaign.status === 'active'}
+                    />
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {formatCurrency(campaign.spend)}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div
-                        className={`h-2 rounded-full ${
-                          spendPercentage >= 90 ? 'bg-red-500' :
-                          spendPercentage >= 75 ? 'bg-yellow-500' : 'bg-green-500'
-                        }`}
-                        style={{ width: `${spendPercentage}%` }}
-                      ></div>
-                    </div>
-                    <div className="text-xs text-gray-500 mt-1">
-                      {spendPercentage.toFixed(1)}%
+                  
+                  <td className="p-4">
+                    <div className="flex items-center gap-2">
+                      <DollarSign className="w-4 h-4 text-green-600" />
+                      <span className="font-semibold text-foreground">
+                        {formatCurrency(campaign.budget)}
+                      </span>
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {formatDate(campaign.created_at)}
+                  
+                  <td className="p-4">
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <TrendingUp className="w-4 h-4 text-energy-magenta" />
+                        <span className="font-semibold text-foreground">
+                          {formatCurrency(campaign.spend)}
+                        </span>
+                      </div>
+                      {campaign.budget && campaign.spend && (
+                        <div className="text-xs text-muted-foreground">
+                          {((campaign.spend / campaign.budget) * 100).toFixed(1)}% of budget
+                        </div>
+                      )}
+                    </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <div className="flex gap-2">
+                  
+                  <td className="p-4">
+                    <span className="text-sm text-muted-foreground">
+                      {formatDate(campaign.created_at)}
+                    </span>
+                  </td>
+                  
+                  <td className="p-4">
+                    <div className="flex items-center justify-end gap-2">
                       {onEdit && (
-                        <button
+                        <PremiumButton
+                          variant="ghost"
+                          size="sm"
                           onClick={() => onEdit(campaign)}
-                          className="text-blue-600 hover:text-blue-900"
+                          className="p-2"
                         >
-                          Edit
-                        </button>
+                          <Edit className="w-4 h-4" />
+                        </PremiumButton>
                       )}
+                      
                       {onDelete && (
-                        <button
+                        <PremiumButton
+                          variant="ghost"
+                          size="sm"
                           onClick={() => onDelete(campaign.id)}
-                          className="text-red-600 hover:text-red-900"
+                          className="p-2 text-red-600 hover:text-red-700 hover:bg-red-50"
                         >
-                          Delete
-                        </button>
+                          <Trash2 className="w-4 h-4" />
+                        </PremiumButton>
                       )}
                     </div>
                   </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+                </motion.tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
 
+        {/* Empty State */}
         {filteredCampaigns.length === 0 && (
-          <div className="text-center py-12">
-            <div className="text-gray-500">
-              {searchTerm || platformFilter !== 'all' 
-                ? 'No campaigns match your filters' 
-                : 'No campaigns found'
-              }
+          <div className="p-12 text-center">
+            <div className="text-muted-foreground mb-4">
+              <Filter className="w-12 h-12 mx-auto mb-4 opacity-50" />
+              <h3 className="text-lg font-orbitron font-semibold">No campaigns found</h3>
+              <p className="text-sm mt-2">Try adjusting your search or filter criteria</p>
             </div>
           </div>
         )}
       </div>
+
+      {/* Campaign Summary */}
+      {filteredCampaigns.length > 0 && (
+        <div className="card p-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="text-center">
+              <div className="text-2xl font-bold font-orbitron text-pulse-blue">
+                {filteredCampaigns.length}
+              </div>
+              <div className="text-sm text-muted-foreground">Total Campaigns</div>
+            </div>
+            
+            <div className="text-center">
+              <div className="text-2xl font-bold font-orbitron text-bridge-purple">
+                {formatCurrency(filteredCampaigns.reduce((sum, c) => sum + (c.budget || 0), 0))}
+              </div>
+              <div className="text-sm text-muted-foreground">Total Budget</div>
+            </div>
+            
+            <div className="text-center">
+              <div className="text-2xl font-bold font-orbitron text-energy-magenta">
+                {formatCurrency(filteredCampaigns.reduce((sum, c) => sum + (c.spend || 0), 0))}
+              </div>
+              <div className="text-sm text-muted-foreground">Total Spend</div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
