@@ -135,15 +135,15 @@ export default function AIAssistantChat({
     {
       id: '1',
       type: 'assistant',
-      content: `👋 Hi! I'm your AI marketing assistant. I can help you:
+      content: `👋 Hi! I'm your AI marketing assistant powered by Claude. I can help you:
 
-• Analyze campaign performance
-• Optimize targeting and budgets  
-• Generate ad copy and content ideas
-• Troubleshoot campaign issues
-• Provide strategic recommendations
+• Analyze campaign performance and identify optimization opportunities
+• Optimize targeting strategies and audience segmentation  
+• Generate high-converting ad copy and creative ideas
+• Troubleshoot campaign issues and provide strategic recommendations
+• Automate budget allocation and bidding strategies
 
-What would you like to work on today?`,
+I have deep knowledge of Google Ads, Meta, LinkedIn, and other major platforms. What would you like to work on today?`,
       timestamp: new Date(),
       suggestions: ["Analyze my campaigns", "Help with targeting", "Generate ad copy", "Optimize budgets"]
     }
@@ -182,8 +182,48 @@ What would you like to work on today?`,
     setInputValue('');
     setIsTyping(true);
 
-    // Simulate AI response
-    setTimeout(() => {
+    try {
+      // Call Claude API
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          message: content.trim(),
+          conversationHistory: messages.slice(-6) // Send last 6 messages for context
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to get AI response');
+      }
+
+      const data = await response.json();
+      
+      const assistantMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        type: 'assistant',
+        content: data.response,
+        timestamp: new Date(),
+        suggestions: data.suggestions || [
+          "Tell me more details",
+          "How do I implement this?", 
+          "Show me examples"
+        ]
+      };
+
+      setMessages(prev => [...prev, assistantMessage]);
+      
+      // Show fallback indicator if API failed but fallback worked
+      if (data.fallback) {
+        console.warn('Using fallback response - Claude API may be unavailable');
+      }
+
+    } catch (error) {
+      console.error('Error getting AI response:', error);
+      
+      // Fallback to simulated response on error
       const responseKey = Object.keys(sampleResponses).find(key => 
         content.toLowerCase().includes(key)
       ) || 'analyze';
@@ -203,8 +243,9 @@ What would you like to work on today?`,
       };
 
       setMessages(prev => [...prev, assistantMessage]);
+    } finally {
       setIsTyping(false);
-    }, 1500);
+    }
   };
 
   const handleQuickPrompt = (prompt: string) => {
@@ -255,7 +296,7 @@ What would you like to work on today?`,
               <div>
                 <h3 className="font-semibold">AI Assistant</h3>
                 <p className="text-xs text-muted-foreground">
-                  {isTyping ? 'Thinking...' : 'Ready to help'}
+                  {isTyping ? 'Claude is thinking...' : 'Powered by Claude'}
                 </p>
               </div>
             </div>
