@@ -307,7 +307,7 @@ export default function AwardWinningLandingPage() {
   };
 
   return (
-    <div className={`min-h-screen ${theme === 'dark' ? 'bg-gray-900' : 'bg-white'} overflow-hidden`}>
+    <div className={`min-h-screen bg-background overflow-hidden`}>
       <LandingNavbar />
       <FloatingOrbs />
       
@@ -392,12 +392,12 @@ export default function AwardWinningLandingPage() {
 
           <motion.p
             variants={itemVariants}
-            className="text-xl sm:text-2xl lg:text-3xl text-slate-700 dark:text-gray-200 mb-12 max-w-4xl mx-auto leading-relaxed font-exo-2 font-light"
+            className="text-xl sm:text-2xl lg:text-3xl text-foreground mb-12 max-w-4xl mx-auto leading-relaxed font-exo-2 font-light"
           >
             Connect your marketing potential with{' '}
-            <span className="font-semibold text-pulse-blue dark:text-pulse-blue">AI-powered precision</span>
+            <span className="font-semibold text-pulse-blue">AI-powered precision</span>
             {' '}that bridges the gap between strategy and execution. Pulse-driven insights that{' '}
-            <span className="font-semibold text-energy-magenta dark:text-energy-magenta">transform campaigns</span>{' '}
+            <span className="font-semibold text-energy-magenta">transform campaigns</span>{' '}
             into unstoppable growth engines.
           </motion.p>
 
@@ -415,7 +415,7 @@ export default function AwardWinningLandingPage() {
                 placeholder="Enter your email for exclusive access"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full sm:w-80 px-6 py-4 rounded-2xl border-2 border-gray-200 dark:border-gray-700 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:border-pulse-cyan focus:outline-none transition-all duration-300"
+                className="w-full sm:w-80 px-6 py-4 rounded-2xl border-2 border-border bg-background/80 backdrop-blur-sm text-foreground placeholder-muted-foreground focus:border-pulse-cyan focus:outline-none transition-all duration-300"
               />
             </motion.div>
             
@@ -433,7 +433,7 @@ export default function AwardWinningLandingPage() {
 
           <motion.div
             variants={itemVariants}
-            className="flex items-center justify-center space-x-8 text-sm text-gray-500 dark:text-gray-400"
+            className="flex items-center justify-center space-x-8 text-sm text-muted-foreground"
           >
             <div className="flex items-center">
               <CheckCircle className="w-5 h-5 text-green-500 mr-2" />
@@ -458,8 +458,8 @@ export default function AwardWinningLandingPage() {
               transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
               className="flex flex-col items-center cursor-pointer"
             >
-              <span className="text-sm text-gray-500 dark:text-gray-400 mb-2">Scroll to explore</span>
-              <ChevronDown className="w-6 h-6 text-gray-400" />
+              <span className="text-sm text-muted-foreground mb-2">Scroll to explore</span>
+              <ChevronDown className="w-6 h-6 text-muted-foreground" />
             </motion.div>
           </motion.div>
         </div>
@@ -518,7 +518,7 @@ export default function AwardWinningLandingPage() {
       {/* Revolutionary Features Section */}
       <motion.section
         ref={featuresRef}
-        className="py-32 px-4 sm:px-6 lg:px-8 bg-gray-50 dark:bg-gray-800 relative"
+        className="py-32 px-4 sm:px-6 lg:px-8 bg-secondary relative"
         initial={{ opacity: 0 }}
         animate={featuresInView ? { opacity: 1 } : { opacity: 0 }}
         transition={{ duration: 1 }}
@@ -539,7 +539,7 @@ export default function AwardWinningLandingPage() {
                 Capabilities
               </span>
             </h2>
-            <p className="text-2xl text-slate-700 dark:text-gray-200 max-w-4xl mx-auto leading-relaxed">
+            <p className="text-2xl text-muted-foreground max-w-4xl mx-auto leading-relaxed">
               Advanced AI features that give you an unfair advantage in the digital marketing battlefield
             </p>
           </motion.div>
@@ -554,7 +554,7 @@ export default function AwardWinningLandingPage() {
                 transition={{ duration: 0.8, delay: feature.delay }}
                 whileHover={{ y: -10 }}
               >
-                <div className="relative p-8 bg-white dark:bg-gray-900 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-500 overflow-hidden border border-gray-100 dark:border-gray-700">
+                <div className="relative p-8 bg-card rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-500 overflow-hidden border border-border">
                   <div className={`absolute inset-0 bg-gradient-to-br ${feature.gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-500`} />
                   
                   <motion.div
@@ -565,11 +565,11 @@ export default function AwardWinningLandingPage() {
                     <feature.icon className="w-8 h-8 text-white" />
                   </motion.div>
                   
-                  <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4 group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-blue-600 group-hover:to-purple-600 group-hover:bg-clip-text transition-all duration-300">
+                  <h3 className="text-2xl font-bold text-foreground mb-4 group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-blue-600 group-hover:to-purple-600 group-hover:bg-clip-text transition-all duration-300">
                     {feature.title}
                   </h3>
                   
-                  <p className="text-slate-700 dark:text-gray-200 leading-relaxed">
+                  <p className="text-muted-foreground leading-relaxed">
                     {feature.description}
                   </p>
                   
@@ -587,7 +587,7 @@ export default function AwardWinningLandingPage() {
       </motion.section>
 
       {/* Testimonials Section */}
-      <section className="py-32 px-4 sm:px-6 lg:px-8 bg-white dark:bg-gray-900 relative overflow-hidden">
+      <section className="py-32 px-4 sm:px-6 lg:px-8 bg-background relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-900 dark:to-blue-900/10" />
         
         <div className="relative z-10 max-w-6xl mx-auto text-center">
@@ -608,7 +608,7 @@ export default function AwardWinningLandingPage() {
           </motion.h2>
           
           <motion.p
-            className="text-xl text-slate-700 dark:text-gray-200 mb-16 max-w-3xl mx-auto"
+            className="text-xl text-muted-foreground mb-16 max-w-3xl mx-auto"
             initial={{ y: 30, opacity: 0 }}
             whileInView={{ y: 0, opacity: 1 }}
             viewport={{ once: true }}
@@ -647,7 +647,7 @@ export default function AwardWinningLandingPage() {
                     <div className="font-bold text-gray-900 dark:text-white text-lg">
                       {testimonials[currentTestimonial].name}
                     </div>
-                    <div className="text-slate-700 dark:text-gray-200">
+                    <div className="text-gray-600 dark:text-gray-300">
                       {testimonials[currentTestimonial].role} • {testimonials[currentTestimonial].company}
                     </div>
                   </div>

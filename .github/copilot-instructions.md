@@ -1,160 +1,155 @@
-# Autopilot Marketing Platform - AI Coding Guidelines
+# GitHub Copilot Instructions - Autopilot Marketing Platform
 
-## Project Overview
-This is "Autopilot" - an AI-powered marketing optimization platform built with Next.js 15 (App Router) that manages ad campaigns across multiple platforms (Google Ads, Meta, etc.). The frontend connects to a FastAPI backend deployed on Render with Supabase PostgreSQL database.
+## Project Architecture
 
-## Architecture & Key Patterns
+This is **Autopilot (PulseBridge.ai)** - an AI-powered marketing optimization platform that autonomously manages ad campaigns across multiple platforms.
 
-### Full-Stack Architecture
+**Stack:** Next.js 15 (App Router), React 19, TypeScript, Tailwind CSS 4, FastAPI (Python), Supabase PostgreSQL  
+**Deployment:** Vercel (frontend) + Render (backend)  
+**Production URL:** https://pulsebridge.ai  
+**Current Status:** Production-ready frontend with premium UI/UX, backend integration in progress
+
+## Critical Architecture Patterns
+
+### 1. File-Based Routing Structure
 ```
-Vercel (Next.js Frontend) → Render (FastAPI Backend) → Supabase (PostgreSQL)
-```
-
-- **Frontend**: Next.js 15 with App Router, TypeScript, Tailwind CSS, Framer Motion
-- **Backend**: FastAPI (Python) with Supabase integration
-- **Key API Endpoint**: `NEXT_PUBLIC_API_URL` → `https://autopilot-api-1.onrender.com`
-
-### Directory Structure Conventions
-```
-src/app/           # Next.js App Router pages (each folder = route)
-├── campaigns/     # Campaign management interface
-├── dashboard/     # Main analytics dashboard
-├── unified/       # Multi-platform unified views
-├── platforms/     # Platform setup/configuration
-└── [feature]/     # Feature-specific pages
-
-src/components/    # Reusable React components
-├── *Dashboard.tsx # Dashboard variants (Unified, Autopilot, etc.)
-├── *Form.tsx      # Form components with validation
-├── Navigation*.tsx# Navigation components
-└── ui/            # Base UI components (shadcn/ui style)
-
-src/lib/api.ts     # Centralized API calls to FastAPI backend
-src/types/         # TypeScript type definitions
-src/contexts/      # React Context providers
+src/app/
+├── page.tsx (landing page via CustomLandingPage)
+├── dashboard/enhanced.tsx (main app interface)
+├── campaigns/, analytics/, alerts/, unified/ (feature modules)
+└── layout.tsx (ClientProviders + dual fonts: Orbitron + Exo_2)
 ```
 
-### Data Flow Patterns
-
-#### API Integration Pattern
-All backend communication goes through `src/lib/api.ts`:
-```typescript
-// Standard pattern for all API calls
-export async function fetchCampaigns(): Promise<Campaign[]> {
-  const response = await fetch(`${API_BASE}/campaigns`, {
-    cache: 'no-store' // Disable caching for real-time data
-  });
-  if (!response.ok) {
-    throw new Error(`Failed to fetch campaigns: ${response.status}`);
-  }
-  return response.json();
-}
+### 2. Context Provider Pattern
+All components wrapped in `ClientProviders` with nested contexts:
+```tsx
+<ThemeProvider>
+  <AuthProvider>
+    <SearchProvider>
+      <ToastProvider>
+        <PageTransition>{children}</PageTransition>
 ```
 
-#### State Management Pattern
-- Use React Context for global state (`SearchContext`, `ClientProviders`)
-- Local state with hooks for page-specific data
-- Custom hooks in `src/hooks/` for reusable logic (e.g., `useCampaignFilters`)
+### 3. Pulse Bridge Branding System
+- **Colors:** `--pulse-blue: #00d4ff`, `--bridge-purple: #7c3aed`, `--energy-magenta: #ec4899`, `--deep-space: #1a1a2e`
+- **Fonts:** Orbitron (headers), Exo_2 (body text)
+- **Components:** PulseWaveLogo, PremiumButton, PremiumCard with glass morphism
+- **Animations:** Pulse waves, scanning effects, gradient shifts
 
-#### Component Patterns
-- Client components marked with `'use client'` (most interactive components)
-- Navigation uses `usePathname()` for active state highlighting
-- Forms follow the pattern: `[Entity]Form.tsx` with TypeScript validation
-- Tables follow the pattern: `[Entity]Table.tsx` with filtering/sorting
+### 4. API Layer Architecture
+- **Frontend API:** `src/lib/api.ts` with typed functions
+- **Backend:** FastAPI with Pydantic models, `/campaigns`, `/performance`, `/google-ads/*` endpoints
+- **Types:** Centralized in `src/types/index.ts` (Campaign, PerformanceSnapshot, etc.)
+- **API Base:** `NEXT_PUBLIC_API_URL=https://autopilot-api-1.onrender.com`
 
-### Development Workflow
+## Development Workflow
 
-#### Essential Commands
+### Required Commands
 ```bash
-# Development (uses Turbopack for faster builds)
-npm run dev
+# Frontend development (uses Turbopack)
+npm run dev --turbopack
 
-# Testing
-npm run test           # Jest unit tests
-npm run test:watch     # Watch mode
-npm run test:e2e       # Playwright E2E tests
-npm run test:all       # Run all tests
+# Testing strategy
+npm run test        # Jest unit tests
+npm run test:e2e    # Playwright E2E
+npm run test:all    # Full test suite
 
-# Build & Deploy
-npm run build          # Production build with Turbopack
-npm run start          # Production server
+# Backend development (separate repo/scripts)
+python main.py      # FastAPI server on :8000
 ```
 
-#### Environment Variables Required
+### Environment Variables
 ```bash
 # Frontend (.env.local)
 NEXT_PUBLIC_API_URL=https://autopilot-api-1.onrender.com
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+
+# Backend (Render)
+DATABASE_URL=postgresql://...
+GOOGLE_ADS_DEVELOPER_TOKEN=...
+GOOGLE_ADS_CLIENT_ID=...
 ```
 
-### UI/UX Conventions
+## Component Conventions
 
-#### Design System
-- **Primary Colors**: Pulse cyan (`text-pulse-cyan`, `border-pulse-cyan`)
-- **Typography**: Orbitron (headings), Exo 2 (body) via Google Fonts
-- **Dark Mode**: Full support with `dark:` classes throughout
-- **Icons**: Lucide React icons consistently used
+### 1. Enhanced Component Pattern
+Most dashboards use "Enhanced" versions (e.g., `dashboard/enhanced.tsx`) that import from base components but add:
+- Real-time data fetching
+- Advanced interactions
+- Premium UI features
 
-#### Navigation Pattern
-- `NavigationTabs.tsx` provides consistent top navigation
-- Mobile-responsive with hamburger menu
-- Active states use cyan accent color
-- Route structure directly maps to navigation items
+### 2. Premium UI Component Architecture
+- **Base UI:** `src/components/ui/` (button, card, badge, etc.)
+- **Premium UI:** PremiumButton, PremiumCard, PremiumBadge with special styling
+- **Feature Components:** Direct in `src/components/` (CampaignCard, DashboardStats)
+- **Navigation:** NavigationTabs.tsx with theme toggle and brand integration
 
-#### Component Architecture
-- Components prefixed by feature area (e.g., `CampaignTable`, `EnhancedCampaignForm`)
-- Dashboard components follow `*Dashboard.tsx` naming
-- Form components include validation and error handling
-- Chart components use Recharts library
+### 3. Theme System (CRITICAL)
+- **CSS Variables:** Semantic colors that adapt to light/dark theme
+- **Components:** Must use `text-foreground`, `text-muted-foreground`, NOT hardcoded colors
+- **Contrast:** All text meets WCAG AA standards (4.5:1 minimum)
+- **Toggle:** Animated sun/moon button in navigation
+- **Persistence:** Theme saved in localStorage
 
-### Key Business Logic
+### 4. Brand Design System
+```css
+/* Core brand colors */
+--pulse-blue: #00d4ff
+--bridge-purple: #7c3aed  
+--energy-magenta: #ec4899
+--deep-space: #1a1a2e
 
-#### Campaign Management
-- Campaigns have `platform` field (google_ads, meta, linkedin, etc.)
-- Status workflow: `active` → `paused` → `ended`
-- Performance tracking via `PerformanceSnapshot` with daily metrics
-- Budget vs. spend monitoring built into UI
+/* Typography */
+font-orbitron: Orbitron (headers, monospace)
+font-exo-2: Exo_2 (body, sans-serif)
+```
 
-#### Multi-Platform Integration
-- Platform-agnostic campaign interface
-- Metrics stored as JSONB for flexibility
-- Google Ads integration scripts in `scripts/development/`
+## Data Flow Patterns
 
-### Testing Standards
+### 1. Campaign Management Flow
+```
+CampaignForm → api.createCampaign() → FastAPI /campaigns → Supabase campaigns table
+CampaignTable ← api.fetchCampaigns() ← FastAPI /campaigns ← Supabase
+```
 
-#### Jest Configuration
-- Coverage thresholds: 70% across branches, functions, lines, statements
-- Excludes layout files and CSS from coverage
-- Tests located in `src/**/__tests__/` or `*.test.ts` files
-- Environment: jsdom for React component testing
+### 2. Google Ads Integration
+- **Scripts:** `scripts/development/backend_google_ads_integration.py`
+- **Endpoints:** `/google-ads/status`, `/google-ads/campaigns`, `/google-ads/sync`
+- **Auth Pattern:** Refresh token → Access token → API calls
 
-### Performance Considerations
+### 3. Performance Analytics
+```
+PerformanceSnapshot (daily data) → performance_snapshots table
+Enhanced charts via Recharts in EnhancedPerformanceCharts.tsx
+```
 
-#### Next.js Optimizations
-- Turbopack enabled for dev and build
-- Static export disabled for SSR compatibility
-- Font optimization with `next/font`
-- Image optimization built-in
+## Testing Strategy
 
-#### API Patterns
-- `cache: 'no-store'` for real-time marketing data
-- Error boundaries for graceful API failure handling
-- Loading states consistently implemented
+- **Unit Tests:** Jest + Testing Library for components
+- **E2E Tests:** Playwright for user flows
+- **Coverage Threshold:** 70% across all metrics
+- **Test Files:** `src/**/*.{test,spec}.{js,jsx,ts,tsx}`
 
-### Development Anti-Patterns to Avoid
+## Common Gotchas
 
-- **Don't** mix server and client components without clear `'use client'` boundaries
-- **Don't** hardcode API URLs (use `NEXT_PUBLIC_API_URL` environment variable)
-- **Don't** bypass the centralized `api.ts` for backend calls
-- **Don't** ignore TypeScript errors (build configured to ignore for deployment, but fix locally)
-- **Don't** create new navigation patterns (use existing `NavigationTabs`)
+1. **Turbopack:** All build commands use `--turbopack` flag
+2. **Theme System:** NEVER use hardcoded colors like `text-gray-600` - use semantic colors `text-foreground`, `text-muted-foreground`
+3. **Contrast Requirements:** All text must meet WCAG AA (4.5:1 ratio) - test both light/dark themes
+4. **API Base URL:** Production uses `autopilot-api-1.onrender.com`, local uses `:8000`
+5. **Google Ads:** Integration requires specific environment variables and OAuth flow
+6. **Database:** Supabase with Row Level Security enabled but currently allows all operations
+7. **Client Context:** First-time developer project - provide detailed explanations and step-by-step instructions
 
-### Quick Start for New Features
+## Key Integration Points
 
-1. **Define types** in `src/types/index.ts`
-2. **Add API functions** in `src/lib/api.ts`
-3. **Create page** in appropriate `src/app/[feature]/` directory
-4. **Build components** in `src/components/`
-5. **Add navigation** to `NavigationTabs.tsx` if needed
-6. **Write tests** following existing patterns
+- **Google Ads API:** `google-ads` Python package, OAuth 2.0 flow
+- **Supabase:** Direct SQL schema in documentation files
+- **Vercel Deployment:** Auto-deploys from main branch
+- **Component Library:** Custom UI system built on Tailwind with consistent design tokens
+
+## When Adding Features
+
+1. **New Routes:** Create in `src/app/` following App Router conventions
+2. **New Components:** Add to `src/components/` with TypeScript interfaces
+3. **API Integration:** Extend `src/lib/api.ts` with typed functions
+4. **Database Changes:** Update schemas in both Supabase and `src/types/`
+5. **Testing:** Add tests following existing patterns in `__tests__/` directories

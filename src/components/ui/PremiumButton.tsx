@@ -28,19 +28,19 @@ const buttonVariants = {
     base: 'bg-white/10 backdrop-blur-sm text-pulse-cyan border border-pulse-cyan/30',
     hover: 'hover:bg-pulse-cyan/10 hover:border-pulse-cyan/50 hover:shadow-lg hover:shadow-pulse-cyan/20',
     focus: 'focus:ring-2 focus:ring-pulse-cyan/50',
-    disabled: 'disabled:bg-gray-100 disabled:text-gray-400 disabled:border-gray-300'
+    disabled: 'disabled:bg-muted disabled:text-muted-foreground disabled:border-border'
   },
   ghost: {
     base: 'bg-transparent text-pulse-cyan border-transparent',
     hover: 'hover:bg-pulse-cyan/10 hover:text-pulse-purple',
     focus: 'focus:ring-2 focus:ring-pulse-cyan/50',
-    disabled: 'disabled:text-gray-400'
+    disabled: 'disabled:text-muted-foreground'
   },
   outline: {
     base: 'bg-transparent text-pulse-cyan border border-pulse-cyan/50',
     hover: 'hover:bg-pulse-cyan hover:text-white hover:border-pulse-cyan',
     focus: 'focus:ring-2 focus:ring-pulse-cyan/50',
-    disabled: 'disabled:text-gray-400 disabled:border-gray-300'
+    disabled: 'disabled:text-muted-foreground disabled:border-border'
   },
   danger: {
     base: 'bg-gradient-to-r from-red-500 to-red-600 text-white border-transparent',
@@ -97,7 +97,7 @@ export const PremiumButton = forwardRef<HTMLButtonElement, PremiumButtonProps>(
       sizeClasses,
       
       // Glassmorphism effect
-      glassmorphism && 'backdrop-blur-xl bg-white/5 border border-white/10',
+      glassmorphism && 'backdrop-blur-xl bg-background/5 border border-border',
       
       // Glow effect
       glow && !isDisabled && 'shadow-2xl shadow-pulse-cyan/50',
