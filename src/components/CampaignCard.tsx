@@ -48,7 +48,7 @@ export default function CampaignCard({ campaign, onEdit, onDelete }: CampaignCar
           {onEdit && (
             <button
               onClick={() => onEdit(campaign)}
-              className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+              className="text-pulse-cyan hover:text-pulse-purple text-sm font-medium"
             >
               Edit
             </button>
@@ -66,7 +66,7 @@ export default function CampaignCard({ campaign, onEdit, onDelete }: CampaignCar
 
       {/* Platform Badge */}
       <div className="mb-4">
-        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-pulse-cyan/10 text-pulse-cyan">
           {campaign.platform}
         </span>
       </div>

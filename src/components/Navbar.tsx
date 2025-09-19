@@ -6,6 +6,7 @@ import { useTheme } from '@/contexts/ThemeContext';
 import { useSearchContext } from '@/contexts/SearchContext';
 import { useGlobalSearch } from '@/hooks/useGlobalSearch';
 import { SearchResults } from '@/components/SearchResults';
+import { PulseWaveLogo } from './PulseWaveLogo';
 
 interface NavbarProps {
   onMenuToggle?: () => void;
@@ -60,15 +61,13 @@ export default function Navbar({ onMenuToggle }: NavbarProps) {
           </button>
           
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
-              <span className="text-white font-bold text-lg">A</span>
-            </div>
+            <PulseWaveLogo size="medium" className="text-pulse-cyan" />
             <div className="hidden md:block">
-              <span className="font-bold text-xl bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                Autopilot
+              <span className="font-bold text-xl bg-gradient-to-r from-pulse-cyan to-pulse-purple bg-clip-text text-transparent">
+                PulseBridge
               </span>
               <div className="text-xs text-black dark:text-gray-400 -mt-1">
-                Enterprise Marketing AI
+                AI Marketing Intelligence
               </div>
             </div>
           </div>
@@ -77,13 +76,13 @@ export default function Navbar({ onMenuToggle }: NavbarProps) {
         {/* Center - Enhanced Search */}
         <div className="hidden md:flex flex-1 max-w-2xl mx-8">
           <div ref={searchRef} className="relative w-full group">
-            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 w-5 h-5 group-focus-within:text-blue-500 transition-colors" />
+            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 w-5 h-5 group-focus-within:text-pulse-cyan transition-colors" />
             <input
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Search campaigns, clients, keywords, or analytics..."
-              className="w-full pl-12 pr-4 py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 hover:border-gray-400 dark:hover:border-gray-500"
+              className="w-full pl-12 pr-4 py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-xl focus:ring-2 focus:ring-pulse-cyan focus:border-transparent transition-all duration-300 hover:border-gray-400 dark:hover:border-gray-500"
             />
             {showResults && (
               <SearchResults

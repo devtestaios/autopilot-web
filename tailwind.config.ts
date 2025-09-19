@@ -6,7 +6,7 @@ export default {
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
-  darkMode: ["class"],
+  darkMode: "class",
   theme: {
     extend: {
       fontFamily: {
@@ -16,7 +16,9 @@ export default {
       colors: {
         // PulseBridge Official Brand Colors
         'pulse-blue': '#00d4ff',
+        'pulse-cyan': '#00d4ff', // Alias for pulse-blue
         'bridge-purple': '#7c3aed',
+        'pulse-purple': '#7c3aed', // Alias for bridge-purple
         'energy-magenta': '#ec4899',
         'deep-space': '#1a1a2e',
         'interface-gray': '#e0e6ed',

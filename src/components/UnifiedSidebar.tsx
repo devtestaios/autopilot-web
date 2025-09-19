@@ -18,6 +18,7 @@ import {
   Menu,
   X
 } from 'lucide-react';
+import { PulseWaveLogo } from './PulseWaveLogo';
 
 interface SidebarItem {
   id: string;
@@ -300,15 +301,11 @@ function SidebarContent({
               exit="collapsed"
               className="flex items-center space-x-3"
             >
-              <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
-                theme === 'dark' ? 'bg-blue-600' : 'bg-blue-500'
-              }`}>
-                <Target size={20} className="text-white" />
-              </div>
+              <PulseWaveLogo size="medium" className="text-pulse-cyan" />
               <span className={`font-semibold text-lg ${
                 theme === 'dark' ? 'text-white' : 'text-gray-900'
               }`}>
-                Autopilot
+                PulseBridge
               </span>
             </motion.div>
           )}

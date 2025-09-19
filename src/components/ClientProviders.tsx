@@ -3,6 +3,7 @@
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { SearchProvider } from "@/contexts/SearchContext";
+import { ToastProvider } from "@/components/ui/Toast";
 import PageTransition from "@/components/PageTransition";
 
 interface ClientProvidersProps {
@@ -14,9 +15,11 @@ export default function ClientProviders({ children }: ClientProvidersProps) {
     <ThemeProvider>
       <AuthProvider>
         <SearchProvider>
-          <PageTransition>
-            {children}
-          </PageTransition>
+          <ToastProvider>
+            <PageTransition>
+              {children}
+            </PageTransition>
+          </ToastProvider>
         </SearchProvider>
       </AuthProvider>
     </ThemeProvider>

@@ -6,7 +6,8 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTheme } from '@/contexts/ThemeContext';
-import { Eye, EyeOff, Mail, Lock, User, Bot, ArrowLeft, Check } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, User, ArrowLeft, Check } from 'lucide-react';
+import { PulseWaveLogo } from '@/components/PulseWaveLogo';
 
 export default function SignupPage() {
   const router = useRouter();
@@ -122,17 +123,13 @@ export default function SignupPage() {
         >
           {/* Header */}
           <div className="text-center">
-            <Link href="/" className="inline-flex items-center text-blue-600 hover:text-blue-700 mb-8">
+            <Link href="/" className="inline-flex items-center text-pulse-cyan hover:text-pulse-purple mb-8">
               <ArrowLeft size={20} className="mr-2" />
               Back to Home
             </Link>
             
             <div className="flex justify-center mb-6">
-              <div className={`p-4 rounded-2xl ${
-                theme === 'dark' ? 'bg-blue-600/20' : 'bg-blue-100'
-              }`}>
-                <Bot className="h-12 w-12 text-blue-600" />
-              </div>
+              <PulseWaveLogo size="large" className="text-pulse-cyan" />
             </div>
             
             <h2 className={`text-3xl font-bold ${
@@ -349,17 +346,17 @@ export default function SignupPage() {
                 type="checkbox"
                 checked={acceptTerms}
                 onChange={(e) => setAcceptTerms(e.target.checked)}
-                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                className="h-4 w-4 text-pulse-cyan focus:ring-pulse-cyan border-gray-300 rounded"
               />
               <label htmlFor="accept-terms" className={`ml-2 block text-sm ${
                 theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
               }`}>
                 I agree to the{' '}
-                <Link href="/terms" className="text-blue-600 hover:text-blue-500">
+                <Link href="/terms" className="text-pulse-cyan hover:text-pulse-purple">
                   Terms and Conditions
                 </Link>{' '}
                 and{' '}
-                <Link href="/privacy" className="text-blue-600 hover:text-blue-500">
+                <Link href="/privacy" className="text-pulse-cyan hover:text-pulse-purple">
                   Privacy Policy
                 </Link>
               </label>
@@ -372,10 +369,10 @@ export default function SignupPage() {
                 whileTap={{ scale: 0.98 }}
                 type="submit"
                 disabled={isLoading || !acceptTerms}
-                className={`group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors ${
+                className={`group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pulse-cyan transition-colors ${
                   isLoading || !acceptTerms
-                    ? 'bg-blue-400 cursor-not-allowed'
-                    : 'bg-blue-600 hover:bg-blue-700'
+                    ? 'bg-pulse-cyan/50 cursor-not-allowed'
+                    : 'bg-gradient-to-r from-pulse-cyan to-pulse-purple hover:from-pulse-cyan/80 hover:to-pulse-purple/80'
                 }`}
               >
                 {isLoading ? (
@@ -395,7 +392,7 @@ export default function SignupPage() {
                 theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
               }`}>
                 Already have an account?{' '}
-                <Link href="/login" className="font-medium text-blue-600 hover:text-blue-500">
+                <Link href="/login" className="font-medium text-pulse-cyan hover:text-pulse-purple">
                   Sign in
                 </Link>
               </span>

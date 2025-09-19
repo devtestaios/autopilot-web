@@ -13,10 +13,10 @@ import {
   Bell, 
   User,
   Menu,
-  X,
-  Bot
+  X
 } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
+import { PulseWaveLogo } from './PulseWaveLogo';
 
 const mainNavItems = [
   { href: '/', label: 'Dashboard', icon: BarChart3 },
@@ -46,11 +46,9 @@ export default function SimplifiedNavbar() {
             whileHover={{ scale: 1.02 }}
           >
             <Link href="/" className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-gradient-to-br from-emerald-500 to-blue-600 rounded-lg flex items-center justify-center">
-                <Bot className="w-5 h-5 text-white" />
-              </div>
+              <PulseWaveLogo size="medium" className="text-pulse-cyan" />
               <span className="text-xl font-bold text-gray-900 dark:text-white">
-                Autopilot
+                PulseBridge
               </span>
             </Link>
           </motion.div>

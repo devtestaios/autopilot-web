@@ -5,6 +5,9 @@ import { motion, useScroll, useTransform, useInView, AnimatePresence } from 'fra
 import { useTheme } from '@/contexts/ThemeContext';
 import Link from 'next/link';
 import { PulseWaveLogo } from './PulseWaveLogo';
+import { PremiumButton } from './ui/PremiumButton';
+import { PremiumCard } from './ui/PremiumCard';
+import LandingNavbar from './LandingNavbar';
 import { 
   Zap, 
   Brain, 
@@ -296,7 +299,7 @@ export default function AwardWinningLandingPage() {
       y: 0,
       opacity: 1,
       transition: {
-        type: "spring",
+        type: "spring" as const,
         stiffness: 100,
         damping: 12
       }
@@ -305,6 +308,7 @@ export default function AwardWinningLandingPage() {
 
   return (
     <div className={`min-h-screen ${theme === 'dark' ? 'bg-gray-900' : 'bg-white'} overflow-hidden`}>
+      <LandingNavbar />
       <FloatingOrbs />
       
       {/* Revolutionary Hero Section */}
@@ -411,26 +415,20 @@ export default function AwardWinningLandingPage() {
                 placeholder="Enter your email for exclusive access"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full sm:w-80 px-6 py-4 rounded-2xl border-2 border-gray-200 dark:border-gray-700 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:border-blue-500 focus:outline-none transition-all duration-300"
+                className="w-full sm:w-80 px-6 py-4 rounded-2xl border-2 border-gray-200 dark:border-gray-700 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:border-pulse-cyan focus:outline-none transition-all duration-300"
               />
             </motion.div>
             
-            <motion.button
-              className="relative px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-2xl shadow-2xl hover:shadow-blue-500/25 transition-all duration-300 overflow-hidden group"
-              whileHover={{ scale: 1.05, boxShadow: "0 20px 40px rgba(59, 130, 246, 0.3)" }}
-              whileTap={{ scale: 0.95 }}
+            <PremiumButton
+              variant="primary"
+              size="lg"
+              icon={<ArrowRight className="w-5 h-5" />}
+              iconPosition="right"
+              glow
+              className="px-8 py-4"
             >
-              <span className="relative z-10 flex items-center">
-                Start Free Trial
-                <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform duration-300" />
-              </span>
-              <motion.div
-                className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600"
-                initial={{ x: '-100%' }}
-                whileHover={{ x: '0%' }}
-                transition={{ duration: 0.3 }}
-              />
-            </motion.button>
+              Start Free Trial
+            </PremiumButton>
           </motion.div>
 
           <motion.div
