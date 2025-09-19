@@ -130,7 +130,7 @@ export function AutopilotDashboard({ className }: AutopilotDashboardProps) {
       </div>
 
       {/* Navigation Tabs */}
-      <div className="bg-white rounded-lg shadow-sm border">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
         <div className="flex space-x-1 p-1">
           {[
             { id: 'overview', label: 'Overview', icon: Activity },
@@ -143,8 +143,8 @@ export function AutopilotDashboard({ className }: AutopilotDashboardProps) {
               onClick={() => setSelectedTab(tab.id as any)}
               className={`flex items-center space-x-2 px-4 py-2 rounded-md font-medium transition-colors ${
                 selectedTab === tab.id
-                  ? 'bg-blue-100 text-blue-700'
-                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                  ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300'
+                  : 'text-black dark:text-gray-300 hover:text-black dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-700'
               }`}
             >
               <tab.icon className="h-4 w-4" />
@@ -158,47 +158,47 @@ export function AutopilotDashboard({ className }: AutopilotDashboardProps) {
       {selectedTab === 'overview' && automationStatus && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Automation Status */}
-          <div className="bg-white rounded-lg shadow-sm border p-6">
-            <h3 className="text-lg font-semibold mb-4 flex items-center space-x-2">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+            <h3 className="text-lg font-semibold mb-4 flex items-center space-x-2 text-black dark:text-white">
               <Bot className="h-5 w-5" />
               <span>Automation Status</span>
             </h3>
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-sm">AI Analysis</span>
+                <span className="text-sm font-medium text-black dark:text-gray-300">AI Analysis</span>
                 <div className="flex items-center space-x-2">
                   {automationStatus.config.enableAIAnalysis ? (
                     <CheckCircle className="h-4 w-4 text-green-500" />
                   ) : (
                     <AlertTriangle className="h-4 w-4 text-red-500" />
                   )}
-                  <span className="text-sm">
+                  <span className="text-sm font-medium text-black dark:text-gray-300">
                     {automationStatus.config.enableAIAnalysis ? 'Active' : 'Disabled'}
                   </span>
                 </div>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm">Auto Optimization</span>
+                <span className="text-sm font-medium text-black dark:text-gray-300">Auto Optimization</span>
                 <div className="flex items-center space-x-2">
                   {automationStatus.config.enableAutomaticOptimization ? (
                     <CheckCircle className="h-4 w-4 text-green-500" />
                   ) : (
                     <Shield className="h-4 w-4 text-yellow-500" />
                   )}
-                  <span className="text-sm">
+                  <span className="text-sm font-medium text-black dark:text-gray-300">
                     {automationStatus.config.enableAutomaticOptimization ? 'Enabled' : 'Manual Mode'}
                   </span>
                 </div>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm">Confidence Threshold</span>
-                <span className="text-sm font-medium">
+                <span className="text-sm font-medium text-black dark:text-gray-300">Confidence Threshold</span>
+                <span className="text-sm font-bold text-black dark:text-white">
                   {(automationStatus.config.confidenceThreshold * 100).toFixed(0)}%
                 </span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm">Budget Change Limit</span>
-                <span className="text-sm font-medium">
+                <span className="text-sm font-medium text-black dark:text-gray-300">Budget Change Limit</span>
+                <span className="text-sm font-bold text-black dark:text-white">
                   {automationStatus.config.budgetChangeLimit}%
                 </span>
               </div>
@@ -206,8 +206,8 @@ export function AutopilotDashboard({ className }: AutopilotDashboardProps) {
           </div>
 
           {/* Sync Performance */}
-          <div className="bg-white rounded-lg shadow-sm border p-6">
-            <h3 className="text-lg font-semibold mb-4 flex items-center space-x-2">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+            <h3 className="text-lg font-semibold mb-4 flex items-center space-x-2 text-black dark:text-white">
               <TrendingUp className="h-5 w-5" />
               <span>Sync Performance</span>
             </h3>
@@ -216,37 +216,37 @@ export function AutopilotDashboard({ className }: AutopilotDashboardProps) {
                 <div className="text-2xl font-bold text-blue-600">
                   {syncResults.length > 0 ? syncResults[0].campaignsUpdated : 0}
                 </div>
-                <div className="text-sm text-gray-600">Campaigns Analyzed</div>
+                <div className="text-sm font-medium text-black dark:text-gray-300">Campaigns Analyzed</div>
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold text-green-600">
                   {syncResults.length > 0 ? syncResults[0].aiInsightsGenerated : 0}
                 </div>
-                <div className="text-sm text-gray-600">AI Insights Generated</div>
+                <div className="text-sm font-medium text-black dark:text-gray-300">AI Insights Generated</div>
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold text-purple-600">
                   {syncResults.length > 0 ? formatDuration(syncResults[0].executionTime) : '0s'}
                 </div>
-                <div className="text-sm text-gray-600">Last Execution Time</div>
+                <div className="text-sm font-medium text-black dark:text-gray-300">Last Execution Time</div>
               </div>
             </div>
           </div>
 
           {/* Next Sync */}
-          <div className="bg-white rounded-lg shadow-sm border p-6">
-            <h3 className="text-lg font-semibold mb-4 flex items-center space-x-2">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+            <h3 className="text-lg font-semibold mb-4 flex items-center space-x-2 text-black dark:text-white">
               <Clock className="h-5 w-5" />
               <span>Next Scheduled Sync</span>
             </h3>
             <div className="text-center">
-              <div className="text-lg font-medium text-gray-900 mb-2">
+              <div className="text-lg font-bold text-black dark:text-white mb-2">
                 {automationStatus.nextScheduledSync 
                   ? new Date(automationStatus.nextScheduledSync).toLocaleTimeString()
                   : 'Not scheduled'
                 }
               </div>
-              <div className="text-sm text-gray-600 mb-4">
+              <div className="text-sm font-medium text-black dark:text-gray-300 mb-4">
                 {automationStatus.lastSync 
                   ? `Last sync: ${new Date(automationStatus.lastSync).toLocaleString()}`
                   : 'No previous sync'
@@ -254,8 +254,8 @@ export function AutopilotDashboard({ className }: AutopilotDashboardProps) {
               </div>
               <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm ${
                 automationStatus.isRunning 
-                  ? 'bg-blue-100 text-blue-700' 
-                  : 'bg-green-100 text-green-700'
+                  ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300' 
+                  : 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300'
               }`}>
                 {automationStatus.isRunning ? (
                   <>
@@ -283,19 +283,19 @@ export function AutopilotDashboard({ className }: AutopilotDashboardProps) {
       {selectedTab === 'automation' && automationStatus && (
         <div className="space-y-6">
           {/* Automation Controls */}
-          <div className="bg-white rounded-lg shadow-sm border p-6">
-            <h3 className="text-lg font-semibold mb-4">Automation Controls</h3>
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+            <h3 className="text-lg font-semibold mb-4 text-black dark:text-white">Automation Controls</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <label className="font-medium">AI Analysis</label>
-                    <p className="text-sm text-gray-600">Automatically analyze campaigns for optimization opportunities</p>
+                    <label className="font-bold text-black dark:text-white">AI Analysis</label>
+                    <p className="text-sm font-medium text-black dark:text-gray-300">Automatically analyze campaigns for optimization opportunities</p>
                   </div>
                   <button
                     onClick={() => handleAutomationToggle('enableAIAnalysis', !automationStatus.config.enableAIAnalysis)}
                     className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                      automationStatus.config.enableAIAnalysis ? 'bg-blue-600' : 'bg-gray-300'
+                      automationStatus.config.enableAIAnalysis ? 'bg-blue-600' : 'bg-gray-300 dark:bg-gray-600'
                     }`}
                   >
                     <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
@@ -306,13 +306,13 @@ export function AutopilotDashboard({ className }: AutopilotDashboardProps) {
 
                 <div className="flex items-center justify-between">
                   <div>
-                    <label className="font-medium">Automatic Optimization</label>
-                    <p className="text-sm text-gray-600">Apply high-confidence optimizations automatically</p>
+                    <label className="font-bold text-black dark:text-white">Automatic Optimization</label>
+                    <p className="text-sm font-medium text-black dark:text-gray-300">Apply high-confidence optimizations automatically</p>
                   </div>
                   <button
                     onClick={() => handleAutomationToggle('enableAutomaticOptimization', !automationStatus.config.enableAutomaticOptimization)}
                     className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                      automationStatus.config.enableAutomaticOptimization ? 'bg-green-600' : 'bg-red-300'
+                      automationStatus.config.enableAutomaticOptimization ? 'bg-green-600' : 'bg-red-300 dark:bg-red-700'
                     }`}
                   >
                     <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
@@ -324,7 +324,7 @@ export function AutopilotDashboard({ className }: AutopilotDashboardProps) {
 
               <div className="space-y-4">
                 <div>
-                  <label className="block font-medium mb-2">Confidence Threshold: {(automationStatus.config.confidenceThreshold * 100).toFixed(0)}%</label>
+                  <label className="block font-bold mb-2 text-black dark:text-white">Confidence Threshold: {(automationStatus.config.confidenceThreshold * 100).toFixed(0)}%</label>
                   <input
                     type="range"
                     min="70"
@@ -333,11 +333,11 @@ export function AutopilotDashboard({ className }: AutopilotDashboardProps) {
                     onChange={(e) => handleAutomationToggle('confidenceThreshold', Number(e.target.value) / 100)}
                     className="w-full"
                   />
-                  <p className="text-sm text-gray-600 mt-1">Minimum confidence level for automatic actions</p>
+                  <p className="text-sm font-medium text-black dark:text-gray-300 mt-1">Minimum confidence level for automatic actions</p>
                 </div>
 
                 <div>
-                  <label className="block font-medium mb-2">Budget Change Limit: {automationStatus.config.budgetChangeLimit}%</label>
+                  <label className="block font-bold mb-2 text-black dark:text-white">Budget Change Limit: {automationStatus.config.budgetChangeLimit}%</label>
                   <input
                     type="range"
                     min="5"
@@ -346,7 +346,7 @@ export function AutopilotDashboard({ className }: AutopilotDashboardProps) {
                     onChange={(e) => handleAutomationToggle('budgetChangeLimit', Number(e.target.value))}
                     className="w-full"
                   />
-                  <p className="text-sm text-gray-600 mt-1">Maximum budget change per optimization</p>
+                  <p className="text-sm font-medium text-black dark:text-gray-300 mt-1">Maximum budget change per optimization</p>
                 </div>
               </div>
             </div>
@@ -358,19 +358,19 @@ export function AutopilotDashboard({ className }: AutopilotDashboardProps) {
               <h3 className="text-lg font-semibold mb-4">Recent Sync Results</h3>
               <div className="space-y-3">
                 {syncResults.slice(0, 5).map((result, index) => (
-                  <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                  <div key={index} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
                     <div className="flex items-center space-x-3">
                       {getStatusIcon(result.success)}
                       <div>
-                        <div className="font-medium">{result.message}</div>
-                        <div className="text-sm text-gray-600">
+                        <div className="font-bold text-black dark:text-white">{result.message}</div>
+                        <div className="text-sm font-medium text-black dark:text-gray-300">
                           {new Date(result.timestamp).toLocaleString()} • {formatDuration(result.executionTime)}
                         </div>
                       </div>
                     </div>
                     <div className="text-right">
-                      <div className="text-sm font-medium">{result.campaignsUpdated} campaigns</div>
-                      <div className="text-sm text-gray-600">{result.aiInsightsGenerated} insights</div>
+                      <div className="text-sm font-bold text-black dark:text-white">{result.campaignsUpdated} campaigns</div>
+                      <div className="text-sm font-medium text-black dark:text-gray-300">{result.aiInsightsGenerated} insights</div>
                     </div>
                   </div>
                 ))}
@@ -382,29 +382,29 @@ export function AutopilotDashboard({ className }: AutopilotDashboardProps) {
 
       {/* Settings Tab */}
       {selectedTab === 'settings' && (
-        <div className="bg-white rounded-lg shadow-sm border p-6">
-          <h3 className="text-lg font-semibold mb-4">System Settings</h3>
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+          <h3 className="text-lg font-semibold mb-4 text-black dark:text-white">System Settings</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <h4 className="font-medium mb-3">Performance Thresholds</h4>
+              <h4 className="font-bold mb-3 text-black dark:text-white">Performance Thresholds</h4>
               <div className="space-y-3">
                 <div>
-                  <label className="block text-sm font-medium mb-1">Performance Threshold</label>
+                  <label className="block text-sm font-bold mb-1 text-black dark:text-white">Performance Threshold</label>
                   <input
                     type="number"
                     min="0"
                     max="100"
                     value={automationStatus?.config.performanceThreshold || 60}
                     onChange={(e) => handleAutomationToggle('performanceThreshold', Number(e.target.value))}
-                    className="w-full px-3 py-2 border rounded-md"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-black dark:text-white"
                   />
-                  <p className="text-sm text-gray-600 mt-1">Campaigns below this score get priority optimization</p>
+                  <p className="text-sm font-medium text-black dark:text-gray-300 mt-1">Campaigns below this score get priority optimization</p>
                 </div>
               </div>
             </div>
 
             <div>
-              <h4 className="font-medium mb-3">Safety Controls</h4>
+              <h4 className="font-bold mb-3 text-black dark:text-white">Safety Controls</h4>
               <div className="space-y-3">
                 <button
                   onClick={handleEmergencyStop}
@@ -413,7 +413,7 @@ export function AutopilotDashboard({ className }: AutopilotDashboardProps) {
                   <Shield className="h-4 w-4" />
                   <span>Emergency Stop All Automation</span>
                 </button>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm font-medium text-black dark:text-gray-300">
                   Immediately halt all automatic optimizations while preserving AI analysis capabilities
                 </p>
               </div>
