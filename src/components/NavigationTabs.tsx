@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import { Menu, X, BarChart3, Target, TrendingUp, Zap, Settings, AlertTriangle, Globe, Home } from 'lucide-react';
 import { PulseWaveLogo } from './PulseWaveLogo';
+import { ThemeToggle } from './ui/ThemeToggle';
 
 interface NavItem {
   href: string;
@@ -29,7 +30,7 @@ export default function NavigationTabs() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
-    <div className="bg-card border-b border-border transition-all duration-300 backdrop-blur-lg">
+    <div className="bg-card/95 backdrop-blur-lg border-b border-border transition-all duration-300 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header with Logo */}
         <div className="flex items-center justify-between py-4">
@@ -37,18 +38,23 @@ export default function NavigationTabs() {
             <PulseWaveLogo size="small" animated={true} showText={true} />
           </Link>
           
-          {/* Mobile Menu Button */}
-          <button
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="md:hidden p-2 rounded-lg hover:bg-muted transition-colors duration-200 border border-border"
-            aria-label="Toggle navigation menu"
-          >
-            {isMobileMenuOpen ? (
-              <X className="w-5 h-5 text-foreground" />
-            ) : (
-              <Menu className="w-5 h-5 text-foreground" />
-            )}
-          </button>
+          <div className="flex items-center space-x-3">
+            {/* Theme Toggle */}
+            <ThemeToggle />
+            
+            {/* Mobile Menu Button */}
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="md:hidden p-2 rounded-lg hover:bg-muted transition-colors duration-200 border border-border"
+              aria-label="Toggle navigation menu"
+            >
+              {isMobileMenuOpen ? (
+                <X className="w-5 h-5 text-foreground" />
+              ) : (
+                <Menu className="w-5 h-5 text-foreground" />
+              )}
+            </button>
+          </div>
         </div>
 
         {/* Desktop Navigation */}

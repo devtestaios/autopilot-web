@@ -95,7 +95,7 @@ export default function DashboardStats({ campaigns, loading }: DashboardStatsPro
       value: `${totalSpend > 0 ? ((totalBudget - totalSpend) / totalBudget * 100).toFixed(1) : '100'}%`,
       change: 'Budget remaining',
       icon: Activity,
-      color: 'text-green-600',
+      color: 'text-emerald-600 dark:text-emerald-400',
       bgColor: 'from-green-500/10 to-green-500/5',
       borderColor: 'border-green-500/20'
     }
@@ -109,7 +109,7 @@ export default function DashboardStats({ campaigns, loading }: DashboardStatsPro
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
               <div className="p-3 bg-gradient-to-r from-green-500/10 to-emerald-500/10 rounded-xl border border-green-500/20">
-                <CheckCircle className="w-6 h-6 text-green-600" />
+                <CheckCircle className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
               </div>
               <div>
                 <h3 className="text-lg font-orbitron font-bold text-foreground">System Status</h3>
@@ -154,7 +154,7 @@ export default function DashboardStats({ campaigns, loading }: DashboardStatsPro
                 </div>
               </div>
               <div className="flex items-center text-sm text-muted-foreground">
-                <TrendingUp className="w-4 h-4 mr-1 text-green-500" />
+                <TrendingUp className="w-4 h-4 mr-1 text-emerald-600 dark:text-emerald-400" />
                 <span>{stat.change}</span>
               </div>
             </div>

@@ -90,7 +90,60 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-/* Custom scrollbar */
+/* Enhanced Typography and Contrast */
+.text-high-contrast {
+  color: var(--foreground);
+}
+
+.text-medium-contrast {
+  color: var(--muted-foreground);
+}
+
+.text-low-contrast {
+  color: color-mix(in srgb, var(--muted-foreground) 70%, transparent);
+}
+
+/* Theme-aware brand colors */
+.text-brand-primary {
+  color: var(--pulse-blue);
+}
+
+.text-brand-secondary {
+  color: var(--bridge-purple);
+}
+
+.text-brand-accent {
+  color: var(--energy-magenta);
+}
+
+/* Enhanced focus states */
+.focus-ring:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--background), 0 0 0 4px var(--pulse-blue);
+}
+
+/* Card styles with proper contrast */
+.card {
+  background: var(--card);
+  color: var(--card-foreground);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  transition: all 0.2s ease-in-out;
+}
+
+.card-hover:hover {
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  transform: translateY(-1px);
+}
+
+.glass-effect {
+  backdrop-filter: blur(16px);
+  background: color-mix(in srgb, var(--card) 80%, transparent);
+  border: 1px solid color-mix(in srgb, var(--border) 50%, transparent);
+}
+
+/* Scrollbar improvements */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
