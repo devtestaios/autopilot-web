@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { Plus, Search, Filter, Download, RefreshCw, Mail, User, Calendar, Globe, MoreHorizontal, Trash2, Edit3 } from "lucide-react";
 import NavigationTabs from "@/components/NavigationTabs";
+import { LeadFiltersComponent } from "@/components/LeadFilters";
+import { useLeadFilters } from "@/hooks/useLeadFilters";
 import type { Lead } from "@/types";
 
 export default function LeadsPage() {
@@ -14,20 +16,10 @@ export default function LeadsPage() {
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
   const [err, setErr] = useState<string | null>(null);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedSource, setSelectedSource] = useState("all");
   const [showAddForm, setShowAddForm] = useState(false);
 
-  // Filter leads based on search and source
-  const filteredLeads = leads.filter(lead => {
-    const matchesSearch = lead.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         (lead.name && lead.name.toLowerCase().includes(searchTerm.toLowerCase()));
-    const matchesSource = selectedSource === "all" || lead.source === selectedSource;
-    return matchesSearch && matchesSource;
-  });
-
-  // Get unique sources for filter dropdown
-  const sources = Array.from(new Set(leads.map(lead => lead.source || "unknown")));
+  // Use the new lead filters hook
+  const { filters, setFilters, filteredLeads, totalResults } = useLeadFilters(leads);
 
   async function load() {
     setErr(null);
@@ -248,46 +240,19 @@ export default function LeadsPage() {
           </div>
         )}
 
-        {/* Filters and Search */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-6">
-          <div className="flex flex-col sm:flex-row gap-4">
-            <div className="flex-1">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 w-5 h-5" />
-                <input
-                  type="text"
-                  placeholder="Search leads by email or name..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                />
-              </div>
-            </div>
-            <div className="sm:w-48">
-              <div className="relative">
-                <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 w-5 h-5" />
-                <select
-                  value={selectedSource}
-                  onChange={(e) => setSelectedSource(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none"
-                >
-                  <option value="all">All Sources</option>
-                  {sources.map(source => (
-                    <option key={source} value={source}>
-                      {source.charAt(0).toUpperCase() + source.slice(1)}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-          </div>
-        </div>
+        {/* Lead Filters */}
+        <LeadFiltersComponent
+          filters={filters}
+          onFiltersChange={setFilters}
+          totalResults={totalResults}
+          leads={leads}
+        />
 
         {/* Leads Table */}
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
           <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-              Leads ({filteredLeads.length})
+              Leads ({totalResults})
             </h3>
           </div>
           
@@ -298,11 +263,11 @@ export default function LeadsPage() {
               </div>
               <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">No leads found</h3>
               <p className="text-gray-600 dark:text-gray-400 mb-6">
-                {searchTerm || selectedSource !== "all" 
+                {filters.searchTerm || filters.source.length > 0 
                   ? "Try adjusting your search or filters" 
                   : "Get started by adding your first lead"}
               </p>
-              {!searchTerm && selectedSource === "all" && (
+              {!filters.searchTerm && filters.source.length === 0 && (
                 <button
                   onClick={() => setShowAddForm(true)}
                   className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
