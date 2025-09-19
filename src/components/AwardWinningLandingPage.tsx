@@ -26,6 +26,87 @@ import {
 } from 'lucide-react';
 
 // Custom SVG Components for Advanced Animations
+const GalaxyBackground = () => (
+  <div className="absolute inset-0 overflow-hidden pointer-events-none">
+    {/* Twinkling Stars */}
+    {[...Array(50)].map((_, i) => (
+      <motion.div
+        key={`star-${i}`}
+        className="absolute w-1 h-1 bg-white rounded-full"
+        animate={{
+          opacity: [0.3, 1, 0.3],
+          scale: [0.5, 1.2, 0.5],
+        }}
+        transition={{
+          duration: 2 + Math.random() * 3,
+          repeat: Infinity,
+          ease: "easeInOut",
+          delay: Math.random() * 5,
+        }}
+        style={{
+          left: `${Math.random() * 100}%`,
+          top: `${Math.random() * 100}%`,
+        }}
+      />
+    ))}
+    
+    {/* Floating Nebula Clouds */}
+    {[...Array(8)].map((_, i) => (
+      <motion.div
+        key={`nebula-${i}`}
+        className="absolute rounded-full opacity-5"
+        style={{
+          width: `${100 + Math.random() * 200}px`,
+          height: `${100 + Math.random() * 200}px`,
+          background: `radial-gradient(circle, ${
+            ['#3b82f6', '#8b5cf6', '#06b6d4', '#ec4899', '#10b981'][Math.floor(Math.random() * 5)]
+          } 0%, transparent 70%)`,
+          left: `${Math.random() * 100}%`,
+          top: `${Math.random() * 100}%`,
+        }}
+        animate={{
+          x: [0, 50, -30, 0],
+          y: [0, -40, 30, 0],
+          scale: [1, 1.2, 0.9, 1],
+          rotate: [0, 90, 180, 360],
+        }}
+        transition={{
+          duration: 15 + Math.random() * 10,
+          repeat: Infinity,
+          ease: "easeInOut",
+          delay: Math.random() * 10,
+        }}
+      />
+    ))}
+    
+    {/* Cosmic Particles */}
+    {[...Array(30)].map((_, i) => (
+      <motion.div
+        key={`particle-${i}`}
+        className="absolute w-0.5 h-0.5 rounded-full"
+        style={{
+          background: `linear-gradient(45deg, ${
+            ['#3b82f6', '#8b5cf6', '#06b6d4', '#ec4899'][Math.floor(Math.random() * 4)]
+          }, transparent)`,
+          left: `${Math.random() * 100}%`,
+          top: `${Math.random() * 100}%`,
+        }}
+        animate={{
+          x: [0, Math.random() * 200 - 100],
+          y: [0, Math.random() * 200 - 100],
+          opacity: [0, 1, 0],
+        }}
+        transition={{
+          duration: 8 + Math.random() * 4,
+          repeat: Infinity,
+          ease: "easeInOut",
+          delay: Math.random() * 8,
+        }}
+      />
+    ))}
+  </div>
+);
+
 const FloatingOrbs = () => (
   <div className="absolute inset-0 overflow-hidden pointer-events-none">
     {[...Array(6)].map((_, i) => (
@@ -50,37 +131,6 @@ const FloatingOrbs = () => (
       />
     ))}
   </div>
-);
-
-const MorphingSVG = ({ isInView }: { isInView: boolean }) => (
-  <motion.svg
-    width="400"
-    height="400"
-    viewBox="0 0 400 400"
-    className="absolute top-1/2 right-0 transform -translate-y-1/2 opacity-10"
-    animate={isInView ? { opacity: 0.3, scale: 1 } : { opacity: 0.1, scale: 0.8 }}
-    transition={{ duration: 2, ease: "easeOut" }}
-  >
-    <motion.path
-      d="M200,50 C300,50 350,100 350,200 C350,300 300,350 200,350 C100,350 50,300 50,200 C50,100 100,50 200,50"
-      fill="url(#gradient)"
-      animate={isInView ? {
-        d: [
-          "M200,50 C300,50 350,100 350,200 C350,300 300,350 200,350 C100,350 50,300 50,200 C50,100 100,50 200,50",
-          "M200,30 C320,70 370,120 370,200 C370,280 320,330 200,370 C80,330 30,280 30,200 C30,120 80,70 200,30",
-          "M200,50 C300,50 350,100 350,200 C350,300 300,350 200,350 C100,350 50,300 50,200 C50,100 100,50 200,50"
-        ]
-      } : {}}
-      transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-    />
-    <defs>
-      <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stopColor="#3b82f6" />
-        <stop offset="50%" stopColor="#8b5cf6" />
-        <stop offset="100%" stopColor="#06b6d4" />
-      </linearGradient>
-    </defs>
-  </motion.svg>
 );
 
 const AnimatedCounter = ({ target, suffix = "", duration = 2 }: { target: number, suffix?: string, duration?: number }) => {
@@ -120,7 +170,7 @@ interface FeatureCard {
 const features: FeatureCard[] = [
   {
     icon: Brain,
-    title: "AI-Powered Autopilot",
+    title: "AI-Powered Marketing Bridge",
     description: "Our AI makes thousands of micro-optimizations every hour, continuously learning and adapting to maximize your campaign performance across all platforms.",
     gradient: "from-blue-500 via-purple-500 to-pink-500",
     delay: 0.2
@@ -167,7 +217,7 @@ const testimonials = [
     name: "Sarah Chen",
     role: "Marketing Director",
     company: "TechFlow Inc",
-    content: "Autopilot increased our ROAS by 340% in just 3 months. The AI optimization is absolutely mind-blowing.",
+    content: "PulseBridge.ai increased our ROAS by 340% in just 3 months. The AI optimization is absolutely mind-blowing.",
     rating: 5,
     image: "SC"
   },
@@ -175,7 +225,7 @@ const testimonials = [
     name: "Marcus Rodriguez",
     role: "CMO",
     company: "Growth Labs",
-    content: "We went from managing 20 campaigns manually to 200+ on autopilot. Game-changing technology.",
+    content: "We went from managing 20 campaigns manually to 200+ with PulseBridge. Game-changing technology.",
     rating: 5,
     image: "MR"
   },
@@ -191,7 +241,7 @@ const testimonials = [
     name: "David Park",
     role: "Founder",
     company: "StartupX",
-    content: "From startup to $10M revenue with Autopilot managing our entire ad ecosystem. Incredible results.",
+    content: "From startup to $10M revenue with PulseBridge managing our entire ad ecosystem. Incredible results.",
     rating: 5,
     image: "DP"
   }
@@ -267,7 +317,11 @@ export default function AwardWinningLandingPage() {
       >
         <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:from-gray-900 dark:via-blue-900/20 dark:to-purple-900/20" />
         
-        <MorphingSVG isInView={heroInView} />
+        {/* Galaxy Background */}
+        <GalaxyBackground />
+        
+        {/* Floating Orbs */}
+        <FloatingOrbs />
         
         <div className="relative z-10 max-w-7xl mx-auto text-center">
           <motion.div
@@ -281,7 +335,7 @@ export default function AwardWinningLandingPage() {
             >
               <Sparkles className="w-4 h-4 text-blue-500 mr-2" />
               <span className="text-sm font-medium text-blue-600 dark:text-blue-400">
-                AI-Powered Marketing Revolution
+                AI Bridge Technology
               </span>
             </motion.div>
           </motion.div>
@@ -291,11 +345,15 @@ export default function AwardWinningLandingPage() {
             className="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-bold mb-8"
           >
             <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
-              Marketing
+              Bridge the Gap to
+            </span>
+            <br />
+            <span className="bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">
+              Perfect Marketing
             </span>
             <br />
             <motion.span
-              className="bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-300 bg-clip-text text-transparent"
+              className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent font-bold"
               animate={{
                 backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
               }}
@@ -305,7 +363,7 @@ export default function AwardWinningLandingPage() {
                 ease: "easeInOut"
               }}
             >
-              on Autopilot
+              PulseBridge.ai
             </motion.span>
           </motion.h1>
 
@@ -313,10 +371,11 @@ export default function AwardWinningLandingPage() {
             variants={itemVariants}
             className="text-xl sm:text-2xl lg:text-3xl text-gray-600 dark:text-gray-300 mb-12 max-w-4xl mx-auto leading-relaxed"
           >
-            The world's first{' '}
-            <span className="font-semibold text-blue-600 dark:text-blue-400">fully autonomous</span>
-            {' '}marketing platform that optimizes campaigns, predicts trends, and scales your business{' '}
-            <span className="font-semibold text-purple-600 dark:text-purple-400">while you sleep</span>.
+            Connect your marketing potential with{' '}
+            <span className="font-semibold text-blue-600 dark:text-blue-400">AI-powered precision</span>
+            {' '}that bridges the gap between strategy and execution. Pulse-driven insights that{' '}
+            <span className="font-semibold text-purple-600 dark:text-purple-400">transform campaigns</span>{' '}
+            into unstoppable growth engines.
           </motion.p>
 
           <motion.div
@@ -538,7 +597,7 @@ export default function AwardWinningLandingPage() {
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
-            Join thousands of marketers who've transformed their businesses with Autopilot
+            Join thousands of marketers who've transformed their businesses with PulseBridge
           </motion.p>
 
           <div className="relative">
@@ -611,7 +670,7 @@ export default function AwardWinningLandingPage() {
           >
             Ready to Go
             <span className="block bg-gradient-to-r from-yellow-300 to-orange-300 bg-clip-text text-transparent">
-              Full Autopilot?
+              Ready for PulseBridge?
             </span>
           </motion.h2>
           
