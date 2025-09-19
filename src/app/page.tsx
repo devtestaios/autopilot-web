@@ -109,25 +109,25 @@ export default function DashboardPage() {
 
           {/* Enhanced Quick Stats */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <div className="bg-white bg-opacity-30 backdrop-blur-sm rounded-lg p-6 text-center border border-white border-opacity-20 hover:bg-opacity-40 transition-all duration-300">
-              <TrendingUp className="h-8 w-8 mx-auto mb-3 text-white" />
-              <div className="text-3xl font-bold text-white">47%</div>
-              <div className="text-blue-50 font-medium">Avg ROI Improvement</div>
+            <div className="bg-white bg-opacity-90 backdrop-blur-sm rounded-lg p-6 text-center border border-white border-opacity-20 hover:bg-opacity-95 transition-all duration-300 shadow-lg">
+              <TrendingUp className="h-8 w-8 mx-auto mb-3 text-blue-600" />
+              <div className="text-3xl font-bold text-black">47%</div>
+              <div className="text-black font-semibold">Avg ROI Improvement</div>
             </div>
-            <div className="bg-white bg-opacity-30 backdrop-blur-sm rounded-lg p-6 text-center border border-white border-opacity-20 hover:bg-opacity-40 transition-all duration-300">
-              <Bot className="h-8 w-8 mx-auto mb-3 text-white" />
-              <div className="text-3xl font-bold text-white">24/7</div>
-              <div className="text-blue-50 font-medium">Autonomous Optimization</div>
+            <div className="bg-white bg-opacity-90 backdrop-blur-sm rounded-lg p-6 text-center border border-white border-opacity-20 hover:bg-opacity-95 transition-all duration-300 shadow-lg">
+              <Bot className="h-8 w-8 mx-auto mb-3 text-blue-600" />
+              <div className="text-3xl font-bold text-black">24/7</div>
+              <div className="text-black font-semibold">Autonomous Optimization</div>
             </div>
-            <div className="bg-white bg-opacity-30 backdrop-blur-sm rounded-lg p-6 text-center border border-white border-opacity-20 hover:bg-opacity-40 transition-all duration-300">
-              <Target className="h-8 w-8 mx-auto mb-3 text-white" />
-              <div className="text-3xl font-bold text-white">94%</div>
-              <div className="text-blue-50 font-medium">AI Prediction Accuracy</div>
+            <div className="bg-white bg-opacity-90 backdrop-blur-sm rounded-lg p-6 text-center border border-white border-opacity-20 hover:bg-opacity-95 transition-all duration-300 shadow-lg">
+              <Target className="h-8 w-8 mx-auto mb-3 text-blue-600" />
+              <div className="text-3xl font-bold text-black">94%</div>
+              <div className="text-black font-semibold">AI Prediction Accuracy</div>
             </div>
-            <div className="bg-white bg-opacity-30 backdrop-blur-sm rounded-lg p-6 text-center border border-white border-opacity-20 hover:bg-opacity-40 transition-all duration-300">
-              <Sparkles className="h-8 w-8 mx-auto mb-3 text-white" />
-              <div className="text-3xl font-bold text-white">$2.4M</div>
-              <div className="text-blue-50 font-medium">Revenue Optimized</div>
+            <div className="bg-white bg-opacity-90 backdrop-blur-sm rounded-lg p-6 text-center border border-white border-opacity-20 hover:bg-opacity-95 transition-all duration-300 shadow-lg">
+              <Sparkles className="h-8 w-8 mx-auto mb-3 text-blue-600" />
+              <div className="text-3xl font-bold text-black">$2.4M</div>
+              <div className="text-black font-semibold">Revenue Optimized</div>
             </div>
           </div>
         </div>
