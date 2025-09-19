@@ -1,272 +1,240 @@
 'use client';
 
+import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { 
-  Bot, 
-  BarChart3, 
-  Zap, 
-  Users,
-  Shield,
-  Brain,
-  Crosshair,
-  Palette,
-  Server,
-  Building,
-  TrendingUp,
-  CheckCircle,
-  Star,
-  Globe,
-  Sparkles,
-  Activity,
-  Target,
-  Crown,
-  Rocket,
-  Database,
-  Settings,
-  Lock,
-  Eye,
-  ArrowRight,
-  ExternalLink
-} from 'lucide-react';
+import { ArrowRight, Sparkles, Zap, TrendingUp, Shield, Bot } from 'lucide-react';
 
 export default function Home() {
-  const features = [
-    {
-      title: "Unified Campaign Management",
-      description: "Multi-platform campaign orchestration with real-time optimization and automated performance tracking",
-      icon: <Target className="h-8 w-8" />,
-      href: "/unified",
-      color: "blue",
-      status: "Live",
-      metrics: "45+ Platforms"
-    },
-    {
-      title: "Advanced AI/ML Optimization",
-      description: "Neural networks, reinforcement learning, and sophisticated ML models for campaign optimization",
-      icon: <Brain className="h-8 w-8" />,
-      href: "/ai",
-      color: "purple",
-      status: "Live", 
-      metrics: "99.2% Accuracy"
-    },
-    {
-      title: "Competitive Intelligence",
-      description: "Real-time competitor tracking, market analysis, and gap identification to stay ahead",
-      icon: <Crosshair className="h-8 w-8" />,
-      href: "/competitive",
-      color: "orange",
-      status: "Live",
-      metrics: "Real-time Monitoring"
-    },
-    {
-      title: "Enterprise Authentication",
-      description: "Role-based access control, SSO integration, and multi-tenancy with audit logging",
-      icon: <Shield className="h-8 w-8" />,
-      href: "/enterprise",
-      color: "green",
-      status: "Live",
-      metrics: "Enterprise Grade"
-    },
-    {
-      title: "White-Label & Partners",
-      description: "Custom branding, API marketplace, partner portals, and revenue sharing ecosystem",
-      icon: <Palette className="h-8 w-8" />,
-      href: "/whitelabel",
-      color: "pink",
-      status: "Live",
-      metrics: "Agency Ready"
-    },
-    {
-      title: "Production Infrastructure",
-      description: "99.99% uptime infrastructure with global CDN, auto-scaling, and enterprise security",
-      icon: <Server className="h-8 w-8" />,
-      href: "/infrastructure",
-      color: "indigo",
-      status: "Live",
-      metrics: "99.97% Uptime"
-    },
-    {
-      title: "Autopilot Mode",
-      description: "Fully autonomous campaign management with AI-driven optimization and budget allocation",
-      icon: <Bot className="h-8 w-8" />,
-      href: "/autopilot",
-      color: "red",
-      status: "Live",
-      metrics: "Full Automation"
-    },
-    {
-      title: "Analytics & Insights",
-      description: "Advanced analytics, predictive insights, and comprehensive reporting across all platforms",
-      icon: <BarChart3 className="h-8 w-8" />,
-      href: "/analytics",
-      color: "cyan",
-      status: "Live",
-      metrics: "Deep Insights"
-    }
-  ];
-
-  const getColorClasses = (color: string) => {
-    const colors = {
-      blue: "border-blue-200 bg-blue-50 text-blue-700",
-      purple: "border-purple-200 bg-purple-50 text-purple-700",
-      orange: "border-orange-200 bg-orange-50 text-orange-700",
-      green: "border-green-200 bg-green-50 text-green-700",
-      pink: "border-pink-200 bg-pink-50 text-pink-700",
-      indigo: "border-indigo-200 bg-indigo-50 text-indigo-700",
-      red: "border-red-200 bg-red-50 text-red-700",
-      cyan: "border-cyan-200 bg-cyan-50 text-cyan-700"
-    };
-    return colors[color as keyof typeof colors] || colors.blue;
-  };
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50">
-      {/* Hero Section */}
-      <div className="container mx-auto px-6 py-16">
-        <div className="text-center mb-16">
-          <div className="flex items-center justify-center gap-2 mb-6">
-            <div className="p-3 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl">
-              <Rocket className="h-12 w-12 text-white" />
+    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-indigo-950 via-purple-900 to-slate-900">
+      {/* Animated Northern Lights Background */}
+      <div className="absolute inset-0 overflow-hidden">
+        {/* Aurora Layers */}
+        <motion.div
+          className="absolute inset-0 opacity-40"
+          style={{
+            background: `linear-gradient(45deg, 
+              transparent 30%, 
+              rgba(16, 185, 129, 0.3) 40%, 
+              rgba(59, 130, 246, 0.4) 50%, 
+              rgba(167, 139, 250, 0.3) 60%, 
+              transparent 70%
+            )`
+          }}
+          animate={{
+            backgroundPosition: ['0% 0%', '100% 100%'],
+            backgroundSize: ['100% 100%', '120% 120%']
+          }}
+          transition={{
+            duration: 8,
+            repeat: Infinity,
+            repeatType: 'reverse',
+            ease: 'easeInOut'
+          }}
+        />
+        
+        <motion.div
+          className="absolute inset-0 opacity-30"
+          style={{
+            background: `linear-gradient(-45deg, 
+              transparent 20%, 
+              rgba(34, 197, 94, 0.4) 35%, 
+              rgba(99, 102, 241, 0.3) 50%, 
+              rgba(236, 72, 153, 0.3) 65%, 
+              transparent 80%
+            )`
+          }}
+          animate={{
+            backgroundPosition: ['100% 0%', '0% 100%'],
+            backgroundSize: ['110% 110%', '130% 130%']
+          }}
+          transition={{
+            duration: 12,
+            repeat: Infinity,
+            repeatType: 'reverse',
+            ease: 'easeInOut',
+            delay: 2
+          }}
+        />
+
+        {/* Floating Particles */}
+        {[...Array(50)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute w-1 h-1 bg-white rounded-full opacity-60"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+            }}
+            animate={{
+              y: [0, -100, 0],
+              opacity: [0.2, 0.8, 0.2],
+              scale: [0.5, 1.5, 0.5]
+            }}
+            transition={{
+              duration: 3 + Math.random() * 4,
+              repeat: Infinity,
+              ease: 'easeInOut',
+              delay: Math.random() * 5
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Content */}
+      <div className="relative z-10 flex flex-col min-h-screen">
+        {/* Navigation */}
+        <nav className="p-6">
+          <motion.div 
+            className="flex justify-between items-center"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+          >
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-blue-500 rounded-xl flex items-center justify-center">
+                <Bot className="w-6 h-6 text-white" />
+              </div>
+              <span className="text-2xl font-bold text-white">Autopilot</span>
             </div>
-            <h1 className="text-6xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
-              Autopilot
-            </h1>
-          </div>
-          
-          <h2 className="text-4xl font-bold text-gray-900 mb-6">
-            The Ultimate Enterprise Marketing Automation Platform
-          </h2>
-          
-          <p className="text-xl text-gray-600 mb-8 max-w-4xl mx-auto">
-            Surpass Google Marketing Platform, Adobe Analytics, and all competitors with our AI-powered 
-            marketing automation that autonomously manages campaigns, optimizes performance, and scales infinitely.
-          </p>
-
-          <div className="flex items-center justify-center gap-6 mb-8">
-            <Badge className="bg-green-100 text-green-800 px-4 py-2 text-lg">
-              <CheckCircle className="h-5 w-5 mr-2" />
-              99.97% Uptime
-            </Badge>
-            <Badge className="bg-blue-100 text-blue-800 px-4 py-2 text-lg">
-              <Brain className="h-5 w-5 mr-2" />
-              AI-Powered
-            </Badge>
-            <Badge className="bg-purple-100 text-purple-800 px-4 py-2 text-lg">
-              <Crown className="h-5 w-5 mr-2" />
-              Enterprise Grade
-            </Badge>
-          </div>
-
-          <div className="flex items-center justify-center gap-4">
-            <Button size="lg" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
-              <Zap className="h-5 w-5 mr-2" />
-              Start Free Trial
-            </Button>
-            <Button size="lg" variant="outline">
-              <ExternalLink className="h-5 w-5 mr-2" />
-              Schedule Demo
-            </Button>
-          </div>
-        </div>
-
-        {/* Enterprise Features Grid */}
-        <div className="mb-16">
-          <div className="text-center mb-12">
-            <h3 className="text-3xl font-bold text-gray-900 mb-4">
-              Enterprise-Grade Features That Dominate the Market
-            </h3>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Built to outperform every competitor with advanced AI, real-time optimization, 
-              enterprise security, and full automation.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {features.map((feature, index) => (
-              <Link key={index} href={feature.href}>
-                <Card className="h-full transition-all duration-300 hover:shadow-xl hover:scale-105 group cursor-pointer">
-                  <CardHeader className="pb-3">
-                    <div className="flex items-center justify-between mb-3">
-                      <div className={`p-3 rounded-xl ${getColorClasses(feature.color)}`}>
-                        {feature.icon}
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Badge className="bg-green-100 text-green-800 text-xs">
-                          {feature.status}
-                        </Badge>
-                      </div>
-                    </div>
-                    <CardTitle className="text-lg group-hover:text-blue-600 transition-colors">
-                      {feature.title}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="pt-0">
-                    <CardDescription className="text-sm text-gray-600 mb-4 leading-relaxed">
-                      {feature.description}
-                    </CardDescription>
-                    <div className="flex items-center justify-between">
-                      <Badge variant="outline" className="text-xs">
-                        {feature.metrics}
-                      </Badge>
-                      <ArrowRight className="h-4 w-4 text-gray-400 group-hover:text-blue-600 group-hover:translate-x-1 transition-all" />
-                    </div>
-                  </CardContent>
-                </Card>
+            
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <Link 
+                href="/"
+                className="px-6 py-2 bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 rounded-full text-white font-medium transition-all duration-300"
+              >
+                Dashboard
               </Link>
-            ))}
+            </motion.div>
+          </motion.div>
+        </nav>
+
+        {/* Hero Section */}
+        <div className="flex-1 flex items-center justify-center px-6">
+          <div className="max-w-4xl mx-auto text-center">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, delay: 0.2 }}
+            >
+              <motion.div 
+                className="inline-flex items-center px-4 py-2 bg-emerald-500/20 backdrop-blur-sm border border-emerald-400/30 rounded-full text-emerald-300 text-sm font-medium mb-8"
+                animate={{ 
+                  boxShadow: [
+                    '0 0 20px rgba(16, 185, 129, 0.3)',
+                    '0 0 40px rgba(16, 185, 129, 0.5)',
+                    '0 0 20px rgba(16, 185, 129, 0.3)'
+                  ]
+                }}
+                transition={{ duration: 3, repeat: Infinity }}
+              >
+                <Sparkles className="w-4 h-4 mr-2" />
+                AI-Powered Marketing Automation
+              </motion.div>
+              
+              <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight">
+                Marketing on
+                <motion.span 
+                  className="block bg-gradient-to-r from-emerald-400 via-blue-500 to-purple-500 bg-clip-text text-transparent"
+                  animate={{
+                    backgroundPosition: ['0% 50%', '100% 50%', '0% 50%']
+                  }}
+                  transition={{ duration: 5, repeat: Infinity }}
+                >
+                  Autopilot
+                </motion.span>
+              </h1>
+              
+              <p className="text-xl md:text-2xl text-slate-300 mb-12 max-w-3xl mx-auto leading-relaxed">
+                Transform your advertising with AI that never sleeps. Optimize campaigns across 
+                Google, Meta, LinkedIn, and more with autonomous intelligence.
+              </p>
+            </motion.div>
+
+            {/* Action Buttons */}
+            <motion.div 
+              className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.6 }}
+            >
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <Link
+                  href="/dashboard"
+                  className="group px-8 py-4 bg-gradient-to-r from-emerald-500 to-blue-600 hover:from-emerald-600 hover:to-blue-700 text-white font-semibold rounded-2xl shadow-lg hover:shadow-emerald-500/25 transition-all duration-300 flex items-center"
+                >
+                  Launch Dashboard
+                  <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                </Link>
+              </motion.div>
+              
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <Link
+                  href="/campaigns"
+                  className="px-8 py-4 bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 hover:border-white/40 text-white font-semibold rounded-2xl transition-all duration-300"
+                >
+                  View Campaigns
+                </Link>
+              </motion.div>
+            </motion.div>
+
+            {/* Feature Cards */}
+            <motion.div 
+              className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto"
+              initial={{ opacity: 0, y: 40 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, delay: 0.8 }}
+            >
+              {[
+                {
+                  icon: <Zap className="w-8 h-8" />,
+                  title: "Instant Optimization",
+                  description: "AI algorithms optimize your campaigns in real-time for maximum ROI"
+                },
+                {
+                  icon: <TrendingUp className="w-8 h-8" />,
+                  title: "Performance Analytics",
+                  description: "Advanced insights and predictions to stay ahead of market trends"
+                },
+                {
+                  icon: <Shield className="w-8 h-8" />,
+                  title: "Enterprise Security",
+                  description: "Bank-level security with SOC 2 compliance and data protection"
+                }
+              ].map((feature, index) => (
+                <motion.div
+                  key={index}
+                  className="group p-6 bg-white/5 hover:bg-white/10 backdrop-blur-sm border border-white/10 hover:border-white/20 rounded-2xl transition-all duration-300"
+                  whileHover={{ scale: 1.02, y: -5 }}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 1 + index * 0.1 }}
+                >
+                  <div className="text-emerald-400 mb-4 group-hover:scale-110 transition-transform duration-300">
+                    {feature.icon}
+                  </div>
+                  <h3 className="text-xl font-semibold text-white mb-3">{feature.title}</h3>
+                  <p className="text-slate-300">{feature.description}</p>
+                </motion.div>
+              ))}
+            </motion.div>
           </div>
         </div>
 
-        {/* Quick Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-16">
-          <Card>
-            <CardContent className="p-6 text-center">
-              <div className="text-3xl font-bold text-blue-600 mb-2">45+</div>
-              <div className="text-sm text-gray-600">Integrated Platforms</div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-6 text-center">
-              <div className="text-3xl font-bold text-green-600 mb-2">99.2%</div>
-              <div className="text-sm text-gray-600">AI Accuracy</div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-6 text-center">
-              <div className="text-3xl font-bold text-purple-600 mb-2">$2.5M+</div>
-              <div className="text-sm text-gray-600">Ad Spend Optimized</div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-6 text-center">
-              <div className="text-3xl font-bold text-orange-600 mb-2">24/7</div>
-              <div className="text-sm text-gray-600">Autonomous Operation</div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Call to Action */}
-        <div className="text-center bg-gradient-to-r from-blue-600 to-purple-600 rounded-3xl p-12 text-white">
-          <h3 className="text-3xl font-bold mb-4">
-            Ready to Dominate Your Market?
-          </h3>
-          <p className="text-xl mb-8 opacity-90">
-            Join the elite tier of marketing teams using the world's most advanced automation platform.
+        {/* Footer */}
+        <motion.footer 
+          className="p-6 text-center"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1, delay: 1.5 }}
+        >
+          <p className="text-slate-400">
+            Trusted by marketing teams worldwide • Built with ❤️ by Autopilot
           </p>
-          <div className="flex items-center justify-center gap-4">
-            <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100 border border-gray-200">
-              <Sparkles className="h-5 w-5 mr-2" />
-              Start Your Transformation
-            </Button>
-            <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10">
-              <Building className="h-5 w-5 mr-2" />
-              Enterprise Sales
-            </Button>
-          </div>
-        </div>
+        </motion.footer>
       </div>
     </div>
   );
