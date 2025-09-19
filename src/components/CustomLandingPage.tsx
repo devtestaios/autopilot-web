@@ -484,10 +484,10 @@ export default function AwardWinningLandingPage() {
             animate={statsInView ? { y: 0, opacity: 1 } : { y: 50, opacity: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
-            <span className="bg-gradient-to-r from-pulse-blue to-bridge-purple bg-clip-text text-transparent">
+            <span className="text-white drop-shadow-lg">
               Delivering Results
             </span>
-            <span className="block bg-gradient-to-r from-energy-magenta to-pulse-blue bg-clip-text text-transparent">
+            <span className="block bg-gradient-to-r from-cyan-300 via-blue-300 to-purple-300 bg-clip-text text-transparent drop-shadow-lg">
               Right Now
             </span>
           </motion.h2>
@@ -511,12 +511,12 @@ export default function AwardWinningLandingPage() {
                 transition={{ duration: 0.8, delay: 0.6 + index * 0.1 }}
               >
                 <div className="text-5xl sm:text-6xl lg:text-7xl font-bold mb-2 font-orbitron">
-                  <span className={`bg-gradient-to-r ${
-                    index === 0 ? 'from-pulse-blue to-bridge-purple' :
-                    index === 1 ? 'from-bridge-purple to-energy-magenta' :
-                    index === 2 ? 'from-energy-magenta to-pulse-blue' :
-                    'from-pulse-blue via-bridge-purple to-energy-magenta'
-                  } bg-clip-text text-transparent group-hover:animate-pulse`}>
+                  <span className={`${
+                    index === 0 ? 'text-cyan-300' :
+                    index === 1 ? 'text-blue-300' :
+                    index === 2 ? 'text-purple-300' :
+                    'text-pink-300'
+                  } drop-shadow-lg group-hover:animate-pulse`}>
                     <AnimatedCounter target={stat.value} suffix={stat.suffix} />
                   </span>
                 </div>
