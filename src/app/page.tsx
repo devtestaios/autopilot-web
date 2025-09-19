@@ -5,12 +5,12 @@ import Link from 'next/link';
 import { Bot, Zap, Brain, TrendingUp, Settings, ArrowRight, AlertTriangle, Bell, CheckCircle, Target, Sparkles } from 'lucide-react';
 import type { Campaign } from '@/types';
 import { fetchCampaigns, deleteCampaign } from '@/lib/api';
-import DashboardStats from '@/components/DashboardStats';
+import EnhancedDashboardStats from '@/components/EnhancedDashboardStats';
 import CampaignCard from '@/components/CampaignCard';
 import GoogleAdsIntegration from '@/components/GoogleAdsIntegration';
 import GoogleAdsPerformanceDashboard from '@/components/GoogleAdsPerformanceDashboard';
 import CampaignOptimizationEngine from '@/components/CampaignOptimizationEngine';
-import PerformanceChart from '@/components/PerformanceChart';
+import EnhancedPerformanceCharts from '@/components/EnhancedPerformanceCharts';
 import NavigationTabs from '@/components/NavigationTabs';
 import { smartAlertEngine, Alert } from '@/lib/smartAlertEngine';
 
@@ -180,7 +180,7 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          <DashboardStats campaigns={campaigns} loading={loading} />
+          <EnhancedDashboardStats campaigns={campaigns} loading={loading} />
 
           {/* Smart Alerts Preview */}
           <div className="mt-8 bg-gradient-to-r from-orange-50 to-red-50 border border-orange-200 rounded-lg p-6">
@@ -271,17 +271,11 @@ export default function DashboardPage() {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
             <GoogleAdsIntegration onSync={loadCampaigns} loading={loading} />
-            <PerformanceChart 
-              data={[
-                { date: '2024-01-01', spend: 250, clicks: 150, impressions: 2500, conversions: 12 },
-                { date: '2024-01-02', spend: 320, clicks: 180, impressions: 2800, conversions: 15 },
-                { date: '2024-01-03', spend: 290, clicks: 165, impressions: 2650, conversions: 14 },
-                { date: '2024-01-04', spend: 410, clicks: 220, impressions: 3200, conversions: 18 },
-                { date: '2024-01-05', spend: 380, clicks: 195, impressions: 2950, conversions: 16 },
-              ]}
-              metric="spend"
-              title="Campaign Performance Overview"
-            />
+          </div>
+
+          {/* Enhanced Performance Charts */}
+          <div className="mt-8">
+            <EnhancedPerformanceCharts loading={loading} />
           </div>
 
           <div className="mt-8">
