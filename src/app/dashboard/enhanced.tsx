@@ -31,7 +31,8 @@ import {
   Shield,
   Rocket,
   Bot,
-  Sliders
+  Sliders,
+  Trash2
 } from 'lucide-react';
 import { PulseWaveLogo } from '@/components/PulseWaveLogo';
 import { PremiumButton } from '@/components/ui/PremiumButton';
@@ -41,7 +42,7 @@ import FloatingActionButton from '@/components/ui/FloatingActionButton';
 import { useToast } from '@/components/ui/Toast';
 import AdvancedSettingsSidebar from '@/components/AdvancedSettingsSidebar';
 import AIAssistantChat from '@/components/AIAssistantChat';
-import { fetchCampaigns } from '@/lib/api';
+import { fetchCampaigns, deleteCampaign } from '@/lib/api';
 import type { Campaign } from '@/types';
 
 export default function EnhancedDashboardPage() {
@@ -235,6 +236,35 @@ export default function EnhancedDashboardPage() {
 
   const aiInsights = generateAIInsights();
 
+  // Campaign management functions
+  const handleDeleteCampaign = async (campaignId: string, campaignName: string) => {
+    const confirmed = window.confirm(`Are you sure you want to delete the campaign "${campaignName}"? This action cannot be undone.`);
+    
+    if (!confirmed) return;
+    
+    try {
+      await deleteCampaign(campaignId);
+      showToast({
+        type: 'success',
+        title: 'Campaign Deleted',
+        description: `"${campaignName}" has been successfully deleted.`,
+        duration: 3000
+      });
+      
+      // Refresh campaigns list
+      const refreshedCampaigns = await fetchCampaigns();
+      setCampaigns(refreshedCampaigns);
+    } catch (err) {
+      console.error('Failed to delete campaign:', err);
+      showToast({
+        type: 'error',
+        title: 'Delete Failed',
+        description: 'Failed to delete campaign. Please try again.',
+        duration: 3000
+      });
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center">
@@ -297,12 +327,7 @@ export default function EnhancedDashboardPage() {
                 variant="primary"
                 icon={<Sparkles className="w-4 h-4" />}
                 glow
-                onClick={() => showToast({
-                  type: 'success',
-                  title: 'Campaign Created!',
-                  description: 'Your new campaign is being set up...',
-                  duration: 3000
-                })}
+                onClick={() => router.push('/campaigns/new')}
               >
                 New Campaign
               </PremiumButton>
@@ -539,13 +564,31 @@ export default function EnhancedDashboardPage() {
                   </div>
                   
                   <div className="flex gap-2">
-                    <PremiumButton variant="ghost" size="sm" className="flex-1">
+                    <PremiumButton 
+                      variant="ghost" 
+                      size="sm" 
+                      className="flex-1"
+                      onClick={() => router.push(`/campaigns/${campaign.id}`)}
+                    >
                       <Eye className="w-4 h-4 mr-2" />
                       View
                     </PremiumButton>
-                    <PremiumButton variant="outline" size="sm" className="flex-1">
+                    <PremiumButton 
+                      variant="outline" 
+                      size="sm" 
+                      className="flex-1"
+                      onClick={() => router.push(`/campaigns/${campaign.id}/edit`)}
+                    >
                       <Edit3 className="w-4 h-4 mr-2" />
                       Edit
+                    </PremiumButton>
+                    <PremiumButton 
+                      variant="ghost" 
+                      size="sm" 
+                      className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20"
+                      onClick={() => handleDeleteCampaign(campaign.id, campaign.name)}
+                    >
+                      <Trash2 className="w-4 h-4" />
                     </PremiumButton>
                   </div>
                 </PremiumCard>
