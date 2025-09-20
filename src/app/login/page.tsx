@@ -27,7 +27,7 @@ export default function LoginPage() {
     const result = await login(formData.email, formData.password);
     
     if (result.success) {
-      router.push('/dashboard/enhanced');
+      router.push('/dashboard');
     } else {
       setError(result.error || 'Login failed');
     }
@@ -41,9 +41,11 @@ export default function LoginPage() {
   };
 
   return (
-    <div className={`min-h-screen flex ${theme === 'dark' ? 'bg-gray-900' : 'bg-gray-50'}`}>
-        {/* Left side - Form */}
-        <div className="flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8">
+    <div className={`min-h-screen flex ${
+      theme === 'dark' ? 'bg-gray-900' : 'bg-gray-50'
+    }`}>
+      {/* Left side - Form */}
+      <div className="flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -96,7 +98,7 @@ export default function LoginPage() {
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <Mail className={`h-5 w-5 ${
-                      theme === 'dark' ? 'text-gray-400' : 'text-gray-400'
+                      theme === 'dark' ? 'text-gray-300' : 'text-gray-600'
                     }`} />
                   </div>
                   <input
@@ -127,7 +129,7 @@ export default function LoginPage() {
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <Lock className={`h-5 w-5 ${
-                      theme === 'dark' ? 'text-gray-400' : 'text-gray-400'
+                      theme === 'dark' ? 'text-gray-300' : 'text-gray-600'
                     }`} />
                   </div>
                   <input
@@ -152,11 +154,11 @@ export default function LoginPage() {
                   >
                     {showPassword ? (
                       <EyeOff className={`h-5 w-5 ${
-                        theme === 'dark' ? 'text-gray-400' : 'text-gray-400'
+                        theme === 'dark' ? 'text-gray-300' : 'text-gray-600'
                       }`} />
                     ) : (
                       <Eye className={`h-5 w-5 ${
-                        theme === 'dark' ? 'text-gray-400' : 'text-gray-400'
+                        theme === 'dark' ? 'text-gray-300' : 'text-gray-600'
                       }`} />
                     )}
                   </button>

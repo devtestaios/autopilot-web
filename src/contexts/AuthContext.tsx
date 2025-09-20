@@ -1,8 +1,6 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { createClient } from '@/lib/supabase';
-import type { User as SupabaseUser } from '@supabase/supabase-js';
 
 interface User {
   id: string;
@@ -26,7 +24,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
   signup: (email: string, password: string, name: string) => Promise<{ success: boolean; error?: string }>;
-  logout: () => Promise<void>;
+  logout: () => void;
   updateUser: (updates: Partial<User>) => void;
   updatePreferences: (preferences: Partial<User['preferences']>) => void;
 }
@@ -48,10 +46,6 @@ interface AuthProviderProps {
 export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const supabase = createClient();
-
-  // Check if Supabase is available
-  const isSupabaseAvailable = supabase !== null;
 
   // Helper function for safe localStorage access
   const safeLocalStorage = {
@@ -73,99 +67,64 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   };
 
-  // Convert Supabase user to our User interface
-  const convertSupabaseUser = (supabaseUser: SupabaseUser): User => {
-    const savedPreferences = safeLocalStorage.getItem(`user_preferences_${supabaseUser.id}`);
-    const defaultPreferences = {
-      theme: 'light' as const,
-      notifications: true,
-      dashboardLayout: 'detailed' as const,
-      defaultView: 'dashboard' as const
-    };
-
-    return {
-      id: supabaseUser.id,
-      email: supabaseUser.email || '',
-      name: supabaseUser.user_metadata?.name || supabaseUser.email?.split('@')[0] || 'User',
-      avatar: supabaseUser.user_metadata?.avatar_url,
-      role: 'user', // Default role, can be enhanced with RLS policies
-      preferences: savedPreferences ? JSON.parse(savedPreferences) : defaultPreferences,
-      createdAt: supabaseUser.created_at || new Date().toISOString(),
-      lastLogin: new Date().toISOString()
-    };
-  };
-
   // Check for existing session on mount
   useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        if (!isSupabaseAvailable) {
-          console.log('Supabase not available, skipping auth initialization');
-          setIsLoading(false);
-          return;
+    const checkAuth = () => {
+      const savedUser = safeLocalStorage.getItem('autopilot_user');
+      const savedToken = safeLocalStorage.getItem('autopilot_token');
+      
+      if (savedUser && savedToken) {
+        try {
+          const parsedUser = JSON.parse(savedUser);
+          setUser(parsedUser);
+        } catch (error) {
+          console.error('Error parsing saved user:', error);
+          safeLocalStorage.removeItem('autopilot_user');
+          safeLocalStorage.removeItem('autopilot_token');
         }
-
-        const { data: { session }, error } = await supabase.auth.getSession();
-        
-        if (error) {
-          console.error('Error getting session:', error.message);
-        } else if (session?.user) {
-          const userData = convertSupabaseUser(session.user);
-          setUser(userData);
-        }
-      } catch (error) {
-        console.error('Error checking auth:', error);
-      } finally {
-        setIsLoading(false);
       }
+      setIsLoading(false);
     };
 
     checkAuth();
-
-    // Listen for auth changes only if Supabase is available
-    if (isSupabaseAvailable) {
-      const { data: { subscription } } = supabase.auth.onAuthStateChange(
-        async (event, session) => {
-          if (event === 'SIGNED_IN' && session?.user) {
-            const userData = convertSupabaseUser(session.user);
-            setUser(userData);
-          } else if (event === 'SIGNED_OUT') {
-            setUser(null);
-          }
-          setIsLoading(false);
-        }
-      );
-
-      return () => subscription.unsubscribe();
-    }
-  }, [isSupabaseAvailable]);
+  }, []);
 
   const login = async (email: string, password: string): Promise<{ success: boolean; error?: string }> => {
     setIsLoading(true);
     
-    if (!isSupabaseAvailable) {
-      setIsLoading(false);
-      return { success: false, error: 'Authentication service not available' };
-    }
-    
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
+      // Simulate API call - replace with actual backend integration
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Mock successful login
+      if (email && password.length >= 6) {
+        const mockUser: User = {
+          id: `user_${Date.now()}`,
+          email,
+          name: email.split('@')[0],
+          role: 'user',
+          preferences: {
+            theme: 'light',
+            notifications: true,
+            dashboardLayout: 'detailed',
+            defaultView: 'dashboard'
+          },
+          createdAt: new Date().toISOString(),
+          lastLogin: new Date().toISOString()
+        };
 
-      if (error) {
+        const mockToken = `token_${Date.now()}`;
+        
+        safeLocalStorage.setItem('autopilot_user', JSON.stringify(mockUser));
+        safeLocalStorage.setItem('autopilot_token', mockToken);
+        
+        setUser(mockUser);
         setIsLoading(false);
-        return { success: false, error: error.message };
+        return { success: true };
+      } else {
+        setIsLoading(false);
+        return { success: false, error: 'Invalid email or password' };
       }
-
-      if (data.user) {
-        const userData = convertSupabaseUser(data.user);
-        setUser(userData);
-      }
-
-      setIsLoading(false);
-      return { success: true };
     } catch (error) {
       setIsLoading(false);
       return { success: false, error: 'Login failed. Please try again.' };
@@ -175,63 +134,56 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const signup = async (email: string, password: string, name: string): Promise<{ success: boolean; error?: string }> => {
     setIsLoading(true);
     
-    if (!isSupabaseAvailable) {
-      setIsLoading(false);
-      return { success: false, error: 'Authentication service not available' };
-    }
-    
     try {
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          data: {
-            name: name,
-          }
-        }
-      });
+      // Simulate API call - replace with actual backend integration
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Mock successful signup
+      if (email && password.length >= 6 && name) {
+        const mockUser: User = {
+          id: `user_${Date.now()}`,
+          email,
+          name,
+          role: 'user',
+          preferences: {
+            theme: 'light',
+            notifications: true,
+            dashboardLayout: 'detailed',
+            defaultView: 'dashboard'
+          },
+          createdAt: new Date().toISOString(),
+          lastLogin: new Date().toISOString()
+        };
 
-      if (error) {
+        const mockToken = `token_${Date.now()}`;
+        
+        safeLocalStorage.setItem('autopilot_user', JSON.stringify(mockUser));
+        safeLocalStorage.setItem('autopilot_token', mockToken);
+        
+        setUser(mockUser);
         setIsLoading(false);
-        return { success: false, error: error.message };
+        return { success: true };
+      } else {
+        setIsLoading(false);
+        return { success: false, error: 'Please fill in all fields with valid information' };
       }
-
-      // Note: User will need to verify email before being fully authenticated
-      setIsLoading(false);
-      return { 
-        success: true, 
-        error: data.user?.email_confirmed_at ? undefined : 'Please check your email to verify your account.'
-      };
     } catch (error) {
       setIsLoading(false);
       return { success: false, error: 'Signup failed. Please try again.' };
     }
   };
 
-  const logout = async (): Promise<void> => {
-    try {
-      if (isSupabaseAvailable) {
-        const { error } = await supabase.auth.signOut();
-        if (error) {
-          console.error('Error signing out:', error.message);
-        }
-      }
-      setUser(null);
-      // Clear any saved preferences
-      if (user) {
-        safeLocalStorage.removeItem(`user_preferences_${user.id}`);
-      }
-    } catch (error) {
-      console.error('Error during logout:', error);
-    }
+  const logout = () => {
+    safeLocalStorage.removeItem('autopilot_user');
+    safeLocalStorage.removeItem('autopilot_token');
+    setUser(null);
   };
 
   const updateUser = (updates: Partial<User>) => {
     if (user) {
       const updatedUser = { ...user, ...updates };
       setUser(updatedUser);
-      // Save preferences to localStorage
-      safeLocalStorage.setItem(`user_preferences_${user.id}`, JSON.stringify(updatedUser.preferences));
+      safeLocalStorage.setItem('autopilot_user', JSON.stringify(updatedUser));
     }
   };
 
@@ -242,7 +194,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         preferences: { ...user.preferences, ...preferences }
       };
       setUser(updatedUser);
-      safeLocalStorage.setItem(`user_preferences_${user.id}`, JSON.stringify(updatedUser.preferences));
+      safeLocalStorage.setItem('autopilot_user', JSON.stringify(updatedUser));
     }
   };
 

@@ -29,10 +29,7 @@ import {
   Activity,
   Globe,
   Shield,
-  Rocket,
-  Bot,
-  Sliders,
-  Trash2
+  Rocket
 } from 'lucide-react';
 import { PulseWaveLogo } from '@/components/PulseWaveLogo';
 import { PremiumButton } from '@/components/ui/PremiumButton';
@@ -40,11 +37,120 @@ import { PremiumCard } from '@/components/ui/PremiumCard';
 import AdvancedNavigation from '@/components/ui/AdvancedNavigation';
 import FloatingActionButton from '@/components/ui/FloatingActionButton';
 import { useToast } from '@/components/ui/Toast';
-import AdvancedSettingsSidebar from '@/components/AdvancedSettingsSidebar';
-import AIAssistantChat from '@/components/AIAssistantChat';
-import ProtectedRoute from '@/components/ProtectedRoute';
-import { fetchCampaigns, deleteCampaign } from '@/lib/api';
-import type { Campaign } from '@/types';
+
+// Enhanced mock data with more realistic metrics
+const enhancedCampaigns = [
+  {
+    id: '1',
+    name: 'Q4 Holiday Shopping Blitz',
+    platform: 'Google Ads',
+    status: 'active',
+    budget: 15000,
+    spend: 8240,
+    impressions: 425000,
+    clicks: 12250,
+    conversions: 542,
+    ctr: 2.88,
+    cpc: 0.67,
+    roas: 5.4,
+    growth: '+23%'
+  },
+  {
+    id: '2',
+    name: 'AI-Powered Retargeting',
+    platform: 'Meta',
+    status: 'active',
+    budget: 8000,
+    spend: 5100,
+    impressions: 189000,
+    clicks: 4890,
+    conversions: 267,
+    ctr: 2.59,
+    cpc: 1.04,
+    roas: 4.2,
+    growth: '+15%'
+  },
+  {
+    id: '3',
+    name: 'LinkedIn Professional Outreach',
+    platform: 'LinkedIn',
+    status: 'optimizing',
+    budget: 5500,
+    spend: 2850,
+    impressions: 94000,
+    clicks: 1720,
+    conversions: 89,
+    ctr: 1.83,
+    cpc: 1.66,
+    roas: 3.7,
+    growth: '+8%'
+  }
+];
+
+const quickStats = [
+  {
+    title: 'Total Revenue',
+    value: '$47,329',
+    change: '+12.5%',
+    icon: DollarSign,
+    color: 'text-green-600',
+    bgColor: 'bg-green-100 dark:bg-green-900/20'
+  },
+  {
+    title: 'Active Campaigns',
+    value: '24',
+    change: '+3',
+    icon: Rocket,
+    color: 'text-pulse-cyan',
+    bgColor: 'bg-pulse-cyan/10'
+  },
+  {
+    title: 'Conversion Rate',
+    value: '4.82%',
+    change: '+0.8%',
+    icon: Target,
+    color: 'text-purple-600',
+    bgColor: 'bg-purple-100 dark:bg-purple-900/20'
+  },
+  {
+    title: 'ROAS Average',
+    value: '4.7x',
+    change: '+0.3x',
+    icon: TrendingUp,
+    color: 'text-orange-600',
+    bgColor: 'bg-orange-100 dark:bg-orange-900/20'
+  }
+];
+
+const aiInsights = [
+  {
+    type: 'optimization',
+    title: 'Budget Reallocation Opportunity',
+    description: 'Move $2,400 from LinkedIn to Google Ads for 18% ROAS improvement',
+    impact: '+$1,320 revenue',
+    confidence: 92,
+    icon: Zap,
+    color: 'text-blue-600'
+  },
+  {
+    type: 'alert',
+    title: 'High-Performing Keywords Detected',
+    description: '5 keywords showing 40%+ CTR increase - consider bid increases',
+    impact: '+$850 potential',
+    confidence: 87,
+    icon: TrendingUp,
+    color: 'text-green-600'
+  },
+  {
+    type: 'warning',
+    title: 'Campaign Fatigue Warning',
+    description: 'Meta campaign showing declining engagement - refresh creative',
+    impact: 'Prevent -15% CTR',
+    confidence: 78,
+    icon: Shield,
+    color: 'text-orange-600'
+  }
+];
 
 export default function EnhancedDashboardPage() {
   const { user, logout } = useAuth();
@@ -53,16 +159,6 @@ export default function EnhancedDashboardPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
   const [selectedTimeframe, setSelectedTimeframe] = useState('7d');
-  
-  // Real campaign data state
-  const [campaigns, setCampaigns] = useState<Campaign[]>([]);
-  const [campaignsLoading, setCampaignsLoading] = useState(true);
-  const [campaignsError, setCampaignsError] = useState<string | null>(null);
-  
-  // Sidebar states
-  const [isSettingsSidebarOpen, setIsSettingsSidebarOpen] = useState(false);
-  const [isAIChatOpen, setIsAIChatOpen] = useState(false);
-  const [isAIChatMinimized, setIsAIChatMinimized] = useState(false);
 
   useEffect(() => {
     if (!user) {
@@ -74,197 +170,6 @@ export default function EnhancedDashboardPage() {
     const timer = setTimeout(() => setIsLoading(false), 1000);
     return () => clearTimeout(timer);
   }, [user, router]);
-
-  // Load real campaigns from API
-  useEffect(() => {
-    const loadCampaigns = async () => {
-      try {
-        setCampaignsLoading(true);
-        setCampaignsError(null);
-        const realCampaigns = await fetchCampaigns();
-        setCampaigns(realCampaigns);
-        showToast({
-          type: 'success',
-          title: 'Campaign data loaded successfully',
-          duration: 3000
-        });
-      } catch (err) {
-        console.error('Failed to load campaigns:', err);
-        setCampaignsError('Failed to load campaign data');
-        showToast({
-          type: 'error',
-          title: 'Failed to load campaign data',
-          duration: 3000
-        });
-        // Set empty array as fallback
-        setCampaigns([]);
-      } finally {
-        setCampaignsLoading(false);
-      }
-    };
-
-    if (user) {
-      loadCampaigns();
-    }
-  }, [user, showToast]);
-
-  // Calculate dynamic stats from real campaigns
-  const calculateQuickStats = () => {
-    const totalRevenue = campaigns.reduce((sum: number, campaign: Campaign) => {
-      const metrics = campaign.metrics || {};
-      const conversions = (metrics.conversions as number) || 0;
-      return sum + (conversions * 50); // Assuming $50 average order value
-    }, 0);
-    
-    const activeCampaigns = campaigns.filter((c: Campaign) => c.status === 'active').length;
-    
-    const totalClicks = campaigns.reduce((sum: number, campaign: Campaign) => {
-      const metrics = campaign.metrics || {};
-      return sum + ((metrics.clicks as number) || 0);
-    }, 0);
-    
-    const totalConversions = campaigns.reduce((sum: number, campaign: Campaign) => {
-      const metrics = campaign.metrics || {};
-      return sum + ((metrics.conversions as number) || 0);
-    }, 0);
-    
-    const conversionRate = totalClicks > 0 ? (totalConversions / totalClicks) * 100 : 0;
-    
-    const totalSpend = campaigns.reduce((sum: number, campaign: Campaign) => sum + (campaign.spend || 0), 0);
-    const roas = totalSpend > 0 ? totalRevenue / totalSpend : 0;
-    
-    return [
-      {
-        title: 'Total Revenue',
-        value: `$${totalRevenue.toLocaleString()}`,
-        change: '+12.5%', // Mock change for now
-        icon: DollarSign,
-        color: 'text-green-600',
-        bgColor: 'bg-green-100 dark:bg-green-900/20'
-      },
-      {
-        title: 'Active Campaigns',
-        value: activeCampaigns.toString(),
-        change: `+${Math.max(0, activeCampaigns - 20)}`, // Mock change
-        icon: Rocket,
-        color: 'text-pulse-cyan',
-        bgColor: 'bg-pulse-cyan/10'
-      },
-      {
-        title: 'Conversion Rate',
-        value: `${conversionRate.toFixed(2)}%`,
-        change: '+0.8%', // Mock change for now
-        icon: Target,
-        color: 'text-purple-600',
-        bgColor: 'bg-purple-100 dark:bg-purple-900/20'
-      },
-      {
-        title: 'ROAS Average',
-        value: `${roas.toFixed(1)}x`,
-        change: '+0.3x', // Mock change for now
-        icon: TrendingUp,
-        color: 'text-orange-600',
-        bgColor: 'bg-orange-100 dark:bg-orange-900/20'
-      }
-    ];
-  };
-
-  const quickStats = calculateQuickStats();
-
-  // Generate AI insights based on real campaign data
-  const generateAIInsights = () => {
-    const insights = [];
-    
-    // Budget utilization insight
-    const highSpendCampaigns = campaigns.filter(c => {
-      const budget = c.budget || 1000;
-      const utilization = (c.spend / budget) * 100;
-      return utilization > 80;
-    });
-    
-    if (highSpendCampaigns.length > 0) {
-      insights.push({
-        type: 'warning',
-        title: 'High Budget Utilization Detected',
-        description: `${highSpendCampaigns.length} campaigns using >80% of budget`,
-        impact: 'Monitor spending',
-        confidence: 95,
-        icon: Shield,
-        color: 'text-orange-600'
-      });
-    }
-    
-    // Performance optimization insight
-    const totalSpend = campaigns.reduce((sum, c) => sum + c.spend, 0);
-    if (totalSpend > 5000) {
-      insights.push({
-        type: 'optimization',
-        title: 'Budget Reallocation Opportunity',
-        description: `Analyze top-performing campaigns for budget optimization`,
-        impact: `+${Math.round(totalSpend * 0.15)} potential revenue`,
-        confidence: 87,
-        icon: Zap,
-        color: 'text-blue-600'
-      });
-    }
-    
-    // Campaign performance insight
-    const activeCampaigns = campaigns.filter(c => c.status === 'active').length;
-    if (activeCampaigns > 0) {
-      insights.push({
-        type: 'alert',
-        title: 'Active Campaign Performance',
-        description: `${activeCampaigns} campaigns currently running - performance tracking active`,
-        impact: 'Continuous optimization',
-        confidence: 92,
-        icon: TrendingUp,
-        color: 'text-green-600'
-      });
-    }
-    
-    return insights.length > 0 ? insights : [
-      {
-        type: 'info',
-        title: 'System Ready',
-        description: 'AI monitoring active - ready to analyze campaign performance',
-        impact: 'Proactive optimization',
-        confidence: 100,
-        icon: Zap,
-        color: 'text-blue-600'
-      }
-    ];
-  };
-
-  const aiInsights = generateAIInsights();
-
-  // Campaign management functions
-  const handleDeleteCampaign = async (campaignId: string, campaignName: string) => {
-    const confirmed = window.confirm(`Are you sure you want to delete the campaign "${campaignName}"? This action cannot be undone.`);
-    
-    if (!confirmed) return;
-    
-    try {
-      await deleteCampaign(campaignId);
-      showToast({
-        type: 'success',
-        title: 'Campaign Deleted',
-        description: `"${campaignName}" has been successfully deleted.`,
-        duration: 3000
-      });
-      
-      // Refresh campaigns list
-      const refreshedCampaigns = await fetchCampaigns();
-      setCampaigns(refreshedCampaigns);
-    } catch (err) {
-      console.error('Failed to delete campaign:', err);
-      showToast({
-        type: 'error',
-        title: 'Delete Failed',
-        description: 'Failed to delete campaign. Please try again.',
-        duration: 3000
-      });
-    }
-  };
 
   if (isLoading) {
     return (
@@ -287,13 +192,12 @@ export default function EnhancedDashboardPage() {
   }
 
   return (
-    <ProtectedRoute>
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-purple-50/30 dark:from-gray-900 dark:via-blue-900/20 dark:to-purple-900/20">
-        {/* Advanced Navigation */}
-        <AdvancedNavigation />
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-purple-50/30 dark:from-gray-900 dark:via-blue-900/20 dark:to-purple-900/20">
+      {/* Advanced Navigation */}
+      <AdvancedNavigation />
 
-        {/* Main Content */}
-        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {/* Main Content */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -329,7 +233,12 @@ export default function EnhancedDashboardPage() {
                 variant="primary"
                 icon={<Sparkles className="w-4 h-4" />}
                 glow
-                onClick={() => router.push('/campaigns/new')}
+                onClick={() => showToast({
+                  type: 'success',
+                  title: 'Campaign Created!',
+                  description: 'Your new campaign is being set up...',
+                  duration: 3000
+                })}
               >
                 New Campaign
               </PremiumButton>
@@ -370,119 +279,6 @@ export default function EnhancedDashboardPage() {
               </div>
             </PremiumCard>
           ))}
-        </motion.div>
-
-        {/* Performance Overview Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.15 }}
-          className="mb-8"
-        >
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-                Performance Overview
-              </h2>
-              <p className="text-gray-600 dark:text-gray-400">
-                Quick insights from your campaign data
-              </p>
-            </div>
-            <PremiumButton
-              variant="outline"
-              onClick={() => router.push('/analytics')}
-              icon={<Activity className="w-4 h-4" />}
-            >
-              View Full Analytics
-            </PremiumButton>
-          </div>
-          
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Platform Performance Summary */}
-            <PremiumCard className="p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                  Platform Distribution
-                </h3>
-                <Globe className="w-5 h-5 text-gray-600 dark:text-gray-400" />
-              </div>
-              <div className="space-y-3">
-                {Array.from(new Set(campaigns.map(c => c.platform))).map((platform, index) => {
-                  const platformCampaigns = campaigns.filter(c => c.platform === platform);
-                  const platformSpend = platformCampaigns.reduce((sum, c) => sum + c.spend, 0);
-                  const totalSpend = campaigns.reduce((sum, c) => sum + c.spend, 0);
-                  const percentage = totalSpend > 0 ? (platformSpend / totalSpend) * 100 : 0;
-                  
-                  return (
-                    <div key={platform} className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div 
-                          className="w-3 h-3 rounded-full" 
-                          style={{ backgroundColor: ['#00d4ff', '#7c3aed', '#ec4899', '#f59e0b'][index % 4] }}
-                        />
-                        <span className="text-sm font-medium text-gray-900 dark:text-white capitalize">
-                          {platform.replace('_', ' ')}
-                        </span>
-                      </div>
-                      <div className="text-right">
-                        <div className="text-sm font-semibold text-gray-900 dark:text-white">
-                          ${platformSpend.toLocaleString()}
-                        </div>
-                        <div className="text-xs text-gray-600 dark:text-gray-400">
-                          {percentage.toFixed(1)}%
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </PremiumCard>
-
-            {/* Recent Trends */}
-            <PremiumCard className="p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                  Recent Trends
-                </h3>
-                <TrendingUp className="w-5 h-5 text-gray-600 dark:text-gray-400" />
-              </div>
-              <div className="space-y-4">
-                <div className="flex items-center justify-between p-3 bg-green-50 dark:bg-green-900/10 rounded-lg">
-                  <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                    <span className="text-sm font-medium text-gray-900 dark:text-white">
-                      Conversion Rate
-                    </span>
-                  </div>
-                  <span className="text-sm font-semibold text-green-600">
-                    +15.2% ↗
-                  </span>
-                </div>
-                <div className="flex items-center justify-between p-3 bg-blue-50 dark:bg-blue-900/10 rounded-lg">
-                  <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                    <span className="text-sm font-medium text-gray-900 dark:text-white">
-                      Click-Through Rate
-                    </span>
-                  </div>
-                  <span className="text-sm font-semibold text-blue-600">
-                    +8.7% ↗
-                  </span>
-                </div>
-                <div className="flex items-center justify-between p-3 bg-purple-50 dark:bg-purple-900/10 rounded-lg">
-                  <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-                    <span className="text-sm font-medium text-gray-900 dark:text-white">
-                      Return on Ad Spend
-                    </span>
-                  </div>
-                  <span className="text-sm font-semibold text-purple-600">
-                    +22.4% ↗
-                  </span>
-                </div>
-              </div>
-            </PremiumCard>
-          </div>
         </motion.div>
 
         {/* AI Insights Section */}
@@ -570,49 +366,13 @@ export default function EnhancedDashboardPage() {
           </div>
           
           <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-            {campaignsLoading ? (
-              // Loading skeleton
-              Array.from({ length: 3 }).map((_, index) => (
-                <div key={index} className="animate-pulse">
-                  <div className="h-48 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
-                </div>
-              ))
-            ) : campaignsError ? (
-              // Error state
-              <div className="col-span-full text-center py-8">
-                <p className="text-red-500 dark:text-red-400">{campaignsError}</p>
-                <button 
-                  onClick={() => window.location.reload()} 
-                  className="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-                >
-                  Retry
-                </button>
-              </div>
-            ) : campaigns.length === 0 ? (
-              // Empty state
-              <div className="col-span-full text-center py-8">
-                <p className="text-gray-500 dark:text-gray-400">No campaigns found</p>
-              </div>
-            ) : (
-              // Real campaigns data
-              campaigns.map((campaign: Campaign, index: number) => {
-                // Extract metrics from the campaign.metrics object or provide defaults
-                const campaignMetrics = campaign.metrics || {};
-                const clicks = campaignMetrics.clicks as number || 0;
-                const impressions = campaignMetrics.impressions as number || 0;
-                const conversions = campaignMetrics.conversions as number || 0;
-                const ctr = impressions > 0 ? (clicks / impressions * 100) : 0;
-                const roas = campaign.spend > 0 ? (conversions * 50 / campaign.spend) : 0; // Assuming $50 avg order value
-                const budget = campaign.budget || 1000; // Default budget if not set
-                const growth = "+12.5"; // Mock growth for now
-                
-                return (
-                <motion.div
-                  key={campaign.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.4 + index * 0.1 }}
-                >
+            {enhancedCampaigns.map((campaign, index) => (
+              <motion.div
+                key={campaign.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 + index * 0.1 }}
+              >
                 <PremiumCard variant="elevated" hover className="p-6 h-full">
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex-1">
@@ -626,8 +386,8 @@ export default function EnhancedDashboardPage() {
                         <div className={`px-2 py-1 rounded-full text-xs font-medium ${
                           campaign.status === 'active' 
                             ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
-                            : campaign.status === 'paused'
-                            ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400'
+                            : campaign.status === 'optimizing'
+                            ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400'
                             : 'bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-400'
                         }`}>
                           {campaign.status}
@@ -636,7 +396,7 @@ export default function EnhancedDashboardPage() {
                     </div>
                     <div className="text-right">
                       <div className="text-sm font-medium text-green-600 dark:text-green-400">
-                        {growth}%
+                        {campaign.growth}
                       </div>
                     </div>
                   </div>
@@ -645,33 +405,33 @@ export default function EnhancedDashboardPage() {
                     <div className="flex justify-between items-center">
                       <span className="text-sm text-gray-600 dark:text-gray-400">Budget Used</span>
                       <span className="text-sm font-medium text-gray-900 dark:text-white">
-                        ${campaign.spend.toLocaleString()} / ${budget.toLocaleString()}
+                        ${campaign.spend.toLocaleString()} / ${campaign.budget.toLocaleString()}
                       </span>
                     </div>
                     
                     <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                       <div 
                         className="bg-gradient-to-r from-pulse-cyan to-pulse-purple h-2 rounded-full transition-all duration-300"
-                        style={{ width: `${Math.min((campaign.spend / budget) * 100, 100)}%` }}
+                        style={{ width: `${(campaign.spend / campaign.budget) * 100}%` }}
                       />
                     </div>
                     
                     <div className="grid grid-cols-3 gap-4 pt-2">
                       <div className="text-center">
                         <div className="text-lg font-bold text-gray-900 dark:text-white">
-                          {roas.toFixed(1)}x
+                          {campaign.roas}x
                         </div>
                         <div className="text-xs text-gray-600 dark:text-gray-400">ROAS</div>
                       </div>
                       <div className="text-center">
                         <div className="text-lg font-bold text-gray-900 dark:text-white">
-                          {ctr.toFixed(1)}%
+                          {campaign.ctr}%
                         </div>
                         <div className="text-xs text-gray-600 dark:text-gray-400">CTR</div>
                       </div>
                       <div className="text-center">
                         <div className="text-lg font-bold text-gray-900 dark:text-white">
-                          {conversions}
+                          {campaign.conversions}
                         </div>
                         <div className="text-xs text-gray-600 dark:text-gray-400">Conv.</div>
                       </div>
@@ -679,38 +439,18 @@ export default function EnhancedDashboardPage() {
                   </div>
                   
                   <div className="flex gap-2">
-                    <PremiumButton 
-                      variant="ghost" 
-                      size="sm" 
-                      className="flex-1"
-                      onClick={() => router.push(`/campaigns/${campaign.id}`)}
-                    >
+                    <PremiumButton variant="ghost" size="sm" className="flex-1">
                       <Eye className="w-4 h-4 mr-2" />
                       View
                     </PremiumButton>
-                    <PremiumButton 
-                      variant="outline" 
-                      size="sm" 
-                      className="flex-1"
-                      onClick={() => router.push(`/campaigns/${campaign.id}/edit`)}
-                    >
+                    <PremiumButton variant="outline" size="sm" className="flex-1">
                       <Edit3 className="w-4 h-4 mr-2" />
                       Edit
-                    </PremiumButton>
-                    <PremiumButton 
-                      variant="ghost" 
-                      size="sm" 
-                      className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20"
-                      onClick={() => handleDeleteCampaign(campaign.id, campaign.name)}
-                    >
-                      <Trash2 className="w-4 h-4" />
                     </PremiumButton>
                   </div>
                 </PremiumCard>
               </motion.div>
-                );
-              })
-            )}
+            ))}
           </div>
         </motion.div>
 
@@ -756,7 +496,12 @@ export default function EnhancedDashboardPage() {
                 <PremiumButton 
                   variant="outline" 
                   size="lg"
-                  onClick={() => router.push('/analytics')}
+                  onClick={() => showToast({
+                    type: 'info',
+                    title: 'Analytics Dashboard',
+                    description: 'Opening comprehensive analytics view...',
+                    duration: 3000
+                  })}
                 >
                   <BarChart3 className="w-5 h-5 mr-2" />
                   View Analytics
@@ -767,48 +512,8 @@ export default function EnhancedDashboardPage() {
         </motion.div>
       </main>
 
-      {/* Advanced Settings Sidebar */}
-      <AdvancedSettingsSidebar 
-        isOpen={isSettingsSidebarOpen}
-        onClose={() => setIsSettingsSidebarOpen(false)}
-      />
-
-      {/* AI Assistant Chat */}
-      <AIAssistantChat
-        isOpen={isAIChatOpen}
-        onClose={() => setIsAIChatOpen(false)}
-        isMinimized={isAIChatMinimized}
-        onToggleMinimize={() => setIsAIChatMinimized(!isAIChatMinimized)}
-        campaigns={campaigns}
-      />
-
-      {/* Floating Action Buttons for Sidebars */}
-      <div className="fixed bottom-4 left-4 flex flex-col gap-3 z-40">
-        <motion.button
-          onClick={() => setIsSettingsSidebarOpen(true)}
-          className="p-3 bg-gradient-to-br from-bridge-purple to-energy-magenta text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 group"
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.95 }}
-          title="Advanced Settings"
-        >
-          <Sliders className="w-6 h-6 group-hover:rotate-12 transition-transform" />
-        </motion.button>
-        
-        <motion.button
-          onClick={() => setIsAIChatOpen(true)}
-          className="p-3 bg-gradient-to-br from-pulse-blue to-bridge-purple text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 group relative"
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.95 }}
-          title="AI Assistant"
-        >
-          <Bot className="w-6 h-6 group-hover:rotate-12 transition-transform" />
-          <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-white animate-pulse"></div>
-        </motion.button>
-      </div>
-
       {/* Floating Action Button */}
       <FloatingActionButton />
     </div>
-    </ProtectedRoute>
   );
 }

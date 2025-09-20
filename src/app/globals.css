@@ -1,7 +1,4 @@
 @import "tailwindcss";
-@import "../styles/animations.css";
-@import "../styles/mobile-ux.css";
-@import "../styles/accessibility.css";
 
 :root {
   /* PulseBridge Official Brand Colors */
@@ -11,153 +8,42 @@
   --deep-space: #1a1a2e;
   --interface-gray: #e0e6ed;
   
-  /* Enhanced Color System */
-  --pulse-blue-rgb: 0, 212, 255;
-  --bridge-purple-rgb: 124, 58, 237;
-  --energy-magenta-rgb: 236, 72, 153;
-  --deep-space-rgb: 26, 26, 46;
-  
-  /* Light Theme - Enhanced Contrast */
+  /* Light Theme */
   --background: #ffffff;
-  --foreground: #0f172a; /* Much darker for better contrast */
+  --foreground: #1a1a2e;
   --primary: #00d4ff;
-  --primary-rgb: 0, 212, 255;
   --primary-foreground: #1a1a2e;
-  --secondary: #f1f5f9; /* Lighter secondary background */
-  --secondary-foreground: #1e293b; /* Darker secondary text */
+  --secondary: #e0e6ed;
+  --secondary-foreground: #1a1a2e;
   --muted: #f8fafc;
-  --muted-lighter: #fafbfc;
-  --muted-foreground: #334155; /* Much darker for better readability */
+  --muted-foreground: #64748b;
   --accent: #7c3aed;
   --accent-foreground: #ffffff;
   --destructive: #ef4444;
   --destructive-foreground: #ffffff;
-  --border: #e2e8f0; /* Better border contrast */
-  --input: #f1f5f9;
+  --border: #e0e6ed;
+  --input: #e0e6ed;
   --ring: #00d4ff;
   --radius: 0.5rem;
-  
-  /* Enhanced UI Colors */
-  --card: #ffffff;
-  --card-foreground: #0f172a;
-  --card-border: #e2e8f0;
-  --badge: #f1f5f9;
-  --badge-foreground: #334155;
-  --badge-border: #cbd5e1;
-  --success: #10b981;
-  --success-foreground: #ffffff;
-  --success-subtle: #ecfdf5;
-  --warning: #f59e0b;
-  --warning-foreground: #ffffff;
-  --warning-subtle: #fffbeb;
-  --error: #ef4444;
-  --error-foreground: #ffffff;
-  --error-subtle: #fef2f2;
-  --info: #3b82f6;
-  --info-foreground: #ffffff;
-  --info-subtle: #eff6ff;
-  
-  /* Enhanced Shadows */
-  --shadow-card: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-  --shadow-card-hover: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  --shadow-card-active: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  --shadow-glow: 0 0 20px rgba(var(--primary-rgb), 0.3);
 }
 
 .dark {
-  /* Dark Theme - Enhanced Contrast */
+  /* Dark Theme with PulseBridge Colors */
   --background: #0f0f23;
-  --foreground: #f8fafc; /* Much lighter for better contrast */
+  --foreground: #e0e6ed;
   --primary: #00d4ff;
-  --primary-rgb: 0, 212, 255;
   --primary-foreground: #1a1a2e;
-  --secondary: #1e293b; /* Better dark secondary */
-  --secondary-foreground: #e2e8f0; /* Lighter secondary text */
-  --muted: #1e293b;
-  --muted-lighter: #334155;
-  --muted-foreground: #cbd5e1; /* Much lighter for readability */
+  --secondary: #1a1a2e;
+  --secondary-foreground: #e0e6ed;
+  --muted: #1a1a2e;
+  --muted-foreground: #94a3b8;
   --accent: #7c3aed;
-  --accent-foreground: #f8fafc;
+  --accent-foreground: #e0e6ed;
   --destructive: #ef4444;
   --destructive-foreground: #ffffff;
-  --border: #334155; /* Better border contrast */
-  --input: #1e293b;
+  --border: #334155;
+  --input: #334155;
   --ring: #00d4ff;
-  
-  /* Enhanced UI Colors for Dark Mode */
-  --card: #1e293b;
-  --card-foreground: #f8fafc;
-  --card-border: #334155;
-  --badge: #334155;
-  --badge-foreground: #e2e8f0;
-  --badge-border: #475569;
-  --success: #10b981;
-  --success-foreground: #ffffff;
-  --success-subtle: #064e3b;
-  --warning: #f59e0b;
-  --warning-foreground: #ffffff;
-  --warning-subtle: #78350f;
-  --error: #ef4444;
-  --error-foreground: #ffffff;
-  --error-subtle: #7f1d1d;
-  --info: #3b82f6;
-  --info-foreground: #ffffff;
-  --info-subtle: #1e3a8a;
-  
-  /* Enhanced Shadows for Dark Mode */
-  --shadow-card: 0 1px 3px 0 rgba(0, 0, 0, 0.3), 0 1px 2px 0 rgba(0, 0, 0, 0.2);
-  --shadow-card-hover: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
-  --shadow-card-active: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
-  --shadow-glow: 0 0 20px rgba(var(--primary-rgb), 0.4);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    /* Auto Dark Mode - Enhanced Contrast */
-    --background: #0f0f23;
-    --foreground: #f8fafc;
-    --primary: #00d4ff;
-    --primary-rgb: 0, 212, 255;
-    --primary-foreground: #1a1a2e;
-    --secondary: #1e293b;
-    --secondary-foreground: #e2e8f0;
-    --muted: #1e293b;
-    --muted-lighter: #334155;
-    --muted-foreground: #cbd5e1;
-    --accent: #7c3aed;
-    --accent-foreground: #f8fafc;
-    --destructive: #ef4444;
-    --destructive-foreground: #ffffff;
-    --border: #334155;
-    --input: #1e293b;
-    --ring: #00d4ff;
-    
-    /* Enhanced UI Colors for Auto Dark Mode */
-    --card: #1e293b;
-    --card-foreground: #f8fafc;
-    --card-border: #334155;
-    --badge: #334155;
-    --badge-foreground: #e2e8f0;
-    --badge-border: #475569;
-    --success: #10b981;
-    --success-foreground: #ffffff;
-    --success-subtle: #064e3b;
-    --warning: #f59e0b;
-    --warning-foreground: #ffffff;
-    --warning-subtle: #78350f;
-    --error: #ef4444;
-    --error-foreground: #ffffff;
-    --error-subtle: #7f1d1d;
-    --info: #3b82f6;
-    --info-foreground: #ffffff;
-    --info-subtle: #1e3a8a;
-    
-    /* Enhanced Shadows for Auto Dark Mode */
-    --shadow-card: 0 1px 3px 0 rgba(0, 0, 0, 0.3), 0 1px 2px 0 rgba(0, 0, 0, 0.2);
-    --shadow-card-hover: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
-    --shadow-card-active: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
-    --shadow-glow: 0 0 20px rgba(var(--primary-rgb), 0.4);
-  }
 }
 
 body {

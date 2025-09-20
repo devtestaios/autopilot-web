@@ -169,7 +169,6 @@ interface FeatureCard {
   description: string;
   gradient: string;
   delay: number;
-  slug: string;
 }
 
 const features: FeatureCard[] = [
@@ -178,48 +177,42 @@ const features: FeatureCard[] = [
     title: "AI-Powered Marketing Bridge",
     description: "Our AI makes thousands of micro-optimizations every hour, continuously learning and adapting to maximize your campaign performance across all platforms.",
     gradient: "from-blue-500 via-purple-500 to-pink-500",
-    delay: 0.2,
-    slug: "ai-bridge"
+    delay: 0.2
   },
   {
     icon: TrendingUp,
     title: "Predictive Analytics",
     description: "Advanced machine learning algorithms predict market trends and automatically adjust your campaigns 24/7 for maximum ROI and reduced cost per acquisition.",
     gradient: "from-green-500 via-teal-500 to-blue-500",
-    delay: 0.4,
-    slug: "predictive-analytics"
+    delay: 0.4
   },
   {
     icon: Target,
     title: "Multi-Platform Mastery",
     description: "Unified control across Google Ads, Meta, LinkedIn, TikTok, and more. One dashboard to rule them all with seamless cross-platform optimization.",
     gradient: "from-orange-500 via-red-500 to-pink-500",
-    delay: 0.6,
-    slug: "multi-platform"
+    delay: 0.6
   },
   {
     icon: Zap,
     title: "Lightning-Fast Execution",
     description: "Instant campaign deployment and real-time bid adjustments. Our system reacts to market changes faster than humanly possible.",
     gradient: "from-yellow-500 via-orange-500 to-red-500",
-    delay: 0.8,
-    slug: "lightning-execution"
+    delay: 0.8
   },
   {
     icon: Shield,
     title: "Risk Protection",
     description: "Built-in safeguards prevent overspending and automatically pause underperforming campaigns. Your budget is protected 24/7.",
     gradient: "from-indigo-500 via-purple-500 to-pink-500",
-    delay: 1.0,
-    slug: "risk-protection"
+    delay: 1.0
   },
   {
     icon: Globe,
     title: "Global Reach",
     description: "Expand to new markets with AI-powered localization and currency optimization. Scale globally with local precision.",
     gradient: "from-cyan-500 via-blue-500 to-indigo-500",
-    delay: 1.2,
-    slug: "global-reach"
+    delay: 1.2
   }
 ];
 
@@ -314,7 +307,7 @@ export default function AwardWinningLandingPage() {
   };
 
   return (
-    <div className={`min-h-screen bg-background overflow-hidden`}>
+    <div className={`min-h-screen ${theme === 'dark' ? 'bg-gray-900' : 'bg-white'} overflow-hidden`}>
       <LandingNavbar />
       <FloatingOrbs />
       
@@ -339,7 +332,7 @@ export default function AwardWinningLandingPage() {
           {/* PulseBridge Logo */}
           <motion.div
             variants={itemVariants}
-            className="mb-12 flex justify-center mt-16 md:mt-20"
+            className="mb-12 flex justify-center"
           >
             <PulseWaveLogo 
               size="large" 
@@ -368,30 +361,16 @@ export default function AwardWinningLandingPage() {
 
           <motion.h1
             variants={itemVariants}
-            className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-orbitron font-normal tracking-wide mb-8 px-4"
-            style={{ letterSpacing: '0.05em' }}
+            className="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-orbitron font-normal tracking-wide mb-8"
+            style={{ letterSpacing: '0.1em' }}
           >
             <span className="bg-gradient-to-r from-pulse-blue via-bridge-purple to-energy-magenta bg-clip-text text-transparent">
-              Bridged Cross Platform Marketing
+              Bridge the Gap to
             </span>
             <br />
-            <motion.span
-              className="text-gray-300 dark:text-gray-400 font-medium"
-              animate={{
-                opacity: [0.6, 1, 0.6],
-                scale: [0.98, 1.02, 0.98],
-              }}
-              transition={{
-                duration: 2.5,
-                repeat: Infinity,
-                ease: "easeInOut"
-              }}
-              style={{
-                textShadow: '0 0 20px rgba(255, 255, 255, 0.2)'
-              }}
-            >
-              With A Pulse
-            </motion.span>
+            <span className="text-gray-900 dark:text-gray-100 font-bold">
+              Perfect Marketing
+            </span>
             <br />
             <motion.span
               className="bg-gradient-to-r from-pulse-blue via-bridge-purple to-energy-magenta bg-clip-text text-transparent font-bold"
@@ -399,27 +378,26 @@ export default function AwardWinningLandingPage() {
                 backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
               }}
               transition={{
-                duration: 4,
+                duration: 5,
                 repeat: Infinity,
                 ease: "easeInOut"
               }}
-              style={{
-                backgroundSize: '200% 100%',
-                textShadow: '0 0 30px rgba(0, 212, 255, 0.4)'
+              style={{ 
+                textShadow: '0 0 30px rgba(0, 212, 255, 0.5)' 
               }}
             >
-              powered by PulseBridge.ai
+              with PulseBridge.ai
             </motion.span>
           </motion.h1>
 
           <motion.p
             variants={itemVariants}
-            className="text-xl sm:text-2xl lg:text-3xl text-foreground mb-12 max-w-4xl mx-auto leading-relaxed font-exo-2 font-light"
+            className="text-xl sm:text-2xl lg:text-3xl text-gray-600 dark:text-gray-300 mb-12 max-w-4xl mx-auto leading-relaxed font-exo-2 font-light"
           >
             Connect your marketing potential with{' '}
-            <span className="font-semibold text-pulse-blue">AI-powered precision</span>
+            <span className="font-semibold text-pulse-blue dark:text-pulse-blue">AI-powered precision</span>
             {' '}that bridges the gap between strategy and execution. Pulse-driven insights that{' '}
-            <span className="font-semibold text-energy-magenta">transform campaigns</span>{' '}
+            <span className="font-semibold text-energy-magenta dark:text-energy-magenta">transform campaigns</span>{' '}
             into unstoppable growth engines.
           </motion.p>
 
@@ -437,7 +415,7 @@ export default function AwardWinningLandingPage() {
                 placeholder="Enter your email for exclusive access"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full sm:w-80 px-6 py-4 rounded-2xl border-2 border-border bg-background/80 backdrop-blur-sm text-foreground placeholder-muted-foreground focus:border-pulse-cyan focus:outline-none transition-all duration-300"
+                className="w-full sm:w-80 px-6 py-4 rounded-2xl border-2 border-gray-200 dark:border-gray-700 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:border-pulse-cyan focus:outline-none transition-all duration-300"
               />
             </motion.div>
             
@@ -455,11 +433,15 @@ export default function AwardWinningLandingPage() {
 
           <motion.div
             variants={itemVariants}
-            className="flex items-center justify-center space-x-8 text-sm text-muted-foreground"
+            className="flex items-center justify-center space-x-8 text-sm text-gray-500 dark:text-gray-400"
           >
             <div className="flex items-center">
               <CheckCircle className="w-5 h-5 text-green-500 mr-2" />
               14-day free trial
+            </div>
+            <div className="flex items-center">
+              <CheckCircle className="w-5 h-5 text-green-500 mr-2" />
+              No credit card required
             </div>
             <div className="flex items-center">
               <CheckCircle className="w-5 h-5 text-green-500 mr-2" />
@@ -476,7 +458,8 @@ export default function AwardWinningLandingPage() {
               transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
               className="flex flex-col items-center cursor-pointer"
             >
-              <ChevronDown className="w-8 h-8 text-muted-foreground" />
+              <span className="text-sm text-gray-500 dark:text-gray-400 mb-2">Scroll to explore</span>
+              <ChevronDown className="w-6 h-6 text-gray-400" />
             </motion.div>
           </motion.div>
         </div>
@@ -485,20 +468,12 @@ export default function AwardWinningLandingPage() {
       {/* Live Stats Section */}
       <motion.section
         ref={statsRef}
-        className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-deep-space via-bridge-purple/20 to-pulse-blue/20 text-white relative overflow-hidden"
+        className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-blue-600 to-purple-600 text-white relative overflow-hidden"
         initial={{ opacity: 0 }}
         animate={statsInView ? { opacity: 1 } : { opacity: 0 }}
         transition={{ duration: 1 }}
       >
-        <div className="absolute inset-0 bg-gradient-to-r from-black/20 via-transparent to-black/20" />
-        
-        {/* Add some retro sci-fi visual elements */}
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-10 left-10 w-32 h-32 border border-pulse-blue rounded-full animate-spin" style={{ animationDuration: '20s' }} />
-          <div className="absolute bottom-20 right-20 w-24 h-24 border border-energy-magenta rounded-full animate-spin" style={{ animationDuration: '15s', animationDirection: 'reverse' }} />
-          <div className="absolute top-1/2 left-1/4 w-16 h-16 border border-bridge-purple rounded-full animate-pulse" />
-        </div>
-        
+        <div className="absolute inset-0 bg-black/10" />
         <div className="relative z-10 max-w-7xl mx-auto text-center">
           <motion.h2
             className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-4"
@@ -506,10 +481,8 @@ export default function AwardWinningLandingPage() {
             animate={statsInView ? { y: 0, opacity: 1 } : { y: 50, opacity: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
-            <span className="text-white drop-shadow-lg">
-              Delivering Results
-            </span>
-            <span className="block bg-gradient-to-r from-cyan-300 via-blue-300 to-purple-300 bg-clip-text text-transparent drop-shadow-lg">
+            Delivering Results
+            <span className="block bg-gradient-to-r from-yellow-300 to-orange-300 bg-clip-text text-transparent">
               Right Now
             </span>
           </motion.h2>
@@ -527,22 +500,15 @@ export default function AwardWinningLandingPage() {
             {stats.map((stat, index) => (
               <motion.div
                 key={stat.label}
-                className="text-center group"
+                className="text-center"
                 initial={{ y: 50, opacity: 0 }}
                 animate={statsInView ? { y: 0, opacity: 1 } : { y: 50, opacity: 0 }}
                 transition={{ duration: 0.8, delay: 0.6 + index * 0.1 }}
               >
-                <div className="text-5xl sm:text-6xl lg:text-7xl font-bold mb-2 font-orbitron">
-                  <span className={`${
-                    index === 0 ? 'text-cyan-300' :
-                    index === 1 ? 'text-blue-300' :
-                    index === 2 ? 'text-purple-300' :
-                    'text-pink-300'
-                  } drop-shadow-lg group-hover:animate-pulse`}>
-                    <AnimatedCounter target={stat.value} suffix={stat.suffix} />
-                  </span>
+                <div className="text-5xl sm:text-6xl lg:text-7xl font-bold mb-2 text-yellow-300">
+                  <AnimatedCounter target={stat.value} suffix={stat.suffix} />
                 </div>
-                <div className="text-lg text-blue-100 font-exo-2">{stat.label}</div>
+                <div className="text-lg text-blue-100">{stat.label}</div>
               </motion.div>
             ))}
           </div>
@@ -552,7 +518,7 @@ export default function AwardWinningLandingPage() {
       {/* Revolutionary Features Section */}
       <motion.section
         ref={featuresRef}
-        className="py-32 px-4 sm:px-6 lg:px-8 bg-secondary relative"
+        className="py-32 px-4 sm:px-6 lg:px-8 bg-gray-50 dark:bg-gray-800 relative"
         initial={{ opacity: 0 }}
         animate={featuresInView ? { opacity: 1 } : { opacity: 0 }}
         transition={{ duration: 1 }}
@@ -573,66 +539,55 @@ export default function AwardWinningLandingPage() {
                 Capabilities
               </span>
             </h2>
-            <p className="text-2xl text-muted-foreground max-w-4xl mx-auto leading-relaxed">
+            <p className="text-2xl text-gray-600 dark:text-gray-300 max-w-4xl mx-auto leading-relaxed">
               Advanced AI features that give you an unfair advantage in the digital marketing battlefield
             </p>
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {features.map((feature, index) => (
-              <Link 
+              <motion.div
                 key={feature.title}
-                href={`/capabilities/${feature.slug}`}
-                className="block group relative"
+                className="group relative"
+                initial={{ y: 100, opacity: 0 }}
+                animate={featuresInView ? { y: 0, opacity: 1 } : { y: 100, opacity: 0 }}
+                transition={{ duration: 0.8, delay: feature.delay }}
+                whileHover={{ y: -10 }}
               >
-                <motion.div
-                  className="group relative cursor-pointer"
-                  initial={{ y: 100, opacity: 0 }}
-                  animate={featuresInView ? { y: 0, opacity: 1 } : { y: 100, opacity: 0 }}
-                  transition={{ duration: 0.8, delay: feature.delay }}
-                  whileHover={{ y: -10 }}
-                >
-                  <div className="relative p-8 bg-card rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-500 overflow-hidden border border-border group-hover:border-pulse-blue/50">
-                    <div className={`absolute inset-0 bg-gradient-to-br ${feature.gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-500`} />
-                    
-                    <motion.div
-                      className={`inline-flex p-4 rounded-2xl bg-gradient-to-br ${feature.gradient} mb-6`}
-                      whileHover={{ scale: 1.1, rotate: 5 }}
-                      transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                    >
-                      <feature.icon className="w-8 h-8 text-white" />
-                    </motion.div>
-                    
-                    <h3 className="text-2xl font-bold text-foreground mb-4 group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-pulse-blue group-hover:to-bridge-purple group-hover:bg-clip-text transition-all duration-300">
-                      {feature.title}
-                    </h3>
-                    
-                    <p className="text-muted-foreground leading-relaxed mb-4">
-                      {feature.description}
-                    </p>
-                    
-                    {/* Add "Learn More" indicator */}
-                    <div className="flex items-center text-pulse-blue group-hover:text-bridge-purple transition-colors duration-300">
-                      <span className="text-sm font-medium">Learn More</span>
-                      <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform duration-300" />
-                    </div>
-                    
-                    <motion.div
-                      className="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-pulse-blue to-bridge-purple"
-                      initial={{ width: "0%" }}
-                      whileHover={{ width: "100%" }}
-                      transition={{ duration: 0.3 }}
-                    />
-                  </div>
-                </motion.div>
-              </Link>
+                <div className="relative p-8 bg-white dark:bg-gray-900 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-500 overflow-hidden border border-gray-100 dark:border-gray-700">
+                  <div className={`absolute inset-0 bg-gradient-to-br ${feature.gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-500`} />
+                  
+                  <motion.div
+                    className={`inline-flex p-4 rounded-2xl bg-gradient-to-br ${feature.gradient} mb-6`}
+                    whileHover={{ scale: 1.1, rotate: 5 }}
+                    transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                  >
+                    <feature.icon className="w-8 h-8 text-white" />
+                  </motion.div>
+                  
+                  <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4 group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-blue-600 group-hover:to-purple-600 group-hover:bg-clip-text transition-all duration-300">
+                    {feature.title}
+                  </h3>
+                  
+                  <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
+                    {feature.description}
+                  </p>
+                  
+                  <motion.div
+                    className="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-blue-500 to-purple-500"
+                    initial={{ width: "0%" }}
+                    whileHover={{ width: "100%" }}
+                    transition={{ duration: 0.3 }}
+                  />
+                </div>
+              </motion.div>
             ))}
           </div>
         </div>
       </motion.section>
 
       {/* Testimonials Section */}
-      <section className="py-32 px-4 sm:px-6 lg:px-8 bg-background relative overflow-hidden">
+      <section className="py-32 px-4 sm:px-6 lg:px-8 bg-white dark:bg-gray-900 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-900 dark:to-blue-900/10" />
         
         <div className="relative z-10 max-w-6xl mx-auto text-center">
@@ -653,7 +608,7 @@ export default function AwardWinningLandingPage() {
           </motion.h2>
           
           <motion.p
-            className="text-xl text-muted-foreground mb-16 max-w-3xl mx-auto"
+            className="text-xl text-gray-600 dark:text-gray-300 mb-16 max-w-3xl mx-auto"
             initial={{ y: 30, opacity: 0 }}
             whileInView={{ y: 0, opacity: 1 }}
             viewport={{ once: true }}

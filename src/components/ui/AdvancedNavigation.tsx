@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { 
   ChevronRight, 
@@ -16,14 +16,10 @@ import {
   Settings,
   HelpCircle,
   User,
-  Home,
-  LogOut,
-  Brain,
-  FileText
+  Home
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { PremiumButton } from './PremiumButton';
-import { useAuth } from '@/contexts/AuthContext';
 
 interface BreadcrumbItem {
   label: string;
@@ -52,33 +48,12 @@ const quickActions: QuickAction[] = [
     description: 'View performance insights',
     icon: <BarChart3 className="w-4 h-4" />,
     href: '/analytics',
-    shortcut: '⌘+D'
-  },
-  {
-    label: 'Data Reports',
-    description: 'Export data and generate reports',
-    icon: <FileText className="w-4 h-4" />,
-    href: '/reports',
-    shortcut: '⌘+R'
-  },
-  {
-    label: 'Automation Rules',
-    description: 'Intelligent campaign automation',
-    icon: <Zap className="w-4 h-4" />,
-    href: '/automation',
     shortcut: '⌘+A'
-  },
-  {
-    label: 'AI Capabilities',
-    description: 'Predictive analytics and content generation',
-    icon: <Brain className="w-4 h-4" />,
-    href: '/ai-capabilities',
-    shortcut: '⌘+I'
   },
   {
     label: 'AI Optimizer',
     description: 'Enable automatic optimization',
-    icon: <Target className="w-4 h-4" />,
+    icon: <Zap className="w-4 h-4" />,
     href: '/optimizer',
     shortcut: '⌘+O'
   },
@@ -97,14 +72,10 @@ export interface AdvancedNavigationProps {
 
 export default function AdvancedNavigation({ className }: AdvancedNavigationProps) {
   const pathname = usePathname();
-  const router = useRouter();
-  const { user, logout, isAuthenticated } = useAuth();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [isQuickActionsOpen, setIsQuickActionsOpen] = useState(false);
-  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
-  const userMenuRef = useRef<HTMLDivElement>(null);
 
   // Generate breadcrumbs from current path
   const generateBreadcrumbs = (): BreadcrumbItem[] => {
@@ -160,7 +131,6 @@ export default function AdvancedNavigation({ className }: AdvancedNavigationProp
       if (e.key === 'Escape') {
         setIsSearchOpen(false);
         setIsQuickActionsOpen(false);
-        setIsUserMenuOpen(false);
       }
     };
 
@@ -174,9 +144,6 @@ export default function AdvancedNavigation({ className }: AdvancedNavigationProp
       if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
         setIsSearchOpen(false);
         setIsQuickActionsOpen(false);
-      }
-      if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
-        setIsUserMenuOpen(false);
       }
     };
 
@@ -336,122 +303,6 @@ export default function AdvancedNavigation({ className }: AdvancedNavigationProp
             >
               New Campaign
             </PremiumButton>
-
-            {/* User Profile Menu */}
-            {isAuthenticated && user && (
-              <div className="relative" ref={userMenuRef}>
-                <motion.button
-                  onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                  className="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  <div className="w-8 h-8 bg-gradient-to-br from-pulse-cyan to-bridge-purple rounded-full flex items-center justify-center">
-                    <span className="text-white text-sm font-medium">
-                      {user.name.charAt(0).toUpperCase()}
-                    </span>
-                  </div>
-                  <div className="hidden sm:block text-left">
-                    <div className="text-sm font-medium text-gray-900 dark:text-white">
-                      {user.name}
-                    </div>
-                    <div className="text-xs text-gray-500 dark:text-gray-400">
-                      {user.email}
-                    </div>
-                  </div>
-                  <ChevronDown className={cn(
-                    "w-4 h-4 text-gray-500 transition-transform",
-                    isUserMenuOpen && "rotate-180"
-                  )} />
-                </motion.button>
-
-                {/* User Menu Dropdown */}
-                <AnimatePresence>
-                  {isUserMenuOpen && (
-                    <>
-                      {/* Backdrop */}
-                      <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-40"
-                        onClick={() => setIsUserMenuOpen(false)}
-                      />
-                      
-                      {/* Dropdown Menu */}
-                      <motion.div
-                        initial={{ opacity: 0, scale: 0.95, y: -10 }}
-                        animate={{ opacity: 1, scale: 1, y: 0 }}
-                        exit={{ opacity: 0, scale: 0.95, y: -10 }}
-                        className="absolute right-0 mt-2 w-64 bg-white dark:bg-gray-800 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 z-50"
-                      >
-                        <div className="p-2">
-                          <div className="px-3 py-2 border-b border-gray-200 dark:border-gray-700">
-                            <div className="text-sm font-medium text-gray-900 dark:text-white">
-                              {user.name}
-                            </div>
-                            <div className="text-xs text-gray-500 dark:text-gray-400">
-                              {user.email}
-                            </div>
-                            <div className="text-xs text-pulse-cyan mt-1 capitalize">
-                              {user.role} Account
-                            </div>
-                          </div>
-                          
-                          <div className="py-2">
-                            <Link
-                              href="/settings"
-                              className="flex items-center gap-3 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
-                              onClick={() => setIsUserMenuOpen(false)}
-                            >
-                              <Settings className="w-4 h-4" />
-                              Settings
-                            </Link>
-                            
-                            <Link
-                              href="/profile"
-                              className="flex items-center gap-3 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
-                              onClick={() => setIsUserMenuOpen(false)}
-                            >
-                              <User className="w-4 h-4" />
-                              Profile
-                            </Link>
-                            
-                            <button
-                              onClick={async () => {
-                                await logout();
-                                setIsUserMenuOpen(false);
-                                router.push('/');
-                              }}
-                              className="w-full flex items-center gap-3 px-3 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
-                            >
-                              <LogOut className="w-4 h-4" />
-                              Sign Out
-                            </button>
-                          </div>
-                        </div>
-                      </motion.div>
-                    </>
-                  )}
-                </AnimatePresence>
-              </div>
-            )}
-
-            {/* Login Button for non-authenticated users */}
-            {!isAuthenticated && (
-              <div className="flex items-center gap-2">
-                <Link href="/login">
-                  <PremiumButton variant="outline" size="sm">
-                    Sign In
-                  </PremiumButton>
-                </Link>
-                <Link href="/signup">
-                  <PremiumButton variant="primary" size="sm">
-                    Sign Up
-                  </PremiumButton>
-                </Link>
-              </div>
-            )}
           </div>
         </div>
       </div>

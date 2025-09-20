@@ -47,7 +47,7 @@ export default function SignupPage() {
     const result = await signup(formData.email, formData.password, formData.name);
     
     if (result.success) {
-      router.push('/dashboard/enhanced');
+      router.push('/dashboard');
     } else {
       setError(result.error || 'Signup failed');
     }
@@ -75,7 +75,7 @@ export default function SignupPage() {
     <div className={`min-h-screen flex ${
       theme === 'dark' ? 'bg-gray-900' : 'bg-gray-50'
     }`}>
-        {/* Left side - Marketing content */}
+      {/* Left side - Marketing content */}
       <div className="hidden lg:block lg:w-1/2 bg-gradient-to-br from-blue-600 via-purple-600 to-teal-500 relative overflow-hidden">
         <div className="absolute inset-0 bg-black bg-opacity-20"></div>
         <div className="relative h-full flex items-center justify-center p-12 text-white">
@@ -167,7 +167,7 @@ export default function SignupPage() {
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <User className={`h-5 w-5 ${
-                      theme === 'dark' ? 'text-gray-400' : 'text-gray-400'
+                      theme === 'dark' ? 'text-gray-300' : 'text-gray-600'
                     }`} />
                   </div>
                   <input
@@ -198,7 +198,7 @@ export default function SignupPage() {
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <Mail className={`h-5 w-5 ${
-                      theme === 'dark' ? 'text-gray-400' : 'text-gray-400'
+                      theme === 'dark' ? 'text-gray-300' : 'text-gray-600'
                     }`} />
                   </div>
                   <input
@@ -229,7 +229,7 @@ export default function SignupPage() {
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <Lock className={`h-5 w-5 ${
-                      theme === 'dark' ? 'text-gray-400' : 'text-gray-400'
+                      theme === 'dark' ? 'text-gray-300' : 'text-gray-600'
                     }`} />
                   </div>
                   <input
@@ -254,11 +254,11 @@ export default function SignupPage() {
                   >
                     {showPassword ? (
                       <EyeOff className={`h-5 w-5 ${
-                        theme === 'dark' ? 'text-gray-400' : 'text-gray-400'
+                        theme === 'dark' ? 'text-gray-300' : 'text-gray-600'
                       }`} />
                     ) : (
                       <Eye className={`h-5 w-5 ${
-                        theme === 'dark' ? 'text-gray-400' : 'text-gray-400'
+                        theme === 'dark' ? 'text-gray-300' : 'text-gray-600'
                       }`} />
                     )}
                   </button>
@@ -301,7 +301,7 @@ export default function SignupPage() {
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <Lock className={`h-5 w-5 ${
-                      theme === 'dark' ? 'text-gray-400' : 'text-gray-400'
+                      theme === 'dark' ? 'text-gray-300' : 'text-gray-600'
                     }`} />
                   </div>
                   <input
@@ -326,11 +326,11 @@ export default function SignupPage() {
                   >
                     {showConfirmPassword ? (
                       <EyeOff className={`h-5 w-5 ${
-                        theme === 'dark' ? 'text-gray-400' : 'text-gray-400'
+                        theme === 'dark' ? 'text-gray-300' : 'text-gray-600'
                       }`} />
                     ) : (
                       <Eye className={`h-5 w-5 ${
-                        theme === 'dark' ? 'text-gray-400' : 'text-gray-400'
+                        theme === 'dark' ? 'text-gray-300' : 'text-gray-600'
                       }`} />
                     )}
                   </button>
