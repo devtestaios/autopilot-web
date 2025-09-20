@@ -46,7 +46,7 @@ export default function SimplifiedNavbar() {
             whileHover={{ scale: 1.02 }}
           >
             <Link href="/" className="flex items-center space-x-3">
-              <PulseWaveLogo size="medium" className="text-pulse-cyan" />
+              <PulseWaveLogo size="medium" className="text-blue-500 dark:text-blue-400" />
               <span className="text-xl font-bold text-gray-900 dark:text-white">
                 PulseBridge
               </span>

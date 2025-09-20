@@ -392,7 +392,7 @@ export default function AwardWinningLandingPage() {
 
           <motion.p
             variants={itemVariants}
-            className="text-xl sm:text-2xl lg:text-3xl text-gray-600 dark:text-gray-300 mb-12 max-w-4xl mx-auto leading-relaxed font-exo-2 font-light"
+            className="text-xl sm:text-2xl lg:text-3xl text-gray-700 dark:text-gray-200 mb-12 max-w-4xl mx-auto leading-relaxed font-exo-2 font-light"
           >
             Connect your marketing potential with{' '}
             <span className="font-semibold text-blue-600 dark:text-blue-400">AI-powered precision</span>
