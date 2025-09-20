@@ -348,12 +348,12 @@ export default function AwardWinningLandingPage() {
             className="mb-8"
           >
             <motion.div
-              className="inline-flex items-center px-4 py-2 rounded-full bg-gradient-to-r from-pulse-blue/10 to-bridge-purple/10 border border-pulse-blue/30 dark:border-bridge-purple/50 mb-6"
+              className="inline-flex items-center px-4 py-2 rounded-full bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/30 dark:border-purple-500/50 mb-6"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              <Sparkles className="w-4 h-4 text-pulse-blue mr-2" />
-              <span className="text-sm font-medium text-pulse-blue dark:text-pulse-blue font-exo-2">
+              <Sparkles className="w-4 h-4 text-blue-500 dark:text-blue-400 mr-2" />
+              <span className="text-sm font-medium text-blue-600 dark:text-blue-400 font-exo-2">
                 AI Bridge Technology
               </span>
             </motion.div>
@@ -364,7 +364,7 @@ export default function AwardWinningLandingPage() {
             className="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-orbitron font-normal tracking-wide mb-8"
             style={{ letterSpacing: '0.1em' }}
           >
-            <span className="bg-gradient-to-r from-pulse-blue via-bridge-purple to-energy-magenta bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">
               Bridge the Gap to
             </span>
             <br />
@@ -373,7 +373,7 @@ export default function AwardWinningLandingPage() {
             </span>
             <br />
             <motion.span
-              className="bg-gradient-to-r from-pulse-blue via-bridge-purple to-energy-magenta bg-clip-text text-transparent font-bold"
+              className="bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-transparent font-bold"
               animate={{
                 backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
               }}
@@ -395,9 +395,9 @@ export default function AwardWinningLandingPage() {
             className="text-xl sm:text-2xl lg:text-3xl text-gray-600 dark:text-gray-300 mb-12 max-w-4xl mx-auto leading-relaxed font-exo-2 font-light"
           >
             Connect your marketing potential with{' '}
-            <span className="font-semibold text-pulse-blue dark:text-pulse-blue">AI-powered precision</span>
+            <span className="font-semibold text-blue-600 dark:text-blue-400">AI-powered precision</span>
             {' '}that bridges the gap between strategy and execution. Pulse-driven insights that{' '}
-            <span className="font-semibold text-energy-magenta dark:text-energy-magenta">transform campaigns</span>{' '}
+            <span className="font-semibold text-purple-600 dark:text-purple-400">transform campaigns</span>{' '}
             into unstoppable growth engines.
           </motion.p>
 
@@ -415,7 +415,7 @@ export default function AwardWinningLandingPage() {
                 placeholder="Enter your email for exclusive access"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full sm:w-80 px-6 py-4 rounded-2xl border-2 border-gray-200 dark:border-gray-700 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:border-pulse-cyan focus:outline-none transition-all duration-300"
+                className="w-full sm:w-80 px-6 py-4 rounded-2xl border-2 border-gray-200 dark:border-gray-700 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:border-blue-500 dark:focus:border-blue-400 focus:outline-none transition-all duration-300"
               />
             </motion.div>
             

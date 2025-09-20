@@ -96,7 +96,11 @@ export default function LoginPage() {
         >
           {/* Header */}
           <div className="text-center">
-            <Link href="/" className="inline-flex items-center text-pulse-cyan hover:text-pulse-purple mb-8">
+            <Link href="/" className={`inline-flex items-center mb-8 transition-colors ${
+              theme === 'dark' 
+                ? 'text-blue-400 hover:text-blue-300' 
+                : 'text-blue-600 hover:text-blue-700'
+            }`}>
               <ArrowLeft size={20} className="mr-2" />
               Back to Home
             </Link>
@@ -123,7 +127,11 @@ export default function LoginPage() {
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md"
+                className={`px-4 py-3 rounded-md border ${
+                  theme === 'dark' 
+                    ? 'bg-red-900/20 border-red-800/50 text-red-200'
+                    : 'bg-red-50 border-red-200 text-red-700'
+                }`}
               >
                 {error}
               </motion.div>
@@ -215,7 +223,11 @@ export default function LoginPage() {
                   id="remember-me"
                   name="remember-me"
                   type="checkbox"
-                  className="h-4 w-4 text-pulse-cyan focus:ring-pulse-cyan border-gray-300 rounded"
+                  className={`h-4 w-4 rounded border focus:ring-2 focus:ring-offset-2 ${
+                    theme === 'dark'
+                      ? 'bg-gray-700 border-gray-600 text-blue-500 focus:ring-blue-500'
+                      : 'bg-white border-gray-300 text-blue-600 focus:ring-blue-500'
+                  }`}
                 />
                 <label htmlFor="remember-me" className={`ml-2 block text-sm ${
                   theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
@@ -225,7 +237,11 @@ export default function LoginPage() {
               </div>
 
               <div className="text-sm">
-                <Link href="/forgot-password" className="font-medium text-pulse-cyan hover:text-pulse-purple">
+                <Link href="/forgot-password" className={`font-medium transition-colors ${
+                  theme === 'dark'
+                    ? 'text-blue-400 hover:text-blue-300'
+                    : 'text-blue-600 hover:text-blue-700'
+                }`}>
                   Forgot your password?
                 </Link>
               </div>
@@ -291,7 +307,11 @@ export default function LoginPage() {
                 theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
               }`}>
                 Don't have an account?{' '}
-                <Link href="/signup" className="font-medium text-pulse-cyan hover:text-pulse-purple">
+                <Link href="/signup" className={`font-medium transition-colors ${
+                  theme === 'dark'
+                    ? 'text-blue-400 hover:text-blue-300'
+                    : 'text-blue-600 hover:text-blue-700'
+                }`}>
                   Sign up for free
                 </Link>
               </span>

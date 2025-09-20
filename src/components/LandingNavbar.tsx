@@ -67,7 +67,7 @@ export default function LandingNavbar({ className = '' }: LandingNavbarProps) {
               item.href.startsWith('/') ? (
                 <Link key={item.href} href={item.href}>
                   <motion.div
-                    className="font-exo-2 font-medium text-gray-700 dark:text-gray-300 hover:text-pulse-blue dark:hover:text-pulse-blue transition-colors duration-200 cursor-pointer"
+                    className="font-exo-2 font-medium text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200 cursor-pointer"
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     initial={{ opacity: 0, y: -20 }}
@@ -81,7 +81,7 @@ export default function LandingNavbar({ className = '' }: LandingNavbarProps) {
                 <motion.a
                   key={item.href}
                   href={item.href}
-                  className="font-exo-2 font-medium text-gray-700 dark:text-gray-300 hover:text-pulse-blue dark:hover:text-pulse-blue transition-colors duration-200"
+                  className="font-exo-2 font-medium text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   initial={{ opacity: 0, y: -20 }}
@@ -122,7 +122,7 @@ export default function LandingNavbar({ className = '' }: LandingNavbarProps) {
                 >
                   <Link href="/dashboard">
                     <motion.button
-                      className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-pulse-blue to-bridge-purple text-white font-exo-2 font-medium rounded-lg hover:shadow-lg transition-all duration-200"
+                      className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-exo-2 font-medium rounded-lg hover:shadow-lg transition-all duration-200"
                       whileHover={{ scale: 1.05, boxShadow: "0 10px 20px rgba(0, 212, 255, 0.3)" }}
                       whileTap={{ scale: 0.95 }}
                     >
@@ -133,7 +133,7 @@ export default function LandingNavbar({ className = '' }: LandingNavbarProps) {
                   
                   <motion.button
                     onClick={logout}
-                    className="p-2 text-gray-600 dark:text-gray-300 hover:text-energy-magenta transition-colors"
+                    className="p-2 text-gray-600 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
                     title="Logout"
@@ -151,7 +151,7 @@ export default function LandingNavbar({ className = '' }: LandingNavbarProps) {
               >
                 <Link href="/login">
                   <motion.button
-                    className="flex items-center space-x-2 px-4 py-2 text-gray-700 dark:text-gray-300 font-exo-2 font-medium hover:text-pulse-blue dark:hover:text-pulse-blue transition-colors duration-200"
+                    className="flex items-center space-x-2 px-4 py-2 text-gray-700 dark:text-gray-300 font-exo-2 font-medium hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200"
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                   >
@@ -162,7 +162,7 @@ export default function LandingNavbar({ className = '' }: LandingNavbarProps) {
                 
                 <Link href="/signup">
                   <motion.button
-                    className="flex items-center space-x-2 px-6 py-2 bg-gradient-to-r from-pulse-blue to-bridge-purple text-white font-exo-2 font-semibold rounded-lg hover:shadow-lg transition-all duration-200"
+                    className="flex items-center space-x-2 px-6 py-2 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-exo-2 font-semibold rounded-lg hover:shadow-lg transition-all duration-200"
                     whileHover={{ 
                       scale: 1.05, 
                       boxShadow: "0 10px 20px rgba(0, 212, 255, 0.3)",
@@ -206,7 +206,7 @@ export default function LandingNavbar({ className = '' }: LandingNavbarProps) {
                   key={item.href}
                   href={item.href}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="block px-4 py-3 text-gray-700 dark:text-gray-300 font-exo-2 font-medium hover:text-pulse-blue dark:hover:text-pulse-blue hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-lg transition-all duration-200"
+                  className="block px-4 py-3 text-gray-700 dark:text-gray-300 font-exo-2 font-medium hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-lg transition-all duration-200"
                   whileHover={{ x: 10 }}
                   whileTap={{ scale: 0.98 }}
                 >
@@ -221,7 +221,7 @@ export default function LandingNavbar({ className = '' }: LandingNavbarProps) {
                 <>
                   <Link href="/dashboard">
                     <motion.button
-                      className="w-full flex items-center justify-center space-x-2 px-4 py-3 bg-gradient-to-r from-pulse-blue to-bridge-purple text-white font-exo-2 font-semibold rounded-lg"
+                      className="w-full flex items-center justify-center space-x-2 px-4 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-exo-2 font-semibold rounded-lg"
                       whileTap={{ scale: 0.98 }}
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
@@ -234,7 +234,7 @@ export default function LandingNavbar({ className = '' }: LandingNavbarProps) {
                       logout();
                       setIsMobileMenuOpen(false);
                     }}
-                    className="w-full flex items-center justify-center space-x-2 px-4 py-3 text-energy-magenta border border-energy-magenta/30 rounded-lg font-exo-2 font-medium"
+                    className="w-full flex items-center justify-center space-x-2 px-4 py-3 text-purple-600 dark:text-purple-400 border border-purple-600/30 dark:border-purple-400/30 rounded-lg font-exo-2 font-medium"
                     whileTap={{ scale: 0.98 }}
                   >
                     <LogIn className="w-4 h-4 rotate-180" />
@@ -255,7 +255,7 @@ export default function LandingNavbar({ className = '' }: LandingNavbarProps) {
                   </Link>
                   <Link href="/signup">
                     <motion.button
-                      className="w-full flex items-center justify-center space-x-2 px-4 py-3 bg-gradient-to-r from-pulse-blue to-bridge-purple text-white font-exo-2 font-semibold rounded-lg"
+                      className="w-full flex items-center justify-center space-x-2 px-4 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-exo-2 font-semibold rounded-lg"
                       whileTap={{ scale: 0.98 }}
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
