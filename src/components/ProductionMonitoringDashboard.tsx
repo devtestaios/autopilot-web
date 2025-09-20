@@ -669,7 +669,6 @@ export default function ProductionMonitoringDashboard() {
             <Switch
               checked={autoRefresh}
               onCheckedChange={setAutoRefresh}
-              id="auto-refresh"
             />
             <label htmlFor="auto-refresh" className="text-sm font-medium">
               Auto-refresh
@@ -715,7 +714,7 @@ export default function ProductionMonitoringDashboard() {
       )}
 
       {/* Main Dashboard Tabs */}
-      <Tabs value={selectedTab} onValueChange={setSelectedTab} className="space-y-4">
+      <Tabs defaultValue={selectedTab} className="space-y-4">
         <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="overview" className="flex items-center space-x-2">
             <Monitor className="h-4 w-4" />
@@ -824,7 +823,13 @@ export default function ProductionMonitoringDashboard() {
                       <Button variant="outline" size="sm">
                         Edit
                       </Button>
-                      <Switch checked={rule.is_active} />
+                      <Switch 
+                        checked={rule.is_active} 
+                        onCheckedChange={(checked) => {
+                          // Handle rule activation toggle
+                          console.log(`Toggle rule ${rule.id} to ${checked}`)
+                        }}
+                      />
                     </div>
                   </div>
                 ))}

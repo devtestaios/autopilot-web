@@ -283,7 +283,7 @@ export default function EnhancedUIShowcase() {
               </CardContent>
             </Card>
 
-            <Card interactive="lift" animation="slide">
+            <Card interactive="lift" animation="slideUp">
               <CardHeader>
                 <CardTitle>Interactive Tag Badges</CardTitle>
                 <CardDescription>Clickable tags with selection state</CardDescription>

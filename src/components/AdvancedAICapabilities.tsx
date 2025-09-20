@@ -276,7 +276,7 @@ export default function AdvancedAICapabilities() {
       </div>
 
       {/* Main Tabs */}
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+      <Tabs defaultValue={activeTab} className="w-full">
         <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="overview" className="flex items-center gap-2">
             <BarChart3 className="w-4 h-4" />
@@ -539,7 +539,7 @@ export default function AdvancedAICapabilities() {
                               (key.includes('percentage') || key.includes('increase') ? 
                                 `+${(value * 100).toFixed(1)}%` : 
                                 value.toFixed(2)) : 
-                              value}
+                              String(value)}
                           </p>
                         </div>
                       ))}
@@ -602,7 +602,7 @@ export default function AdvancedAICapabilities() {
                         <div key={key} className="text-sm">
                           <span className="font-medium">{key.replace('_', ' ')}:</span>
                           <span className="ml-1 text-muted-foreground">
-                            {Array.isArray(value) ? value.join(', ') : value}
+                            {Array.isArray(value) ? value.join(', ') : String(value)}
                           </span>
                         </div>
                       ))}
@@ -616,7 +616,7 @@ export default function AdvancedAICapabilities() {
                         <div key={key} className="text-sm">
                           <span className="font-medium">{key.replace('_', ' ')}:</span>
                           <span className="ml-1 text-muted-foreground">
-                            {Array.isArray(value) ? value.join(', ') : value}
+                            {Array.isArray(value) ? value.join(', ') : String(value)}
                           </span>
                         </div>
                       ))}

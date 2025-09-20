@@ -9,12 +9,18 @@
  */
 
 import MobileResponsiveDashboard from '@/components/MobileResponsiveDashboard'
-import { Metadata } from 'next'
+import { Metadata, Viewport } from 'next'
 
 export const metadata: Metadata = {
   title: 'Mobile UX Demo - PulseBridge.ai',
   description: 'Mobile-optimized dashboard demonstrating enhanced UX and responsive design',
-  viewport: 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no',
+}
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 }
 
 export default function MobileUXDemoPage() {

@@ -330,12 +330,12 @@ export default function RealTimePerformanceAnalytics({
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
-                    data={platformData}
+                    data={platformData as any}
                     cx="50%"
                     cy="50%"
                     outerRadius={80}
                     dataKey="spend"
-                    label={({ platform, percent }) => `${platform} ${(percent * 100).toFixed(0)}%`}
+                    label={({ platform, percent }: any) => `${platform} ${(percent * 100).toFixed(0)}%`}
                   >
                     {platformData.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
