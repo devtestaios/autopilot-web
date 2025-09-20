@@ -372,28 +372,40 @@ export default function AwardWinningLandingPage() {
             style={{ letterSpacing: '0.05em' }}
           >
             <span className="bg-gradient-to-r from-pulse-blue via-bridge-purple to-energy-magenta bg-clip-text text-transparent">
-              Bridge the Gap to
+              Bridged Cross Platform Marketing
             </span>
             <br />
-            <span className="bg-gradient-to-r from-deep-space to-interface-gray dark:from-interface-gray dark:to-gray-300 bg-clip-text text-transparent">
-              Perfect Marketing
-            </span>
+            <motion.span
+              className="bg-gradient-to-r from-deep-space to-interface-gray dark:from-interface-gray dark:to-gray-300 bg-clip-text text-transparent"
+              animate={{
+                opacity: [0.7, 1, 0.7],
+              }}
+              transition={{
+                duration: 3,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+            >
+              With A Pulse
+            </motion.span>
             <br />
             <motion.span
               className="bg-gradient-to-r from-pulse-blue via-bridge-purple to-energy-magenta bg-clip-text text-transparent font-bold"
               animate={{
                 backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
+                textShadow: [
+                  '0 0 20px rgba(0, 212, 255, 0.3)',
+                  '0 0 40px rgba(124, 58, 237, 0.5)',
+                  '0 0 20px rgba(0, 212, 255, 0.3)'
+                ]
               }}
               transition={{
-                duration: 5,
+                duration: 4,
                 repeat: Infinity,
                 ease: "easeInOut"
               }}
-              style={{ 
-                textShadow: '0 0 30px rgba(0, 212, 255, 0.5)' 
-              }}
             >
-              with PulseBridge.ai
+              powered by PulseBridge.ai
             </motion.span>
           </motion.h1>
 
