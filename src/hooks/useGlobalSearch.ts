@@ -5,7 +5,7 @@ import { useDebounce } from '@/hooks/useDebounce';
 
 export interface SearchResult {
   id: string;
-  type: 'campaign' | 'lead' | 'alert' | 'page';
+  type: 'campaign' | 'lead' | 'alert' | 'page' | 'template';
   title: string;
   description: string;
   url: string;
@@ -15,6 +15,7 @@ export interface SearchResult {
 interface SearchData {
   campaigns?: any[];
   leads?: any[];
+  templates?: any[];
 }
 
 export function useGlobalSearch(searchData?: SearchData) {
@@ -99,6 +100,25 @@ export function useGlobalSearch(searchData?: SearchData) {
       });
     }
 
+    // Add templates if provided
+    if (searchData?.templates) {
+      searchData.templates.forEach(template => {
+        content.push({
+          id: `template-${template.id}`,
+          type: 'template',
+          title: template.name,
+          description: template.description,
+          url: `/campaigns/templates?search=${encodeURIComponent(template.name)}`,
+          metadata: { 
+            category: template.category, 
+            platform: template.platform,
+            rating: template.rating,
+            uses: template.uses
+          }
+        });
+      });
+    }
+
     // Add leads if provided
     if (searchData?.leads) {
       searchData.leads.forEach(lead => {
@@ -167,8 +187,14 @@ export function useGlobalSearch(searchData?: SearchData) {
         
         if (aExact !== bExact) return bExact - aExact;
         
-        // Then sort by type priority (pages, campaigns, leads, alerts)
-        const typePriority = { page: 4, campaign: 3, lead: 2, alert: 1 };
+        // Then sort by type priority (pages, campaigns, templates, leads, alerts)
+        const typePriority: Record<SearchResult['type'], number> = { 
+          page: 5, 
+          campaign: 4, 
+          template: 3, 
+          lead: 2, 
+          alert: 1 
+        };
         return (typePriority[b.type] || 0) - (typePriority[a.type] || 0);
       });
       
