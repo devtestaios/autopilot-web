@@ -176,6 +176,78 @@ export function AIProvider({ children }: { children: React.ReactNode }) {
   }, [saveSettings]);
 
   const generateAIResponse = useCallback(async (userMessage: string, context?: any): Promise<string> => {
+    try {
+      const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'https://autopilot-api-1.onrender.com';
+      
+      // Prepare chat request
+      const chatRequest = {
+        message: userMessage,
+        context: context || {},
+        conversation_history: messages.slice(-10), // Last 10 messages for context
+        page: context?.page || 'dashboard'
+      };
+
+      // Call real AI API
+      const response = await fetch(`${API_BASE}/ai/chat`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(chatRequest)
+      });
+
+      if (response.ok) {
+        const aiResponse = await response.json();
+        
+        // Handle any actions returned by the AI
+        if (aiResponse.actions && aiResponse.actions.length > 0) {
+          for (const action of aiResponse.actions) {
+            await handleAIAction(action);
+          }
+        }
+        
+        return aiResponse.response;
+      } else {
+        // Fallback to mock response if API is unavailable
+        return await generateMockResponse(userMessage, context);
+      }
+    } catch (error) {
+      console.error('AI API Error:', error);
+      // Fallback to mock response
+      return await generateMockResponse(userMessage, context);
+    }
+  }, [messages]);
+
+  const handleAIAction = useCallback(async (action: any) => {
+    try {
+      const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'https://autopilot-api-1.onrender.com';
+      
+      const response = await fetch(`${API_BASE}/ai/execute-action`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(action)
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log('AI Action executed:', result);
+        
+        // Handle navigation actions
+        if (action.function === 'navigate_to_page') {
+          const page = action.arguments.page;
+          window.location.href = `/${page}`;
+        }
+        
+        return result;
+      }
+    } catch (error) {
+      console.error('AI Action Error:', error);
+    }
+  }, []);
+
+  const generateMockResponse = useCallback(async (userMessage: string, context?: any): Promise<string> => {
     // Simulate AI processing time
     await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 2000));
 

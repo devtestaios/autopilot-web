@@ -39,6 +39,7 @@ import UnifiedSidebar from '@/components/UnifiedSidebar';
 import FloatingActionButton from '@/components/ui/FloatingActionButton';
 import AIInsights from '@/components/AIInsights';
 import { useToast } from '@/components/ui/Toast';
+import AIControlChat from '@/components/AIControlChat';
 
 // Enhanced mock data with more realistic metrics
 const enhancedCampaigns = [
@@ -563,6 +564,9 @@ export default function EnhancedDashboardPage() {
         onAnalytics={navigateToAnalytics}
         onOptimization={navigateToOptimization}
       />
+
+      {/* AI Control Chat Assistant */}
+      <AIControlChat defaultMinimized={true} />
       </div>
     </div>
   );
