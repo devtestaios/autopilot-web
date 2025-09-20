@@ -35,6 +35,7 @@ import { PulseWaveLogo } from '@/components/PulseWaveLogo';
 import { PremiumButton } from '@/components/ui/PremiumButton';
 import { PremiumCard } from '@/components/ui/PremiumCard';
 import AdvancedNavigation from '@/components/ui/AdvancedNavigation';
+import UnifiedSidebar from '@/components/UnifiedSidebar';
 import FloatingActionButton from '@/components/ui/FloatingActionButton';
 import { useToast } from '@/components/ui/Toast';
 
@@ -159,6 +160,7 @@ export default function EnhancedDashboardPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
   const [selectedTimeframe, setSelectedTimeframe] = useState('7d');
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   useEffect(() => {
     if (!user) {
@@ -193,10 +195,15 @@ export default function EnhancedDashboardPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-purple-50/30 dark:from-gray-900 dark:via-blue-900/20 dark:to-purple-900/20">
-      {/* Advanced Navigation */}
-      <AdvancedNavigation />
+      {/* Unified Sidebar */}
+      <UnifiedSidebar />
+      
+      {/* Main Content Container */}
+      <div className="lg:ml-64 transition-all duration-300">
+        {/* Advanced Navigation */}
+        <AdvancedNavigation />
 
-      {/* Main Content */}
+        {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header Section */}
         <motion.div
@@ -514,6 +521,7 @@ export default function EnhancedDashboardPage() {
 
       {/* Floating Action Button */}
       <FloatingActionButton />
+      </div>
     </div>
   );
 }
