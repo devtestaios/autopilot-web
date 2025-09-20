@@ -47,7 +47,7 @@ export default function SignupPage() {
     const result = await signup(formData.email, formData.password, formData.name);
     
     if (result.success) {
-      router.push('/dashboard');
+      router.push('/dashboard/enhanced');
     } else {
       setError(result.error || 'Signup failed');
     }
@@ -75,7 +75,7 @@ export default function SignupPage() {
     <div className={`min-h-screen flex ${
       theme === 'dark' ? 'bg-gray-900' : 'bg-gray-50'
     }`}>
-      {/* Left side - Marketing content */}
+        {/* Left side - Marketing content */}
       <div className="hidden lg:block lg:w-1/2 bg-gradient-to-br from-blue-600 via-purple-600 to-teal-500 relative overflow-hidden">
         <div className="absolute inset-0 bg-black bg-opacity-20"></div>
         <div className="relative h-full flex items-center justify-center p-12 text-white">

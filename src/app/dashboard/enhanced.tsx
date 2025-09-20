@@ -42,6 +42,7 @@ import FloatingActionButton from '@/components/ui/FloatingActionButton';
 import { useToast } from '@/components/ui/Toast';
 import AdvancedSettingsSidebar from '@/components/AdvancedSettingsSidebar';
 import AIAssistantChat from '@/components/AIAssistantChat';
+import ProtectedRoute from '@/components/ProtectedRoute';
 import { fetchCampaigns, deleteCampaign } from '@/lib/api';
 import type { Campaign } from '@/types';
 
@@ -286,12 +287,13 @@ export default function EnhancedDashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-purple-50/30 dark:from-gray-900 dark:via-blue-900/20 dark:to-purple-900/20">
-      {/* Advanced Navigation */}
-      <AdvancedNavigation />
+    <ProtectedRoute>
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-purple-50/30 dark:from-gray-900 dark:via-blue-900/20 dark:to-purple-900/20">
+        {/* Advanced Navigation */}
+        <AdvancedNavigation />
 
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Main Content */}
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -368,6 +370,119 @@ export default function EnhancedDashboardPage() {
               </div>
             </PremiumCard>
           ))}
+        </motion.div>
+
+        {/* Performance Overview Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.15 }}
+          className="mb-8"
+        >
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                Performance Overview
+              </h2>
+              <p className="text-gray-600 dark:text-gray-400">
+                Quick insights from your campaign data
+              </p>
+            </div>
+            <PremiumButton
+              variant="outline"
+              onClick={() => router.push('/analytics')}
+              icon={<Activity className="w-4 h-4" />}
+            >
+              View Full Analytics
+            </PremiumButton>
+          </div>
+          
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Platform Performance Summary */}
+            <PremiumCard className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                  Platform Distribution
+                </h3>
+                <Globe className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+              </div>
+              <div className="space-y-3">
+                {Array.from(new Set(campaigns.map(c => c.platform))).map((platform, index) => {
+                  const platformCampaigns = campaigns.filter(c => c.platform === platform);
+                  const platformSpend = platformCampaigns.reduce((sum, c) => sum + c.spend, 0);
+                  const totalSpend = campaigns.reduce((sum, c) => sum + c.spend, 0);
+                  const percentage = totalSpend > 0 ? (platformSpend / totalSpend) * 100 : 0;
+                  
+                  return (
+                    <div key={platform} className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div 
+                          className="w-3 h-3 rounded-full" 
+                          style={{ backgroundColor: ['#00d4ff', '#7c3aed', '#ec4899', '#f59e0b'][index % 4] }}
+                        />
+                        <span className="text-sm font-medium text-gray-900 dark:text-white capitalize">
+                          {platform.replace('_', ' ')}
+                        </span>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-sm font-semibold text-gray-900 dark:text-white">
+                          ${platformSpend.toLocaleString()}
+                        </div>
+                        <div className="text-xs text-gray-600 dark:text-gray-400">
+                          {percentage.toFixed(1)}%
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </PremiumCard>
+
+            {/* Recent Trends */}
+            <PremiumCard className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                  Recent Trends
+                </h3>
+                <TrendingUp className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+              </div>
+              <div className="space-y-4">
+                <div className="flex items-center justify-between p-3 bg-green-50 dark:bg-green-900/10 rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                    <span className="text-sm font-medium text-gray-900 dark:text-white">
+                      Conversion Rate
+                    </span>
+                  </div>
+                  <span className="text-sm font-semibold text-green-600">
+                    +15.2% ↗
+                  </span>
+                </div>
+                <div className="flex items-center justify-between p-3 bg-blue-50 dark:bg-blue-900/10 rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                    <span className="text-sm font-medium text-gray-900 dark:text-white">
+                      Click-Through Rate
+                    </span>
+                  </div>
+                  <span className="text-sm font-semibold text-blue-600">
+                    +8.7% ↗
+                  </span>
+                </div>
+                <div className="flex items-center justify-between p-3 bg-purple-50 dark:bg-purple-900/10 rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+                    <span className="text-sm font-medium text-gray-900 dark:text-white">
+                      Return on Ad Spend
+                    </span>
+                  </div>
+                  <span className="text-sm font-semibold text-purple-600">
+                    +22.4% ↗
+                  </span>
+                </div>
+              </div>
+            </PremiumCard>
+          </div>
         </motion.div>
 
         {/* AI Insights Section */}
@@ -641,12 +756,7 @@ export default function EnhancedDashboardPage() {
                 <PremiumButton 
                   variant="outline" 
                   size="lg"
-                  onClick={() => showToast({
-                    type: 'info',
-                    title: 'Analytics Dashboard',
-                    description: 'Opening comprehensive analytics view...',
-                    duration: 3000
-                  })}
+                  onClick={() => router.push('/analytics')}
                 >
                   <BarChart3 className="w-5 h-5 mr-2" />
                   View Analytics
@@ -699,5 +809,6 @@ export default function EnhancedDashboardPage() {
       {/* Floating Action Button */}
       <FloatingActionButton />
     </div>
+    </ProtectedRoute>
   );
 }

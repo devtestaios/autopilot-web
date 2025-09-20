@@ -27,7 +27,7 @@ export default function LoginPage() {
     const result = await login(formData.email, formData.password);
     
     if (result.success) {
-      router.push('/dashboard');
+      router.push('/dashboard/enhanced');
     } else {
       setError(result.error || 'Login failed');
     }
@@ -41,11 +41,9 @@ export default function LoginPage() {
   };
 
   return (
-    <div className={`min-h-screen flex ${
-      theme === 'dark' ? 'bg-gray-900' : 'bg-gray-50'
-    }`}>
-      {/* Left side - Form */}
-      <div className="flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8">
+    <div className={`min-h-screen flex ${theme === 'dark' ? 'bg-gray-900' : 'bg-gray-50'}`}>
+        {/* Left side - Form */}
+        <div className="flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

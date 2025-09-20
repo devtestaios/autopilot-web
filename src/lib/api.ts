@@ -95,6 +95,17 @@ export async function addPerformanceSnapshot(campaignId: string, performance: Pe
   return response.json();
 }
 
+// Aggregate performance data across all campaigns
+export async function fetchOverallPerformance(days = 30): Promise<PerformanceSnapshot[]> {
+  const response = await fetch(`${API_BASE}/performance?days=${days}`, {
+    cache: 'no-store'
+  });
+  if (!response.ok) {
+    throw new Error(`Failed to fetch overall performance data: ${response.status}`);
+  }
+  return response.json();
+}
+
 // Health Check Functions
 export async function checkApiHealth() {
   try {
