@@ -11,8 +11,21 @@ import { PulseWaveLogo } from '@/components/PulseWaveLogo';
 
 export default function LoginPage() {
   const router = useRouter();
-  const { login, isLoading } = useAuth();
   const { theme } = useTheme();
+  
+  // Safely handle auth context
+  let authContext;
+  try {
+    authContext = useAuth();
+  } catch (error) {
+    console.error('Auth context error:', error);
+    authContext = {
+      login: async () => ({ success: false, error: 'Authentication service not available' }),
+      isLoading: false
+    };
+  }
+  
+  const { login, isLoading } = authContext;
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -24,12 +37,17 @@ export default function LoginPage() {
     e.preventDefault();
     setError('');
 
-    const result = await login(formData.email, formData.password);
-    
-    if (result.success) {
-      router.push('/dashboard');
-    } else {
-      setError(result.error || 'Login failed');
+    try {
+      const result = await login(formData.email, formData.password);
+      
+      if (result.success) {
+        router.push('/dashboard');
+      } else {
+        setError(result.error || 'Login failed');
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      setError('Authentication service temporarily unavailable. Please try the demo access.');
     }
   };
 
@@ -190,7 +208,7 @@ export default function LoginPage() {
             </div>
 
             {/* Submit Button */}
-            <div>
+            <div className="space-y-3">
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
@@ -210,6 +228,21 @@ export default function LoginPage() {
                 ) : (
                   'Sign in'
                 )}
+              </motion.button>
+
+              {/* Demo Access Button */}
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                type="button"
+                onClick={() => router.push('/dashboard')}
+                className={`w-full flex justify-center py-3 px-4 border-2 border-dashed text-sm font-medium rounded-lg transition-colors ${
+                  theme === 'dark'
+                    ? 'border-gray-600 text-gray-300 hover:border-gray-500 hover:bg-gray-800'
+                    : 'border-gray-300 text-gray-700 hover:border-gray-400 hover:bg-gray-50'
+                }`}
+              >
+                🚀 Demo Access (Skip Login)
               </motion.button>
             </div>
 
