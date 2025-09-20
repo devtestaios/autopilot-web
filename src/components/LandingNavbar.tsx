@@ -30,6 +30,7 @@ export default function LandingNavbar({ className = '' }: LandingNavbarProps) {
     { label: 'Features', href: '#features' },
     { label: 'Solutions', href: '#solutions' },
     { label: 'Pricing', href: '#pricing' },
+    { label: 'Dashboard', href: '/dashboard' },
     { label: 'About', href: '#about' },
     { label: 'Contact', href: '#contact' },
   ];
@@ -63,18 +64,33 @@ export default function LandingNavbar({ className = '' }: LandingNavbarProps) {
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center space-x-8">
             {navigationItems.map((item, index) => (
-              <motion.a
-                key={item.href}
-                href={item.href}
-                className="font-exo-2 font-medium text-gray-700 dark:text-gray-300 hover:text-pulse-blue dark:hover:text-pulse-blue transition-colors duration-200"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 * index, duration: 0.3 }}
-              >
-                {item.label}
-              </motion.a>
+              item.href.startsWith('/') ? (
+                <Link key={item.href} href={item.href}>
+                  <motion.div
+                    className="font-exo-2 font-medium text-gray-700 dark:text-gray-300 hover:text-pulse-blue dark:hover:text-pulse-blue transition-colors duration-200 cursor-pointer"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    initial={{ opacity: 0, y: -20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.1 * index, duration: 0.3 }}
+                  >
+                    {item.label}
+                  </motion.div>
+                </Link>
+              ) : (
+                <motion.a
+                  key={item.href}
+                  href={item.href}
+                  className="font-exo-2 font-medium text-gray-700 dark:text-gray-300 hover:text-pulse-blue dark:hover:text-pulse-blue transition-colors duration-200"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  initial={{ opacity: 0, y: -20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1 * index, duration: 0.3 }}
+                >
+                  {item.label}
+                </motion.a>
+              )
             ))}
           </div>
 
