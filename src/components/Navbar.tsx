@@ -49,7 +49,7 @@ export default function Navbar({ onMenuToggle }: NavbarProps) {
   const unreadCount = notifications.filter(n => n.unread).length;
 
   return (
-    <nav className="bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm border-b border-gray-200 dark:border-gray-700 px-4 py-3 transition-all duration-300 sticky top-0 z-40">
+    <nav className="bg-white/95 dark:bg-black/90 backdrop-blur-sm border-b border-gray-200 dark:border-gray-700 px-4 py-3 transition-all duration-300 sticky top-0 z-40">
       <div className="flex items-center justify-between max-w-7xl mx-auto">
         {/* Left Side */}
         <div className="flex items-center gap-4">
@@ -115,7 +115,7 @@ export default function Navbar({ onMenuToggle }: NavbarProps) {
 
           {/* Enhanced Notifications */}
           <div className="relative">
-            <button className="p-2 text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-all duration-200 group relative">
+            <button className="p-2 text-gray-800 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-all duration-200 group relative">
               <Bell className="w-5 h-5" />
               <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full flex items-center justify-center">
                 <span className="text-white text-xs font-bold">3</span>
@@ -129,7 +129,7 @@ export default function Navbar({ onMenuToggle }: NavbarProps) {
           {/* Enhanced Theme Toggle */}
           <button
             onClick={toggleTheme}
-            className="p-2 text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-all duration-200 group relative"
+            className="p-2 text-gray-800 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-all duration-200 group relative"
           >
             {theme === 'dark' ? (
               <Sun className="w-5 h-5 animate-pulse" />

@@ -37,7 +37,7 @@ export default function LandingNavbar({ className = '' }: LandingNavbarProps) {
 
   return (
     <motion.nav 
-      className={`fixed top-0 left-0 right-0 z-50 bg-white/90 dark:bg-deep-space/90 backdrop-blur-md border-b border-gray-200/20 dark:border-gray-800/30 ${className}`}
+      className={`fixed top-0 left-0 right-0 z-50 bg-white/90 dark:bg-black/90 backdrop-blur-md border-b border-gray-200/20 dark:border-gray-700/30 ${className}`}
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
@@ -67,7 +67,7 @@ export default function LandingNavbar({ className = '' }: LandingNavbarProps) {
               item.href.startsWith('/') ? (
                 <Link key={item.href} href={item.href}>
                   <motion.div
-                    className="font-exo-2 font-medium text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200 cursor-pointer"
+                    className="font-exo-2 font-medium text-gray-800 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200 cursor-pointer"
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     initial={{ opacity: 0, y: -20 }}
@@ -81,7 +81,7 @@ export default function LandingNavbar({ className = '' }: LandingNavbarProps) {
                 <motion.a
                   key={item.href}
                   href={item.href}
-                  className="font-exo-2 font-medium text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200"
+                  className="font-exo-2 font-medium text-gray-800 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   initial={{ opacity: 0, y: -20 }}
@@ -101,7 +101,7 @@ export default function LandingNavbar({ className = '' }: LandingNavbarProps) {
               onClick={toggleTheme}
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
-              className="p-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+              className="p-2 rounded-lg text-gray-800 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
               title="Toggle theme"
             >
               {theme === 'dark' ? (
@@ -133,7 +133,7 @@ export default function LandingNavbar({ className = '' }: LandingNavbarProps) {
                   
                   <motion.button
                     onClick={logout}
-                    className="p-2 text-gray-600 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
+                    className="p-2 text-gray-800 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
                     title="Logout"
@@ -151,7 +151,7 @@ export default function LandingNavbar({ className = '' }: LandingNavbarProps) {
               >
                 <Link href="/login">
                   <motion.button
-                    className="flex items-center space-x-2 px-4 py-2 text-gray-700 dark:text-gray-300 font-exo-2 font-medium hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200"
+                    className="flex items-center space-x-2 px-4 py-2 text-gray-800 dark:text-gray-300 font-exo-2 font-medium hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200"
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                   >
@@ -181,7 +181,7 @@ export default function LandingNavbar({ className = '' }: LandingNavbarProps) {
             <motion.button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               whileTap={{ scale: 0.95 }}
-              className="lg:hidden p-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+              className="lg:hidden p-2 rounded-lg text-gray-800 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
             >
               {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </motion.button>
@@ -206,7 +206,7 @@ export default function LandingNavbar({ className = '' }: LandingNavbarProps) {
                   key={item.href}
                   href={item.href}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="block px-4 py-3 text-gray-700 dark:text-gray-300 font-exo-2 font-medium hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-lg transition-all duration-200"
+                  className="block px-4 py-3 text-gray-800 dark:text-gray-300 font-exo-2 font-medium hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-lg transition-all duration-200"
                   whileHover={{ x: 10 }}
                   whileTap={{ scale: 0.98 }}
                 >
@@ -245,7 +245,7 @@ export default function LandingNavbar({ className = '' }: LandingNavbarProps) {
                 <>
                   <Link href="/login">
                     <motion.button
-                      className="w-full flex items-center justify-center space-x-2 px-4 py-3 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 rounded-lg font-exo-2 font-medium"
+                      className="w-full flex items-center justify-center space-x-2 px-4 py-3 text-gray-800 dark:text-gray-300 border border-gray-300 dark:border-gray-600 rounded-lg font-exo-2 font-medium"
                       whileTap={{ scale: 0.98 }}
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
