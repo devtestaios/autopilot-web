@@ -338,7 +338,7 @@ export default function AwardWinningLandingPage() {
               size="large" 
               variant="dark" 
               animated={true} 
-              showText={true}
+              showText={false}
               className="drop-shadow-2xl"
             />
           </motion.div>
