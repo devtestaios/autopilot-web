@@ -25,7 +25,7 @@ Tone: Professional, knowledgeable, actionable. Provide specific numbers and perc
 
 export async function POST(request: NextRequest) {
   try {
-    const { message, conversationHistory = [] } = await request.json();
+    const { message, conversationHistory = [], campaignContext = null } = await request.json();
 
     if (!process.env.ANTHROPIC_API_KEY) {
       return NextResponse.json(
@@ -39,6 +39,27 @@ export async function POST(request: NextRequest) {
         { error: 'Message is required' },
         { status: 400 }
       );
+    }
+
+    // Build enhanced system prompt with campaign context
+    let enhancedSystemPrompt = MARKETING_SYSTEM_PROMPT;
+    
+    if (campaignContext) {
+      enhancedSystemPrompt += `
+
+CURRENT CAMPAIGN DATA CONTEXT:
+- Total Campaigns: ${campaignContext.totalCampaigns}
+- Active Campaigns: ${campaignContext.activeCampaigns}
+- Total Spend: $${campaignContext.totalSpend.toLocaleString()}
+- Total Budget: $${campaignContext.totalBudget.toLocaleString()}
+- Platforms: ${campaignContext.platforms.join(', ')}
+
+TOP PERFORMING CAMPAIGNS:
+${campaignContext.topPerformers.map((campaign: any, index: number) => 
+  `${index + 1}. ${campaign.name} (${campaign.platform}) - $${campaign.spend} spent, ${campaign.clicks} clicks, ${campaign.impressions} impressions`
+).join('\n')}
+
+Use this real data to provide specific, contextual recommendations. Reference actual performance numbers when giving advice.`;
     }
 
     // Build conversation context
@@ -56,7 +77,7 @@ export async function POST(request: NextRequest) {
     const response = await anthropic.messages.create({
       model: 'claude-3-sonnet-20240229',
       max_tokens: 1024,
-      system: MARKETING_SYSTEM_PROMPT,
+      system: enhancedSystemPrompt,
       messages: messages
     });
 

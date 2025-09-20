@@ -24,6 +24,7 @@ import {
 } from 'lucide-react';
 import { PremiumCard } from './ui/PremiumCard';
 import { PremiumButton } from './ui/PremiumButton';
+import type { Campaign } from '@/types';
 
 interface Message {
   id: string;
@@ -38,30 +39,8 @@ interface AIAssistantChatProps {
   onClose: () => void;
   isMinimized: boolean;
   onToggleMinimize: () => void;
+  campaigns?: Campaign[];
 }
-
-const quickPrompts = [
-  {
-    icon: TrendingUp,
-    title: "Analyze Performance",
-    prompt: "Analyze my campaign performance and suggest optimizations"
-  },
-  {
-    icon: Target,
-    title: "Improve Targeting",
-    prompt: "Help me improve my audience targeting strategy"
-  },
-  {
-    icon: Lightbulb,
-    title: "Content Ideas",
-    prompt: "Generate ad copy ideas for my holiday campaign"
-  },
-  {
-    icon: Zap,
-    title: "Quick Fix",
-    prompt: "What's the fastest way to improve my ROAS?"
-  }
-];
 
 const sampleResponses: Record<string, string> = {
   "analyze": `Based on your recent campaign data, I've identified several optimization opportunities:
@@ -129,8 +108,64 @@ export default function AIAssistantChat({
   isOpen, 
   onClose, 
   isMinimized, 
-  onToggleMinimize 
+  onToggleMinimize,
+  campaigns = []
 }: AIAssistantChatProps) {
+  // Generate dynamic quick prompts based on campaign data
+  const generateQuickPrompts = () => {
+    const basePrompts = [
+      {
+        icon: TrendingUp,
+        title: "Analyze Performance",
+        prompt: campaigns.length > 0 
+          ? `Analyze my ${campaigns.length} campaigns and suggest optimizations`
+          : "Analyze my campaign performance and suggest optimizations"
+      },
+      {
+        icon: Target,
+        title: "Improve Targeting",
+        prompt: "Help me improve my audience targeting strategy"
+      },
+      {
+        icon: Lightbulb,
+        title: "Content Ideas",
+        prompt: "Generate ad copy ideas for my campaigns"
+      },
+      {
+        icon: Zap,
+        title: "Quick Fix",
+        prompt: campaigns.length > 0 && campaigns.reduce((sum, c) => sum + c.spend, 0) > 0
+          ? `I've spent $${campaigns.reduce((sum, c) => sum + c.spend, 0).toLocaleString()} - what's the fastest way to improve my ROAS?`
+          : "What's the fastest way to improve my ROAS?"
+      }
+    ];
+
+    // Add specific prompts if we have campaign data
+    if (campaigns.length > 0) {
+      const activeCampaigns = campaigns.filter(c => c.status === 'active').length;
+      const platforms = [...new Set(campaigns.map(c => c.platform))];
+      
+      if (activeCampaigns !== campaigns.length) {
+        basePrompts.push({
+          icon: Settings,
+          title: "Campaign Status",
+          prompt: `I have ${activeCampaigns} active campaigns out of ${campaigns.length} total. Should I reactivate any paused campaigns?`
+        });
+      }
+
+      if (platforms.length > 1) {
+        basePrompts.push({
+          icon: Target,
+          title: "Multi-Platform Strategy",
+          prompt: `I'm running campaigns on ${platforms.join(', ')}. How should I optimize my budget allocation across platforms?`
+        });
+      }
+    }
+
+    return basePrompts.slice(0, 4); // Keep only first 4 for UI
+  };
+
+  const quickPrompts = generateQuickPrompts();
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
@@ -183,6 +218,25 @@ I have deep knowledge of Google Ads, Meta, LinkedIn, and other major platforms. 
     setIsTyping(true);
 
     try {
+      // Prepare campaign context for AI
+      const campaignContext = campaigns.length > 0 ? {
+        totalCampaigns: campaigns.length,
+        activeCampaigns: campaigns.filter(c => c.status === 'active').length,
+        totalSpend: campaigns.reduce((sum, c) => sum + c.spend, 0),
+        totalBudget: campaigns.reduce((sum, c) => sum + (c.budget || 0), 0),
+        platforms: [...new Set(campaigns.map(c => c.platform))],
+        topPerformers: campaigns
+          .sort((a, b) => (b.metrics?.clicks as number || 0) - (a.metrics?.clicks as number || 0))
+          .slice(0, 3)
+          .map(c => ({
+            name: c.name,
+            platform: c.platform,
+            spend: c.spend,
+            clicks: c.metrics?.clicks || 0,
+            impressions: c.metrics?.impressions || 0
+          }))
+      } : null;
+
       // Call Claude API
       const response = await fetch('/api/chat', {
         method: 'POST',
@@ -191,7 +245,8 @@ I have deep knowledge of Google Ads, Meta, LinkedIn, and other major platforms. 
         },
         body: JSON.stringify({
           message: content.trim(),
-          conversationHistory: messages.slice(-6) // Send last 6 messages for context
+          conversationHistory: messages.slice(-6), // Send last 6 messages for context
+          campaignContext // Include real campaign data
         })
       });
 

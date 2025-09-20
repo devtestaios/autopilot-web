@@ -669,6 +669,7 @@ export default function EnhancedDashboardPage() {
         onClose={() => setIsAIChatOpen(false)}
         isMinimized={isAIChatMinimized}
         onToggleMinimize={() => setIsAIChatMinimized(!isAIChatMinimized)}
+        campaigns={campaigns}
       />
 
       {/* Floating Action Buttons for Sidebars */}
