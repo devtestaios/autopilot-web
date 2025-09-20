@@ -50,6 +50,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [isLoading, setIsLoading] = useState(true);
   const supabase = createClient();
 
+  // Check if Supabase is available
+  const isSupabaseAvailable = supabase !== null;
+
   // Helper function for safe localStorage access
   const safeLocalStorage = {
     getItem: (key: string) => {
@@ -96,6 +99,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
   useEffect(() => {
     const checkAuth = async () => {
       try {
+        if (!isSupabaseAvailable) {
+          console.log('Supabase not available, skipping auth initialization');
+          setIsLoading(false);
+          return;
+        }
+
         const { data: { session }, error } = await supabase.auth.getSession();
         
         if (error) {
@@ -113,24 +122,31 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
     checkAuth();
 
-    // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        if (event === 'SIGNED_IN' && session?.user) {
-          const userData = convertSupabaseUser(session.user);
-          setUser(userData);
-        } else if (event === 'SIGNED_OUT') {
-          setUser(null);
+    // Listen for auth changes only if Supabase is available
+    if (isSupabaseAvailable) {
+      const { data: { subscription } } = supabase.auth.onAuthStateChange(
+        async (event, session) => {
+          if (event === 'SIGNED_IN' && session?.user) {
+            const userData = convertSupabaseUser(session.user);
+            setUser(userData);
+          } else if (event === 'SIGNED_OUT') {
+            setUser(null);
+          }
+          setIsLoading(false);
         }
-        setIsLoading(false);
-      }
-    );
+      );
 
-    return () => subscription.unsubscribe();
-  }, []);
+      return () => subscription.unsubscribe();
+    }
+  }, [isSupabaseAvailable]);
 
   const login = async (email: string, password: string): Promise<{ success: boolean; error?: string }> => {
     setIsLoading(true);
+    
+    if (!isSupabaseAvailable) {
+      setIsLoading(false);
+      return { success: false, error: 'Authentication service not available' };
+    }
     
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
@@ -158,6 +174,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   const signup = async (email: string, password: string, name: string): Promise<{ success: boolean; error?: string }> => {
     setIsLoading(true);
+    
+    if (!isSupabaseAvailable) {
+      setIsLoading(false);
+      return { success: false, error: 'Authentication service not available' };
+    }
     
     try {
       const { data, error } = await supabase.auth.signUp({
@@ -189,9 +210,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   const logout = async (): Promise<void> => {
     try {
-      const { error } = await supabase.auth.signOut();
-      if (error) {
-        console.error('Error signing out:', error.message);
+      if (isSupabaseAvailable) {
+        const { error } = await supabase.auth.signOut();
+        if (error) {
+          console.error('Error signing out:', error.message);
+        }
       }
       setUser(null);
       // Clear any saved preferences
