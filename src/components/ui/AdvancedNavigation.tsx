@@ -17,7 +17,9 @@ import {
   HelpCircle,
   User,
   Home,
-  LogOut
+  LogOut,
+  Brain,
+  FileText
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { PremiumButton } from './PremiumButton';
@@ -53,11 +55,25 @@ const quickActions: QuickAction[] = [
     shortcut: '⌘+D'
   },
   {
+    label: 'Data Reports',
+    description: 'Export data and generate reports',
+    icon: <FileText className="w-4 h-4" />,
+    href: '/reports',
+    shortcut: '⌘+R'
+  },
+  {
     label: 'Automation Rules',
     description: 'Intelligent campaign automation',
     icon: <Zap className="w-4 h-4" />,
     href: '/automation',
     shortcut: '⌘+A'
+  },
+  {
+    label: 'AI Capabilities',
+    description: 'Predictive analytics and content generation',
+    icon: <Brain className="w-4 h-4" />,
+    href: '/ai-capabilities',
+    shortcut: '⌘+I'
   },
   {
     label: 'AI Optimizer',
