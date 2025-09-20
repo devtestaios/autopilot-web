@@ -68,9 +68,10 @@ const quickActions: QuickAction[] = [
 
 export interface AdvancedNavigationProps {
   className?: string;
+  sidebarCollapsed?: boolean;
 }
 
-export default function AdvancedNavigation({ className }: AdvancedNavigationProps) {
+export default function AdvancedNavigation({ className, sidebarCollapsed = false }: AdvancedNavigationProps) {
   const pathname = usePathname();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -162,7 +163,10 @@ export default function AdvancedNavigation({ className }: AdvancedNavigationProp
       'sticky top-0 z-50 transition-all duration-300',
       className
     )}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className={cn(
+        'mx-auto px-4 sm:px-6 lg:px-8 transition-all duration-300',
+        sidebarCollapsed ? 'max-w-none lg:ml-14' : 'max-w-7xl lg:ml-0'
+      )}>
         <div className="flex items-center justify-between h-16">
           {/* Breadcrumbs */}
           <nav className="flex items-center space-x-2 text-sm">

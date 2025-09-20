@@ -196,12 +196,12 @@ export default function EnhancedDashboardPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-purple-50/30 dark:from-gray-900 dark:via-blue-900/20 dark:to-purple-900/20">
       {/* Unified Sidebar */}
-      <UnifiedSidebar />
+      <UnifiedSidebar onCollapseChange={setSidebarCollapsed} />
       
       {/* Main Content Container */}
-      <div className="lg:ml-[220px] transition-all duration-300">
+      <div className={`transition-all duration-300 ${sidebarCollapsed ? 'lg:ml-14' : 'lg:ml-[220px]'}`}>
         {/* Advanced Navigation */}
-        <AdvancedNavigation />
+        <AdvancedNavigation sidebarCollapsed={sidebarCollapsed} />
 
         {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

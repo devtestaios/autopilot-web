@@ -99,11 +99,13 @@ const sidebarItems: SidebarItem[] = [
 interface UnifiedSidebarProps {
   defaultCollapsed?: boolean;
   className?: string;
+  onCollapseChange?: (collapsed: boolean) => void;
 }
 
 export default function UnifiedSidebar({ 
   defaultCollapsed = false, 
-  className = '' 
+  className = '',
+  onCollapseChange
 }: UnifiedSidebarProps) {
   const { theme } = useTheme();
   const pathname = usePathname();
@@ -138,6 +140,11 @@ export default function UnifiedSidebar({
       setExpandedItem(currentItem.id);
     }
   }, [pathname]);
+
+  // Notify parent of collapse state changes
+  useEffect(() => {
+    onCollapseChange?.(isCollapsed);
+  }, [isCollapsed, onCollapseChange]);
 
   const handleItemClick = (item: SidebarItem) => {
     if (item.subItems) {
