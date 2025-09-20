@@ -18,7 +18,6 @@ import { cn } from '@/lib/utils';
 interface QuickAction {
   icon: React.ReactNode;
   label: string;
-  href: string;
   color: string;
 }
 
@@ -26,41 +25,72 @@ const quickActions: QuickAction[] = [
   {
     icon: <Sparkles className="w-4 h-4" />,
     label: 'New Campaign',
-    href: '/campaigns/new',
     color: 'from-pulse-cyan to-pulse-purple'
   },
   {
     icon: <BarChart3 className="w-4 h-4" />,
     label: 'Analytics',
-    href: '/analytics',
     color: 'from-green-500 to-green-600'
   },
   {
     icon: <Target className="w-4 h-4" />,
     label: 'Goals',
-    href: '/goals',
     color: 'from-orange-500 to-orange-600'
   },
   {
     icon: <Zap className="w-4 h-4" />,
     label: 'AI Optimizer',
-    href: '/optimizer',
     color: 'from-purple-500 to-purple-600'
   },
   {
     icon: <HelpCircle className="w-4 h-4" />,
     label: 'Help',
-    href: '/help',
     color: 'from-blue-500 to-blue-600'
   }
 ];
 
 export interface FloatingActionButtonProps {
   className?: string;
+  onNewCampaign?: () => void;
+  onAnalytics?: () => void;
+  onOptimization?: () => void;
+  onGoals?: () => void;
+  onHelp?: () => void;
 }
 
-export default function FloatingActionButton({ className }: FloatingActionButtonProps) {
+export default function FloatingActionButton({ 
+  className,
+  onNewCampaign,
+  onAnalytics,
+  onOptimization,
+  onGoals,
+  onHelp
+}: FloatingActionButtonProps) {
   const [isOpen, setIsOpen] = useState(false);
+
+  const handleActionClick = (actionLabel: string) => {
+    setIsOpen(false);
+    
+    switch (actionLabel) {
+      case 'New Campaign':
+        onNewCampaign?.();
+        break;
+      case 'Analytics':
+        onAnalytics?.();
+        break;
+      case 'AI Optimizer':
+        onOptimization?.();
+        break;
+      case 'Goals':
+        onGoals?.();
+        break;
+      case 'Help':
+        onHelp?.();
+        break;
+      default:
+        break;
+    }
+  };
 
   return (
     <div className={cn('fixed bottom-6 right-6 z-50', className)}>
@@ -102,8 +132,8 @@ export default function FloatingActionButton({ className }: FloatingActionButton
                 </motion.div>
                 
                 {/* Action Button */}
-                <motion.a
-                  href={action.href}
+                <motion.button
+                  onClick={() => handleActionClick(action.label)}
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
                   className={cn(
@@ -114,7 +144,7 @@ export default function FloatingActionButton({ className }: FloatingActionButton
                   )}
                 >
                   {action.icon}
-                </motion.a>
+                </motion.button>
               </motion.div>
             ))}
           </motion.div>

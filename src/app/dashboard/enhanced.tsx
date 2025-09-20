@@ -161,6 +161,8 @@ export default function EnhancedDashboardPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [selectedTimeframe, setSelectedTimeframe] = useState('7d');
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [liveData, setLiveData] = useState(enhancedCampaigns);
 
   useEffect(() => {
     if (!user) {
@@ -172,6 +174,62 @@ export default function EnhancedDashboardPage() {
     const timer = setTimeout(() => setIsLoading(false), 1000);
     return () => clearTimeout(timer);
   }, [user, router]);
+
+  // Real-time data updates simulation
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setLiveData(prevData => 
+        prevData.map(campaign => ({
+          ...campaign,
+          impressions: campaign.impressions + Math.floor(Math.random() * 100),
+          clicks: campaign.clicks + Math.floor(Math.random() * 10),
+          conversions: campaign.conversions + Math.floor(Math.random() * 3),
+        }))
+      );
+    }, 30000); // Update every 30 seconds
+
+    return () => clearInterval(interval);
+  }, []);
+
+  // Handle data refresh
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    // Simulate API call
+    setTimeout(() => {
+      setIsRefreshing(false);
+      showToast({
+        type: 'success',
+        title: 'Data Refreshed',
+        description: 'Dashboard data has been updated with latest metrics.',
+        duration: 3000
+      });
+    }, 2000);
+  };
+
+  // Navigation functions
+  const navigateToNewCampaign = () => {
+    router.push('/campaigns/new');
+  };
+
+  const navigateToCampaigns = () => {
+    router.push('/campaigns');
+  };
+
+  const navigateToAnalytics = () => {
+    router.push('/analytics');
+  };
+
+  const navigateToOptimization = () => {
+    router.push('/optimization');
+  };
+
+  const viewCampaign = (campaignId: string) => {
+    router.push(`/campaigns/${campaignId}`);
+  };
+
+  const editCampaign = (campaignId: string) => {
+    router.push(`/campaigns/${campaignId}/edit`);
+  };
 
   if (isLoading) {
     return (
@@ -237,15 +295,20 @@ export default function EnhancedDashboardPage() {
               </div>
               
               <PremiumButton
+                variant="ghost"
+                size="sm"
+                icon={<Activity className="w-4 h-4" />}
+                onClick={handleRefresh}
+                disabled={isRefreshing}
+              >
+                {isRefreshing ? 'Refreshing...' : 'Refresh'}
+              </PremiumButton>
+              
+              <PremiumButton
                 variant="primary"
                 icon={<Sparkles className="w-4 h-4" />}
                 glow
-                onClick={() => showToast({
-                  type: 'success',
-                  title: 'Campaign Created!',
-                  description: 'Your new campaign is being set up...',
-                  duration: 3000
-                })}
+                onClick={navigateToNewCampaign}
               >
                 New Campaign
               </PremiumButton>
@@ -261,12 +324,25 @@ export default function EnhancedDashboardPage() {
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8"
         >
           {quickStats.map((stat, index) => (
-            <PremiumCard 
-              key={stat.title} 
-              variant="glassmorphism" 
-              hover 
-              className="p-6"
+            <motion.div
+              key={stat.title}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
             >
+              <PremiumCard 
+                variant="glassmorphism" 
+                hover 
+                className="p-6 cursor-pointer"
+                onClick={() => {
+                  if (stat.title.includes('Revenue')) {
+                    navigateToAnalytics();
+                  } else if (stat.title.includes('Campaigns')) {
+                    navigateToCampaigns();
+                  } else {
+                    navigateToAnalytics();
+                  }
+                }}
+              >
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">
@@ -285,6 +361,7 @@ export default function EnhancedDashboardPage() {
                 </div>
               </div>
             </PremiumCard>
+            </motion.div>
           ))}
         </motion.div>
 
@@ -315,7 +392,18 @@ export default function EnhancedDashboardPage() {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.3 + index * 0.1 }}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
                   className="p-4 bg-white/50 dark:bg-gray-800/50 rounded-xl border border-gray-200/50 dark:border-gray-700/50 hover:bg-white/70 dark:hover:bg-gray-800/70 transition-all duration-200 cursor-pointer group"
+                  onClick={() => {
+                    navigateToOptimization();
+                    showToast({
+                      type: 'info',
+                      title: 'AI Insight',
+                      description: `Viewing details for: ${insight.title}`,
+                      duration: 3000
+                    });
+                  }}
                 >
                   <div className="flex items-start gap-3">
                     <div className={`p-2 rounded-lg bg-gray-100 dark:bg-gray-700 group-hover:scale-110 transition-transform duration-200`}>
@@ -343,7 +431,11 @@ export default function EnhancedDashboardPage() {
             </div>
             
             <div className="mt-6 flex justify-center">
-              <PremiumButton variant="outline" size="sm">
+              <PremiumButton 
+                variant="outline" 
+                size="sm"
+                onClick={navigateToOptimization}
+              >
                 View All Insights
                 <ArrowUpRight className="w-4 h-4 ml-2" />
               </PremiumButton>
@@ -363,22 +455,35 @@ export default function EnhancedDashboardPage() {
               Active Campaigns
             </h2>
             <div className="flex items-center gap-3">
-              <PremiumButton variant="ghost" size="sm" icon={<Filter className="w-4 h-4" />}>
+              <PremiumButton 
+                variant="ghost" 
+                size="sm" 
+                icon={<Filter className="w-4 h-4" />}
+                onClick={navigateToCampaigns}
+              >
                 Filter
               </PremiumButton>
-              <PremiumButton variant="ghost" size="sm" icon={<MoreHorizontal className="w-4 h-4" />}>
-                Options
+              <PremiumButton 
+                variant="ghost" 
+                size="sm" 
+                icon={<MoreHorizontal className="w-4 h-4" />}
+                onClick={navigateToCampaigns}
+              >
+                View All
               </PremiumButton>
             </div>
           </div>
           
           <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-            {enhancedCampaigns.map((campaign, index) => (
+            {liveData.map((campaign, index) => (
               <motion.div
                 key={campaign.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 + index * 0.1 }}
+                whileHover={{ scale: 1.02 }}
+                className="cursor-pointer"
+                onClick={() => viewCampaign(campaign.id)}
               >
                 <PremiumCard variant="elevated" hover className="p-6 h-full">
                   <div className="flex items-start justify-between mb-4">
@@ -446,11 +551,27 @@ export default function EnhancedDashboardPage() {
                   </div>
                   
                   <div className="flex gap-2">
-                    <PremiumButton variant="ghost" size="sm" className="flex-1">
+                    <PremiumButton 
+                      variant="ghost" 
+                      size="sm" 
+                      className="flex-1"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        viewCampaign(campaign.id);
+                      }}
+                    >
                       <Eye className="w-4 h-4 mr-2" />
                       View
                     </PremiumButton>
-                    <PremiumButton variant="outline" size="sm" className="flex-1">
+                    <PremiumButton 
+                      variant="outline" 
+                      size="sm" 
+                      className="flex-1"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        editCampaign(campaign.id);
+                      }}
+                    >
                       <Edit3 className="w-4 h-4 mr-2" />
                       Edit
                     </PremiumButton>
@@ -481,21 +602,7 @@ export default function EnhancedDashboardPage() {
                   variant="primary" 
                   size="lg" 
                   glow
-                  onClick={() => showToast({
-                    type: 'warning',
-                    title: 'AI Autopilot',
-                    description: 'This feature is currently in beta. Contact support to enable.',
-                    duration: 5000,
-                    action: {
-                      label: 'Contact Support',
-                      onClick: () => showToast({
-                        type: 'info',
-                        title: 'Support',
-                        description: 'Opening support chat...',
-                        duration: 2000
-                      })
-                    }
-                  })}
+                  onClick={navigateToOptimization}
                 >
                   <Zap className="w-5 h-5 mr-2" />
                   Enable AI Autopilot
@@ -503,12 +610,7 @@ export default function EnhancedDashboardPage() {
                 <PremiumButton 
                   variant="outline" 
                   size="lg"
-                  onClick={() => showToast({
-                    type: 'info',
-                    title: 'Analytics Dashboard',
-                    description: 'Opening comprehensive analytics view...',
-                    duration: 3000
-                  })}
+                  onClick={navigateToAnalytics}
                 >
                   <BarChart3 className="w-5 h-5 mr-2" />
                   View Analytics
@@ -520,7 +622,11 @@ export default function EnhancedDashboardPage() {
       </main>
 
       {/* Floating Action Button */}
-      <FloatingActionButton />
+      <FloatingActionButton 
+        onNewCampaign={navigateToNewCampaign}
+        onAnalytics={navigateToAnalytics}
+        onOptimization={navigateToOptimization}
+      />
       </div>
     </div>
   );
