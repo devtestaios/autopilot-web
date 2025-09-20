@@ -49,7 +49,7 @@ export default function Navbar({ onMenuToggle }: NavbarProps) {
   const unreadCount = notifications.filter(n => n.unread).length;
 
   return (
-    <nav className="bg-white/95 dark:bg-black/90 backdrop-blur-sm border-b border-gray-200 dark:border-gray-700 px-4 py-3 transition-all duration-300 sticky top-0 z-40">
+    <nav className="bg-white dark:bg-black/90 backdrop-blur-sm border-b border-gray-200 dark:border-gray-700 px-4 py-3 transition-all duration-300 sticky top-0 z-40">
       <div className="flex items-center justify-between max-w-7xl mx-auto">
         {/* Left Side */}
         <div className="flex items-center gap-4">
