@@ -90,6 +90,29 @@ className={`bg-white dark:bg-gray-900 text-gray-900 dark:text-white`}
 // Theme persists to localStorage, respects system preference
 ```
 
+#### ⚠️ THEME STATUS (Partially Complete)
+**Recent Work Completed:**
+- ✅ Removed misplaced "PULSE BRIDGE" text from landing page hero section
+- ✅ Updated toolbar backgrounds: black in dark mode, white in light mode
+- ✅ Improved text contrast: darker text colors in light mode for better readability
+- ✅ Fixed navbar components: SimplifiedNavbar, LandingNavbar, main Navbar
+
+**Current Theme Issues (Bookmarked for Future Work):**
+- 🔶 **Light Mode**: Some toolbar text visibility issues persist across different pages
+- 🔶 **Inconsistent Styling**: Different navbar components may have varying theme implementations
+- 🔶 **Cache Issues**: Browser cache sometimes shows outdated theme styles
+
+**Working Best:** 
+- ✅ **Dark Mode**: Functioning well across all components with good contrast
+- ✅ **Theme Toggle**: Manual switching works properly with localStorage persistence
+
+**Navigation Components:**
+- `LandingNavbar.tsx` - Landing page navbar with explicit theme colors
+- `SimplifiedNavbar.tsx` - Dashboard/internal pages navbar  
+- `Navbar.tsx` - Main application navbar component
+
+**Next Theme Work:** Focus on comprehensive light mode text contrast audit across all components when theme work resumes.
+
 ### Data Fetching Strategy
 ```typescript
 // Use custom hooks for data management
