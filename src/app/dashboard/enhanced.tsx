@@ -199,7 +199,7 @@ export default function EnhancedDashboardPage() {
       <UnifiedSidebar />
       
       {/* Main Content Container */}
-      <div className="lg:ml-64 transition-all duration-300">
+      <div className="lg:ml-[220px] transition-all duration-300">
         {/* Advanced Navigation */}
         <AdvancedNavigation />
 

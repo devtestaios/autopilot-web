@@ -166,8 +166,8 @@ export default function UnifiedSidebar({
   };
 
   const sidebarVariants = {
-    expanded: { width: isMobile ? '280px' : '280px' },
-    collapsed: { width: isMobile ? '0px' : '80px' }
+    expanded: { width: isMobile ? '220px' : '220px' },
+    collapsed: { width: isMobile ? '0px' : '56px' }
   };
 
   const contentVariants = {
@@ -206,7 +206,7 @@ export default function UnifiedSidebar({
                 animate={{ x: 0 }}
                 exit={{ x: '-100%' }}
                 transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-                className={`fixed left-0 top-0 h-full w-80 z-50 backdrop-blur-md border-r shadow-2xl ${
+                className={`fixed left-0 top-0 h-full w-72 z-50 backdrop-blur-md border-r shadow-2xl ${
                   theme === 'dark'
                     ? 'bg-gray-900/95 border-gray-700'
                     : 'bg-white/95 border-gray-200'
