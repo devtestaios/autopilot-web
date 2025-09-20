@@ -376,14 +376,18 @@ export default function AwardWinningLandingPage() {
             </span>
             <br />
             <motion.span
-              className="bg-gradient-to-r from-deep-space to-interface-gray dark:from-interface-gray dark:to-gray-300 bg-clip-text text-transparent"
+              className="text-gray-300 dark:text-gray-400 font-medium"
               animate={{
-                opacity: [0.7, 1, 0.7],
+                opacity: [0.6, 1, 0.6],
+                scale: [0.98, 1.02, 0.98],
               }}
               transition={{
-                duration: 3,
+                duration: 2.5,
                 repeat: Infinity,
                 ease: "easeInOut"
+              }}
+              style={{
+                textShadow: '0 0 20px rgba(255, 255, 255, 0.2)'
               }}
             >
               With A Pulse
@@ -393,16 +397,15 @@ export default function AwardWinningLandingPage() {
               className="bg-gradient-to-r from-pulse-blue via-bridge-purple to-energy-magenta bg-clip-text text-transparent font-bold"
               animate={{
                 backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
-                textShadow: [
-                  '0 0 20px rgba(0, 212, 255, 0.3)',
-                  '0 0 40px rgba(124, 58, 237, 0.5)',
-                  '0 0 20px rgba(0, 212, 255, 0.3)'
-                ]
               }}
               transition={{
                 duration: 4,
                 repeat: Infinity,
                 ease: "easeInOut"
+              }}
+              style={{
+                backgroundSize: '200% 100%',
+                textShadow: '0 0 30px rgba(0, 212, 255, 0.4)'
               }}
             >
               powered by PulseBridge.ai
