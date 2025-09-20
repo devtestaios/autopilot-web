@@ -80,6 +80,8 @@ src/app/[feature]/
 - **Client Components**: Explicitly marked with `'use client'` for state/events
 - **Compound Components**: Table + Filters + Actions grouped logically
 - **Context Consumers**: Use custom hooks (`useTheme`, `useSearchContext`)
+- **Responsive Sidebar Pattern**: Collapsible sidebar with callback communication to navbar
+- **State Communication**: Parent component manages shared state, passes callbacks to children
 
 ## Critical Development Patterns
 
@@ -90,28 +92,39 @@ className={`bg-white dark:bg-gray-900 text-gray-900 dark:text-white`}
 // Theme persists to localStorage, respects system preference
 ```
 
-#### ⚠️ THEME STATUS (Partially Complete)
+#### ✅ THEME STATUS (Completed)
 **Recent Work Completed:**
 - ✅ Removed misplaced "PULSE BRIDGE" text from landing page hero section
 - ✅ Updated toolbar backgrounds: black in dark mode, white in light mode
 - ✅ Improved text contrast: darker text colors in light mode for better readability
 - ✅ Fixed navbar components: SimplifiedNavbar, LandingNavbar, main Navbar
-
-**Current Theme Issues (Bookmarked for Future Work):**
-- 🔶 **Light Mode**: Some toolbar text visibility issues persist across different pages
-- 🔶 **Inconsistent Styling**: Different navbar components may have varying theme implementations
-- 🔶 **Cache Issues**: Browser cache sometimes shows outdated theme styles
-
-**Working Best:** 
-- ✅ **Dark Mode**: Functioning well across all components with good contrast
-- ✅ **Theme Toggle**: Manual switching works properly with localStorage persistence
+- ✅ **Responsive Sidebar & Navbar Implementation**: Advanced settings sidebar with collapsible functionality
 
 **Navigation Components:**
 - `LandingNavbar.tsx` - Landing page navbar with explicit theme colors
 - `SimplifiedNavbar.tsx` - Dashboard/internal pages navbar  
 - `Navbar.tsx` - Main application navbar component
+- `UnifiedSidebar.tsx` - Advanced settings sidebar with collapse/expand functionality
+- `AdvancedNavigation.tsx` - Top navigation bar responsive to sidebar state
 
-**Next Theme Work:** Focus on comprehensive light mode text contrast audit across all components when theme work resumes.
+#### 🚀 SIDEBAR & NAVIGATION SYSTEM (Completed)
+**Key Features Implemented:**
+- ✅ **Advanced Settings Sidebar**: Collapsible left sidebar (220px expanded, 56px collapsed)
+- ✅ **Responsive Top Navbar**: Dynamically adjusts width based on sidebar state
+- ✅ **Smooth Animations**: Framer Motion transitions for professional UX
+- ✅ **State Communication**: Callback system between sidebar and navbar components
+- ✅ **Mobile Responsive**: Overlay behavior on mobile, fixed positioning on desktop
+
+**Technical Implementation:**
+- **Component Communication**: `onCollapseChange` callback prop pattern
+- **Responsive Classes**: Conditional Tailwind classes (`max-w-none lg:ml-14` vs `max-w-7xl lg:ml-0`)
+- **State Management**: React useState with callback props for cross-component coordination
+- **Animation System**: `sidebarVariants` with Framer Motion for smooth transitions
+
+**Theme Integration:**
+- ✅ **Dark Mode**: Functioning excellently across all components
+- ✅ **Light Mode**: Professional styling with proper contrast
+- ✅ **Theme Toggle**: Persistent localStorage with system preference detection
 
 ### Data Fetching Strategy
 ```typescript
@@ -212,12 +225,13 @@ GOOGLE_ADS_CUSTOMER_ID=your_customer_id
 
 ## Current Development Phase
 
-### IMMEDIATE NEXT STEPS (Post-UI Foundation)
-1. **Navigation System**: Make all navigation tabs work with proper routing
-2. **Search & Filters**: Global search functionality across campaigns/leads
-3. **Action Buttons**: Make "Create Campaign", "View All Campaigns" functional
-4. **Backend Integration**: Connect all frontend to existing backend APIs
-5. **Interactive Features**: Working charts with real performance data
+### IMMEDIATE NEXT STEPS (Post-Sidebar Implementation)
+1. **AI Chat Integration**: Implement Claude AI chat feature in dashboard
+2. **Navigation System**: Make all navigation tabs work with proper routing
+3. **Search & Filters**: Global search functionality across campaigns/leads
+4. **Action Buttons**: Make "Create Campaign", "View All Campaigns" functional
+5. **Backend Integration**: Connect all frontend to existing backend APIs
+6. **Interactive Features**: Working charts with real performance data
 
 ### Available Backend Endpoints
 - `/leads` - Lead management (already working)

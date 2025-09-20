@@ -174,6 +174,77 @@ Returns environment configuration status.
 
 ## 🎨 Frontend Architecture
 
+### **Responsive Sidebar & Navigation System**
+
+#### **Overview**
+Advanced collapsible sidebar system with responsive top navigation that creates a professional dashboard experience with smooth transitions and optimal space utilization.
+
+#### **Key Components**
+
+**UnifiedSidebar.tsx**
+- **Expanded State**: 220px width with full navigation menu
+- **Collapsed State**: 56px width with icon-only navigation
+- **Mobile Behavior**: Overlay mode with backdrop on smaller screens
+- **State Communication**: Reports collapse state via `onCollapseChange` callback
+- **Animations**: Framer Motion transitions for smooth UX
+
+```typescript
+interface UnifiedSidebarProps {
+  onCollapseChange?: (collapsed: boolean) => void;
+}
+
+const sidebarVariants = {
+  expanded: { width: '220px' },
+  collapsed: { width: '56px' }
+};
+```
+
+**AdvancedNavigation.tsx**
+- **Responsive Width**: Adjusts to sidebar state for optimal space usage
+- **Dynamic Classes**: Conditional Tailwind classes based on sidebar state
+- **Full-Width Mode**: Extends to full width when sidebar is collapsed
+- **Responsive Design**: Only applies desktop behavior on lg+ breakpoints
+
+```typescript
+interface AdvancedNavigationProps {
+  sidebarCollapsed: boolean;
+}
+
+// Responsive container classes
+className={`
+  ${sidebarCollapsed 
+    ? 'max-w-none lg:ml-14' 
+    : 'max-w-7xl lg:ml-0'
+  }
+`}
+```
+
+**Dashboard Integration Pattern**
+```typescript
+const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+
+return (
+  <div className="flex min-h-screen">
+    <UnifiedSidebar onCollapseChange={setSidebarCollapsed} />
+    <main className={`flex-1 transition-all duration-300 ${sidebarCollapsed ? 'lg:ml-14' : 'lg:ml-55'}`}>
+      <AdvancedNavigation sidebarCollapsed={sidebarCollapsed} />
+      {/* Dashboard content */}
+    </main>
+  </div>
+);
+```
+
+#### **State Communication Architecture**
+- **Parent State Management**: Dashboard component manages `sidebarCollapsed` state
+- **Callback Pattern**: Sidebar communicates state changes via `onCollapseChange`
+- **Prop Drilling**: Navbar receives `sidebarCollapsed` prop for responsive behavior
+- **Unidirectional Data Flow**: State flows down, events bubble up
+
+#### **Responsive Behavior**
+- **Desktop (lg+)**: Fixed sidebar positioning with dynamic navbar width
+- **Mobile**: Overlay sidebar with full-screen navbar
+- **Transition**: Smooth animations using Framer Motion and Tailwind transitions
+
 ### **Component Structure**
 ```
 src/
