@@ -9,12 +9,14 @@ import NavigationTabs from '@/components/NavigationTabs';
 import { CampaignFiltersComponent } from '@/components/CampaignFilters';
 import { useCampaignFilters } from '@/hooks/useCampaignFilters';
 import { useSearchContext } from '@/contexts/SearchContext';
+import { useToast } from '@/components/ui/Toast';
 import { Plus } from 'lucide-react';
 
 export default function CampaignsPage() {
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { showToast } = useToast();
 
   // Add filtering functionality
   const { filters, setFilters, filteredCampaigns, totalResults } = useCampaignFilters(campaigns);
@@ -52,9 +54,20 @@ export default function CampaignsPage() {
     try {
       await deleteCampaign(campaignId);
       await loadCampaigns();
+      showToast({
+        type: 'success',
+        title: 'Campaign Deleted',
+        description: 'Campaign has been successfully deleted.',
+        duration: 3000
+      });
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to delete campaign';
-      alert(`Failed to delete campaign: ${errorMessage}`);
+      showToast({
+        type: 'error',
+        title: 'Delete Failed',
+        description: `Failed to delete campaign: ${errorMessage}`,
+        duration: 5000
+      });
     }
   };
 
@@ -71,11 +84,21 @@ export default function CampaignsPage() {
       
       // You would typically call an API to create the duplicate
       console.log('Duplicating campaign:', duplicatedCampaign);
-      alert(`Campaign "${campaign.name}" duplicated successfully!`);
+      showToast({
+        type: 'success',
+        title: 'Campaign Duplicated',
+        description: `Campaign "${campaign.name}" has been duplicated successfully!`,
+        duration: 4000
+      });
       await loadCampaigns();
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to duplicate campaign';
-      alert(`Failed to duplicate campaign: ${errorMessage}`);
+      showToast({
+        type: 'error',
+        title: 'Duplication Failed',
+        description: `Failed to duplicate campaign: ${errorMessage}`,
+        duration: 5000
+      });
     }
   };
 
@@ -86,24 +109,44 @@ export default function CampaignsPage() {
       // Simulate API calls for bulk operations
       switch (action) {
         case 'pause':
-          alert(`${campaignIds.length} campaign(s) paused successfully!`);
+          showToast({
+            type: 'success',
+            title: 'Campaigns Paused',
+            description: `${campaignIds.length} campaign(s) have been paused successfully!`,
+            duration: 3000
+          });
           break;
         case 'resume':
-          alert(`${campaignIds.length} campaign(s) resumed successfully!`);
+          showToast({
+            type: 'success',
+            title: 'Campaigns Resumed',
+            description: `${campaignIds.length} campaign(s) have been resumed successfully!`,
+            duration: 3000
+          });
           break;
         case 'delete':
           // For delete, we'll actually try to delete each campaign
           for (const id of campaignIds) {
             await deleteCampaign(id);
           }
-          alert(`${campaignIds.length} campaign(s) deleted successfully!`);
+          showToast({
+            type: 'success',
+            title: 'Campaigns Deleted',
+            description: `${campaignIds.length} campaign(s) have been deleted successfully!`,
+            duration: 3000
+          });
           break;
       }
       
       await loadCampaigns();
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : `Failed to ${action} campaigns`;
-      alert(`Failed to ${action} campaigns: ${errorMessage}`);
+      showToast({
+        type: 'error',
+        title: `Bulk ${action.charAt(0).toUpperCase() + action.slice(1)} Failed`,
+        description: `Failed to ${action} campaigns: ${errorMessage}`,
+        duration: 5000
+      });
     }
   };
 
