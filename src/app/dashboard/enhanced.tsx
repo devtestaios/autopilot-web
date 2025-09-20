@@ -37,6 +37,7 @@ import { PremiumCard } from '@/components/ui/PremiumCard';
 import AdvancedNavigation from '@/components/ui/AdvancedNavigation';
 import UnifiedSidebar from '@/components/UnifiedSidebar';
 import FloatingActionButton from '@/components/ui/FloatingActionButton';
+import AIInsights from '@/components/AIInsights';
 import { useToast } from '@/components/ui/Toast';
 
 // Enhanced mock data with more realistic metrics
@@ -372,75 +373,10 @@ export default function EnhancedDashboardPage() {
           transition={{ delay: 0.2 }}
           className="mb-8"
         >
-          <PremiumCard variant="glassmorphism" className="p-6">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="p-2 bg-gradient-to-r from-pulse-cyan to-pulse-purple rounded-lg">
-                <Sparkles className="w-5 h-5 text-white" />
-              </div>
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white">
-                AI-Powered Insights
-              </h2>
-              <div className="px-3 py-1 bg-pulse-cyan/10 text-pulse-cyan text-xs font-medium rounded-full">
-                3 Active
-              </div>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {aiInsights.map((insight, index) => (
-                <motion.div
-                  key={insight.title}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.3 + index * 0.1 }}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="p-4 bg-white/50 dark:bg-gray-800/50 rounded-xl border border-gray-200/50 dark:border-gray-700/50 hover:bg-white/70 dark:hover:bg-gray-800/70 transition-all duration-200 cursor-pointer group"
-                  onClick={() => {
-                    navigateToOptimization();
-                    showToast({
-                      type: 'info',
-                      title: 'AI Insight',
-                      description: `Viewing details for: ${insight.title}`,
-                      duration: 3000
-                    });
-                  }}
-                >
-                  <div className="flex items-start gap-3">
-                    <div className={`p-2 rounded-lg bg-gray-100 dark:bg-gray-700 group-hover:scale-110 transition-transform duration-200`}>
-                      <insight.icon className={`w-4 h-4 ${insight.color}`} />
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-gray-900 dark:text-white text-sm mb-1">
-                        {insight.title}
-                      </h3>
-                      <p className="text-xs text-gray-600 dark:text-gray-400 mb-2">
-                        {insight.description}
-                      </p>
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-medium text-green-600 dark:text-green-400">
-                          {insight.impact}
-                        </span>
-                        <span className="text-xs text-gray-500">
-                          {insight.confidence}% confidence
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-            
-            <div className="mt-6 flex justify-center">
-              <PremiumButton 
-                variant="outline" 
-                size="sm"
-                onClick={navigateToOptimization}
-              >
-                View All Insights
-                <ArrowUpRight className="w-4 h-4 ml-2" />
-              </PremiumButton>
-            </div>
-          </PremiumCard>
+          <AIInsights 
+            page="dashboard" 
+            data={{ campaigns: enhancedCampaigns, stats: quickStats }}
+          />
         </motion.div>
 
         {/* Enhanced Campaigns Grid */}

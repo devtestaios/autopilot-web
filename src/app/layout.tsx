@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Orbitron, Exo_2 } from "next/font/google";
 import "./globals.css";
 import ClientProviders from "@/components/ClientProviders";
+import AIFloatingAssistant from "@/components/AIFloatingAssistant";
 
 export const metadata: Metadata = {
   title: "PulseBridge.ai - AI Marketing Intelligence",
@@ -58,6 +59,7 @@ export default function RootLayout({
       >
         <ClientProviders>
           {children}
+          <AIFloatingAssistant />
         </ClientProviders>
       </body>
     </html>

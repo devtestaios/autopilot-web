@@ -3,25 +3,29 @@
 import { useState } from 'react';
 import React from 'react';
 import type { Campaign } from '@/types';
-import { Download, Filter, Search, RefreshCw, Edit, Trash2, MoreHorizontal, TrendingUp, DollarSign } from 'lucide-react';
+import { Download, Filter, Search, RefreshCw, Edit, Trash2, MoreHorizontal, TrendingUp, DollarSign, Play, Pause, Copy, Check, X } from 'lucide-react';
 import { PremiumBadge } from './ui/PremiumBadge';
 import { PremiumButton } from './ui/PremiumButton';
 import { PremiumLoading } from './ui/PremiumLoading';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface CampaignTableProps {
   campaigns: Campaign[];
   onEdit?: (campaign: Campaign) => void;
   onDelete?: (campaignId: string) => void;
+  onDuplicate?: (campaign: Campaign) => void;
+  onBulkAction?: (action: 'pause' | 'resume' | 'delete', campaignIds: string[]) => void;
   onRefresh?: () => void;
   loading?: boolean;
 }
 
-export default function CampaignTable({ campaigns, onEdit, onDelete, onRefresh, loading }: CampaignTableProps) {
+export default function CampaignTable({ campaigns, onEdit, onDelete, onDuplicate, onBulkAction, onRefresh, loading }: CampaignTableProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortField, setSortField] = useState<keyof Campaign>('created_at');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const [platformFilter, setPlatformFilter] = useState('all');
+  const [selectedCampaigns, setSelectedCampaigns] = useState<string[]>([]);
+  const [showBulkActions, setShowBulkActions] = useState(false);
 
   // Filter and sort campaigns
   const filteredCampaigns = campaigns
@@ -49,6 +53,43 @@ export default function CampaignTable({ campaigns, onEdit, onDelete, onRefresh, 
       setSortField(field);
       setSortDirection('asc');
     }
+  };
+
+  // Bulk selection functions
+  const handleSelectAll = () => {
+    if (selectedCampaigns.length === filteredCampaigns.length) {
+      setSelectedCampaigns([]);
+      setShowBulkActions(false);
+    } else {
+      setSelectedCampaigns(filteredCampaigns.map(c => c.id));
+      setShowBulkActions(true);
+    }
+  };
+
+  const handleSelectCampaign = (campaignId: string) => {
+    const newSelected = selectedCampaigns.includes(campaignId)
+      ? selectedCampaigns.filter(id => id !== campaignId)
+      : [...selectedCampaigns, campaignId];
+    
+    setSelectedCampaigns(newSelected);
+    setShowBulkActions(newSelected.length > 0);
+  };
+
+  const handleBulkAction = (action: 'pause' | 'resume' | 'delete') => {
+    if (selectedCampaigns.length === 0) return;
+    
+    if (action === 'delete') {
+      const confirmed = confirm(`Are you sure you want to delete ${selectedCampaigns.length} campaign(s)?`);
+      if (!confirmed) return;
+    }
+
+    onBulkAction?.(action, selectedCampaigns);
+    setSelectedCampaigns([]);
+    setShowBulkActions(false);
+  };
+
+  const handleDuplicate = (campaign: Campaign) => {
+    onDuplicate?.(campaign);
   };
 
   const formatCurrency = (amount?: number) => {
@@ -139,12 +180,85 @@ export default function CampaignTable({ campaigns, onEdit, onDelete, onRefresh, 
         </div>
       </div>
 
+      {/* Bulk Actions Toolbar */}
+      <AnimatePresence>
+        {showBulkActions && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="card p-4 bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800"
+          >
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <span className="text-sm font-medium text-blue-700 dark:text-blue-300">
+                  {selectedCampaigns.length} campaign(s) selected
+                </span>
+              </div>
+              
+              <div className="flex items-center gap-2">
+                <PremiumButton
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => handleBulkAction('resume')}
+                  className="flex items-center gap-2 text-green-700 hover:bg-green-100 dark:text-green-400 dark:hover:bg-green-900/20"
+                >
+                  <Play className="w-4 h-4" />
+                  Resume
+                </PremiumButton>
+                
+                <PremiumButton
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => handleBulkAction('pause')}
+                  className="flex items-center gap-2 text-orange-700 hover:bg-orange-100 dark:text-orange-400 dark:hover:bg-orange-900/20"
+                >
+                  <Pause className="w-4 h-4" />
+                  Pause
+                </PremiumButton>
+                
+                <PremiumButton
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => handleBulkAction('delete')}
+                  className="flex items-center gap-2 text-red-700 hover:bg-red-100 dark:text-red-400 dark:hover:bg-red-900/20"
+                >
+                  <Trash2 className="w-4 h-4" />
+                  Delete
+                </PremiumButton>
+                
+                <PremiumButton
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    setSelectedCampaigns([]);
+                    setShowBulkActions(false);
+                  }}
+                  className="flex items-center gap-2"
+                >
+                  <X className="w-4 h-4" />
+                  Cancel
+                </PremiumButton>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Enhanced Campaign Table */}
       <div className="card overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead className="bg-muted/50 border-b border-border">
               <tr>
+                <th className="w-12 p-4">
+                  <input
+                    type="checkbox"
+                    checked={selectedCampaigns.length === filteredCampaigns.length && filteredCampaigns.length > 0}
+                    onChange={handleSelectAll}
+                    className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                  />
+                </th>
                 {[
                   { key: 'name', label: 'Campaign' },
                   { key: 'platform', label: 'Platform' },
@@ -178,8 +292,19 @@ export default function CampaignTable({ campaigns, onEdit, onDelete, onRefresh, 
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.05 }}
-                  className="border-b border-border hover:bg-muted/30 transition-all duration-200"
+                  className={`border-b border-border hover:bg-muted/30 transition-all duration-200 ${
+                    selectedCampaigns.includes(campaign.id) ? 'bg-blue-50 dark:bg-blue-900/20' : ''
+                  }`}
                 >
+                  <td className="p-4">
+                    <input
+                      type="checkbox"
+                      checked={selectedCampaigns.includes(campaign.id)}
+                      onChange={() => handleSelectCampaign(campaign.id)}
+                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                    />
+                  </td>
+                  
                   <td className="p-4">
                     <div>
                       <div className="font-semibold text-foreground font-exo-2">{campaign.name}</div>
@@ -239,8 +364,21 @@ export default function CampaignTable({ campaigns, onEdit, onDelete, onRefresh, 
                           size="sm"
                           onClick={() => onEdit(campaign)}
                           className="p-2"
+                          title="Edit campaign"
                         >
                           <Edit className="w-4 h-4" />
+                        </PremiumButton>
+                      )}
+                      
+                      {onDuplicate && (
+                        <PremiumButton
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleDuplicate(campaign)}
+                          className="p-2 text-blue-600 hover:text-blue-700 hover:bg-blue-50 dark:text-blue-400 dark:hover:bg-blue-900/20"
+                          title="Duplicate campaign"
+                        >
+                          <Copy className="w-4 h-4" />
                         </PremiumButton>
                       )}
                       
@@ -249,7 +387,8 @@ export default function CampaignTable({ campaigns, onEdit, onDelete, onRefresh, 
                           variant="ghost"
                           size="sm"
                           onClick={() => onDelete(campaign.id)}
-                          className="p-2 text-red-600 hover:text-red-700 hover:bg-red-50"
+                          className="p-2 text-red-600 hover:text-red-700 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20"
+                          title="Delete campaign"
                         >
                           <Trash2 className="w-4 h-4" />
                         </PremiumButton>

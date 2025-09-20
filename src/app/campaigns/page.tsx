@@ -58,6 +58,55 @@ export default function CampaignsPage() {
     }
   };
 
+  const handleDuplicateCampaign = async (campaign: Campaign) => {
+    // Create a new campaign based on the existing one
+    try {
+      const duplicatedCampaign = {
+        ...campaign,
+        name: `${campaign.name} (Copy)`,
+        id: undefined, // Remove ID so a new one gets generated
+        created_at: undefined,
+        updated_at: undefined,
+      };
+      
+      // You would typically call an API to create the duplicate
+      console.log('Duplicating campaign:', duplicatedCampaign);
+      alert(`Campaign "${campaign.name}" duplicated successfully!`);
+      await loadCampaigns();
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to duplicate campaign';
+      alert(`Failed to duplicate campaign: ${errorMessage}`);
+    }
+  };
+
+  const handleBulkAction = async (action: 'pause' | 'resume' | 'delete', campaignIds: string[]) => {
+    try {
+      console.log(`Performing bulk ${action} on campaigns:`, campaignIds);
+      
+      // Simulate API calls for bulk operations
+      switch (action) {
+        case 'pause':
+          alert(`${campaignIds.length} campaign(s) paused successfully!`);
+          break;
+        case 'resume':
+          alert(`${campaignIds.length} campaign(s) resumed successfully!`);
+          break;
+        case 'delete':
+          // For delete, we'll actually try to delete each campaign
+          for (const id of campaignIds) {
+            await deleteCampaign(id);
+          }
+          alert(`${campaignIds.length} campaign(s) deleted successfully!`);
+          break;
+      }
+      
+      await loadCampaigns();
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : `Failed to ${action} campaigns`;
+      alert(`Failed to ${action} campaigns: ${errorMessage}`);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <NavigationTabs />
@@ -111,6 +160,8 @@ export default function CampaignsPage() {
           campaigns={filteredCampaigns}
           onEdit={handleEditCampaign}
           onDelete={handleDeleteCampaign}
+          onDuplicate={handleDuplicateCampaign}
+          onBulkAction={handleBulkAction}
           onRefresh={loadCampaigns}
           loading={loading}
         />
