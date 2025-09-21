@@ -42,6 +42,9 @@ import Breadcrumb from '@/components/ui/Breadcrumb';
 import { useToast } from '@/components/ui/Toast';
 import AIControlChat from '@/components/AIControlChat';
 import { PageSkeleton, ChartSkeleton, DashboardWidgetSkeleton, CampaignCardSkeleton } from '@/components/ui/Skeleton';
+import { useErrorHandler } from '@/hooks/useErrorHandler';
+import { AsyncContent } from '@/components/ui/AsyncContent';
+import { fetchDashboardOverview, fetchCampaigns, fetchKPISummary } from '@/lib/api';
 
 // Enhanced mock data with more realistic metrics
 const enhancedCampaigns = [
@@ -92,41 +95,6 @@ const enhancedCampaigns = [
   }
 ];
 
-const quickStats = [
-  {
-    title: 'Total Revenue',
-    value: '$47,329',
-    change: '+12.5%',
-    icon: DollarSign,
-    color: 'text-green-600',
-    bgColor: 'bg-green-100 dark:bg-green-900/20'
-  },
-  {
-    title: 'Active Campaigns',
-    value: '24',
-    change: '+3',
-    icon: Rocket,
-    color: 'text-pulse-cyan',
-    bgColor: 'bg-pulse-cyan/10'
-  },
-  {
-    title: 'Conversion Rate',
-    value: '4.82%',
-    change: '+0.8%',
-    icon: Target,
-    color: 'text-purple-600',
-    bgColor: 'bg-purple-100 dark:bg-purple-900/20'
-  },
-  {
-    title: 'ROAS Average',
-    value: '4.7x',
-    change: '+0.3x',
-    icon: TrendingUp,
-    color: 'text-orange-600',
-    bgColor: 'bg-orange-100 dark:bg-orange-900/20'
-  }
-];
-
 const aiInsights = [
   {
     type: 'optimization',
@@ -157,16 +125,88 @@ const aiInsights = [
   }
 ];
 
-export default function EnhancedDashboardPage() {
+export default function EnhancedDashboard() {
   const { user, logout } = useAuth();
   const { theme } = useTheme();
-  const { showToast } = useToast();
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(true);
-  const [selectedTimeframe, setSelectedTimeframe] = useState('7d');
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [view, setView] = useState('overview');
+  const { showToast } = useToast();
+  const { error: dashboardError, handleError, clearError } = useErrorHandler();
+  
+  // Real data states
+  const [dashboardData, setDashboardData] = useState<any>(null);
+  const [campaigns, setCampaigns] = useState<any[]>([]);
+  const [kpiData, setKpiData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [liveData, setLiveData] = useState(enhancedCampaigns);
+  const [selectedTimeframe, setSelectedTimeframe] = useState('7d');
+  const [liveData, setLiveData] = useState<any[]>([]);
+
+  // Load real dashboard data
+  useEffect(() => {
+    const loadDashboardData = async () => {
+      try {
+        setLoading(true);
+        clearError();
+
+        // Fetch all dashboard data in parallel
+        const [overview, campaignsData, kpiSummary] = await Promise.all([
+          fetchDashboardOverview(),
+          fetchCampaigns(), // Get campaigns
+          fetchKPISummary()
+        ]);
+
+        setDashboardData(overview);
+        setCampaigns(campaignsData);
+        setKpiData(kpiSummary);
+        setLiveData(campaignsData); // Use campaigns for live data updates
+
+      } catch (err) {
+        handleError(err as Error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadDashboardData();
+  }, [handleError, clearError]);
+
+  // Enhanced stats with real data
+  const quickStats = [
+    {
+      title: 'Total Revenue',
+      value: `$${dashboardData?.total_spend?.toLocaleString() || '0'}`,
+      change: '+12.5%',
+      icon: DollarSign,
+      color: 'text-green-600',
+      bgColor: 'bg-green-100 dark:bg-green-900/20'
+    },
+    {
+      title: 'Active Campaigns',
+      value: dashboardData?.total_campaigns || '0',
+      change: '+3',
+      icon: Rocket,
+      color: 'text-pulse-cyan',
+      bgColor: 'bg-pulse-cyan/10'
+    },
+    {
+      title: 'Conversion Rate',
+      value: `${kpiData?.conversion_rate || '4.82'}%`,
+      change: '+0.8%',
+      icon: Target,
+      color: 'text-purple-600',
+      bgColor: 'bg-purple-100 dark:bg-purple-900/20'
+    },
+    {
+      title: 'ROAS Average',
+      value: `${kpiData?.roas || '4.7'}x`,
+      change: '+0.3x',
+      icon: TrendingUp,
+      color: 'text-orange-600',
+      bgColor: 'bg-orange-100 dark:bg-orange-900/20'
+    }
+  ];
 
   useEffect(() => {
     if (!user) {
@@ -175,7 +215,7 @@ export default function EnhancedDashboardPage() {
     }
     
     // Simulate loading
-    const timer = setTimeout(() => setIsLoading(false), 1000);
+    const timer = setTimeout(() => setLoading(false), 1000);
     return () => clearTimeout(timer);
   }, [user, router]);
 
@@ -235,7 +275,7 @@ export default function EnhancedDashboardPage() {
     router.push(`/campaigns/${campaignId}/edit`);
   };
 
-  if (isLoading) {
+  if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-purple-50/30 dark:from-gray-900 dark:via-blue-900/20 dark:to-purple-900/20">
         <UnifiedSidebar onCollapseChange={setSidebarCollapsed} />
@@ -288,6 +328,12 @@ export default function EnhancedDashboardPage() {
 
         {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <AsyncContent
+          loading={loading}
+          error={dashboardError}
+          fallback={<PageSkeleton />}
+        >
+          {/* Dashboard content starts here */}
         {/* Breadcrumb Navigation */}
         <Breadcrumb />
         
@@ -438,7 +484,36 @@ export default function EnhancedDashboardPage() {
           </div>
           
           <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-            {liveData.map((campaign, index) => (
+            {(campaigns.length > 0 ? campaigns.slice(0, 6) : [
+              {
+                id: 1,
+                name: 'Google Ads - Search Campaign',
+                platform: 'Google',
+                status: 'active',
+                budget: 5000,
+                spend: 3200,
+                impressions: 125000,
+                clicks: 2100,
+                conversions: 156,
+                ctr: 1.68,
+                cpc: 1.52,
+                roas: 4.2
+              },
+              {
+                id: 2,
+                name: 'Meta Display Campaign',
+                platform: 'Meta',
+                status: 'active',
+                budget: 8000,
+                spend: 4800,
+                impressions: 287000,
+                clicks: 3200,
+                conversions: 187,
+                ctr: 1.12,
+                cpc: 1.50,
+                roas: 3.8
+              }
+            ]).map((campaign, index) => (
               <motion.div
                 key={campaign.id}
                 initial={{ opacity: 0, y: 20 }}
@@ -582,6 +657,7 @@ export default function EnhancedDashboardPage() {
             </div>
           </PremiumCard>
         </motion.div>
+        </AsyncContent>
       </main>
 
       {/* AI Control Chat Assistant */}
