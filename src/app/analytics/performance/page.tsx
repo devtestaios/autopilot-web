@@ -6,6 +6,7 @@ import { TrendingUp, TrendingDown, DollarSign, Target, Users, MousePointer } fro
 import { useErrorHandler } from '@/hooks/useErrorHandler';
 import { AsyncContent } from '@/components/ui/AsyncContent';
 import { fetchAnalyticsPerformance } from '@/lib/api';
+import AIInsights from '@/components/AIInsights';
 import type { AnalyticsPerformanceData } from '@/types';
 
 export default function PerformanceAnalytics() {
@@ -299,6 +300,28 @@ export default function PerformanceAnalytics() {
               </tbody>
             </table>
           </div>
+        </div>
+
+        {/* AI-Powered Insights Section */}
+        <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm border border-gray-200 dark:border-gray-700">
+          <div className="flex items-center space-x-3 mb-6">
+            <div className="p-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg">
+              <TrendingUp className="h-5 w-5 text-white" />
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                AI Performance Insights
+              </h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                Smart recommendations based on your performance data
+              </p>
+            </div>
+          </div>
+          <AIInsights 
+            page="performance-analytics" 
+            data={performanceData}
+            className="mt-4"
+          />
         </div>
       </div>
     </AsyncContent>

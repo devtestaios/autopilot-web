@@ -27,6 +27,8 @@ import { PremiumCard } from '@/components/ui/PremiumCard';
 import { PremiumButton } from '@/components/ui/PremiumButton';
 import AdvancedNavigation from '@/components/ui/AdvancedNavigation';
 import UnifiedSidebar from '@/components/UnifiedSidebar';
+import EnhancedAIInsights from '@/components/EnhancedAIInsights';
+import PredictiveAnalyticsDashboard from '@/components/PredictiveAnalyticsDashboard';
 import { LineChart, Line, AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 
 const AIAnalyticsPage = () => {
@@ -460,6 +462,28 @@ const AIAnalyticsPage = () => {
                 ))}
               </div>
             </PremiumCard>
+          </motion.div>
+
+          {/* Enhanced AI Features */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.8 }}
+            className="space-y-8"
+          >
+            {/* Enhanced AI Insights */}
+            <EnhancedAIInsights 
+              performanceData={aiPerformanceData}
+              showPredictions={true}
+              showRecommendations={true}
+              className="mt-8"
+            />
+
+            {/* Predictive Analytics Dashboard */}
+            <PredictiveAnalyticsDashboard 
+              timeRange={timeframe}
+              className="mt-8"
+            />
           </motion.div>
         </main>
       </div>

@@ -10,7 +10,8 @@ import { CampaignFiltersComponent } from '@/components/CampaignFilters';
 import { useCampaignFilters } from '@/hooks/useCampaignFilters';
 import { useSearchContext } from '@/contexts/SearchContext';
 import { useToast } from '@/components/ui/Toast';
-import { Plus } from 'lucide-react';
+import SmartCampaignOptimizer from '@/components/SmartCampaignOptimizer';
+import { Plus, Bot } from 'lucide-react';
 
 export default function CampaignsPage() {
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
@@ -197,6 +198,17 @@ export default function CampaignsPage() {
           onFiltersChange={setFilters}
           totalResults={totalResults}
         />
+
+        {/* AI Campaign Optimizer */}
+        <div className="mb-8">
+          <div className="flex items-center space-x-2 mb-4">
+            <Bot className="h-5 w-5 text-blue-600" />
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+              AI Campaign Optimizer
+            </h2>
+          </div>
+          <SmartCampaignOptimizer campaigns={filteredCampaigns} />
+        </div>
 
         {/* Campaign Table */}
         <CampaignTable
