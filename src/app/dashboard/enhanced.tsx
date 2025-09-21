@@ -37,7 +37,7 @@ import { PremiumCard } from '@/components/ui/PremiumCard';
 import AdvancedNavigation from '@/components/ui/AdvancedNavigation';
 import UnifiedSidebar from '@/components/UnifiedSidebar';
 import FloatingActionButton from '@/components/ui/FloatingActionButton';
-import AIInsights from '@/components/AIInsights';
+// import AIInsights from '@/components/AIInsights'; // TEMPORARILY DISABLED DUE TO GLITCHING
 import { useToast } from '@/components/ui/Toast';
 import AIControlChat from '@/components/AIControlChat';
 
@@ -367,7 +367,8 @@ export default function EnhancedDashboardPage() {
           ))}
         </motion.div>
 
-        {/* AI Insights Section */}
+        {/* AI Insights Section - TEMPORARILY DISABLED DUE TO GLITCHING */}
+        {/* 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -379,6 +380,7 @@ export default function EnhancedDashboardPage() {
             data={{ campaigns: enhancedCampaigns, stats: quickStats }}
           />
         </motion.div>
+        */}
 
         {/* Enhanced Campaigns Grid */}
         <motion.div
