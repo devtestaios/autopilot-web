@@ -36,7 +36,7 @@ import { PremiumButton } from '@/components/ui/PremiumButton';
 import { PremiumCard } from '@/components/ui/PremiumCard';
 import AdvancedNavigation from '@/components/ui/AdvancedNavigation';
 import UnifiedSidebar from '@/components/UnifiedSidebar';
-import FloatingActionButton from '@/components/ui/FloatingActionButton';
+import ActionDropdown from '@/components/ui/ActionDropdown';
 // import AIInsights from '@/components/AIInsights'; // TEMPORARILY DISABLED DUE TO GLITCHING
 import { useToast } from '@/components/ui/Toast';
 import AIControlChat from '@/components/AIControlChat';
@@ -282,6 +282,15 @@ export default function EnhancedDashboardPage() {
             </div>
             
             <div className="flex items-center gap-4 mt-6 lg:mt-0">
+              {/* Quick Actions Dropdown */}
+              <ActionDropdown
+                onNewCampaign={navigateToNewCampaign}
+                onAnalytics={navigateToAnalytics}
+                onOptimization={navigateToOptimization}
+                onGoals={() => router.push('/goals')}
+                onHelp={() => router.push('/help')}
+              />
+              
               <div className="flex items-center gap-2 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm rounded-xl px-4 py-2 border border-gray-200/50 dark:border-gray-700/50">
                 <Clock className="w-4 h-4 text-gray-500" />
                 <select 
@@ -304,15 +313,6 @@ export default function EnhancedDashboardPage() {
                 disabled={isRefreshing}
               >
                 {isRefreshing ? 'Refreshing...' : 'Refresh'}
-              </PremiumButton>
-              
-              <PremiumButton
-                variant="primary"
-                icon={<Sparkles className="w-4 h-4" />}
-                glow
-                onClick={navigateToNewCampaign}
-              >
-                New Campaign
               </PremiumButton>
             </div>
           </div>
@@ -559,13 +559,6 @@ export default function EnhancedDashboardPage() {
           </PremiumCard>
         </motion.div>
       </main>
-
-      {/* Floating Action Button */}
-      <FloatingActionButton 
-        onNewCampaign={navigateToNewCampaign}
-        onAnalytics={navigateToAnalytics}
-        onOptimization={navigateToOptimization}
-      />
 
       {/* AI Control Chat Assistant */}
       <AIControlChat defaultMinimized={true} />
