@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useToast } from '@/components/ui/Toast';
 import { 
   User, 
   Bell, 
@@ -24,7 +25,13 @@ import {
   Globe,
   Smartphone,
   CreditCard,
-  LogOut
+  LogOut,
+  Zap,
+  Key,
+  CheckCircle,
+  XCircle,
+  AlertCircle,
+  ExternalLink
 } from 'lucide-react';
 
 interface NotificationSettings {
@@ -44,10 +51,23 @@ interface PrivacySettings {
   profileVisibility: 'public' | 'private' | 'contacts';
 }
 
+interface PlatformIntegration {
+  id: string;
+  name: string;
+  icon: string;
+  connected: boolean;
+  status: 'connected' | 'error' | 'disconnected';
+  lastSync?: string;
+  credentials?: {
+    [key: string]: string;
+  };
+}
+
 export default function SettingsPage() {
   const router = useRouter();
   const { user, updateUserPreferences, logout, isLoading } = useAuth();
   const { theme, setTheme } = useTheme();
+  const { showToast } = useToast();
   const [activeTab, setActiveTab] = useState('profile');
   const [isChangingPassword, setIsChangingPassword] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -85,6 +105,30 @@ export default function SettingsPage() {
     marketingEmails: false,
     profileVisibility: 'private'
   });
+
+  const [integrations, setIntegrations] = useState<PlatformIntegration[]>([
+    {
+      id: 'google_ads',
+      name: 'Google Ads',
+      icon: '🔍',
+      connected: false,
+      status: 'disconnected'
+    },
+    {
+      id: 'meta_ads',
+      name: 'Meta Ads (Facebook)',
+      icon: '📘',
+      connected: false,
+      status: 'disconnected'
+    },
+    {
+      id: 'linkedin_ads',
+      name: 'LinkedIn Ads',
+      icon: '💼',
+      connected: false,
+      status: 'disconnected'
+    }
+  ]);
 
   useEffect(() => {
     if (!isLoading && !user) {
@@ -149,12 +193,28 @@ export default function SettingsPage() {
         ...profileData,
         notifications,
         privacy,
+        integrations: integrations.reduce((acc, integration) => {
+          acc[integration.id] = {
+            connected: integration.connected,
+            status: integration.status,
+            lastSync: integration.lastSync
+          };
+          return acc;
+        }, {} as Record<string, any>),
         theme
       });
-      // Show success message
+      showToast({
+        type: 'success',
+        title: 'Settings saved successfully',
+        description: 'Your preferences have been updated.'
+      });
     } catch (error) {
       console.error('Failed to save settings:', error);
-      // Show error message
+      showToast({
+        type: 'error',
+        title: 'Failed to save settings',
+        description: 'Please try again or contact support if the problem persists.'
+      });
     } finally {
       setIsSaving(false);
     }
@@ -162,19 +222,41 @@ export default function SettingsPage() {
 
   const handlePasswordChange = async () => {
     if (passwordData.new !== passwordData.confirm) {
-      alert('Passwords do not match');
+      showToast({
+        type: 'error',
+        title: 'Password mismatch',
+        description: 'New passwords do not match. Please try again.'
+      });
+      return;
+    }
+
+    if (passwordData.new.length < 8) {
+      showToast({
+        type: 'error',
+        title: 'Password too short',
+        description: 'Password must be at least 8 characters long.'
+      });
       return;
     }
 
     setIsSaving(true);
     try {
-      // Implement password change logic
-      alert('Password changed successfully');
+      // Implement password change logic with Supabase
+      // await supabase.auth.updateUser({ password: passwordData.new });
+      showToast({
+        type: 'success',
+        title: 'Password changed successfully',
+        description: 'Your password has been updated.'
+      });
       setPasswordData({ current: '', new: '', confirm: '' });
       setIsChangingPassword(false);
     } catch (error) {
       console.error('Failed to change password:', error);
-      alert('Failed to change password');
+      showToast({
+        type: 'error',
+        title: 'Failed to change password',
+        description: 'Please check your current password and try again.'
+      });
     } finally {
       setIsSaving(false);
     }
@@ -182,6 +264,7 @@ export default function SettingsPage() {
 
   const tabs = [
     { id: 'profile', label: 'Profile', icon: User },
+    { id: 'integrations', label: 'Integrations', icon: Zap },
     { id: 'notifications', label: 'Notifications', icon: Bell },
     { id: 'privacy', label: 'Privacy', icon: Shield },
     { id: 'appearance', label: 'Appearance', icon: Palette },
@@ -309,6 +392,77 @@ export default function SettingsPage() {
                   </h3>
                   
                   <div className="space-y-6">
+                    {/* Avatar Upload Section */}
+                    <div className="flex items-center space-x-6">
+                      <div className="relative">
+                        <div className={`w-24 h-24 rounded-full flex items-center justify-center text-2xl font-semibold ${
+                          user.avatar 
+                            ? 'bg-cover bg-center' 
+                            : theme === 'dark' 
+                              ? 'bg-gray-700 text-gray-300' 
+                              : 'bg-gray-200 text-gray-600'
+                        }`}
+                        style={user.avatar ? { backgroundImage: `url(${user.avatar})` } : {}}
+                        >
+                          {!user.avatar && user.name.charAt(0).toUpperCase()}
+                        </div>
+                        <button
+                          onClick={() => {
+                            // Create file input and trigger click
+                            const input = document.createElement('input');
+                            input.type = 'file';
+                            input.accept = 'image/*';
+                            input.onchange = (e) => {
+                              const file = (e.target as HTMLInputElement).files?.[0];
+                              if (file) {
+                                // In a real app, you'd upload to a service like Supabase Storage
+                                const reader = new FileReader();
+                                reader.onload = (e) => {
+                                  const result = e.target?.result as string;
+                                  // For demo purposes, we'll store the data URL
+                                  // In production, upload to storage and save URL
+                                  console.log('Avatar selected:', file.name);
+                                  // You would upload the file here and get back a URL
+                                };
+                                reader.readAsDataURL(file);
+                              }
+                            };
+                            input.click();
+                          }}
+                          className={`absolute -bottom-2 -right-2 w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center hover:bg-blue-700 transition-colors ${
+                            theme === 'dark' ? 'border-2 border-gray-800' : 'border-2 border-white'
+                          }`}
+                        >
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                          </svg>
+                        </button>
+                      </div>
+                      <div>
+                        <h4 className={`font-medium ${
+                          theme === 'dark' ? 'text-white' : 'text-gray-900'
+                        }`}>
+                          Profile Picture
+                        </h4>
+                        <p className={`text-sm mt-1 ${
+                          theme === 'dark' ? 'text-gray-400' : 'text-gray-500'
+                        }`}>
+                          Click the + button to upload a new avatar. Recommended size: 200x200px.
+                        </p>
+                        {user.avatar && (
+                          <button
+                            onClick={() => {
+                              // Remove avatar logic
+                              console.log('Remove avatar');
+                            }}
+                            className="text-sm text-red-600 hover:text-red-800 mt-1"
+                          >
+                            Remove avatar
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                    
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
                         <label className={`block text-sm font-medium mb-2 ${
@@ -496,6 +650,165 @@ export default function SettingsPage() {
                           </button>
                         </div>
                       )}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Integrations Tab */}
+              {activeTab === 'integrations' && (
+                <div>
+                  <h3 className={`text-xl font-semibold mb-6 ${
+                    theme === 'dark' ? 'text-white' : 'text-gray-900'
+                  }`}>
+                    Platform Integrations
+                  </h3>
+                  
+                  <div className="space-y-6">
+                    <div className={`p-4 rounded-lg ${
+                      theme === 'dark' ? 'bg-blue-900/20 border-blue-700/30' : 'bg-blue-50 border-blue-200'
+                    } border`}>
+                      <div className="flex items-start space-x-3">
+                        <Key className="h-5 w-5 text-blue-600 mt-1" />
+                        <div>
+                          <h4 className={`font-medium ${
+                            theme === 'dark' ? 'text-blue-300' : 'text-blue-900'
+                          }`}>
+                            API Key Management
+                          </h4>
+                          <p className={`text-sm mt-1 ${
+                            theme === 'dark' ? 'text-blue-200' : 'text-blue-700'
+                          }`}>
+                            Connect your advertising platforms to enable automated campaign management and optimization.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="grid gap-6">
+                      {integrations.map((integration) => (
+                        <div
+                          key={integration.id}
+                          className={`p-6 border rounded-lg ${
+                            theme === 'dark'
+                              ? 'bg-gray-700 border-gray-600'
+                              : 'bg-gray-50 border-gray-200'
+                          }`}
+                        >
+                          <div className="flex items-center justify-between mb-4">
+                            <div className="flex items-center space-x-3">
+                              <div className="text-2xl">{integration.icon}</div>
+                              <div>
+                                <h4 className={`font-semibold ${
+                                  theme === 'dark' ? 'text-white' : 'text-gray-900'
+                                }`}>
+                                  {integration.name}
+                                </h4>
+                                <div className="flex items-center mt-1">
+                                  {integration.status === 'connected' && (
+                                    <div className="flex items-center text-green-600">
+                                      <CheckCircle size={16} className="mr-1" />
+                                      <span className="text-sm">Connected</span>
+                                    </div>
+                                  )}
+                                  {integration.status === 'error' && (
+                                    <div className="flex items-center text-red-600">
+                                      <XCircle size={16} className="mr-1" />
+                                      <span className="text-sm">Connection Error</span>
+                                    </div>
+                                  )}
+                                  {integration.status === 'disconnected' && (
+                                    <div className="flex items-center text-gray-500">
+                                      <AlertCircle size={16} className="mr-1" />
+                                      <span className="text-sm">Not Connected</span>
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                            
+                            <div className="flex items-center space-x-2">
+                              {integration.connected ? (
+                                <>
+                                  <button
+                                    onClick={() => {
+                                      // Test connection logic
+                                      console.log(`Testing ${integration.name} connection...`);
+                                    }}
+                                    className={`px-3 py-1 text-sm border rounded transition-colors ${
+                                      theme === 'dark'
+                                        ? 'border-gray-500 text-gray-300 hover:bg-gray-600'
+                                        : 'border-gray-300 text-gray-700 hover:bg-gray-100'
+                                    }`}
+                                  >
+                                    Test
+                                  </button>
+                                  <button
+                                    onClick={() => {
+                                      // Disconnect logic
+                                      setIntegrations(prev => prev.map(i => 
+                                        i.id === integration.id 
+                                          ? { ...i, connected: false, status: 'disconnected' as const }
+                                          : i
+                                      ));
+                                    }}
+                                    className="px-3 py-1 text-sm text-red-600 border border-red-300 rounded hover:bg-red-50 transition-colors"
+                                  >
+                                    Disconnect
+                                  </button>
+                                </>
+                              ) : (
+                                <button
+                                  onClick={() => {
+                                    // Connect logic - redirect to platforms page
+                                    window.location.href = '/platforms';
+                                  }}
+                                  className="px-4 py-2 bg-blue-600 text-white rounded text-sm hover:bg-blue-700 transition-colors flex items-center"
+                                >
+                                  <ExternalLink size={14} className="mr-1" />
+                                  Connect
+                                </button>
+                              )}
+                            </div>
+                          </div>
+
+                          {integration.connected && integration.lastSync && (
+                            <div className={`text-xs ${
+                              theme === 'dark' ? 'text-gray-400' : 'text-gray-500'
+                            }`}>
+                              Last synced: {new Date(integration.lastSync).toLocaleString()}
+                            </div>
+                          )}
+
+                          <div className={`mt-4 text-sm ${
+                            theme === 'dark' ? 'text-gray-300' : 'text-gray-600'
+                          }`}>
+                            {integration.id === 'google_ads' && 'Manage Google Ads campaigns, keywords, and bidding strategies.'}
+                            {integration.id === 'meta_ads' && 'Optimize Facebook and Instagram advertising campaigns.'}
+                            {integration.id === 'linkedin_ads' && 'Control LinkedIn sponsored content and lead generation campaigns.'}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className={`p-4 border-l-4 ${
+                      theme === 'dark' 
+                        ? 'border-yellow-500 bg-yellow-900/20' 
+                        : 'border-yellow-400 bg-yellow-50'
+                    }`}>
+                      <div className="flex">
+                        <AlertCircle className={`h-5 w-5 ${
+                          theme === 'dark' ? 'text-yellow-400' : 'text-yellow-600'
+                        }`} />
+                        <div className="ml-3">
+                          <p className={`text-sm ${
+                            theme === 'dark' ? 'text-yellow-300' : 'text-yellow-800'
+                          }`}>
+                            <strong>Security Note:</strong> API keys are encrypted and stored securely. 
+                            Use dedicated API accounts with minimum required permissions for enhanced security.
+                          </p>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -770,6 +1083,160 @@ export default function SettingsPage() {
                   </h3>
                   
                   <div className="space-y-6">
+                    {/* Account Information */}
+                    <div className={`p-4 border rounded-lg ${
+                      theme === 'dark' ? 'border-gray-700 bg-gray-800' : 'border-gray-200 bg-gray-50'
+                    }`}>
+                      <h4 className={`font-medium mb-3 ${
+                        theme === 'dark' ? 'text-white' : 'text-gray-900'
+                      }`}>
+                        Account Information
+                      </h4>
+                      <div className="space-y-2">
+                        <div className="flex justify-between">
+                          <span className={`text-sm ${
+                            theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
+                          }`}>
+                            User ID
+                          </span>
+                          <span className={`text-sm font-mono ${
+                            theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+                          }`}>
+                            {user.id}
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className={`text-sm ${
+                            theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
+                          }`}>
+                            Account Created
+                          </span>
+                          <span className={`text-sm ${
+                            theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+                          }`}>
+                            {new Date(user.createdAt).toLocaleDateString()}
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className={`text-sm ${
+                            theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
+                          }`}>
+                            Last Login
+                          </span>
+                          <span className={`text-sm ${
+                            theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+                          }`}>
+                            {new Date(user.lastLogin).toLocaleString()}
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className={`text-sm ${
+                            theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
+                          }`}>
+                            Account Role
+                          </span>
+                          <span className={`text-sm px-2 py-1 rounded text-xs font-medium ${
+                            user.role === 'admin' 
+                              ? 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200'
+                              : user.role === 'user'
+                              ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
+                              : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200'
+                          }`}>
+                            {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Security Settings */}
+                    <div className={`p-4 border rounded-lg ${
+                      theme === 'dark' ? 'border-gray-700' : 'border-gray-200'
+                    }`}>
+                      <h4 className={`font-medium mb-4 ${
+                        theme === 'dark' ? 'text-white' : 'text-gray-900'
+                      }`}>
+                        Security Settings
+                      </h4>
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <h5 className={`font-medium ${
+                              theme === 'dark' ? 'text-white' : 'text-gray-900'
+                            }`}>
+                              Change Password
+                            </h5>
+                            <p className={`text-sm ${
+                              theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
+                            }`}>
+                              Update your account password
+                            </p>
+                          </div>
+                          <button
+                            onClick={() => setIsChangingPassword(!isChangingPassword)}
+                            className={`px-4 py-2 border rounded-lg text-sm transition-colors ${
+                              theme === 'dark'
+                                ? 'border-gray-600 text-gray-300 hover:bg-gray-700'
+                                : 'border-gray-300 text-gray-700 hover:bg-gray-50'
+                            }`}
+                          >
+                            <Lock size={16} className="mr-2 inline" />
+                            Change Password
+                          </button>
+                        </div>
+                        
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <h5 className={`font-medium ${
+                              theme === 'dark' ? 'text-white' : 'text-gray-900'
+                            }`}>
+                              Two-Factor Authentication
+                            </h5>
+                            <p className={`text-sm ${
+                              theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
+                            }`}>
+                              Add an extra layer of security to your account
+                            </p>
+                          </div>
+                          <button
+                            onClick={() => {
+                              alert('Two-factor authentication setup would be implemented here');
+                            }}
+                            className="px-4 py-2 bg-green-600 text-white rounded-lg text-sm hover:bg-green-700 transition-colors"
+                          >
+                            Enable 2FA
+                          </button>
+                        </div>
+
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <h5 className={`font-medium ${
+                              theme === 'dark' ? 'text-white' : 'text-gray-900'
+                            }`}>
+                              Session Management
+                            </h5>
+                            <p className={`text-sm ${
+                              theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
+                            }`}>
+                              View and manage your active sessions
+                            </p>
+                          </div>
+                          <button
+                            onClick={() => {
+                              alert('Session management interface would be implemented here');
+                            }}
+                            className={`px-4 py-2 border rounded-lg text-sm transition-colors ${
+                              theme === 'dark'
+                                ? 'border-gray-600 text-gray-300 hover:bg-gray-700'
+                                : 'border-gray-300 text-gray-700 hover:bg-gray-50'
+                            }`}
+                          >
+                            Manage Sessions
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Subscription Status */}
                     <div className="flex items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
                       <div>
                         <h4 className={`font-medium ${

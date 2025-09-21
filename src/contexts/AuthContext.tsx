@@ -19,6 +19,7 @@ interface User {
     timezone?: string;
     language?: string;
     privacy?: PrivacySettings;
+    integrations?: Record<string, any>;
   };
   createdAt: string;
   lastLogin: string;
