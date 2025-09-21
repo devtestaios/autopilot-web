@@ -9,7 +9,7 @@ import DashboardCustomizer, { DashboardWidget } from '@/components/DashboardCust
 import AdvancedNavigation from '@/components/ui/AdvancedNavigation';
 import UnifiedSidebar from '@/components/UnifiedSidebar';
 import Breadcrumb from '@/components/ui/Breadcrumb';
-import { PageSkeleton } from '@/components/ui/Skeleton';
+import { PageSkeleton, DashboardWidgetSkeleton } from '@/components/ui/Skeleton';
 import { AsyncContent } from '@/components/ui/AsyncContent';
 import { useErrorHandler } from '@/hooks/useErrorHandler';
 import { fetchDashboardOverview, fetchCampaigns, fetchKPISummary } from '@/lib/api';
@@ -200,13 +200,7 @@ export default function CustomizableDashboardPage() {
         {/* Page Content */}
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Breadcrumb */}
-          <Breadcrumb 
-            items={[
-              { label: 'Dashboard', href: '/dashboard' },
-              { label: 'Customizable', href: '/dashboard/customizable' }
-            ]}
-            className="mb-6"
-          />
+          <Breadcrumb className="mb-6" />
 
           {/* Page Header */}
           <div className="mb-8">
@@ -222,7 +216,16 @@ export default function CustomizableDashboardPage() {
           <AsyncContent
             loading={loading}
             error={error}
-            fallback={<PageSkeleton />}
+            fallback={
+              <PageSkeleton>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                  <DashboardWidgetSkeleton />
+                  <DashboardWidgetSkeleton />
+                  <DashboardWidgetSkeleton />
+                  <DashboardWidgetSkeleton />
+                </div>
+              </PageSkeleton>
+            }
           >
             <div className="relative">
               {/* Widget Grid */}

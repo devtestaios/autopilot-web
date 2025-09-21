@@ -160,12 +160,7 @@ export default function PerformanceOptimizedDashboard() {
               <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
                 Performance Dashboard
               </h1>
-              <Breadcrumb 
-                segments={[
-                  { label: 'Dashboard', href: '/dashboard' },
-                  { label: 'Performance', href: '/dashboard/performance' }
-                ]}
-              />
+              <Breadcrumb />
             </div>
             
             {/* Status indicators */}

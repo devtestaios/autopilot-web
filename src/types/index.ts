@@ -62,6 +62,33 @@ export interface AnalyticsPerformanceData {
   roas: number;
 }
 
+export interface AnalyticsOverview {
+  totalImpressions: number;
+  totalClicks: number;
+  totalConversions: number;
+  totalSpend: number;
+  avgCtr: number;
+  avgCpc: number;
+  avgCpa: number;
+  roas: number;
+}
+
+export interface PlatformBreakdownData {
+  platform: string;
+  spend: number;
+  conversions: number;
+  impressions: number;
+  clicks: number;
+  color?: string;
+  [key: string]: any; // Make chart-compatible
+}
+
+export interface AnalyticsPerformanceResponse {
+  overview: AnalyticsOverview;
+  dailyMetrics: AnalyticsPerformanceData[];
+  platformBreakdown: PlatformBreakdownData[];
+}
+
 export interface ROIAnalyticsData {
   campaign: string;
   platform: string;

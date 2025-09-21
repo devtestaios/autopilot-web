@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { TrendingUp, TrendingDown, Activity } from 'lucide-react';
 import { PremiumCard } from '@/components/ui/PremiumCard';
 import type { DashboardWidget } from '@/components/DashboardCustomizer';
+import type { Campaign } from '@/types';
 
 interface TableWidgetProps {
   widget: DashboardWidget;
@@ -12,9 +13,17 @@ interface TableWidgetProps {
   onSelect: () => void;
 }
 
+// Extended campaign interface for table display
+interface CampaignTableData extends Campaign {
+  impressions: number;
+  clicks: number;
+  conversions: number;
+  roas: number;
+}
+
 export default function TableWidget({ widget, data, isEditMode, onSelect }: TableWidgetProps) {
   // Sample campaign data
-  const campaigns = data?.campaigns || [
+  const campaigns: CampaignTableData[] = data?.campaigns || [
     {
       id: 1,
       name: 'Google Search Campaign',

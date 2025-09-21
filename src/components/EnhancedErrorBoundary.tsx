@@ -131,7 +131,12 @@ const DefaultErrorFallback: React.FC<DefaultErrorFallbackProps> = ({
   };
 
   const getErrorActions = () => {
-    const actions = [
+    const actions: Array<{
+      label: string;
+      action: () => void;
+      icon: React.ComponentType<any>;
+      variant: 'primary' | 'secondary';
+    }> = [
       {
         label: 'Try Again',
         action: reset,

@@ -331,7 +331,20 @@ export default function EnhancedDashboard() {
         <AsyncContent
           loading={loading}
           error={dashboardError}
-          fallback={<PageSkeleton />}
+          fallback={
+            <PageSkeleton>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <DashboardWidgetSkeleton />
+                <DashboardWidgetSkeleton />
+                <DashboardWidgetSkeleton />
+                <DashboardWidgetSkeleton />
+              </div>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <ChartSkeleton />
+                <ChartSkeleton />
+              </div>
+            </PageSkeleton>
+          }
         >
           {/* Dashboard content starts here */}
         {/* Breadcrumb Navigation */}

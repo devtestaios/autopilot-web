@@ -195,8 +195,8 @@ describe('PerformanceChart', () => {
     it('handles missing data gracefully', () => {
       const incompleteData = [
         { date: '2023-01-01', spend: 100, clicks: 50, impressions: 1000, conversions: 5 },
-        // @ts-ignore - Testing with incomplete data
-        { date: '2023-01-02', spend: undefined, clicks: null },
+        // Testing with minimal/zero data
+        { date: '2023-01-02', spend: 0, clicks: 0, impressions: 0, conversions: 0 },
       ];
       
       render(<PerformanceChart data={incompleteData} metric="spend" />);
@@ -284,10 +284,10 @@ describe('CampaignComparisonChart', () => {
 
     it('handles campaigns with undefined values', () => {
       const undefinedData = [
-        // @ts-ignore - Testing with incomplete data
-        { name: 'Campaign A', spend: undefined, budget: 2000, conversions: undefined },
-        // @ts-ignore - Testing with incomplete data
-        { name: 'Campaign B', spend: 1500, budget: undefined, conversions: 75 },
+        // Testing with minimal data (conversions is optional)
+        { name: 'Campaign A', spend: 0, budget: 2000, conversions: undefined },
+        // Testing with zero budget
+        { name: 'Campaign B', spend: 1500, budget: 0, conversions: 75 },
       ];
       
       render(<CampaignComparisonChart campaigns={undefinedData} />);

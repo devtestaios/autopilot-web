@@ -3,27 +3,27 @@
 import { useState, useEffect } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell } from 'recharts';
 import { TrendingUp, TrendingDown, DollarSign, Target, Users, MousePointer } from 'lucide-react';
-import { useErrorHandler } from '@/hooks/useErrorHandler';
+import { useAsyncOperation } from '@/hooks/useErrorHandler';
 import { AsyncContent } from '@/components/ui/AsyncContent';
 import { fetchAnalyticsPerformance } from '@/lib/api';
 import AIInsights from '@/components/AIInsights';
-import type { AnalyticsPerformanceData } from '@/types';
+import type { AnalyticsPerformanceResponse } from '@/types';
 
 export default function PerformanceAnalytics() {
   const [timeRange, setTimeRange] = useState('30d');
   const [selectedMetric, setSelectedMetric] = useState('all');
-  const { data, error, isLoading, handleAsync } = useErrorHandler();
-
-  const loadAnalyticsData = async () => {
-    return await handleAsync(async () => {
-      const result = await fetchAnalyticsPerformance(timeRange);
+  const { data, error, isLoading, execute } = useAsyncOperation<AnalyticsPerformanceResponse | null>(
+    async () => {
+      const timeRangeObj = { start: timeRange, end: timeRange };
+      const result = await fetchAnalyticsPerformance(timeRangeObj);
       return result;
-    });
-  };
+    },
+    [timeRange]
+  );
 
   useEffect(() => {
-    loadAnalyticsData();
-  }, [timeRange]);
+    execute();
+  }, [timeRange, execute]);
 
   // Mock data for demonstration (replace with real API data)
   const performanceData = data || {
@@ -92,7 +92,7 @@ export default function PerformanceAnalytics() {
     <AsyncContent
       loading={isLoading}
       error={error}
-      onRetry={loadAnalyticsData}
+      onRetry={execute}
       resourceName="performance analytics"
     >
       <div className="space-y-8">
@@ -247,7 +247,7 @@ export default function PerformanceAnalytics() {
                   cy="50%"
                   outerRadius={80}
                   dataKey="spend"
-                  label={({ platform, spend }) => `${platform}: ${formatCurrency(spend)}`}
+                  label={({ platform, spend }: any) => `${platform}: ${formatCurrency(Number(spend))}`}
                 >
                   {performanceData.platformBreakdown.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.color} />
