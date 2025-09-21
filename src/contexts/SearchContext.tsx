@@ -152,13 +152,17 @@ export function SearchProvider({ children }: { children: ReactNode }) {
 
   // Load search history from localStorage
   useEffect(() => {
-    const saved = localStorage.getItem('autopilot-search-history');
-    if (saved) {
-      try {
-        setSearchHistory(JSON.parse(saved));
-      } catch (error) {
-        console.error('Failed to load search history:', error);
+    try {
+      const saved = localStorage.getItem('autopilot-search-history');
+      if (saved) {
+        try {
+          setSearchHistory(JSON.parse(saved));
+        } catch (error) {
+          console.error('Failed to load search history:', error);
+        }
       }
+    } catch (error) {
+      console.error('Failed to access localStorage:', error);
     }
   }, []);
 
@@ -167,14 +171,22 @@ export function SearchProvider({ children }: { children: ReactNode }) {
     
     setSearchHistory(prev => {
       const newHistory = [term, ...prev.filter(item => item !== term)].slice(0, 10);
-      localStorage.setItem('autopilot-search-history', JSON.stringify(newHistory));
+      try {
+        localStorage.setItem('autopilot-search-history', JSON.stringify(newHistory));
+      } catch (error) {
+        console.error('Failed to save search history:', error);
+      }
       return newHistory;
     });
   };
 
   const clearSearchHistory = () => {
     setSearchHistory([]);
-    localStorage.removeItem('autopilot-search-history');
+    try {
+      localStorage.removeItem('autopilot-search-history');
+    } catch (error) {
+      console.error('Failed to clear search history:', error);
+    }
   };
 
   return (

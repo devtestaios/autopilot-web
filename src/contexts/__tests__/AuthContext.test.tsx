@@ -1,0 +1,714 @@
+import React from 'react';
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
+import { AuthProvider, useAuth } from '../AuthContext';
+
+// Mock localStorage
+const mockLocalStorage = {
+  getItem: jest.fn(),
+  setItem: jest.fn(),
+  removeItem: jest.fn(),
+  clear: jest.fn(),
+};
+
+Object.defineProperty(window, 'localStorage', {
+  value: mockLocalStorage,
+  writable: true,
+});
+
+// Test component that uses the auth context
+const TestComponent: React.FC = () => {
+  const auth = useAuth();
+
+  return (
+    <div>
+      <div data-testid="is-loading">{auth.isLoading.toString()}</div>
+      <div data-testid="is-authenticated">{auth.isAuthenticated.toString()}</div>
+      <div data-testid="user-email">{auth.user?.email || 'null'}</div>
+      <div data-testid="user-name">{auth.user?.name || 'null'}</div>
+      <div data-testid="user-role">{auth.user?.role || 'null'}</div>
+      <div data-testid="user-theme">{auth.user?.preferences?.theme || 'null'}</div>
+      <button 
+        data-testid="login-button" 
+        onClick={() => auth.login('test@example.com', 'password123')}
+      >
+        Login
+      </button>
+      <button 
+        data-testid="signup-button" 
+        onClick={() => auth.signup('test@example.com', 'password123', 'Test User')}
+      >
+        Signup
+      </button>
+      <button data-testid="logout-button" onClick={auth.logout}>
+        Logout
+      </button>
+      <button 
+        data-testid="update-user-button" 
+        onClick={() => auth.updateUser({ name: 'Updated Name' })}
+      >
+        Update User
+      </button>
+      <button 
+        data-testid="update-preferences-button" 
+        onClick={() => auth.updatePreferences({ theme: 'dark' })}
+      >
+        Update Preferences
+      </button>
+    </div>
+  );
+};
+
+describe('AuthContext', () => {
+  beforeEach(() => {
+    // Reset all mocks before each test
+    mockLocalStorage.getItem.mockClear();
+    mockLocalStorage.setItem.mockClear();
+    mockLocalStorage.removeItem.mockClear();
+    mockLocalStorage.clear.mockClear();
+    
+    // Default localStorage behavior
+    mockLocalStorage.getItem.mockReturnValue(null);
+    
+    // Reset timers
+    jest.clearAllTimers();
+    jest.useFakeTimers();
+  });
+
+  afterEach(() => {
+    jest.runOnlyPendingTimers();
+    jest.useRealTimers();
+  });
+
+  describe('Provider Initialization', () => {
+    it('should provide auth context with default unauthenticated state', () => {
+      render(
+        <AuthProvider>
+          <TestComponent />
+        </AuthProvider>
+      );
+
+      // In test environment, the useEffect runs synchronously, so loading may already be false
+      // Check that we get consistent initial state
+      expect(screen.getByTestId('is-authenticated')).toHaveTextContent('false');
+      expect(screen.getByTestId('user-email')).toHaveTextContent('null');
+      
+      // Ensure loading completes
+      act(() => {
+        jest.runAllTimers();
+      });
+      
+      expect(screen.getByTestId('is-loading')).toHaveTextContent('false');
+      expect(screen.getByTestId('is-authenticated')).toHaveTextContent('false');
+    });
+
+    it('should load saved user from localStorage on mount', async () => {
+      const mockUser = {
+        id: 'user_123',
+        email: 'saved@example.com',
+        name: 'Saved User',
+        role: 'admin',
+        preferences: {
+          theme: 'dark',
+          notifications: true,
+          dashboardLayout: 'compact',
+          defaultView: 'campaigns'
+        },
+        createdAt: '2025-01-01T00:00:00Z',
+        lastLogin: '2025-01-02T00:00:00Z'
+      };
+
+      mockLocalStorage.getItem.mockImplementation((key) => {
+        if (key === 'autopilot_user') return JSON.stringify(mockUser);
+        if (key === 'autopilot_token') return 'saved_token_123';
+        return null;
+      });
+
+      render(
+        <AuthProvider>
+          <TestComponent />
+        </AuthProvider>
+      );
+
+      // Wait for useEffect to complete
+      act(() => {
+        jest.runAllTimers();
+      });
+
+      expect(screen.getByTestId('is-authenticated')).toHaveTextContent('true');
+      expect(screen.getByTestId('user-email')).toHaveTextContent('saved@example.com');
+      expect(screen.getByTestId('user-name')).toHaveTextContent('Saved User');
+      expect(screen.getByTestId('user-role')).toHaveTextContent('admin');
+      expect(screen.getByTestId('user-theme')).toHaveTextContent('dark');
+    });
+
+    it('should handle corrupted localStorage data gracefully', async () => {
+      mockLocalStorage.getItem.mockImplementation((key) => {
+        if (key === 'autopilot_user') return 'invalid-json-data';
+        if (key === 'autopilot_token') return 'some_token';
+        return null;
+      });
+
+      const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+
+      render(
+        <AuthProvider>
+          <TestComponent />
+        </AuthProvider>
+      );
+
+      act(() => {
+        jest.runAllTimers();
+      });
+
+      expect(screen.getByTestId('is-authenticated')).toHaveTextContent('false');
+      expect(screen.getByTestId('user-email')).toHaveTextContent('null');
+      expect(mockLocalStorage.removeItem).toHaveBeenCalledWith('autopilot_user');
+      expect(mockLocalStorage.removeItem).toHaveBeenCalledWith('autopilot_token');
+      expect(consoleSpy).toHaveBeenCalledWith('Error parsing saved user:', expect.any(SyntaxError));
+
+      consoleSpy.mockRestore();
+    });
+
+    it('should complete loading when no saved session exists', async () => {
+      render(
+        <AuthProvider>
+          <TestComponent />
+        </AuthProvider>
+      );
+
+      act(() => {
+        jest.runAllTimers();
+      });
+
+      expect(screen.getByTestId('is-loading')).toHaveTextContent('false');
+      expect(screen.getByTestId('is-authenticated')).toHaveTextContent('false');
+    });
+  });
+
+  describe('Authentication Flow', () => {
+    it('should login successfully with valid credentials', async () => {
+      render(
+        <AuthProvider>
+          <TestComponent />
+        </AuthProvider>
+      );
+
+      // Wait for initial loading to complete
+      act(() => {
+        jest.runAllTimers();
+      });
+
+      // Trigger login
+      fireEvent.click(screen.getByTestId('login-button'));
+      
+      // Should be loading during login
+      expect(screen.getByTestId('is-loading')).toHaveTextContent('true');
+
+      // Fast-forward login simulation
+      act(() => {
+        jest.runAllTimers();
+      });
+
+      await waitFor(() => {
+        expect(screen.getByTestId('is-loading')).toHaveTextContent('false');
+      });
+
+      expect(screen.getByTestId('is-authenticated')).toHaveTextContent('true');
+      expect(screen.getByTestId('user-email')).toHaveTextContent('test@example.com');
+      expect(screen.getByTestId('user-name')).toHaveTextContent('test');
+      expect(screen.getByTestId('user-role')).toHaveTextContent('user');
+      expect(mockLocalStorage.setItem).toHaveBeenCalledWith('autopilot_user', expect.any(String));
+      expect(mockLocalStorage.setItem).toHaveBeenCalledWith('autopilot_token', expect.any(String));
+    });
+
+    it('should signup successfully with valid data', async () => {
+      render(
+        <AuthProvider>
+          <TestComponent />
+        </AuthProvider>
+      );
+
+      act(() => {
+        jest.runAllTimers();
+      });
+
+      fireEvent.click(screen.getByTestId('signup-button'));
+      
+      expect(screen.getByTestId('is-loading')).toHaveTextContent('true');
+
+      act(() => {
+        jest.runAllTimers();
+      });
+
+      await waitFor(() => {
+        expect(screen.getByTestId('is-loading')).toHaveTextContent('false');
+      });
+
+      expect(screen.getByTestId('is-authenticated')).toHaveTextContent('true');
+      expect(screen.getByTestId('user-email')).toHaveTextContent('test@example.com');
+      expect(screen.getByTestId('user-name')).toHaveTextContent('Test User');
+      expect(mockLocalStorage.setItem).toHaveBeenCalledWith('autopilot_user', expect.any(String));
+      expect(mockLocalStorage.setItem).toHaveBeenCalledWith('autopilot_token', expect.any(String));
+    });
+
+    it('should logout and clear session data', async () => {
+      // First login
+      render(
+        <AuthProvider>
+          <TestComponent />
+        </AuthProvider>
+      );
+
+      act(() => {
+        jest.runAllTimers();
+      });
+
+      fireEvent.click(screen.getByTestId('login-button'));
+      
+      act(() => {
+        jest.runAllTimers();
+      });
+
+      await waitFor(() => {
+        expect(screen.getByTestId('is-authenticated')).toHaveTextContent('true');
+      });
+
+      // Now logout
+      fireEvent.click(screen.getByTestId('logout-button'));
+
+      expect(screen.getByTestId('is-authenticated')).toHaveTextContent('false');
+      expect(screen.getByTestId('user-email')).toHaveTextContent('null');
+      expect(mockLocalStorage.removeItem).toHaveBeenCalledWith('autopilot_user');
+      expect(mockLocalStorage.removeItem).toHaveBeenCalledWith('autopilot_token');
+    });
+  });
+
+  describe('User Management', () => {
+    beforeEach(async () => {
+      // Helper to login before each test
+      render(
+        <AuthProvider>
+          <TestComponent />
+        </AuthProvider>
+      );
+
+      act(() => {
+        jest.runAllTimers();
+      });
+
+      fireEvent.click(screen.getByTestId('login-button'));
+      
+      act(() => {
+        jest.runAllTimers();
+      });
+
+      await waitFor(() => {
+        expect(screen.getByTestId('is-authenticated')).toHaveTextContent('true');
+      });
+    });
+
+    it('should update user information', () => {
+      fireEvent.click(screen.getByTestId('update-user-button'));
+
+      expect(screen.getByTestId('user-name')).toHaveTextContent('Updated Name');
+      expect(mockLocalStorage.setItem).toHaveBeenCalledWith('autopilot_user', expect.stringContaining('Updated Name'));
+    });
+
+    it('should update user preferences', () => {
+      fireEvent.click(screen.getByTestId('update-preferences-button'));
+
+      expect(screen.getByTestId('user-theme')).toHaveTextContent('dark');
+      expect(mockLocalStorage.setItem).toHaveBeenCalledWith('autopilot_user', expect.stringContaining('"theme":"dark"'));
+    });
+
+    it('should not update when user is not logged in', () => {
+      // First logout
+      fireEvent.click(screen.getByTestId('logout-button'));
+
+      const setItemCallsBefore = mockLocalStorage.setItem.mock.calls.length;
+
+      // Try to update
+      fireEvent.click(screen.getByTestId('update-user-button'));
+
+      // Should not have called setItem again
+      expect(mockLocalStorage.setItem.mock.calls.length).toBe(setItemCallsBefore);
+      expect(screen.getByTestId('user-name')).toHaveTextContent('null');
+    });
+  });
+
+  describe('Hook Usage', () => {
+    it('should throw error when useAuth is used outside provider', () => {
+      const ComponentWithoutProvider = () => {
+        const auth = useAuth();
+        return <div>{auth.isAuthenticated}</div>;
+      };
+
+      const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+
+      expect(() => {
+        render(<ComponentWithoutProvider />);
+      }).toThrow('useAuth must be used within an AuthProvider');
+
+      consoleSpy.mockRestore();
+    });
+
+    it('should provide all required context values', async () => {
+      const ContextChecker: React.FC = () => {
+        const auth = useAuth();
+        
+        return (
+          <div>
+            <div data-testid="has-user">{(auth.user !== undefined).toString()}</div>
+            <div data-testid="has-isLoading">{(auth.isLoading !== undefined).toString()}</div>
+            <div data-testid="has-isAuthenticated">{(auth.isAuthenticated !== undefined).toString()}</div>
+            <div data-testid="has-login">{(typeof auth.login === 'function').toString()}</div>
+            <div data-testid="has-signup">{(typeof auth.signup === 'function').toString()}</div>
+            <div data-testid="has-logout">{(typeof auth.logout === 'function').toString()}</div>
+            <div data-testid="has-updateUser">{(typeof auth.updateUser === 'function').toString()}</div>
+            <div data-testid="has-updatePreferences">{(typeof auth.updatePreferences === 'function').toString()}</div>
+            <div data-testid="has-updateUserPreferences">{(typeof auth.updateUserPreferences === 'function').toString()}</div>
+          </div>
+        );
+      };
+
+      render(
+        <AuthProvider>
+          <ContextChecker />
+        </AuthProvider>
+      );
+
+      expect(screen.getByTestId('has-user')).toHaveTextContent('true');
+      expect(screen.getByTestId('has-isLoading')).toHaveTextContent('true');
+      expect(screen.getByTestId('has-isAuthenticated')).toHaveTextContent('true');
+      expect(screen.getByTestId('has-login')).toHaveTextContent('true');
+      expect(screen.getByTestId('has-signup')).toHaveTextContent('true');
+      expect(screen.getByTestId('has-logout')).toHaveTextContent('true');
+      expect(screen.getByTestId('has-updateUser')).toHaveTextContent('true');
+      expect(screen.getByTestId('has-updatePreferences')).toHaveTextContent('true');
+      expect(screen.getByTestId('has-updateUserPreferences')).toHaveTextContent('true');
+    });
+  });
+
+  describe('Error Handling', () => {
+    it('should handle login errors gracefully', async () => {
+      const ComponentWithLoginError: React.FC = () => {
+        const auth = useAuth();
+        const [result, setResult] = React.useState<any>(null);
+
+        const handleLogin = async () => {
+          const loginResult = await auth.login('', 'short'); // Invalid credentials
+          setResult(loginResult);
+        };
+
+        return (
+          <div>
+            <button data-testid="login-error-button" onClick={handleLogin}>
+              Login with Error
+            </button>
+            <div data-testid="login-result">{JSON.stringify(result)}</div>
+          </div>
+        );
+      };
+
+      render(
+        <AuthProvider>
+          <ComponentWithLoginError />
+        </AuthProvider>
+      );
+
+      act(() => {
+        jest.runAllTimers();
+      });
+
+      fireEvent.click(screen.getByTestId('login-error-button'));
+
+      act(() => {
+        jest.runAllTimers();
+      });
+
+      await waitFor(() => {
+        const result = JSON.parse(screen.getByTestId('login-result').textContent || '{}');
+        expect(result.success).toBe(false);
+        expect(result.error).toBe('Invalid email or password');
+      });
+    });
+
+    it('should handle signup errors gracefully', async () => {
+      const ComponentWithSignupError: React.FC = () => {
+        const auth = useAuth();
+        const [result, setResult] = React.useState<any>(null);
+
+        const handleSignup = async () => {
+          const signupResult = await auth.signup('', 'short', ''); // Invalid data
+          setResult(signupResult);
+        };
+
+        return (
+          <div>
+            <button data-testid="signup-error-button" onClick={handleSignup}>
+              Signup with Error
+            </button>
+            <div data-testid="signup-result">{JSON.stringify(result)}</div>
+          </div>
+        );
+      };
+
+      render(
+        <AuthProvider>
+          <ComponentWithSignupError />
+        </AuthProvider>
+      );
+
+      act(() => {
+        jest.runAllTimers();
+      });
+
+      fireEvent.click(screen.getByTestId('signup-error-button'));
+
+      act(() => {
+        jest.runAllTimers();
+      });
+
+      await waitFor(() => {
+        const result = JSON.parse(screen.getByTestId('signup-result').textContent || '{}');
+        expect(result.success).toBe(false);
+        expect(result.error).toBe('Please fill in all fields with valid information');
+      });
+    });
+  });
+
+  describe('LocalStorage Integration', () => {
+    it('should handle missing localStorage gracefully', () => {
+      // Mock window as undefined (SSR scenario)
+      const originalWindow = global.window;
+      delete (global as any).window;
+
+      render(
+        <AuthProvider>
+          <TestComponent />
+        </AuthProvider>
+      );
+
+      // Should not throw error
+      expect(screen.getByTestId('is-authenticated')).toHaveTextContent('false');
+
+      // Restore window
+      global.window = originalWindow;
+    });
+
+    it('should save user data to localStorage on successful login', async () => {
+      render(
+        <AuthProvider>
+          <TestComponent />
+        </AuthProvider>
+      );
+
+      act(() => {
+        jest.runAllTimers();
+      });
+
+      fireEvent.click(screen.getByTestId('login-button'));
+      
+      act(() => {
+        jest.runAllTimers();
+      });
+
+      await waitFor(() => {
+        expect(mockLocalStorage.setItem).toHaveBeenCalledWith('autopilot_user', expect.any(String));
+        expect(mockLocalStorage.setItem).toHaveBeenCalledWith('autopilot_token', expect.any(String));
+      });
+
+      // Verify the saved user data structure
+      const savedUserCall = mockLocalStorage.setItem.mock.calls.find(call => call[0] === 'autopilot_user');
+      const savedUser = JSON.parse(savedUserCall![1]);
+      
+      expect(savedUser).toMatchObject({
+        email: 'test@example.com',
+        name: 'test',
+        role: 'user',
+        preferences: {
+          theme: 'light',
+          notifications: true,
+          dashboardLayout: 'detailed',
+          defaultView: 'dashboard'
+        }
+      });
+    });
+
+    it('should preserve user data structure in localStorage', async () => {
+      render(
+        <AuthProvider>
+          <TestComponent />
+        </AuthProvider>
+      );
+
+      act(() => {
+        jest.runAllTimers();
+      });
+
+      fireEvent.click(screen.getByTestId('login-button'));
+      
+      act(() => {
+        jest.runAllTimers();
+      });
+
+      await waitFor(() => {
+        expect(screen.getByTestId('is-authenticated')).toHaveTextContent('true');
+      });
+
+      // Update preferences
+      fireEvent.click(screen.getByTestId('update-preferences-button'));
+
+      // Check that the saved data maintains proper structure
+      const savedUserCall = mockLocalStorage.setItem.mock.calls
+        .filter(call => call[0] === 'autopilot_user')
+        .pop(); // Get the latest call
+      
+      const savedUser = JSON.parse(savedUserCall![1]);
+      
+      expect(savedUser.preferences.theme).toBe('dark');
+      expect(savedUser.preferences.notifications).toBe(true); // Should preserve other preferences
+    });
+  });
+
+  describe('Edge Cases', () => {
+    it('should handle updateUserPreferences alias method', async () => {
+      const ComponentWithAlias: React.FC = () => {
+        const auth = useAuth();
+
+        return (
+          <div>
+            <div data-testid="current-theme">{auth.user?.preferences?.theme || 'null'}</div>
+            <button 
+              data-testid="alias-update-button" 
+              onClick={() => auth.updateUserPreferences({ theme: 'dark' })}
+            >
+              Update via Alias
+            </button>
+            <button 
+              data-testid="login-button" 
+              onClick={() => auth.login('test@example.com', 'password123')}
+            >
+              Login
+            </button>
+          </div>
+        );
+      };
+
+      render(
+        <AuthProvider>
+          <ComponentWithAlias />
+        </AuthProvider>
+      );
+
+      act(() => {
+        jest.runAllTimers();
+      });
+
+      // First login
+      fireEvent.click(screen.getByTestId('login-button'));
+      
+      act(() => {
+        jest.runAllTimers();
+      });
+
+      await waitFor(() => {
+        expect(screen.getByTestId('current-theme')).toHaveTextContent('light');
+      });
+
+      // Use alias method
+      fireEvent.click(screen.getByTestId('alias-update-button'));
+
+      expect(screen.getByTestId('current-theme')).toHaveTextContent('dark');
+    });
+
+    it('should handle multiple rapid authentication actions', async () => {
+      render(
+        <AuthProvider>
+          <TestComponent />
+        </AuthProvider>
+      );
+
+      act(() => {
+        jest.runAllTimers();
+      });
+
+      // Rapid login/logout sequence
+      fireEvent.click(screen.getByTestId('login-button'));
+      fireEvent.click(screen.getByTestId('logout-button'));
+      fireEvent.click(screen.getByTestId('login-button'));
+      
+      act(() => {
+        jest.runAllTimers();
+      });
+
+      await waitFor(() => {
+        expect(screen.getByTestId('is-authenticated')).toHaveTextContent('true');
+      });
+    });
+
+    it('should handle complex preference updates', async () => {
+      const ComponentWithComplexUpdate: React.FC = () => {
+        const auth = useAuth();
+
+        const handleComplexUpdate = () => {
+          auth.updatePreferences({
+            theme: 'dark',
+            dashboardLayout: 'compact',
+            defaultView: 'analytics',
+            notifications: {
+              email: true,
+              push: false,
+              sms: true,
+              campaignAlerts: true,
+              performanceUpdates: false,
+              budgetAlerts: true,
+              weeklyReports: false
+            }
+          });
+        };
+
+        return (
+          <div>
+            <div data-testid="complex-theme">{auth.user?.preferences?.theme || 'null'}</div>
+            <div data-testid="complex-layout">{auth.user?.preferences?.dashboardLayout || 'null'}</div>
+            <button data-testid="complex-update-button" onClick={handleComplexUpdate}>
+              Complex Update
+            </button>
+            <button 
+              data-testid="login-button" 
+              onClick={() => auth.login('test@example.com', 'password123')}
+            >
+              Login
+            </button>
+          </div>
+        );
+      };
+
+      render(
+        <AuthProvider>
+          <ComponentWithComplexUpdate />
+        </AuthProvider>
+      );
+
+      act(() => {
+        jest.runAllTimers();
+      });
+
+      fireEvent.click(screen.getByTestId('login-button'));
+      
+      act(() => {
+        jest.runAllTimers();
+      });
+
+      await waitFor(() => {
+        expect(screen.getByTestId('complex-theme')).toHaveTextContent('light');
+      });
+
+      fireEvent.click(screen.getByTestId('complex-update-button'));
+
+      expect(screen.getByTestId('complex-theme')).toHaveTextContent('dark');
+      expect(screen.getByTestId('complex-layout')).toHaveTextContent('compact');
+    });
+  });
+});
