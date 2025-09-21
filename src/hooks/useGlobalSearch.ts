@@ -22,8 +22,23 @@ export function useGlobalSearch(searchData?: SearchData) {
   const [searchTerm, setSearchTerm] = useState('');
   const [isSearching, setIsSearching] = useState(false);
   const [results, setResults] = useState<SearchResult[]>([]);
+  const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
   
   const debouncedSearchTerm = useDebounce(searchTerm, 300);
+
+  // Handle keyboard shortcuts for opening search
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Check for Cmd+K (Mac) or Ctrl+K (Windows/Linux)
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault()
+        setIsSearchModalOpen(true)
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [])
 
   // Combine mock data with real data
   const allSearchableContent: SearchResult[] = useMemo(() => {
@@ -211,6 +226,9 @@ export function useGlobalSearch(searchData?: SearchData) {
     isSearching,
     results,
     hasResults: results.length > 0,
-    showResults: debouncedSearchTerm.trim().length > 0
+    showResults: debouncedSearchTerm.trim().length > 0,
+    isSearchModalOpen,
+    openSearch: () => setIsSearchModalOpen(true),
+    closeSearch: () => setIsSearchModalOpen(false)
   };
 }

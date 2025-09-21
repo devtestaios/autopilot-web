@@ -37,9 +37,11 @@ import { PremiumCard } from '@/components/ui/PremiumCard';
 import AdvancedNavigation from '@/components/ui/AdvancedNavigation';
 import UnifiedSidebar from '@/components/UnifiedSidebar';
 import ActionDropdown from '@/components/ui/ActionDropdown';
-// import AIInsights from '@/components/AIInsights'; // TEMPORARILY DISABLED DUE TO GLITCHING
+import AIInsights from '@/components/AIInsights';
+import Breadcrumb from '@/components/ui/Breadcrumb';
 import { useToast } from '@/components/ui/Toast';
 import AIControlChat from '@/components/AIControlChat';
+import { PageSkeleton, ChartSkeleton, DashboardWidgetSkeleton, CampaignCardSkeleton } from '@/components/ui/Skeleton';
 
 // Enhanced mock data with more realistic metrics
 const enhancedCampaigns = [
@@ -235,20 +237,41 @@ export default function EnhancedDashboardPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.5 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="text-center"
-        >
-          <PulseWaveLogo size="large" animated className="mb-4" />
-          <motion.div
-            animate={{ rotate: 360 }}
-            transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-            className="w-8 h-8 border-2 border-pulse-cyan border-t-transparent rounded-full mx-auto"
-          />
-          <p className="text-gray-600 dark:text-gray-400 mt-4">Loading your dashboard...</p>
-        </motion.div>
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-purple-50/30 dark:from-gray-900 dark:via-blue-900/20 dark:to-purple-900/20">
+        <UnifiedSidebar onCollapseChange={setSidebarCollapsed} />
+        
+        <main className={`${sidebarCollapsed ? 'lg:ml-14' : 'lg:ml-64'} transition-all duration-300 pt-6`}>
+          <AdvancedNavigation sidebarCollapsed={sidebarCollapsed} />
+          
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
+            <PageSkeleton showHeader={true}>
+              
+              {/* Quick stats skeleton */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                {Array.from({ length: 4 }).map((_, i) => (
+                  <DashboardWidgetSkeleton key={i} />
+                ))}
+              </div>
+
+              {/* Charts skeleton */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                <ChartSkeleton />
+                <div className="space-y-6">
+                  <DashboardWidgetSkeleton />
+                  <DashboardWidgetSkeleton />
+                </div>
+              </div>
+
+              {/* Campaigns skeleton */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                {Array.from({ length: 3 }).map((_, i) => (
+                  <CampaignCardSkeleton key={i} />
+                ))}
+              </div>
+
+            </PageSkeleton>
+          </div>
+        </main>
       </div>
     );
   }
@@ -265,6 +288,9 @@ export default function EnhancedDashboardPage() {
 
         {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Breadcrumb Navigation */}
+        <Breadcrumb />
+        
         {/* Header Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -367,8 +393,7 @@ export default function EnhancedDashboardPage() {
           ))}
         </motion.div>
 
-        {/* AI Insights Section - TEMPORARILY DISABLED DUE TO GLITCHING */}
-        {/* 
+        {/* AI Insights Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -380,7 +405,6 @@ export default function EnhancedDashboardPage() {
             data={{ campaigns: enhancedCampaigns, stats: quickStats }}
           />
         </motion.div>
-        */}
 
         {/* Enhanced Campaigns Grid */}
         <motion.div

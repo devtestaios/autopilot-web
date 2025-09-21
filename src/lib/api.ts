@@ -7,6 +7,43 @@ import type {
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'https://autopilot-api-1.onrender.com';
 
+// Enhanced error handling for API calls
+export class APIError extends Error {
+  constructor(
+    message: string,
+    public status?: number,
+    public code?: string
+  ) {
+    super(message);
+    this.name = 'APIError';
+  }
+}
+
+async function handleResponse<T>(response: Response): Promise<T> {
+  if (!response.ok) {
+    let errorMessage = `HTTP ${response.status}: ${response.statusText}`;
+    
+    try {
+      const errorData = await response.json().catch(() => null);
+      if (errorData?.message) {
+        errorMessage = errorData.message;
+      } else if (errorData?.detail) {
+        errorMessage = errorData.detail;
+      }
+    } catch {
+      // Fallback to status text if JSON parsing fails
+    }
+
+    throw new APIError(errorMessage, response.status);
+  }
+
+  try {
+    return await response.json();
+  } catch (error) {
+    throw new APIError('Invalid response format', response.status);
+  }
+}
+
 // Legacy types for backward compatibility (remove when all components updated)
 export type CampaignInput = CampaignFormData;
 export type PerformanceInput = {
@@ -16,23 +53,31 @@ export type PerformanceInput = {
 
 // Campaign API Functions
 export async function fetchCampaigns(): Promise<Campaign[]> {
-  const response = await fetch(`${API_BASE}/campaigns`, {
-    cache: 'no-store'
-  });
-  if (!response.ok) {
-    throw new Error(`Failed to fetch campaigns: ${response.status}`);
+  try {
+    const response = await fetch(`${API_BASE}/campaigns`, {
+      cache: 'no-store'
+    });
+    return await handleResponse<Campaign[]>(response);
+  } catch (error) {
+    if (error instanceof APIError) {
+      throw error;
+    }
+    throw new APIError('Failed to connect to the server. Please check your internet connection.');
   }
-  return response.json();
 }
 
 export async function fetchCampaign(id: string): Promise<Campaign> {
-  const response = await fetch(`${API_BASE}/campaigns/${id}`, {
-    cache: 'no-store'
-  });
-  if (!response.ok) {
-    throw new Error(`Failed to fetch campaign: ${response.status}`);
+  try {
+    const response = await fetch(`${API_BASE}/campaigns/${id}`, {
+      cache: 'no-store'
+    });
+    return await handleResponse<Campaign>(response);
+  } catch (error) {
+    if (error instanceof APIError) {
+      throw error;
+    }
+    throw new APIError('Failed to connect to the server. Please check your internet connection.');
   }
-  return response.json();
 }
 
 export async function createCampaign(campaign: CampaignInput): Promise<Campaign> {
@@ -91,6 +136,80 @@ export async function addPerformanceSnapshot(campaignId: string, performance: Pe
   if (!response.ok) {
     const error = await response.json().catch(() => ({}));
     throw new Error(error.detail || `Failed to add performance data: ${response.status}`);
+  }
+  return response.json();
+}
+
+// Dashboard API Functions
+export async function fetchDashboardOverview() {
+  const response = await fetch(`${API_BASE}/dashboard/overview`, {
+    cache: 'no-store'
+  });
+  if (!response.ok) {
+    throw new Error(`Failed to fetch dashboard overview: ${response.status}`);
+  }
+  return response.json();
+}
+
+export async function fetchKPISummary() {
+  const response = await fetch(`${API_BASE}/kpi/summary`, {
+    cache: 'no-store'
+  });
+  if (!response.ok) {
+    throw new Error(`Failed to fetch KPI summary: ${response.status}`);
+  }
+  return response.json();
+}
+
+export async function fetchDailyKPIs(days = 30) {
+  const response = await fetch(`${API_BASE}/kpi/daily?days=${days}`, {
+    cache: 'no-store'
+  });
+  if (!response.ok) {
+    throw new Error(`Failed to fetch daily KPIs: ${response.status}`);
+  }
+  return response.json();
+}
+
+// Analytics API Functions
+export async function fetchAnalyticsPerformance(dateRange?: { start: string; end: string }) {
+  const params = new URLSearchParams();
+  if (dateRange) {
+    params.append('start_date', dateRange.start);
+    params.append('end_date', dateRange.end);
+  }
+  
+  const response = await fetch(`${API_BASE}/analytics/performance?${params}`, {
+    cache: 'no-store'
+  });
+  if (!response.ok) {
+    throw new Error(`Failed to fetch analytics performance: ${response.status}`);
+  }
+  return response.json();
+}
+
+export async function fetchROIAnalytics(dateRange?: { start: string; end: string }) {
+  const params = new URLSearchParams();
+  if (dateRange) {
+    params.append('start_date', dateRange.start);
+    params.append('end_date', dateRange.end);
+  }
+  
+  const response = await fetch(`${API_BASE}/analytics/roi?${params}`, {
+    cache: 'no-store'
+  });
+  if (!response.ok) {
+    throw new Error(`Failed to fetch ROI analytics: ${response.status}`);
+  }
+  return response.json();
+}
+
+export async function fetchPlatformBreakdown() {
+  const response = await fetch(`${API_BASE}/analytics/platform-breakdown`, {
+    cache: 'no-store'
+  });
+  if (!response.ok) {
+    throw new Error(`Failed to fetch platform breakdown: ${response.status}`);
   }
   return response.json();
 }

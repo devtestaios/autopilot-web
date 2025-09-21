@@ -20,7 +20,20 @@ import {
   Brain
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { usePageAI } from '@/contexts/AIContext';
+
+interface AIInsight {
+  id: string;
+  title: string;
+  description: string;
+  severity: 'low' | 'medium' | 'high' | 'critical';
+  category: string;
+  actionable: boolean;
+  actions?: {
+    label: string;
+    action: () => void;
+  }[];
+  timestamp: Date;
+}
 
 interface AIInsightsProps {
   page: string;
@@ -73,26 +86,74 @@ export default function AIInsights({
   compact = false, 
   maxInsights = 5 
 }: AIInsightsProps) {
-  const { insights, generateInsights, addInsight, autoOptimization } = usePageAI(page, data);
+  const [insights, setInsights] = useState<AIInsight[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [dismissedInsights, setDismissedInsights] = useState<string[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
-  // Generate insights when component mounts or data changes
+  // Generate mock insights when component mounts - safer approach
   useEffect(() => {
     const loadInsights = async () => {
       setIsLoading(true);
+      setError(null);
       try {
-        const newInsights = await generateInsights();
-        newInsights.forEach(insight => addInsight(insight));
+        // Generate mock insights based on page
+        const mockInsights = generateMockInsights(page, data);
+        setInsights(mockInsights);
       } catch (error) {
         console.error('Error generating insights:', error);
+        setError('Unable to load AI insights');
       } finally {
         setIsLoading(false);
       }
     };
 
     loadInsights();
-  }, [page, data, generateInsights, addInsight]);
+  }, [page, data]);
+
+  // Generate mock insights function
+  const generateMockInsights = (page: string, data?: any): AIInsight[] => {
+    const baseInsights = [
+      {
+        id: '1',
+        title: 'Campaign Performance Optimization',
+        description: 'Your Google Ads campaign could benefit from keyword refinement',
+        severity: 'medium' as const,
+        category: 'optimization',
+        actionable: true,
+        timestamp: new Date()
+      },
+      {
+        id: '2', 
+        title: 'Budget Allocation Improvement',
+        description: 'Consider redistributing 15% of budget to higher-performing campaigns',
+        severity: 'high' as const,
+        category: 'budget',
+        actionable: true,
+        timestamp: new Date()
+      },
+      {
+        id: '3',
+        title: 'Performance Trending Up',
+        description: 'Your campaigns show 23% improvement over last week',
+        severity: 'low' as const,
+        category: 'performance',
+        actionable: false,
+        timestamp: new Date()
+      }
+    ];
+
+    // Customize based on page
+    if (page === 'dashboard') {
+      return baseInsights;
+    } else if (page === 'campaigns') {
+      return baseInsights.filter(insight => insight.category === 'optimization');
+    } else if (page === 'analytics') {
+      return baseInsights.filter(insight => insight.category === 'performance');
+    }
+
+    return baseInsights.slice(0, 2);
+  };
 
   const dismissInsight = (insightId: string) => {
     setDismissedInsights(prev => [...prev, insightId]);
@@ -167,12 +228,6 @@ export default function AIInsights({
           </div>
         </div>
         <div className="flex items-center gap-2">
-          {autoOptimization && (
-            <div className="flex items-center gap-1 px-2 py-1 bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400 rounded-md text-xs">
-              <Zap className="w-3 h-3" />
-              Auto-Optimize
-            </div>
-          )}
           <button className="p-1 hover:bg-gray-100 dark:hover:bg-gray-800 rounded">
             <Settings className="w-4 h-4 text-gray-500" />
           </button>
@@ -256,7 +311,7 @@ export default function AIInsights({
                     {/* Actions */}
                     {insight.actionable && insight.actions && (
                       <div className="flex flex-wrap gap-2">
-                        {insight.actions.map((action, actionIndex) => (
+                        {insight.actions.map((action: { label: string; action: () => void }, actionIndex: number) => (
                           <button
                             key={actionIndex}
                             onClick={action.action}

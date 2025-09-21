@@ -7,6 +7,7 @@ import { useSearchContext } from '@/contexts/SearchContext';
 import { useGlobalSearch } from '@/hooks/useGlobalSearch';
 import { SearchResults } from '@/components/SearchResults';
 import { PulseWaveLogo } from './PulseWaveLogo';
+import GlobalSearch from './ui/GlobalSearch';
 
 interface NavbarProps {
   onMenuToggle?: () => void;
@@ -20,18 +21,25 @@ export default function Navbar({ onMenuToggle }: NavbarProps) {
   
   // Search functionality with context data
   const { campaigns, leads } = useSearchContext();
-  const { searchTerm, setSearchTerm, isSearching, results, showResults } = useGlobalSearch({
+  const { 
+    searchTerm, 
+    setSearchTerm, 
+    isSearching, 
+    results, 
+    showResults,
+    isSearchModalOpen,
+    openSearch,
+    closeSearch
+  } = useGlobalSearch({
     campaigns,
     leads
   });
   const searchRef = useRef<HTMLDivElement>(null);
-  const mobileSearchRef = useRef<HTMLDivElement>(null);
 
   // Close search results when clicking outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (searchRef.current && !searchRef.current.contains(event.target as Node) &&
-          mobileSearchRef.current && !mobileSearchRef.current.contains(event.target as Node)) {
+      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
         setSearchTerm('');
       }
     }
@@ -52,12 +60,19 @@ export default function Navbar({ onMenuToggle }: NavbarProps) {
     <nav className="bg-white dark:bg-black/90 backdrop-blur-sm border-b border-gray-200 dark:border-gray-700 px-4 py-3 transition-all duration-300 sticky top-0 z-40">
       <div className="flex items-center justify-between max-w-7xl mx-auto">
         {/* Left Side */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2">
           <button
             onClick={onMenuToggle}
             className="md:hidden p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
           >
             <Menu className="w-5 h-5 text-black dark:text-gray-300" />
+          </button>
+          
+          <button
+            onClick={openSearch}
+            className="md:hidden p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
+          >
+            <Search className="w-5 h-5 text-black dark:text-gray-300" />
           </button>
           
           <div className="flex items-center gap-3">
@@ -73,26 +88,19 @@ export default function Navbar({ onMenuToggle }: NavbarProps) {
           </div>
         </div>
 
-        {/* Center - Enhanced Search */}
+        {/* Center - Enhanced Search Button */}
         <div className="hidden md:flex flex-1 max-w-2xl mx-8">
-          <div ref={searchRef} className="relative w-full group">
-            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 w-5 h-5 group-focus-within:text-pulse-cyan transition-colors" />
-            <input
-              type="text"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Search campaigns, clients, keywords, or analytics..."
-              className="w-full pl-12 pr-4 py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-xl focus:ring-2 focus:ring-pulse-cyan focus:border-transparent transition-all duration-300 hover:border-gray-400 dark:hover:border-gray-500"
-            />
-            {showResults && (
-              <SearchResults
-                results={results}
-                isSearching={isSearching}
-                searchTerm={searchTerm}
-                onResultClick={() => setSearchTerm('')}
-              />
-            )}
-          </div>
+          <button 
+            onClick={openSearch}
+            className="w-full flex items-center pl-4 pr-4 py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 rounded-xl hover:border-gray-400 dark:hover:border-gray-500 transition-all duration-300 group"
+          >
+            <Search className="w-5 h-5 mr-3 group-hover:text-pulse-cyan transition-colors" />
+            <span className="flex-1 text-left">Search campaigns, analytics, reports...</span>
+            <div className="flex items-center space-x-1 text-xs">
+              <kbd className="px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded border">⌘</kbd>
+              <kbd className="px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded border">K</kbd>
+            </div>
+          </button>
         </div>
 
         {/* Right Side - Enhanced Notifications and Profile */}
@@ -202,24 +210,14 @@ export default function Navbar({ onMenuToggle }: NavbarProps) {
 
       {/* Mobile Search */}
       <div className="md:hidden mt-3">
-        <div ref={mobileSearchRef} className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 w-4 h-4" />
-          <input
-            type="text"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Search..."
-            className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          />
-          {showResults && (
-            <SearchResults
-              results={results}
-              isSearching={isSearching}
-              searchTerm={searchTerm}
-              onResultClick={() => setSearchTerm('')}
-            />
-          )}
-        </div>
+        <button 
+          onClick={openSearch}
+          className="w-full flex items-center pl-3 pr-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 rounded-lg"
+        >
+          <Search className="w-4 h-4 mr-3" />
+          <span className="flex-1 text-left">Search...</span>
+          <span className="text-xs">⌘K</span>
+        </button>
       </div>
 
       {/* Click outside handlers */}
@@ -232,6 +230,9 @@ export default function Navbar({ onMenuToggle }: NavbarProps) {
           }}
         />
       )}
+
+      {/* Global Search Modal */}
+      <GlobalSearch isOpen={isSearchModalOpen} onClose={closeSearch} />
     </nav>
   );
 }

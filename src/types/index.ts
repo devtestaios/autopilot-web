@@ -48,6 +48,59 @@ export interface DashboardOverview {
   campaigns_by_status: Record<string, number>;
 }
 
+// Analytics and Dashboard Types
+export interface AnalyticsPerformanceData {
+  date: string;
+  impressions: number;
+  clicks: number;
+  conversions: number;
+  spend: number;
+  revenue: number;
+  ctr: number;
+  cpc: number;
+  cpa: number;
+  roas: number;
+}
+
+export interface ROIAnalyticsData {
+  campaign: string;
+  platform: string;
+  spend: number;
+  revenue: number;
+  roas: number;
+  profit: number;
+  margin: number;
+}
+
+export interface PlatformBreakdown {
+  platform: string;
+  spend: number;
+  revenue: number;
+  campaigns: number;
+  conversions: number;
+  roas: number;
+}
+
+export interface KPISummary {
+  total_campaigns: number;
+  active_campaigns: number;
+  total_spend: number;
+  total_revenue: number;
+  total_conversions: number;
+  average_roas: number;
+  average_cpc: number;
+  average_ctr: number;
+}
+
+export interface DailyKPI {
+  date: string;
+  spend: number;
+  revenue: number;
+  conversions: number;
+  roas: number;
+  campaigns_active: number;
+}
+
 export interface KPISummary {
   total_leads: number;
   total_campaigns: number;

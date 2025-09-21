@@ -6,6 +6,7 @@ import { SearchProvider } from "@/contexts/SearchContext";
 import { AIProvider } from "@/contexts/AIContext";
 import { AIControlProvider } from "@/contexts/AIControlContext";
 import { ToastProvider } from "@/components/ui/Toast";
+import { ErrorProvider } from "@/components/providers/ErrorProvider";
 import PageTransition from "@/components/PageTransition";
 
 interface ClientProvidersProps {
@@ -14,20 +15,22 @@ interface ClientProvidersProps {
 
 export default function ClientProviders({ children }: ClientProvidersProps) {
   return (
-    <ThemeProvider>
-      <AuthProvider>
-        <SearchProvider>
-          <AIProvider>
-            <AIControlProvider>
-              <ToastProvider>
-                <PageTransition>
-                  {children}
-                </PageTransition>
-              </ToastProvider>
-            </AIControlProvider>
-          </AIProvider>
-        </SearchProvider>
-      </AuthProvider>
-    </ThemeProvider>
+    <ErrorProvider>
+      <ThemeProvider>
+        <AuthProvider>
+          <SearchProvider>
+            <AIProvider>
+              <AIControlProvider>
+                <ToastProvider>
+                  <PageTransition>
+                    {children}
+                  </PageTransition>
+                </ToastProvider>
+              </AIControlProvider>
+            </AIProvider>
+          </SearchProvider>
+        </AuthProvider>
+      </ThemeProvider>
+    </ErrorProvider>
   );
 }
