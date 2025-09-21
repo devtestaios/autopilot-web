@@ -114,7 +114,7 @@ export default function ActionDropdown({
       {/* Dropdown Trigger Button */}
       <PremiumButton
         variant="primary"
-        size="default"
+        size="md"
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center gap-2"
         glow

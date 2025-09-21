@@ -4,11 +4,12 @@ import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 
 interface PremiumBadgeProps {
-  children: React.ReactNode;
+  children?: React.ReactNode;
   variant?: 'default' | 'success' | 'warning' | 'danger' | 'info';
   size?: 'sm' | 'md' | 'lg';
   className?: string;
   animated?: boolean;
+  status?: 'active' | 'paused' | 'ended' | 'optimizing'; // Add status prop for campaign status
 }
 
 const variantClasses = {
@@ -25,16 +26,35 @@ const sizeClasses = {
   lg: 'px-4 py-2 text-base',
 };
 
+const statusVariantMap = {
+  active: 'success',
+  paused: 'warning', 
+  ended: 'danger',
+  optimizing: 'info'
+} as const;
+
+const statusLabels = {
+  active: 'Active',
+  paused: 'Paused',
+  ended: 'Ended',
+  optimizing: 'Optimizing'
+} as const;
+
 export function PremiumBadge({ 
   children, 
   variant = 'default', 
   size = 'md', 
   className,
-  animated = false 
+  animated = false,
+  status
 }: PremiumBadgeProps) {
+  // If status is provided, use it to determine variant and children
+  const finalVariant = status ? statusVariantMap[status] : variant;
+  const finalChildren = status ? statusLabels[status] : children;
+  
   const badgeClasses = cn(
     'inline-flex items-center font-medium rounded-full border',
-    variantClasses[variant],
+    variantClasses[finalVariant],
     sizeClasses[size],
     className
   );
@@ -49,10 +69,10 @@ export function PremiumBadge({
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.2 }}
       >
-        {children}
+        {finalChildren}
       </motion.span>
     );
   }
 
-  return <span className={badgeClasses}>{children}</span>;
+  return <span className={badgeClasses}>{finalChildren}</span>;
 }

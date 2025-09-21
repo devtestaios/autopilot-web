@@ -99,7 +99,22 @@ export default function SettingsPage() {
       });
 
       if (user.preferences?.notifications) {
-        setNotifications(user.preferences.notifications);
+        // Handle both boolean and NotificationSettings types
+        if (typeof user.preferences.notifications === 'boolean') {
+          // If it's a boolean, set default notification settings
+          setNotifications({
+            email: user.preferences.notifications,
+            push: user.preferences.notifications,
+            sms: false,
+            campaignAlerts: user.preferences.notifications,
+            performanceUpdates: user.preferences.notifications,
+            budgetAlerts: user.preferences.notifications,
+            weeklyReports: false
+          });
+        } else {
+          // If it's already a NotificationSettings object
+          setNotifications(user.preferences.notifications);
+        }
       }
 
       if (user.preferences?.privacy) {
@@ -711,7 +726,15 @@ export default function SettingsPage() {
                               name="theme"
                               value={value}
                               checked={theme === value}
-                              onChange={() => setTheme(value as 'light' | 'dark' | 'system')}
+                              onChange={() => {
+                                if (value === 'system') {
+                                  // For system preference, detect and set the appropriate theme
+                                  const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                                  setTheme(systemTheme);
+                                } else {
+                                  setTheme(value as 'light' | 'dark');
+                                }
+                              }}
                               className="sr-only"
                             />
                             <div className="flex flex-col items-center text-center">

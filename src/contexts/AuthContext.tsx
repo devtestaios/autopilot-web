@@ -10,12 +10,33 @@ interface User {
   role: 'admin' | 'user' | 'viewer';
   preferences: {
     theme: 'light' | 'dark' | 'auto';
-    notifications: boolean;
+    notifications: boolean | NotificationSettings;
     dashboardLayout: 'compact' | 'detailed';
     defaultView: 'dashboard' | 'campaigns' | 'analytics';
+    company?: string;
+    timezone?: string;
+    language?: string;
+    privacy?: PrivacySettings;
   };
   createdAt: string;
   lastLogin: string;
+}
+
+interface NotificationSettings {
+  email: boolean;
+  push: boolean;
+  sms: boolean;
+  campaignAlerts: boolean;
+  performanceUpdates: boolean;
+  budgetAlerts: boolean;
+  weeklyReports: boolean;
+}
+
+interface PrivacySettings {
+  dataSharing: boolean;
+  analytics: boolean;
+  marketingEmails: boolean;
+  profileVisibility: 'public' | 'private' | 'contacts';
 }
 
 interface AuthContextType {
@@ -27,6 +48,7 @@ interface AuthContextType {
   logout: () => void;
   updateUser: (updates: Partial<User>) => void;
   updatePreferences: (preferences: Partial<User['preferences']>) => void;
+  updateUserPreferences: (preferences: Partial<User['preferences']>) => void; // Alias for compatibility
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -206,7 +228,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
     signup,
     logout,
     updateUser,
-    updatePreferences
+    updatePreferences,
+    updateUserPreferences: updatePreferences // Alias for compatibility
   };
 
   return (
