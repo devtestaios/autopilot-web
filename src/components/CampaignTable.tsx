@@ -359,6 +359,7 @@ export default function CampaignTable({ campaigns, onEdit, onDelete, onDuplicate
                           onClick={() => onEdit(campaign)}
                           className="p-2"
                           title="Edit campaign"
+                          aria-label={`Edit ${campaign.name}`}
                         >
                           <Edit className="w-4 h-4" />
                         </PremiumButton>
