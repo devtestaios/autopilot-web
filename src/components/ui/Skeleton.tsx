@@ -161,36 +161,46 @@ export function DashboardWidgetSkeleton() {
 }
 
 // Page skeleton for loading states
-export function PageSkeleton() {
+export function PageSkeleton({ children, showHeader = true }: { children?: React.ReactNode; showHeader?: boolean }) {
   return (
     <div className="space-y-6 p-6">
-      {/* Header */}
-      <div className="flex justify-between items-center">
-        <div className="space-y-2">
-          <Skeleton height="2rem" width="200px" />
-          <Skeleton height="1rem" width="300px" />
-        </div>
-        <Skeleton variant="rectangular" width="120px" height="40px" />
-      </div>
+      {showHeader && (
+        <>
+          {/* Header */}
+          <div className="flex justify-between items-center">
+            <div className="space-y-2">
+              <Skeleton height="2rem" width="200px" />
+              <Skeleton height="1rem" width="300px" />
+            </div>
+            <Skeleton variant="rectangular" width="120px" height="40px" />
+          </div>
+        </>
+      )}
       
-      {/* Stats grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {[0, 1, 2, 3].map((index) => (
-          <DashboardWidgetSkeleton key={index} />
-        ))}
-      </div>
-      
-      {/* Main content */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2">
-          <Skeleton variant="rectangular" height="400px" />
-        </div>
-        <div className="space-y-4">
-          {[0, 1, 2].map((index) => (
-            <Skeleton key={index} variant="rectangular" height="120px" />
-          ))}
-        </div>
-      </div>
+      {children ? (
+        children
+      ) : (
+        <>
+          {/* Stats grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[0, 1, 2, 3].map((index) => (
+              <DashboardWidgetSkeleton key={index} />
+            ))}
+          </div>
+          
+          {/* Main content */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="lg:col-span-2">
+              <Skeleton variant="rectangular" height="400px" />
+            </div>
+            <div className="space-y-4">
+              {[0, 1, 2].map((index) => (
+                <Skeleton key={index} variant="rectangular" height="120px" />
+              ))}
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }
