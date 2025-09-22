@@ -26,6 +26,9 @@ from sync_endpoints import router as sync_router
 # Import Advanced Analytics Engine
 from analytics_endpoints import router as analytics_router
 
+# Import Autonomous Decision Framework
+from autonomous_decision_endpoints import router as autonomous_router
+
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -77,6 +80,9 @@ app.include_router(sync_router)
 
 # Include Advanced Analytics Engine router
 app.include_router(analytics_router)
+
+# Include Autonomous Decision Framework router
+app.include_router(autonomous_router)
 
 # Health check endpoint
 @app.get("/")
