@@ -164,10 +164,10 @@ export default function CampaignsPage() {
           </div>
           <div className="flex gap-3">
             <Link
-              href="/"
+              href="/campaigns"
               className="bg-white text-gray-700 px-4 py-2 rounded-md border border-gray-300 hover:bg-gray-50 transition-colors"
             >
-              ← Dashboard
+               Campaigns
             </Link>
             <Link
               href="/campaigns/new"
