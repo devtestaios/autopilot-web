@@ -407,7 +407,7 @@ function SidebarContent({
                           key={subItem.id}
                           onClick={() => onSubItemClick(subItem.path)}
                           className={`w-full text-left p-2 rounded-md text-sm transition-colors ${
-                            window.location.pathname === subItem.path
+                            pathname === subItem.path
                               ? theme === 'dark'
                                 ? 'bg-blue-600/30 text-blue-300'
                                 : 'bg-blue-100 text-blue-700'
