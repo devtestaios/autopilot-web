@@ -16,7 +16,8 @@ import {
   ChevronLeft,
   ChevronRight,
   Menu,
-  X
+  X,
+  RefreshCw
 } from 'lucide-react';
 import { PulseWaveLogo } from './PulseWaveLogo';
 
@@ -81,6 +82,13 @@ const sidebarItems: SidebarItem[] = [
     icon: Target,
     path: '/optimization',
     badge: 'Beta'
+  },
+  {
+    id: 'sync',
+    label: 'Multi-Platform Sync',
+    icon: RefreshCw,
+    path: '/sync',
+    badge: 'New'
   },
   {
     id: 'reports',
