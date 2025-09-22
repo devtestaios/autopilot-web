@@ -23,6 +23,9 @@ from optimization_endpoints import router as optimization_router
 # Import Multi-Platform Sync Engine
 from sync_endpoints import router as sync_router
 
+# Import Advanced Analytics Engine
+from analytics_endpoints import router as analytics_router
+
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -71,6 +74,9 @@ app.include_router(optimization_router)
 
 # Include Multi-Platform Sync router
 app.include_router(sync_router)
+
+# Include Advanced Analytics Engine router
+app.include_router(analytics_router)
 
 # Health check endpoint
 @app.get("/")
