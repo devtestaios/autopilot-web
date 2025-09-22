@@ -15,6 +15,8 @@ import logging
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 class OptimizationType(Enum):
     BUDGET_INCREASE = "budget_increase"
