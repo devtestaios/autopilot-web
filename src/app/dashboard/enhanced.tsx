@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { useAuth } from '@/contexts/AuthContext';
@@ -126,7 +126,7 @@ const aiInsights = [
 ];
 
 export default function EnhancedDashboard() {
-  const { user, logout } = useAuth();
+  const { user, logout, isLoading: authLoading } = useAuth();
   const { theme } = useTheme();
   const router = useRouter();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -144,72 +144,73 @@ export default function EnhancedDashboard() {
   const [liveData, setLiveData] = useState<any[]>([]);
 
   // Load real dashboard data with fallbacks
+  const loadDashboardData = useCallback(async () => {
+    try {
+      setLoading(true);
+      clearError();
+
+      // Try to fetch all dashboard data in parallel with timeout
+      const timeout = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('API timeout')), 10000)
+      );
+
+      const dataPromise = Promise.all([
+        fetchDashboardOverview().catch(() => null),
+        fetchCampaigns().catch(() => []), 
+        fetchKPISummary().catch(() => null)
+      ]);
+
+      const [overview, campaignsData, kpiSummary] = await Promise.race([
+        dataPromise,
+        timeout
+      ]) as any;
+
+      // Set data or fall back to mock data if APIs fail
+      setDashboardData(overview || {
+        total_campaigns: 12,
+        active_campaigns: 8,
+        total_spend: 45672.34,
+        total_revenue: 189234.56,
+        conversion_rate: 4.82
+      });
+      
+      setCampaigns(campaignsData || enhancedCampaigns);
+      
+      setKpiData(kpiSummary || {
+        conversion_rate: 4.82,
+        average_roas: 4.2,
+        total_conversions: 1243
+      });
+      
+      setLiveData(campaignsData || enhancedCampaigns);
+
+    } catch (err) {
+      console.warn('Dashboard API failed, using mock data:', err);
+      // Use mock data when APIs fail
+      setDashboardData({
+        total_campaigns: 12,
+        active_campaigns: 8,
+        total_spend: 45672.34,
+        total_revenue: 189234.56,
+        conversion_rate: 4.82
+      });
+      setCampaigns(enhancedCampaigns);
+      setKpiData({
+        conversion_rate: 4.82,
+        average_roas: 4.2,
+        total_conversions: 1243
+      });
+      setLiveData(enhancedCampaigns);
+      // Don't show error for API failures, just use mock data
+    } finally {
+      setLoading(false);
+    }
+  }, [clearError]);
+
   useEffect(() => {
-    const loadDashboardData = async () => {
-      try {
-        setLoading(true);
-        clearError();
-
-        // Try to fetch all dashboard data in parallel with timeout
-        const timeout = new Promise((_, reject) => 
-          setTimeout(() => reject(new Error('API timeout')), 10000)
-        );
-
-        const dataPromise = Promise.all([
-          fetchDashboardOverview().catch(() => null),
-          fetchCampaigns().catch(() => []), 
-          fetchKPISummary().catch(() => null)
-        ]);
-
-        const [overview, campaignsData, kpiSummary] = await Promise.race([
-          dataPromise,
-          timeout
-        ]) as any;
-
-        // Set data or fall back to mock data if APIs fail
-        setDashboardData(overview || {
-          total_campaigns: 12,
-          active_campaigns: 8,
-          total_spend: 45672.34,
-          total_revenue: 189234.56,
-          conversion_rate: 4.82
-        });
-        
-        setCampaigns(campaignsData || enhancedCampaigns);
-        
-        setKpiData(kpiSummary || {
-          conversion_rate: 4.82,
-          average_roas: 4.2,
-          total_conversions: 1243
-        });
-        
-        setLiveData(campaignsData || enhancedCampaigns);
-
-      } catch (err) {
-        console.warn('Dashboard API failed, using mock data:', err);
-        // Use mock data when APIs fail
-        setDashboardData({
-          total_campaigns: 12,
-          active_campaigns: 8,
-          total_spend: 45672.34,
-          total_revenue: 189234.56,
-          conversion_rate: 4.82
-        });
-        setCampaigns(enhancedCampaigns);
-        setKpiData({
-          conversion_rate: 4.82,
-          average_roas: 4.2,
-          total_conversions: 1243
-        });
-        setLiveData(enhancedCampaigns);
-        // Don't show error for API failures, just use mock data
-      } finally {
-        setLoading(false);
-      }
-    };
-
+    if (!user || authLoading) return;
     loadDashboardData();
-  }, [handleError, clearError]);
+  }, [user, authLoading, loadDashboardData]);
 
   // Enhanced stats with real data
   const quickStats = [
@@ -248,15 +249,14 @@ export default function EnhancedDashboard() {
   ];
 
   useEffect(() => {
+    // Don't redirect if still loading auth state
+    if (authLoading) return;
+    
     if (!user) {
       router.push('/login');
       return;
     }
-    
-    // Simulate loading
-    const timer = setTimeout(() => setLoading(false), 1000);
-    return () => clearTimeout(timer);
-  }, [user, router]);
+  }, [user, router, authLoading]);
 
   // Real-time data updates simulation
   useEffect(() => {
@@ -314,6 +314,30 @@ export default function EnhancedDashboard() {
     router.push(`/campaigns/${campaignId}/edit`);
   };
 
+  // Show loading skeleton while authentication is being determined
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-purple-50/30 dark:from-gray-900 dark:via-blue-900/20 dark:to-purple-900/20">
+        <UnifiedSidebar onCollapseChange={setSidebarCollapsed} />
+        
+        <main className={`${sidebarCollapsed ? 'lg:ml-14' : 'lg:ml-64'} transition-all duration-300 pt-6`}>
+          <AdvancedNavigation sidebarCollapsed={sidebarCollapsed} />
+          
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
+            <PageSkeleton showHeader={true}>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                {Array.from({ length: 4 }).map((_, i) => (
+                  <DashboardWidgetSkeleton key={i} />
+                ))}
+              </div>
+            </PageSkeleton>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
+  // Show loading skeleton while dashboard data is loading
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-purple-50/30 dark:from-gray-900 dark:via-blue-900/20 dark:to-purple-900/20">
