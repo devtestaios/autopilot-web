@@ -93,7 +93,7 @@ export default function FloatingActionButton({
   };
 
   return (
-    <div className={cn('fixed bottom-6 right-6 z-50', className)}>
+    <div className={cn('fixed right-20 top-1/2 -translate-y-1/2 z-40', className)}>
       {/* Quick Action Items */}
       <AnimatePresence>
         {isOpen && (

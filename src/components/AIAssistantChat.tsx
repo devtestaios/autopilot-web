@@ -262,7 +262,7 @@ export default function AIAssistantChat({
       <motion.button
         onClick={toggleChat}
         className={cn(
-          'fixed bottom-6 right-6 z-50',
+          'fixed right-4 top-1/2 -translate-y-1/2 z-50 md:right-4 right-2',
           'w-14 h-14 bg-gradient-to-r from-pulse-cyan to-pulse-purple',
           'rounded-full shadow-lg hover:shadow-xl',
           'flex items-center justify-center text-white',
@@ -283,10 +283,10 @@ export default function AIAssistantChat({
     return (
       <motion.div
         className={cn(
-          'fixed bottom-6 right-6 z-50',
+          'fixed right-4 top-1/2 -translate-y-1/2 z-50 md:right-4 right-2',
           'bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700',
           'rounded-xl shadow-xl',
-          'w-80 h-16',
+          'w-80 h-16 sm:w-80 w-72',
           className
         )}
         initial={{ scale: 0.8, opacity: 0 }}
@@ -323,16 +323,16 @@ export default function AIAssistantChat({
   return (
     <motion.div
       className={cn(
-        'fixed bottom-6 right-6 z-50',
+        'fixed right-4 top-1/2 -translate-y-1/2 z-50 md:right-4 right-2',
         'bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700',
         'rounded-xl shadow-2xl',
-        'w-96 h-[600px] flex flex-col',
+        'w-96 h-[600px] flex flex-col sm:w-96 w-80 sm:h-[600px] h-[500px]',
         'overflow-hidden',
         className
       )}
-      initial={{ scale: 0.8, opacity: 0, y: 20 }}
-      animate={{ scale: 1, opacity: 1, y: 0 }}
-      exit={{ scale: 0.8, opacity: 0, y: 20 }}
+      initial={{ scale: 0.8, opacity: 0, x: 20 }}
+      animate={{ scale: 1, opacity: 1, x: 0 }}
+      exit={{ scale: 0.8, opacity: 0, x: 20 }}
     >
       {/* Header */}
       <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-pulse-cyan/10 to-pulse-purple/10">

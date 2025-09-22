@@ -163,14 +163,14 @@ export default function AIFloatingAssistant({ className }: AIFloatingAssistantPr
   }
 
   return (
-    <div className={cn('fixed bottom-6 right-6 z-50', className)}>
+    <div className={cn('fixed right-4 top-1/2 -translate-y-1/2 z-50 flex flex-col gap-3', 'md:right-4 right-2', className)}>
       <AnimatePresence>
         {isExpanded && (
           <motion.div
-            initial={{ opacity: 0, scale: 0.8, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.8, y: 20 }}
-            className="mb-4 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-2xl w-72 overflow-hidden"
+            initial={{ opacity: 0, scale: 0.8, x: 20 }}
+            animate={{ opacity: 1, scale: 1, x: 0 }}
+            exit={{ opacity: 0, scale: 0.8, x: 20 }}
+            className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-2xl w-72 sm:w-72 w-64 overflow-hidden order-1"
           >
             {/* Header */}
             <div className="p-4 bg-gradient-to-r from-pulse-cyan/10 to-pulse-purple/10 border-b border-gray-200 dark:border-gray-700">
@@ -264,18 +264,12 @@ export default function AIFloatingAssistant({ className }: AIFloatingAssistantPr
         )}
       </AnimatePresence>
 
-      {/* Main Button */}
+      {/* Main AI Button */}
       <motion.button
         onClick={() => setIsExpanded(!isExpanded)}
-        className={cn(
-          'w-14 h-14 bg-gradient-to-r from-pulse-cyan to-pulse-purple',
-          'rounded-full shadow-lg hover:shadow-xl',
-          'flex items-center justify-center text-white',
-          'transition-all duration-300 relative overflow-hidden'
-        )}
+        className="relative w-14 h-14 bg-gradient-to-r from-pulse-cyan to-pulse-purple text-white rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 flex items-center justify-center group order-2"
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
-        animate={isExpanded ? { rotate: 45 } : { rotate: 0 }}
       >
         {/* Background pulse effect */}
         <motion.div
