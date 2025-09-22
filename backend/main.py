@@ -20,6 +20,9 @@ from ai_chat_service import ai_service
 # Import Optimization Engine
 from optimization_endpoints import router as optimization_router
 
+# Import Multi-Platform Sync Engine
+from sync_endpoints import router as sync_router
+
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -66,6 +69,9 @@ app.include_router(ai_router, prefix="/api/v1")
 # Include Optimization Engine router
 app.include_router(optimization_router)
 
+# Include Multi-Platform Sync router
+app.include_router(sync_router)
+
 # Health check endpoint
 @app.get("/")
 async def root():
@@ -82,6 +88,7 @@ async def root():
             "ai_actions": "/api/v1/ai/execute-action",
             "ai_status": "/api/v1/ai/status",
             "optimization": "/api/v1/optimization",
+            "sync": "/api/v1/sync",
             "health": "/health"
         }
     }
