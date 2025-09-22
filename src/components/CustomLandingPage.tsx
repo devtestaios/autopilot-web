@@ -433,7 +433,7 @@ export default function AwardWinningLandingPage() {
 
           <motion.div
             variants={itemVariants}
-            className="flex items-center justify-center space-x-8 text-sm text-gray-500 dark:text-gray-400"
+            className="flex items-center justify-center space-x-8 text-sm text-gray-700 dark:text-gray-400"
           >
             <div className="flex items-center">
               <CheckCircle className="w-5 h-5 text-green-500 mr-2" />
@@ -458,8 +458,8 @@ export default function AwardWinningLandingPage() {
               transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
               className="flex flex-col items-center cursor-pointer"
             >
-              <span className="text-sm text-gray-500 dark:text-gray-400 mb-2">Scroll to explore</span>
-              <ChevronDown className="w-6 h-6 text-gray-400" />
+              <span className="text-sm text-gray-700 dark:text-gray-400 mb-2">Scroll to explore</span>
+              <ChevronDown className="w-6 h-6 text-gray-600 dark:text-gray-400" />
             </motion.div>
           </motion.div>
         </div>
@@ -539,7 +539,7 @@ export default function AwardWinningLandingPage() {
                 Capabilities
               </span>
             </h2>
-            <p className="text-2xl text-gray-600 dark:text-gray-300 max-w-4xl mx-auto leading-relaxed">
+            <p className="text-2xl text-gray-800 dark:text-gray-300 max-w-4xl mx-auto leading-relaxed">
               Advanced AI features that give you an unfair advantage in the digital marketing battlefield
             </p>
           </motion.div>
@@ -569,7 +569,7 @@ export default function AwardWinningLandingPage() {
                     {feature.title}
                   </h3>
                   
-                  <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
+                  <p className="text-gray-800 dark:text-gray-300 leading-relaxed">
                     {feature.description}
                   </p>
                   
@@ -608,7 +608,7 @@ export default function AwardWinningLandingPage() {
           </motion.h2>
           
           <motion.p
-            className="text-xl text-gray-600 dark:text-gray-300 mb-16 max-w-3xl mx-auto"
+            className="text-xl text-gray-800 dark:text-gray-300 mb-16 max-w-3xl mx-auto"
             initial={{ y: 30, opacity: 0 }}
             whileInView={{ y: 0, opacity: 1 }}
             viewport={{ once: true }}
@@ -647,7 +647,7 @@ export default function AwardWinningLandingPage() {
                     <div className="font-bold text-gray-900 dark:text-white text-lg">
                       {testimonials[currentTestimonial].name}
                     </div>
-                    <div className="text-gray-600 dark:text-gray-300">
+                    <div className="text-gray-800 dark:text-gray-300">
                       {testimonials[currentTestimonial].role} • {testimonials[currentTestimonial].company}
                     </div>
                   </div>

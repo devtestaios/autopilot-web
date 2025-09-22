@@ -43,7 +43,7 @@ export default function PerformanceChart({ data, metric, title }: PerformanceCha
       </h3>
       
       {data.length === 0 ? (
-        <div className="h-64 flex items-center justify-center text-gray-500">
+        <div className="h-64 flex items-center justify-center text-gray-700 dark:text-gray-500">
           No performance data available
         </div>
       ) : (
@@ -102,7 +102,7 @@ export function CampaignComparisonChart({ campaigns }: CampaignComparisonChartPr
       <h3 className="text-lg font-semibold mb-4">Campaign Budget vs Spend</h3>
       
       {data.length === 0 ? (
-        <div className="h-64 flex items-center justify-center text-gray-500">
+        <div className="h-64 flex items-center justify-center text-gray-700 dark:text-gray-500">
           No campaign data available
         </div>
       ) : (

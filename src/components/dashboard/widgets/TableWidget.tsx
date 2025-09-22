@@ -68,7 +68,7 @@ export default function TableWidget({ widget, data, isEditMode, onSelect }: Tabl
       case 'ended':
         return 'text-red-600 bg-red-100 dark:bg-red-900/20';
       default:
-        return 'text-gray-600 bg-gray-100 dark:bg-gray-900/20';
+        return 'text-gray-800 bg-gray-100 dark:bg-gray-900/20';
     }
   };
 
@@ -89,7 +89,7 @@ export default function TableWidget({ widget, data, isEditMode, onSelect }: Tabl
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
             {widget.title}
           </h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400">
+          <p className="text-sm text-gray-800 dark:text-gray-400">
             Top performing campaigns by ROAS
           </p>
         </div>
@@ -98,16 +98,16 @@ export default function TableWidget({ widget, data, isEditMode, onSelect }: Tabl
           <table className="w-full">
             <thead>
               <tr className="border-b border-gray-200 dark:border-gray-700">
-                <th className="text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider pb-2">
+                <th className="text-left text-xs font-medium text-gray-700 dark:text-gray-400 uppercase tracking-wider pb-2">
                   Campaign
                 </th>
-                <th className="text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider pb-2">
+                <th className="text-left text-xs font-medium text-gray-700 dark:text-gray-400 uppercase tracking-wider pb-2">
                   Status
                 </th>
-                <th className="text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider pb-2">
+                <th className="text-right text-xs font-medium text-gray-700 dark:text-gray-400 uppercase tracking-wider pb-2">
                   Spend
                 </th>
-                <th className="text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider pb-2">
+                <th className="text-right text-xs font-medium text-gray-700 dark:text-gray-400 uppercase tracking-wider pb-2">
                   ROAS
                 </th>
               </tr>
@@ -123,7 +123,7 @@ export default function TableWidget({ widget, data, isEditMode, onSelect }: Tabl
                       <p className="text-sm font-medium text-gray-900 dark:text-white">
                         {campaign.name}
                       </p>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">
+                      <p className="text-xs text-gray-700 dark:text-gray-400">
                         {campaign.platform}
                       </p>
                     </div>

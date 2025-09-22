@@ -91,7 +91,7 @@ export default function AutomatedSyncScheduler({ onSyncTrigger }: AutomatedSyncS
       case 'error':
         return <AlertTriangle className="w-4 h-4 text-red-500" />;
       default:
-        return <Clock className="w-4 h-4 text-gray-500" />;
+        return <Clock className="w-4 h-4 text-gray-700 dark:text-gray-500" />;
     }
   };
 
@@ -104,7 +104,7 @@ export default function AutomatedSyncScheduler({ onSyncTrigger }: AutomatedSyncS
       case 'partial':
         return <AlertTriangle className="w-4 h-4 text-yellow-500" />;
       default:
-        return <RefreshCw className="w-4 h-4 text-gray-500" />;
+        return <RefreshCw className="w-4 h-4 text-gray-700 dark:text-gray-500" />;
     }
   };
 

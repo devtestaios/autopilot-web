@@ -431,7 +431,7 @@ export default function EnhancedDashboard() {
               <h1 className="text-4xl font-bold bg-gradient-to-r from-pulse-cyan to-pulse-purple bg-clip-text text-transparent mb-2">
                 Welcome back, {user?.name || 'User'}
               </h1>
-              <p className="text-gray-600 dark:text-gray-400 text-lg">
+              <p className="text-gray-800 dark:text-gray-400 text-lg">
                 Your campaigns are performing exceptionally well today
               </p>
             </div>
@@ -447,7 +447,7 @@ export default function EnhancedDashboard() {
               />
               
               <div className="flex items-center gap-2 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm rounded-xl px-4 py-2 border border-gray-200/50 dark:border-gray-700/50">
-                <Clock className="w-4 h-4 text-gray-500" />
+                <Clock className="w-4 h-4 text-gray-700 dark:text-gray-500" />
                 <select 
                   value={selectedTimeframe}
                   onChange={(e) => setSelectedTimeframe(e.target.value)}
@@ -502,7 +502,7 @@ export default function EnhancedDashboard() {
               >
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">
+                  <p className="text-sm font-medium text-gray-800 dark:text-gray-400 mb-1">
                     {stat.title}
                   </p>
                   <p className="text-2xl font-bold text-gray-900 dark:text-white">
@@ -613,7 +613,7 @@ export default function EnhancedDashboard() {
                         {campaign.name}
                       </h3>
                       <div className="flex items-center gap-2">
-                        <span className="text-sm text-gray-600 dark:text-gray-400">
+                        <span className="text-sm text-gray-800 dark:text-gray-400">
                           {campaign.platform}
                         </span>
                         <div className={`px-2 py-1 rounded-full text-xs font-medium ${
@@ -621,7 +621,7 @@ export default function EnhancedDashboard() {
                             ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
                             : campaign.status === 'optimizing'
                             ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400'
-                            : 'bg-gray-100 text-gray-700 dark:bg-gray-900/30 dark:text-gray-400'
+                            : 'bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400'
                         }`}>
                           {campaign.status}
                         </div>
@@ -636,7 +636,7 @@ export default function EnhancedDashboard() {
                   
                   <div className="space-y-3 mb-4">
                     <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-600 dark:text-gray-400">Budget Used</span>
+                      <span className="text-sm text-gray-800 dark:text-gray-400">Budget Used</span>
                       <span className="text-sm font-medium text-gray-900 dark:text-white">
                         ${campaign.spend.toLocaleString()} / ${campaign.budget.toLocaleString()}
                       </span>
@@ -654,19 +654,19 @@ export default function EnhancedDashboard() {
                         <div className="text-lg font-bold text-gray-900 dark:text-white">
                           {campaign.roas}x
                         </div>
-                        <div className="text-xs text-gray-600 dark:text-gray-400">ROAS</div>
+                        <div className="text-xs text-gray-800 dark:text-gray-400">ROAS</div>
                       </div>
                       <div className="text-center">
                         <div className="text-lg font-bold text-gray-900 dark:text-white">
                           {campaign.ctr}%
                         </div>
-                        <div className="text-xs text-gray-600 dark:text-gray-400">CTR</div>
+                        <div className="text-xs text-gray-800 dark:text-gray-400">CTR</div>
                       </div>
                       <div className="text-center">
                         <div className="text-lg font-bold text-gray-900 dark:text-white">
                           {campaign.conversions}
                         </div>
-                        <div className="text-xs text-gray-600 dark:text-gray-400">Conv.</div>
+                        <div className="text-xs text-gray-800 dark:text-gray-400">Conv.</div>
                       </div>
                     </div>
                   </div>
@@ -715,7 +715,7 @@ export default function EnhancedDashboard() {
               <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
                 Ready to Scale Further?
               </h3>
-              <p className="text-gray-600 dark:text-gray-400 mb-6">
+              <p className="text-gray-800 dark:text-gray-400 mb-6">
                 Let our AI optimization engine take your campaigns to the next level with automated bidding and budget management.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">

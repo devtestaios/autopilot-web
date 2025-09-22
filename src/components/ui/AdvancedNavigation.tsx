@@ -16,11 +16,14 @@ import {
   Settings,
   HelpCircle,
   User,
-  Home
+  Home,
+  Sun,
+  Moon
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { PremiumButton } from './PremiumButton';
 import GlobalSearch from '@/components/GlobalSearch';
+import { useTheme } from '@/contexts/ThemeContext';
 
 interface BreadcrumbItem {
   label: string;
@@ -75,6 +78,7 @@ export interface AdvancedNavigationProps {
 export default function AdvancedNavigation({ className, sidebarCollapsed = false }: AdvancedNavigationProps) {
   const pathname = usePathname();
   const [isQuickActionsOpen, setIsQuickActionsOpen] = useState(false);
+  const { theme, toggleTheme } = useTheme();
 
   // Generate breadcrumbs from current path
   const generateBreadcrumbs = (): BreadcrumbItem[] => {
@@ -147,7 +151,7 @@ export default function AdvancedNavigation({ className, sidebarCollapsed = false
             {breadcrumbs.map((item, index) => (
               <div key={item.href} className="flex items-center">
                 {index > 0 && (
-                  <ChevronRight className="w-4 h-4 text-gray-400 mx-2" />
+                  <ChevronRight className="w-4 h-4 text-gray-600 dark:text-gray-400 mx-2" />
                 )}
                 
                 <Link
@@ -156,7 +160,7 @@ export default function AdvancedNavigation({ className, sidebarCollapsed = false
                     'flex items-center gap-2 px-2 py-1 rounded-lg transition-colors duration-200',
                     index === breadcrumbs.length - 1
                       ? 'text-pulse-cyan font-medium bg-pulse-cyan/10'
-                      : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800'
+                      : 'text-gray-800 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800'
                   )}
                 >
                   {item.icon}
@@ -174,6 +178,23 @@ export default function AdvancedNavigation({ className, sidebarCollapsed = false
               placeholder="Search campaigns, leads, templates..."
               className="w-64"
             />
+
+            {/* Theme Toggle */}
+            <button
+              onClick={toggleTheme}
+              className={cn(
+                'p-2 rounded-lg transition-all duration-200',
+                'hover:bg-gray-100 dark:hover:bg-gray-800',
+                'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
+              )}
+              title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
+            >
+              {theme === 'light' ? (
+                <Moon className="w-5 h-5" />
+              ) : (
+                <Sun className="w-5 h-5" />
+              )}
+            </button>
 
             {/* Quick Action Button */}
             <PremiumButton

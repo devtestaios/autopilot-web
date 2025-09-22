@@ -16,7 +16,7 @@
   --secondary: #e0e6ed;
   --secondary-foreground: #1a1a2e;
   --muted: #f8fafc;
-  --muted-foreground: #64748b;
+  --muted-foreground: #374151; /* Darker for better light theme contrast */
   --accent: #7c3aed;
   --accent-foreground: #ffffff;
   --destructive: #ef4444;

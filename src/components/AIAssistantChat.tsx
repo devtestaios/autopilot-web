@@ -344,7 +344,7 @@ export default function AIAssistantChat({
             <h3 className="font-semibold text-gray-900 dark:text-white">
               AI Marketing Assistant
             </h3>
-            <p className="text-xs text-gray-500 dark:text-gray-400">
+            <p className="text-xs text-gray-700 dark:text-gray-400">
               Online • Ready to help
             </p>
           </div>
@@ -354,13 +354,13 @@ export default function AIAssistantChat({
             onClick={minimizeChat}
             className="p-1.5 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
           >
-            <Minimize2 className="w-4 h-4 text-gray-500" />
+            <Minimize2 className="w-4 h-4 text-gray-700 dark:text-gray-500" />
           </button>
           <button
             onClick={() => setIsOpen(false)}
             className="p-1.5 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
           >
-            <X className="w-4 h-4 text-gray-500" />
+            <X className="w-4 h-4 text-gray-700 dark:text-gray-500" />
           </button>
         </div>
       </div>
@@ -452,7 +452,7 @@ export default function AIAssistantChat({
 
             {message.role === 'user' && (
               <div className="w-7 h-7 bg-gray-300 dark:bg-gray-600 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                <User className="w-4 h-4 text-gray-600 dark:text-gray-300" />
+                <User className="w-4 h-4 text-gray-800 dark:text-gray-300" />
               </div>
             )}
           </motion.div>

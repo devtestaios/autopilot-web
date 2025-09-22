@@ -270,7 +270,7 @@ export default function UnifiedSidebar({
         className={`absolute -right-3 top-6 p-1.5 rounded-full border backdrop-blur-sm transition-all duration-200 ${
           theme === 'dark'
             ? 'bg-gray-800 border-gray-600 text-gray-300 hover:bg-gray-700'
-            : 'bg-white border-gray-300 text-gray-600 hover:bg-gray-50'
+            : 'bg-white border-gray-300 text-gray-800 hover:bg-gray-50'
         }`}
       >
         {isCollapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
@@ -332,7 +332,7 @@ function SidebarContent({
             className={`p-1 rounded-lg transition-colors ${
               theme === 'dark'
                 ? 'text-gray-400 hover:text-gray-200 hover:bg-gray-800'
-                : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'
+                : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'
             }`}
           >
             <X size={20} />
@@ -355,7 +355,7 @@ function SidebarContent({
                       : 'bg-blue-50 text-blue-600 border border-blue-200'
                     : theme === 'dark'
                       ? 'text-gray-300 hover:bg-gray-800/60 hover:text-white'
-                      : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                      : 'text-gray-800 hover:bg-gray-100 hover:text-gray-900'
                 }`}
               >
                 <item.icon 
@@ -421,7 +421,7 @@ function SidebarContent({
                                 : 'bg-blue-100 text-blue-700'
                               : theme === 'dark'
                                 ? 'text-gray-400 hover:bg-gray-800/40 hover:text-gray-200'
-                                : 'text-gray-500 hover:bg-gray-50 hover:text-gray-700'
+                                : 'text-gray-700 hover:bg-gray-50 hover:text-gray-800'
                           }`}
                         >
                           {subItem.label}
@@ -446,7 +446,7 @@ function SidebarContent({
               animate="expanded"
               exit="collapsed"
               className={`text-xs ${
-                theme === 'dark' ? 'text-gray-400' : 'text-gray-500'
+                theme === 'dark' ? 'text-gray-400' : 'text-gray-700'
               }`}
             >
               <div className="flex items-center justify-between">

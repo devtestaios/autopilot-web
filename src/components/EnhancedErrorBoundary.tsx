@@ -189,13 +189,13 @@ const DefaultErrorFallback: React.FC<DefaultErrorFallbackProps> = ({
           {getErrorTitle()}
         </h3>
 
-        <p className="text-gray-600 dark:text-gray-400 mb-6">
+        <p className="text-gray-800 dark:text-gray-400 mb-6">
           {getErrorMessage()}
         </p>
 
         {process.env.NODE_ENV === 'development' && error && (
           <details className="mb-6 text-left">
-            <summary className="cursor-pointer text-sm text-gray-500 dark:text-gray-400 mb-2">
+            <summary className="cursor-pointer text-sm text-gray-700 dark:text-gray-400 mb-2">
               Error Details (Development)
             </summary>
             <div className="bg-gray-100 dark:bg-gray-700 rounded-lg p-3 text-xs font-mono text-gray-800 dark:text-gray-200 overflow-auto max-h-32">
@@ -239,7 +239,7 @@ const DefaultErrorFallback: React.FC<DefaultErrorFallbackProps> = ({
 
         {errorId && (
           <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-            <p className="text-xs text-gray-500 dark:text-gray-400">
+            <p className="text-xs text-gray-700 dark:text-gray-400">
               Error ID: {errorId}
             </p>
           </div>

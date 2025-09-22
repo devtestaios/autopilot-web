@@ -92,7 +92,7 @@ export default function Navbar({ onMenuToggle }: NavbarProps) {
         <div className="hidden md:flex flex-1 max-w-2xl mx-8">
           <button 
             onClick={openSearch}
-            className="w-full flex items-center pl-4 pr-4 py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 rounded-xl hover:border-gray-400 dark:hover:border-gray-500 transition-all duration-300 group"
+            className="w-full flex items-center pl-4 pr-4 py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-400 rounded-xl hover:border-gray-400 dark:hover:border-gray-500 transition-all duration-300 group"
           >
             <Search className="w-5 h-5 mr-3 group-hover:text-pulse-cyan transition-colors" />
             <span className="flex-1 text-left">Search campaigns, analytics, reports...</span>
@@ -163,10 +163,10 @@ export default function Navbar({ onMenuToggle }: NavbarProps) {
                 />
                 <div className="hidden xl:block text-left">
                   <p className="text-sm font-semibold text-gray-900 dark:text-white">John Doe</p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">Marketing Director</p>
+                  <p className="text-xs text-gray-700 dark:text-gray-400">Marketing Director</p>
                 </div>
               </div>
-              <ChevronDown className="w-4 h-4 text-gray-500 dark:text-gray-400 transition-transform group-hover:rotate-180" />
+              <ChevronDown className="w-4 h-4 text-gray-700 dark:text-gray-400 transition-transform group-hover:rotate-180" />
             </button>
 
             {/* Enhanced User Menu Dropdown */}
@@ -174,7 +174,7 @@ export default function Navbar({ onMenuToggle }: NavbarProps) {
               <div className="absolute right-0 mt-2 w-64 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 py-2 z-50 animate-in slide-in-from-top-5 duration-200">
                 <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
                   <p className="text-sm font-semibold text-gray-900 dark:text-white">John Doe</p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">john.doe@company.com</p>
+                  <p className="text-xs text-gray-700 dark:text-gray-400">john.doe@company.com</p>
                   <div className="mt-2 flex items-center gap-2">
                     <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                     <span className="text-xs text-green-600 dark:text-green-400">Online</span>
@@ -212,7 +212,7 @@ export default function Navbar({ onMenuToggle }: NavbarProps) {
       <div className="md:hidden mt-3">
         <button 
           onClick={openSearch}
-          className="w-full flex items-center pl-3 pr-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 rounded-lg"
+          className="w-full flex items-center pl-3 pr-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-400 rounded-lg"
         >
           <Search className="w-4 h-4 mr-3" />
           <span className="flex-1 text-left">Search...</span>

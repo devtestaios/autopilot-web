@@ -115,7 +115,7 @@ export default function LoginPage() {
               Welcome back
             </h2>
             <p className={`mt-2 text-sm ${
-              theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
+              theme === 'dark' ? 'text-gray-400' : 'text-gray-800'
             }`}>
               Sign in to your PulseBridge account
             </p>
@@ -141,14 +141,14 @@ export default function LoginPage() {
               {/* Email Field */}
               <div>
                 <label htmlFor="email" className={`block text-sm font-medium mb-2 ${
-                  theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+                  theme === 'dark' ? 'text-gray-300' : 'text-gray-800'
                 }`}>
                   Email address
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <Mail className={`h-5 w-5 ${
-                      theme === 'dark' ? 'text-gray-300' : 'text-gray-600'
+                      theme === 'dark' ? 'text-gray-300' : 'text-gray-800'
                     }`} />
                   </div>
                   <input
