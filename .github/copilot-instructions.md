@@ -4,7 +4,7 @@
 **PulseBridge.ai** is a production-ready AI-autonomous marketing platform that manages campaigns across Google Ads, Meta, and LinkedIn with complete autonomous decision-making capabilities.
 
 **Production**: https://pulsebridge.ai | **Backend**: https://autopilot-api-1.onrender.com  
-**Status**: ✅ **COMPLETE PLATFORM** - All 6 development phases + enhanced visual polish achieved
+**Status**: ✅ **COMPLETE PLATFORM + CRITICAL MAINTENANCE** - All 6 development phases + enhanced visual polish + TypeScript error resolution (September 2025)
 
 ## Essential Architecture Knowledge
 
@@ -146,6 +146,11 @@ POST /api/v1/ai/chat       # AI integration
 GET /autonomous/decisions   # AI decision system
 ```
 
+#### AI Provider Status (September 2025)
+- **Claude/Anthropic**: Fully integrated and active (production)
+- **ChatGPT/OpenAI**: Integration code present, not enabled (can be activated if needed)
+- All AI features currently use Claude for chat, autonomous actions, and analytics
+
 #### Environment Variables (REQUIRED)
 ```bash
 # Frontend (.env.local)
@@ -181,6 +186,19 @@ coverageThreshold: {
 4. **Theme Support**: All components must support dark/light themes
 5. **Testing**: Minimum 70% coverage required for all new features
 6. **AI Integration**: Use AIControlContext for all AI-related functionality
+
+## Advanced ML Analytics (Production-Ready)
+
+- Backend: FastAPI endpoints for predictive modeling, anomaly detection, and real-time performance forecasting
+- Engine: `AdvancedAnalyticsEngine` (see `backend/advanced_analytics_engine.py`)
+- Endpoints: `/api/v1/analytics/overview`, `/api/v1/analytics/forecast`, `/api/v1/analytics/trends`, `/api/v1/analytics/correlations`, `/api/v1/analytics/insights`
+- Features:
+  - Predictive metrics (impressions, clicks, conversions, spend, revenue)
+  - Confidence scores, trend direction, seasonal/risk factors
+  - Cross-platform correlation analysis (Google, Meta, LinkedIn)
+  - Performance trend analysis (trend direction, strength, weekly/monthly change, anomaly detection)
+  - AI-generated insights and recommendations (impact, priority, estimated impact, effort)
+- Status: Fully implemented and production-ready
 
 ### Common Integration Points
 
