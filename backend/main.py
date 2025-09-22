@@ -17,6 +17,9 @@ import logging
 from ai_endpoints import ai_router
 from ai_chat_service import ai_service
 
+# Import Optimization Engine
+from optimization_endpoints import router as optimization_router
+
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -60,6 +63,9 @@ app.add_middleware(
 # Include AI router
 app.include_router(ai_router, prefix="/api/v1")
 
+# Include Optimization Engine router
+app.include_router(optimization_router)
+
 # Health check endpoint
 @app.get("/")
 async def root():
@@ -75,6 +81,7 @@ async def root():
             "ai_chat": "/api/v1/ai/chat",
             "ai_actions": "/api/v1/ai/execute-action",
             "ai_status": "/api/v1/ai/status",
+            "optimization": "/api/v1/optimization",
             "health": "/health"
         }
     }
