@@ -25,6 +25,7 @@ import {
   RotateCcw
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import GlassCard from '@/components/ui/GlassCard';
 
 interface Message {
   id: string;
@@ -259,38 +260,36 @@ export default function AIAssistantChat({
 
   if (!isOpen) {
     return (
-      <motion.button
-        onClick={toggleChat}
+      <GlassCard
         className={cn(
           'fixed right-4 top-1/2 -translate-y-1/2 z-50 md:right-4 right-2',
-          'w-14 h-14 bg-gradient-to-r from-pulse-cyan to-pulse-purple',
-          'rounded-full shadow-lg hover:shadow-xl',
-          'flex items-center justify-center text-white',
-          'transition-all duration-300 hover:scale-110',
+          'w-14 h-14 shadow-lg hover:shadow-xl cursor-pointer',
+          'flex items-center justify-center',
+          'bg-gradient-to-r from-pulse-cyan to-pulse-purple',
+          'hover:scale-110 transition-all duration-300',
           className
         )}
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.95 }}
-        initial={{ scale: 0 }}
-        animate={{ scale: 1 }}
+        onClick={toggleChat}
+        intensity="light"
+        animated={true}
+        hover={true}
       >
-        <MessageSquare className="w-6 h-6" />
-      </motion.button>
+        <MessageSquare className="w-6 h-6 text-white" />
+      </GlassCard>
     );
   }
 
   if (isMinimized) {
     return (
-      <motion.div
+      <GlassCard
         className={cn(
           'fixed right-4 top-1/2 -translate-y-1/2 z-50 md:right-4 right-2',
-          'bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700',
-          'rounded-xl shadow-xl',
-          'w-80 h-16 sm:w-80 w-72',
+          'w-80 h-16 sm:w-80 w-72 shadow-xl',
           className
         )}
-        initial={{ scale: 0.8, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
+        intensity="medium"
+        animated={true}
+        hover={true}
       >
         <div className="flex items-center justify-between p-4 h-full">
           <div className="flex items-center gap-3">
@@ -316,23 +315,21 @@ export default function AIAssistantChat({
             </button>
           </div>
         </div>
-      </motion.div>
+      </GlassCard>
     );
   }
 
   return (
-    <motion.div
+    <GlassCard
       className={cn(
         'fixed right-4 top-1/2 -translate-y-1/2 z-50 md:right-4 right-2',
-        'bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700',
-        'rounded-xl shadow-2xl',
         'w-96 h-[600px] flex flex-col sm:w-96 w-80 sm:h-[600px] h-[500px]',
-        'overflow-hidden',
+        'overflow-hidden shadow-2xl',
         className
       )}
-      initial={{ scale: 0.8, opacity: 0, x: 20 }}
-      animate={{ scale: 1, opacity: 1, x: 0 }}
-      exit={{ scale: 0.8, opacity: 0, x: 20 }}
+      intensity="strong"
+      animated={true}
+      hover={false}
     >
       {/* Header */}
       <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-pulse-cyan/10 to-pulse-purple/10">
@@ -541,6 +538,6 @@ export default function AIAssistantChat({
           </button>
         </div>
       </div>
-    </motion.div>
+    </GlassCard>
   );
 }

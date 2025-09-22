@@ -96,6 +96,30 @@ export function Skeleton({
     </motion.div>
   );
 }
+    height: height || (variant === 'text' ? '1em' : undefined)
+  }
+
+  const skeletonClasses = `${baseClasses} ${variants[variant]} ${className}`
+
+  if (animated) {
+    return (
+      <motion.div
+        className={skeletonClasses}
+        style={style}
+        animate={{
+          opacity: [0.5, 1, 0.5]
+        }}
+        transition={{
+          duration: 1.5,
+          repeat: Infinity,
+          ease: "easeInOut"
+        }}
+      />
+    )
+  }
+
+  return <div className={skeletonClasses} style={style} />
+}
 
 // Campaign card skeleton
 export function CampaignCardSkeleton() {
@@ -128,7 +152,7 @@ export function CampaignCardSkeleton() {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
 // Dashboard widget skeleton
@@ -157,81 +181,7 @@ export function DashboardWidgetSkeleton() {
         </div>
       </div>
     </div>
-  );
-}
-
-// Page skeleton for loading states
-export function PageSkeleton() {
-  return (
-    <div className="space-y-6 p-6">
-      {/* Header */}
-      <div className="flex justify-between items-center">
-        <div className="space-y-2">
-          <Skeleton height="2rem" width="200px" />
-          <Skeleton height="1rem" width="300px" />
-        </div>
-        <Skeleton variant="rectangular" width="120px" height="40px" />
-      </div>
-      
-      {/* Stats grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {[0, 1, 2, 3].map((index) => (
-          <DashboardWidgetSkeleton key={index} />
-        ))}
-      </div>
-      
-      {/* Main content */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2">
-          <Skeleton variant="rectangular" height="400px" />
-        </div>
-        <div className="space-y-4">
-          {[0, 1, 2].map((index) => (
-            <Skeleton key={index} variant="rectangular" height="120px" />
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// Chart skeleton
-export function ChartSkeleton({ height = "300px" }: { height?: string }) {
-  return (
-    <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700">
-      <div className="flex justify-between items-center mb-6">
-        <Skeleton height="1.5rem" width="200px" />
-        <div className="flex gap-2">
-          <Skeleton variant="rectangular" width="80px" height="32px" />
-          <Skeleton variant="rectangular" width="80px" height="32px" />
-        </div>
-      </div>
-      
-      <div className="space-y-4">
-        {/* Chart area */}
-        <div style={{ height }} className="relative">
-          <Skeleton variant="rectangular" width="100%" height="100%" />
-          {/* Chart overlay elements */}
-          <motion.div
-            className="absolute inset-0 bg-gradient-to-r from-transparent via-blue-100/20 dark:via-blue-900/20 to-transparent"
-            animate={{ x: ['-100%', '100%'] }}
-            transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
-            style={{ width: '30%' }}
-          />
-        </div>
-        
-        {/* Legend */}
-        <div className="flex justify-center gap-6">
-          {[0, 1, 2].map((index) => (
-            <div key={index} className="flex items-center gap-2">
-              <Skeleton variant="rectangular" width="12px" height="12px" />
-              <Skeleton height="0.875rem" width="60px" />
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
+  )
 }
 
 // Table skeleton
@@ -262,7 +212,80 @@ export function TableSkeleton({ rows = 5, columns = 4 }: { rows?: number; column
         </div>
       ))}
     </div>
-  );
+  )
 }
 
-export default Skeleton;
+// Analytics chart skeleton
+export function ChartSkeleton() {
+  return (
+    <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700">
+      <div className="flex justify-between items-center mb-6">
+        <div>
+          <Skeleton height="1.5rem" width="60%" className="mb-2" />
+          <Skeleton height="1rem" width="40%" />
+        </div>
+        <div className="flex gap-2">
+          <Skeleton variant="rectangular" width="4rem" height="2rem" />
+          <Skeleton variant="rectangular" width="4rem" height="2rem" />
+        </div>
+      </div>
+      
+      <div className="h-80 mb-4">
+        <Skeleton variant="rectangular" width="100%" height="100%" />
+      </div>
+      
+      <div className="grid grid-cols-3 gap-4">
+        {Array.from({ length: 3 }).map((_, i) => (
+          <div key={i} className="text-center">
+            <Skeleton height="1rem" width="60%" className="mb-1 mx-auto" />
+            <Skeleton height="1.5rem" width="80%" className="mx-auto" />
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+// Form skeleton
+export function FormSkeleton() {
+  return (
+    <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700">
+      <Skeleton height="1.5rem" width="40%" className="mb-6" />
+      
+      <div className="space-y-6">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <div key={i}>
+            <Skeleton height="1rem" width="25%" className="mb-2" />
+            <Skeleton variant="rectangular" width="100%" height="2.5rem" />
+          </div>
+        ))}
+        
+        <div className="flex gap-3 pt-4">
+          <Skeleton variant="rectangular" width="6rem" height="2.5rem" />
+          <Skeleton variant="rectangular" width="6rem" height="2.5rem" />
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// Page skeleton wrapper
+export function PageSkeleton({ children, showHeader = true }: { children: React.ReactNode; showHeader?: boolean }) {
+  return (
+    <div className="space-y-6">
+      {showHeader && (
+        <div className="flex justify-between items-center">
+          <div>
+            <Skeleton height="2rem" width="30%" className="mb-2" />
+            <Skeleton height="1rem" width="50%" />
+          </div>
+          <div className="flex gap-3">
+            <Skeleton variant="rectangular" width="6rem" height="2.5rem" />
+            <Skeleton variant="rectangular" width="8rem" height="2.5rem" />
+          </div>
+        </div>
+      )}
+      {children}
+    </div>
+  )
+}
