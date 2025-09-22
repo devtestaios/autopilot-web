@@ -8,7 +8,7 @@ interface BlurBackgroundProps {
   children?: React.ReactNode;
   intensity?: 'light' | 'medium' | 'strong' | 'dynamic';
   overlay?: 'none' | 'subtle' | 'medium' | 'strong';
-  gradient?: 'radial' | 'linear' | 'mesh' | 'animated';
+  gradient?: 'none' | 'radial' | 'linear' | 'mesh' | 'animated';
   className?: string;
   animate?: boolean;
 }
@@ -42,6 +42,7 @@ export function BlurBackground({
 
   // Gradient patterns
   const gradientClasses = {
+    none: '',
     radial: isDark 
       ? 'bg-gradient-radial from-blue-900/20 via-purple-900/10 to-transparent'
       : 'bg-gradient-radial from-blue-100/30 via-purple-100/20 to-transparent',
@@ -59,6 +60,7 @@ export function BlurBackground({
     ${overlayClasses[overlay]}
     ${gradient !== 'animated' ? gradientClasses[gradient] : ''}
     ${className}
+  pointer-events-none
   `;
 
   if (gradient === 'animated') {
@@ -101,7 +103,7 @@ export function HeroBlurBackground({ children, className = '' }: { children?: Re
     <div className={`relative overflow-hidden ${className}`}>
       {/* Animated gradient orbs */}
       <motion.div
-        className={`absolute inset-0 ${isDark ? 'opacity-40' : 'opacity-60'}`}
+        className={`absolute inset-0 ${isDark ? 'opacity-40' : 'opacity-60'} pointer-events-none`}
         animate={{
           background: isDark ? [
             'radial-gradient(600px circle at 0% 0%, rgba(59, 130, 246, 0.15), transparent 50%)',
@@ -145,7 +147,7 @@ export function CardBlurBackground({ children, hover = false, className = '' }: 
         isDark 
           ? 'bg-gradient-to-br from-gray-800/80 to-gray-900/80' 
           : 'bg-gradient-to-br from-white/80 to-gray-50/80'
-      } backdrop-blur-md`} />
+      } backdrop-blur-md pointer-events-none`} />
       
       {/* Hover effect */}
       {hover && (
@@ -154,7 +156,7 @@ export function CardBlurBackground({ children, hover = false, className = '' }: 
             isDark
               ? 'bg-gradient-to-br from-blue-900/20 to-purple-900/20'
               : 'bg-gradient-to-br from-blue-100/30 to-purple-100/30'
-          } backdrop-blur-lg opacity-0`}
+          } backdrop-blur-lg opacity-0 pointer-events-none`}
           whileHover={{ opacity: 1 }}
           transition={{ duration: 0.3 }}
         />
@@ -194,7 +196,7 @@ export function ModalBlurBackground({
       {/* Backdrop */}
       <div className={`absolute inset-0 ${
         isDark ? 'bg-black/60' : 'bg-white/60'
-      } backdrop-blur-md`} />
+      } backdrop-blur-md pointer-events-none`} />
       
       {/* Content */}
       <motion.div
@@ -224,14 +226,14 @@ export function SidebarBlurBackground({ children, className = '' }: {
         isDark 
           ? 'bg-gray-900/95' 
           : 'bg-white/95'
-      } backdrop-blur-xl`} />
+      } backdrop-blur-xl pointer-events-none`} />
       
       {/* Gradient overlay */}
       <div className={`absolute inset-0 ${
         isDark
           ? 'bg-gradient-to-r from-blue-900/10 to-transparent'
           : 'bg-gradient-to-r from-blue-100/20 to-transparent'
-      }`} />
+      } pointer-events-none`} />
       
       <div className="relative z-10">
         {children}
@@ -271,7 +273,7 @@ export function FloatingBlurBackground({
           isDark
             ? 'bg-gradient-to-br from-blue-900/20 via-purple-900/20 to-cyan-900/20'
             : 'bg-gradient-to-br from-blue-100/40 via-purple-100/40 to-cyan-100/40'
-        } backdrop-blur-lg border border-white/20`}
+        } backdrop-blur-lg border border-white/20 pointer-events-none`}
         animate={float ? {
           boxShadow: [
             '0 10px 40px rgba(0, 0, 0, 0.1)',

@@ -319,10 +319,8 @@ export default function EnhancedDashboard() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-purple-50/30 dark:from-gray-900 dark:via-blue-900/20 dark:to-purple-900/20">
         <UnifiedSidebar onCollapseChange={setSidebarCollapsed} />
-        
         <main className={`${sidebarCollapsed ? 'lg:ml-14' : 'lg:ml-64'} transition-all duration-300 pt-6`}>
           <AdvancedNavigation sidebarCollapsed={sidebarCollapsed} />
-          
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
             <PageSkeleton showHeader={true}>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
@@ -342,32 +340,25 @@ export default function EnhancedDashboard() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-purple-50/30 dark:from-gray-900 dark:via-blue-900/20 dark:to-purple-900/20">
         <UnifiedSidebar onCollapseChange={setSidebarCollapsed} />
-        
         <main className={`${sidebarCollapsed ? 'lg:ml-14' : 'lg:ml-64'} transition-all duration-300 pt-6`}>
           <AdvancedNavigation sidebarCollapsed={sidebarCollapsed} />
-          
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
             <PageSkeleton showHeader={true}>
-              
-              {/* Quick stats skeleton */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                {Array.from({ length: 4 }).map((_, i) => (
-                  <DashboardWidgetSkeleton key={i} />
-                ))}
+                  {/* Quick stats skeleton */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    {Array.from({ length: 4 }).map((_, i) => (
+                      <DashboardWidgetSkeleton key={i} />
+                    ))}
+                  </div>
+                  {/* Charts skeleton */}
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                    {/* ...charts... */}
+                  </div>
+                </PageSkeleton>
               </div>
-
-              {/* Charts skeleton */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-                <ChartSkeleton />
-                <div className="space-y-6">
-                  <DashboardWidgetSkeleton />
-                  <DashboardWidgetSkeleton />
-                </div>
-              </div>
-
-              {/* Campaigns skeleton */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                {Array.from({ length: 3 }).map((_, i) => (
+            </main>
+          </div>
+        );
                   <CampaignCardSkeleton key={i} />
                 ))}
               </div>
@@ -396,36 +387,28 @@ export default function EnhancedDashboard() {
           error={dashboardError}
           onRetry={() => {
             setLoading(true);
-            clearError();
-            // Reload dashboard data
-            window.location.reload();
-          }}
-          resourceName="dashboard"
-          fallback={
-            <PageSkeleton>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                <DashboardWidgetSkeleton />
-                <DashboardWidgetSkeleton />
-                <DashboardWidgetSkeleton />
-                <DashboardWidgetSkeleton />
+            return (
+              <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-purple-50/30 dark:from-gray-900 dark:via-blue-900/20 dark:to-purple-900/20">
+                <UnifiedSidebar onCollapseChange={setSidebarCollapsed} />
+                <main className={`${sidebarCollapsed ? 'lg:ml-14' : 'lg:ml-64'} transition-all duration-300 pt-6`}>
+                  <AdvancedNavigation sidebarCollapsed={sidebarCollapsed} />
+                  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
+                    <PageSkeleton showHeader={true}>
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                        <DashboardWidgetSkeleton />
+                        <DashboardWidgetSkeleton />
+                        <DashboardWidgetSkeleton />
+                        <DashboardWidgetSkeleton />
+                      </div>
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                        <ChartSkeleton />
+                        <ChartSkeleton />
+                      </div>
+                    </PageSkeleton>
+                  </div>
+                </main>
               </div>
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <ChartSkeleton />
-                <ChartSkeleton />
-              </div>
-            </PageSkeleton>
-          }
-        >
-          {/* Dashboard content starts here */}
-        {/* Breadcrumb Navigation */}
-        <Breadcrumb />
-        
-        {/* Header Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-8"
-        >
+            );
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
             <div>
               <h1 className="text-4xl font-bold bg-gradient-to-r from-pulse-cyan to-pulse-purple bg-clip-text text-transparent mb-2">

@@ -58,7 +58,7 @@ export default function DashboardStats({ campaigns, loading }: DashboardStatsPro
   const activeCampaigns = campaigns.filter(c => (c.spend || 0) < (c.budget || Infinity)).length;
 
   return (
-    <div className="space-y-8">
+  <div className="space-y-8">
       {/* System Health Status */}
       {healthStatus && (
         <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900 dark:to-emerald-900 rounded-xl p-6 border border-green-200 dark:border-green-700">
@@ -94,8 +94,8 @@ export default function DashboardStats({ campaigns, loading }: DashboardStatsPro
 
       {/* Main Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" data-testid="dashboard-stats">
-        {/* Total Campaigns */}
-        <GlassCard className="p-6 group" intensity="medium" hover={true}>
+  {/* Total Campaigns */}
+  <GlassCard className="p-6 group" intensity="medium" hover={true} data-testid="metric-card">
           <div className="flex items-center justify-between">
             <div className="flex-1">
               <p className="text-sm font-bold text-black dark:text-gray-300 uppercase tracking-wide">Total Campaigns</p>
@@ -115,7 +115,7 @@ export default function DashboardStats({ campaigns, loading }: DashboardStatsPro
         </GlassCard>
 
         {/* Total Budget */}
-        <GlassCard className="p-6 group" intensity="medium" hover={true}>
+  <GlassCard className="p-6 group" intensity="medium" hover={true} data-testid="metric-card">
           <div className="flex items-center justify-between">
             <div className="flex-1">
               <p className="text-sm font-bold text-black dark:text-gray-300 uppercase tracking-wide">Total Budget</p>
@@ -133,7 +133,7 @@ export default function DashboardStats({ campaigns, loading }: DashboardStatsPro
         </GlassCard>
 
         {/* Total Spend */}
-        <GlassCard className="p-6 group" intensity="medium" hover={true}>
+  <GlassCard className="p-6 group" intensity="medium" hover={true} data-testid="metric-card">
           <div className="flex items-center justify-between">
             <div className="flex-1">
               <p className="text-sm font-bold text-black dark:text-gray-300 uppercase tracking-wide">Total Spend</p>
@@ -153,7 +153,7 @@ export default function DashboardStats({ campaigns, loading }: DashboardStatsPro
         </GlassCard>
 
         {/* Remaining Budget */}
-        <GlassCard className="p-6 group" intensity="medium" hover={true}>
+  <GlassCard className="p-6 group" intensity="medium" hover={true} data-testid="metric-card">
           <div className="flex items-center justify-between">
             <div className="flex-1">
               <p className="text-sm font-bold text-black dark:text-gray-300 uppercase tracking-wide">Remaining Budget</p>

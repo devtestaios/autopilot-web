@@ -44,14 +44,14 @@ const quickActions: QuickAction[] = [
     label: 'New Campaign',
     description: 'Create a new marketing campaign',
     icon: <Sparkles className="w-4 h-4" />,
-    href: '/campaigns/new',
+  href: '/campaigns/new',
     shortcut: '⌘+N'
   },
   {
-    label: 'Analytics Dashboard',
+  label: 'Analytics Dashboard',
     description: 'View performance insights',
     icon: <BarChart3 className="w-4 h-4" />,
-    href: '/analytics',
+  href: '/analytics',
     shortcut: '⌘+A'
   },
   {
@@ -139,6 +139,7 @@ export default function AdvancedNavigation({ className, sidebarCollapsed = false
     <nav className={cn(
       'bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl border-b border-gray-200/50 dark:border-gray-700/50',
       'sticky top-0 z-50 transition-all duration-300',
+      'pointer-events-auto',
       className
     )}>
       <div className={cn(

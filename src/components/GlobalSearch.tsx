@@ -113,7 +113,7 @@ export function GlobalSearch({
           <span className="hidden sm:inline">{placeholder}</span>
           <div className="hidden sm:flex items-center gap-1 ml-auto">
             <kbd className="px-1.5 py-0.5 text-xs font-semibold text-gray-800 dark:text-gray-200 bg-gray-200 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded">
-              ⌘
+              
             </kbd>
             <kbd className="px-1.5 py-0.5 text-xs font-semibold text-gray-800 dark:text-gray-200 bg-gray-200 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded">
               K
@@ -132,6 +132,9 @@ export function GlobalSearch({
             >
               <motion.div
                 ref={containerRef}
+                role="dialog" aria-modal="true"
+                aria-modal="true"
+                aria-label="Global Search"
                 initial={{ opacity: 0, scale: 0.95, y: -20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95, y: -20 }}
