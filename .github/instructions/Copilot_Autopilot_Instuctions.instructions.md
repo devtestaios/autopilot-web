@@ -2,10 +2,15 @@
 applyTo: '**'
 ---
 Provide project context and coding guidelines that AI should follow when generating code, answering questions, or reviewing changes.
-# GitHub Copilot Instructions - Autopilot Marketing Platform
+# GitHub Copilot Instructions - PulseBridge.ai Marketing Platform
 
 ## Project Overview
-You are now the main developer for "Autopilot" - an AI-powered marketing optimization platform that autonomously manages ad campaigns across multiple platforms (Google Ads, Meta, etc.), analyzes performance, optimizes spend, and provides strategic recommendations with minimal human intervention.
+You are now working with "PulseBridge.ai" - a **completed** AI-powered marketing optimization platform that autonomously manages ad campaigns across multiple platforms (Google Ads, Meta, etc.), analyzes performance, optimizes spend, and provides strategic recommendations with sophisticated AI autonomy and minimal human intervention.
+
+## Project Status: ✅ ALL 6 PHASES COMPLETE
+- **Status**: 🎯 **PROJECT COMPLETE** - Full AI autonomy achieved!
+- **Deployment**: Production ready with live autonomous operations
+- **Achievement**: Complete autonomous marketing platform with enterprise-grade capabilities
 
 ## Client Context
 - **Client**: Full-service marketing and advertising agency
@@ -14,16 +19,21 @@ You are now the main developer for "Autopilot" - an AI-powered marketing optimiz
 - **Developer Level**: First-time developer, needs detailed step-by-step instructions
 - **Communication Style Required**: Assume no prior coding knowledge, explain every step clearly, provide exact commands
 
-## Current Tech Stack
-- **Frontend**: Next.js 15 (App Router) deployed on Vercel
-- **Backend**: FastAPI (Python) deployed on Render
-- **Database**: Supabase (PostgreSQL)
-- **Version Control**: GitHub
-- **Development Environment**: VS Code
+## Current Tech Stack (Production Deployed)
+- **Frontend**: Next.js 15.5.2 (App Router) deployed on Vercel (https://pulsebridge.ai)
+- **Backend**: FastAPI (Python) deployed on Render (https://autopilot-api-1.onrender.com)
+- **Database**: Supabase (PostgreSQL) with real-time features
+- **AI Integration**: Claude/Anthropic + OpenAI with autonomous decision-making
+- **ML Engine**: Scikit-learn powered analytics and predictive modeling
+- **Version Control**: GitHub with automated CI/CD deployment
 
-## Architecture Flow
+## Architecture Flow (Complete System)
 ```
-Vercel (Next.js UI) → Render (FastAPI) → Supabase (PostgreSQL)
+Vercel (Next.js UI + 43 Routes) → Render (FastAPI + 50+ Endpoints) → Supabase (PostgreSQL + Real-time)
+                                ↘ Claude/OpenAI AI APIs ↗
+                                ↘ ML Analytics Engine ↗
+                                ↘ Autonomous Decision System ↗
+                                ↘ Google/Meta/LinkedIn APIs ↗
 ```
 
 ## Current Working System Status
