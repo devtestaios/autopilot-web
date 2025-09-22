@@ -30,412 +30,74 @@ import {
   Globe,
   Shield,
   Rocket
-} from 'lucide-react';
-import { PulseWaveLogo } from '@/components/PulseWaveLogo';
-import { PremiumButton } from '@/components/ui/PremiumButton';
-import { PremiumCard } from '@/components/ui/PremiumCard';
-import AdvancedNavigation from '@/components/ui/AdvancedNavigation';
-import UnifiedSidebar from '@/components/UnifiedSidebar';
-import ActionDropdown from '@/components/ui/ActionDropdown';
-import AIInsights from '@/components/AIInsights';
-import Breadcrumb from '@/components/ui/Breadcrumb';
-import { useToast } from '@/components/ui/Toast';
-import AIControlChat from '@/components/AIControlChat';
-import { PageSkeleton, ChartSkeleton, DashboardWidgetSkeleton, CampaignCardSkeleton } from '@/components/ui/Skeleton';
-import { useErrorHandler } from '@/hooks/useErrorHandler';
-import { AsyncContent } from '@/components/ui/AsyncContent';
-import { fetchDashboardOverview, fetchCampaigns, fetchKPISummary } from '@/lib/api';
-
-// Enhanced mock data with more realistic metrics
-const enhancedCampaigns = [
-  {
-    id: '1',
-    name: 'Q4 Holiday Shopping Blitz',
-    platform: 'Google Ads',
-    status: 'active',
-    budget: 15000,
-    spend: 8240,
-    impressions: 425000,
-    clicks: 12250,
-    conversions: 542,
-    ctr: 2.88,
-    cpc: 0.67,
-    roas: 5.4,
-    growth: '+23%'
-  },
-  {
-    id: '2',
-    name: 'AI-Powered Retargeting',
-    platform: 'Meta',
-    status: 'active',
-    budget: 8000,
-    spend: 5100,
-    impressions: 189000,
-    clicks: 4890,
-    conversions: 267,
-    ctr: 2.59,
-    cpc: 1.04,
-    roas: 4.2,
-    growth: '+15%'
-  },
-  {
-    id: '3',
-    name: 'LinkedIn Professional Outreach',
-    platform: 'LinkedIn',
-    status: 'optimizing',
-    budget: 5500,
-    spend: 2850,
-    impressions: 94000,
-    clicks: 1720,
-    conversions: 89,
-    ctr: 1.83,
-    cpc: 1.66,
-    roas: 3.7,
-    growth: '+8%'
   }
 ];
 
 const aiInsights = [
   {
-    type: 'optimization',
-    title: 'Budget Reallocation Opportunity',
-    description: 'Move $2,400 from LinkedIn to Google Ads for 18% ROAS improvement',
-    impact: '+$1,320 revenue',
-    confidence: 92,
-    icon: Zap,
-    color: 'text-blue-600'
-  },
-  {
-    type: 'alert',
-    title: 'High-Performing Keywords Detected',
-    description: '5 keywords showing 40%+ CTR increase - consider bid increases',
-    impact: '+$850 potential',
-    confidence: 87,
-    icon: TrendingUp,
-    color: 'text-green-600'
-  },
-  {
-    type: 'warning',
-    title: 'Campaign Fatigue Warning',
-    description: 'Meta campaign showing declining engagement - refresh creative',
-    impact: 'Prevent -15% CTR',
-    confidence: 78,
-    icon: Shield,
-    color: 'text-orange-600'
-  }
-];
-
-export default function EnhancedDashboard() {
-  const { user, logout, isLoading: authLoading } = useAuth();
-  const { theme } = useTheme();
-  const router = useRouter();
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const [view, setView] = useState('overview');
-  const { showToast } = useToast();
-  const { error: dashboardError, handleError, clearError } = useErrorHandler();
-  
-  // Real data states
-  const [dashboardData, setDashboardData] = useState<any>(null);
-  const [campaigns, setCampaigns] = useState<any[]>([]);
-  const [kpiData, setKpiData] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-  const [isRefreshing, setIsRefreshing] = useState(false);
-  const [selectedTimeframe, setSelectedTimeframe] = useState('7d');
-  const [liveData, setLiveData] = useState<any[]>([]);
-
-  // Load real dashboard data with fallbacks
-  const loadDashboardData = useCallback(async () => {
-    try {
-      setLoading(true);
-      clearError();
-
-      // Try to fetch all dashboard data in parallel with timeout
-      const timeout = new Promise((_, reject) => 
-        setTimeout(() => reject(new Error('API timeout')), 10000)
-      );
-
-      const dataPromise = Promise.all([
-        fetchDashboardOverview().catch(() => null),
-        fetchCampaigns().catch(() => []), 
-        fetchKPISummary().catch(() => null)
-      ]);
-
-      const [overview, campaignsData, kpiSummary] = await Promise.race([
-        dataPromise,
-        timeout
-      ]) as any;
-
-      // Set data or fall back to mock data if APIs fail
-      setDashboardData(overview || {
-        total_campaigns: 12,
-        active_campaigns: 8,
-        total_spend: 45672.34,
-        total_revenue: 189234.56,
-        conversion_rate: 4.82
-      });
-      
-      setCampaigns(campaignsData || enhancedCampaigns);
-      
-      setKpiData(kpiSummary || {
-        conversion_rate: 4.82,
-        average_roas: 4.2,
-        total_conversions: 1243
-      });
-      
-      setLiveData(campaignsData || enhancedCampaigns);
-
-    } catch (err) {
-      console.warn('Dashboard API failed, using mock data:', err);
-      // Use mock data when APIs fail
-      setDashboardData({
-        total_campaigns: 12,
-        active_campaigns: 8,
-        total_spend: 45672.34,
-        total_revenue: 189234.56,
-        conversion_rate: 4.82
-      });
-      setCampaigns(enhancedCampaigns);
-      setKpiData({
-        conversion_rate: 4.82,
-        average_roas: 4.2,
-        total_conversions: 1243
-      });
-      setLiveData(enhancedCampaigns);
-      // Don't show error for API failures, just use mock data
-    } finally {
-      setLoading(false);
-    }
-  }, [clearError]);
-
-  useEffect(() => {
-    if (!user || authLoading) return;
-    loadDashboardData();
-  }, [user, authLoading, loadDashboardData]);
-
-  // Enhanced stats with real data
-  const quickStats = [
-    {
-      title: 'Total Revenue',
-      value: `$${dashboardData?.total_spend?.toLocaleString() || '0'}`,
-      change: '+12.5%',
-      icon: DollarSign,
-      color: 'text-green-600',
-      bgColor: 'bg-green-100 dark:bg-green-900/20'
-    },
-    {
-      title: 'Active Campaigns',
-      value: dashboardData?.total_campaigns || '0',
-      change: '+3',
-      icon: Rocket,
-      color: 'text-pulse-cyan',
-      bgColor: 'bg-pulse-cyan/10'
-    },
-    {
-      title: 'Conversion Rate',
-      value: `${kpiData?.conversion_rate || '4.82'}%`,
-      change: '+0.8%',
-      icon: Target,
-      color: 'text-purple-600',
-      bgColor: 'bg-purple-100 dark:bg-purple-900/20'
-    },
-    {
-      title: 'ROAS Average',
-      value: `${kpiData?.roas || '4.7'}x`,
-      change: '+0.3x',
-      icon: TrendingUp,
-      color: 'text-orange-600',
-      bgColor: 'bg-orange-100 dark:bg-orange-900/20'
-    }
-  ];
-
-  useEffect(() => {
-    // Don't redirect if still loading auth state
-    if (authLoading) return;
-    
-    if (!user) {
-      router.push('/login');
-      return;
-    }
-  }, [user, router, authLoading]);
-
-  // Real-time data updates simulation
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setLiveData(prevData => 
-        prevData.map(campaign => ({
-          ...campaign,
-          impressions: campaign.impressions + Math.floor(Math.random() * 100),
-          clicks: campaign.clicks + Math.floor(Math.random() * 10),
-          conversions: campaign.conversions + Math.floor(Math.random() * 3),
-        }))
-      );
-    }, 30000); // Update every 30 seconds
-
-    return () => clearInterval(interval);
-  }, []);
-
-  // Handle data refresh
-  const handleRefresh = async () => {
-    setIsRefreshing(true);
-    // Simulate API call
-    setTimeout(() => {
-      setIsRefreshing(false);
-      showToast({
-        type: 'success',
-        title: 'Data Refreshed',
-        description: 'Dashboard data has been updated with latest metrics.',
-        duration: 3000
-      });
-    }, 2000);
-  };
-
-  // Navigation functions
-  const navigateToNewCampaign = () => {
-    router.push('/campaigns/new');
-  };
-
-  const navigateToCampaigns = () => {
-    router.push('/campaigns');
-  };
-
-  const navigateToAnalytics = () => {
-    router.push('/analytics');
-  };
-
-  const navigateToOptimization = () => {
-    router.push('/optimization');
-  };
-
-  const viewCampaign = (campaignId: string) => {
-    router.push(`/campaigns/${campaignId}`);
-  };
-
-  const editCampaign = (campaignId: string) => {
-    router.push(`/campaigns/${campaignId}/edit`);
-  };
-
-  // Show loading skeleton while authentication is being determined
-  if (authLoading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-purple-50/30 dark:from-gray-900 dark:via-blue-900/20 dark:to-purple-900/20">
-        <UnifiedSidebar onCollapseChange={setSidebarCollapsed} />
-        <main className={`${sidebarCollapsed ? 'lg:ml-14' : 'lg:ml-64'} transition-all duration-300 pt-6`}>
-          <AdvancedNavigation sidebarCollapsed={sidebarCollapsed} />
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
-            <PageSkeleton showHeader={true}>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                {Array.from({ length: 4 }).map((_, i) => (
-                  <DashboardWidgetSkeleton key={i} />
-                ))}
-              </div>
-            </PageSkeleton>
-          </div>
-        </main>
-      </div>
-    );
-  }
-
-  // Show loading skeleton while dashboard data is loading
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-purple-50/30 dark:from-gray-900 dark:via-blue-900/20 dark:to-purple-900/20">
-        <UnifiedSidebar onCollapseChange={setSidebarCollapsed} />
-        <main className={`${sidebarCollapsed ? 'lg:ml-14' : 'lg:ml-64'} transition-all duration-300 pt-6`}>
-          <AdvancedNavigation sidebarCollapsed={sidebarCollapsed} />
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
-            <PageSkeleton showHeader={true}>
-                  {/* Quick stats skeleton */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                    {Array.from({ length: 4 }).map((_, i) => (
-                      <DashboardWidgetSkeleton key={i} />
-                    ))}
+                    <DashboardWidgetSkeleton />
+                    <DashboardWidgetSkeleton />
                   </div>
-                  {/* Charts skeleton */}
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-                    {/* ...charts... */}
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <ChartSkeleton />
+                    <ChartSkeleton />
                   </div>
                 </PageSkeleton>
-              </div>
-            </main>
-          </div>
-        );
-                  <CampaignCardSkeleton key={i} />
-                ))}
-              </div>
-
-            </PageSkeleton>
-          </div>
-        </main>
+              }
+            >
+              <Breadcrumb />
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
+                <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
+                  <div>
+                    <h1 className="text-4xl font-bold bg-gradient-to-r from-pulse-cyan to-pulse-purple bg-clip-text text-transparent mb-2">
+                      Welcome back, {user?.name || 'User'}
+                    </h1>
+                    <p className="text-gray-800 dark:text-gray-400 text-lg">
+                      Your campaigns are performing exceptionally well today
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-4 mt-6 lg:mt-0">
+                    <ActionDropdown
+                      onNewCampaign={navigateToNewCampaign}
+                      onAnalytics={navigateToAnalytics}
+                      onOptimization={navigateToOptimization}
+                    />
+                  </div>
+                </div>
+              </motion.div>
+              <PremiumCard className="mb-8">
+                // ...existing code...
+                  <p className="text-gray-800 dark:text-gray-400 mb-6">
+                    Let our AI optimization engine take your campaigns to the next level with automated bidding and budget management.
+                  </p>
+                  <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                    <PremiumButton 
+                      variant="primary" 
+                      size="lg" 
+                      glow
+                      onClick={navigateToOptimization}
+                    >
+                      <Zap className="w-5 h-5 mr-2" />
+                      Enable AI Autopilot
+                    </PremiumButton>
+                    <PremiumButton 
+                      variant="outline" 
+                      size="lg"
+                      onClick={navigateToAnalytics}
+                    >
+                      <BarChart3 className="w-5 h-5 mr-2" />
+                      View Analytics
+                    </PremiumButton>
+                  </div>
+                </div>
+              </PremiumCard>
+            </AsyncContent>
+          </main>
+          <AIControlChat defaultMinimized={true} />
+        </div>
       </div>
     );
-  }
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-purple-50/30 dark:from-gray-900 dark:via-blue-900/20 dark:to-purple-900/20">
-      {/* Unified Sidebar */}
-      <UnifiedSidebar onCollapseChange={setSidebarCollapsed} />
-      
-      {/* Main Content Container */}
-      <div className={`transition-all duration-300 ${sidebarCollapsed ? 'lg:ml-14' : 'lg:ml-[220px]'}`}>
-        {/* Advanced Navigation */}
-        <AdvancedNavigation sidebarCollapsed={sidebarCollapsed} />
-
-        {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <AsyncContent
-          loading={loading}
-          error={dashboardError}
-          onRetry={() => {
-            setLoading(true);
-            return (
-              <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-purple-50/30 dark:from-gray-900 dark:via-blue-900/20 dark:to-purple-900/20">
-                <UnifiedSidebar onCollapseChange={setSidebarCollapsed} />
-                <main className={`${sidebarCollapsed ? 'lg:ml-14' : 'lg:ml-64'} transition-all duration-300 pt-6`}>
-                  <AdvancedNavigation sidebarCollapsed={sidebarCollapsed} />
-                  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
-                    <PageSkeleton showHeader={true}>
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                        <DashboardWidgetSkeleton />
-                        <DashboardWidgetSkeleton />
-                        <DashboardWidgetSkeleton />
-                        <DashboardWidgetSkeleton />
-                      </div>
-                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-                        <ChartSkeleton />
-                        <ChartSkeleton />
-                      </div>
-                    </PageSkeleton>
-                  </div>
-                </main>
-              </div>
-            );
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
-            <div>
-              <h1 className="text-4xl font-bold bg-gradient-to-r from-pulse-cyan to-pulse-purple bg-clip-text text-transparent mb-2">
-                Welcome back, {user?.name || 'User'}
-              </h1>
-              <p className="text-gray-800 dark:text-gray-400 text-lg">
-                Your campaigns are performing exceptionally well today
-              </p>
-            </div>
-            
-            <div className="flex items-center gap-4 mt-6 lg:mt-0">
-              {/* Quick Actions Dropdown */}
-              <ActionDropdown
-                onNewCampaign={navigateToNewCampaign}
-                onAnalytics={navigateToAnalytics}
-                onOptimization={navigateToOptimization}
-                onGoals={() => router.push('/goals')}
-                onHelp={() => router.push('/help')}
-              />
-              
-              <div className="flex items-center gap-2 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm rounded-xl px-4 py-2 border border-gray-200/50 dark:border-gray-700/50">
-                <Clock className="w-4 h-4 text-gray-700 dark:text-gray-500" />
-                <select 
-                  value={selectedTimeframe}
-                  onChange={(e) => setSelectedTimeframe(e.target.value)}
-                  className="bg-transparent text-sm font-medium focus:outline-none"
-                >
+}
                   <option value="24h">Last 24 hours</option>
                   <option value="7d">Last 7 days</option>
                   <option value="30d">Last 30 days</option>
