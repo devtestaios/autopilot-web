@@ -47,7 +47,7 @@ export default function SimplifiedNavbar() {
           >
             <Link href="/" className="flex items-center space-x-3">
               <PulseWaveLogo size="medium" className="text-blue-500 dark:text-blue-400" />
-              <span className="text-xl font-bold text-gray-900 dark:text-white">
+              <span className="text-xl font-bold text-foreground">
                 PulseBridge
               </span>
             </Link>
@@ -68,7 +68,7 @@ export default function SimplifiedNavbar() {
                       relative flex items-center space-x-2 px-4 py-2 rounded-lg transition-all duration-200
                       ${isActive 
                         ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400' 
-                        : 'text-gray-800 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white'
+                        : 'text-foreground hover:bg-muted hover:text-foreground'
                       }
                     `}
                   >
@@ -98,7 +98,7 @@ export default function SimplifiedNavbar() {
                   placeholder="Search..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 pr-4 py-2 w-64 bg-gray-100 dark:bg-gray-800 border-0 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:bg-white dark:focus:bg-gray-700 transition-all duration-200"
+                  className="pl-10 pr-4 py-2 w-64 bg-muted border-0 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:bg-background transition-all duration-200"
                 />
               </div>
             </div>
@@ -107,7 +107,7 @@ export default function SimplifiedNavbar() {
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="relative p-2 text-gray-800 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
+              className="relative p-2 text-foreground hover:text-foreground transition-colors"
             >
               <Bell className="w-5 h-5" />
               <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center">
@@ -120,7 +120,7 @@ export default function SimplifiedNavbar() {
               onClick={toggleTheme}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="p-2 text-gray-800 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
+              className="p-2 text-foreground hover:text-foreground transition-colors"
             >
               {theme === 'dark' ? (
                 <div className="w-5 h-5 bg-yellow-400 rounded-full" />
@@ -133,7 +133,7 @@ export default function SimplifiedNavbar() {
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="flex items-center space-x-2 p-2 text-gray-800 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
+              className="flex items-center space-x-2 p-2 text-foreground hover:text-foreground transition-colors"
             >
               <div className="w-8 h-8 bg-gradient-to-br from-emerald-400 to-blue-500 rounded-full flex items-center justify-center">
                 <User className="w-4 h-4 text-white" />
@@ -144,7 +144,7 @@ export default function SimplifiedNavbar() {
             <motion.button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               whileTap={{ scale: 0.95 }}
-              className="md:hidden p-2 text-gray-800 dark:text-gray-300"
+              className="md:hidden p-2 text-foreground"
             >
               {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </motion.button>
@@ -167,7 +167,7 @@ export default function SimplifiedNavbar() {
                 placeholder="Search..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 pr-4 py-2 w-full bg-gray-100 dark:bg-gray-800 border-0 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500"
+                className="pl-10 pr-4 py-2 w-full bg-muted border-0 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500"
               />
             </div>
 
@@ -186,7 +186,7 @@ export default function SimplifiedNavbar() {
                     flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200
                     ${isActive 
                       ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400' 
-                      : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                      : 'text-muted-foreground hover:bg-muted'
                     }
                   `}
                 >

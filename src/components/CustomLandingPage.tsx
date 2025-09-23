@@ -408,7 +408,7 @@ export default function AwardWinningLandingPage() {
                 Capabilities
               </span>
             </h2>
-            <p className="text-2xl text-gray-800 dark:text-gray-300 max-w-4xl mx-auto leading-relaxed">
+            <p className="text-2xl text-foreground max-w-4xl mx-auto leading-relaxed">
               Advanced AI features that give you an unfair advantage in the digital marketing battlefield
             </p>
           </motion.div>
@@ -770,7 +770,7 @@ export default function AwardWinningLandingPage() {
       </motion.section>
 
       {/* Live Metrics Section */}
-      <LiveMetrics className="bg-gray-50 dark:bg-gray-900" />
+      <LiveMetrics className="bg-muted" />
 
       {/* Revolutionary Features Section */}
       <motion.section
@@ -796,7 +796,7 @@ export default function AwardWinningLandingPage() {
                 Capabilities
               </span>
             </h2>
-            <p className="text-2xl text-gray-800 dark:text-gray-300 max-w-4xl mx-auto leading-relaxed">
+            <p className="text-2xl text-foreground max-w-4xl mx-auto leading-relaxed">
               Advanced AI features that give you an unfair advantage in the digital marketing battlefield
             </p>
           </motion.div>

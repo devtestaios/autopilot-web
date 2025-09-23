@@ -177,9 +177,9 @@ export function AdvancedHero({ className = '' }: AdvancedHeroProps) {
               <motion.span
                 key={word}
                 className={`block ${
-                  index === 0 ? 'text-gray-900 dark:text-white' :
+                  index === 0 ? 'text-foreground' :
                   index === 1 ? 'bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent' :
-                  'text-gray-700 dark:text-gray-300'
+                  'text-muted-foreground'
                 }`}
                 initial={{ opacity: 0, rotateX: -90 }}
                 animate={isVisible ? { 
@@ -204,7 +204,7 @@ export function AdvancedHero({ className = '' }: AdvancedHeroProps) {
 
         {/* Animated Subheadline */}
         <motion.p
-          className="text-xl sm:text-2xl lg:text-3xl text-gray-600 dark:text-gray-400 max-w-4xl mx-auto mb-12 leading-relaxed"
+          className="text-xl sm:text-2xl lg:text-3xl text-muted-foreground max-w-4xl mx-auto mb-12 leading-relaxed"
           variants={itemVariants}
         >
           Transform your campaigns with{' '}
@@ -255,7 +255,7 @@ export function AdvancedHero({ className = '' }: AdvancedHeroProps) {
                 </motion.div>
                 
                 <motion.div
-                  className="text-3xl font-bold text-gray-900 dark:text-white mb-1"
+                  className="text-3xl font-bold text-foreground mb-1"
                   initial={{ scale: 0 }}
                   animate={isVisible ? { scale: 1 } : {}}
                   transition={{ delay: 1 + index * 0.2, duration: 0.5, type: 'spring' }}
@@ -263,7 +263,7 @@ export function AdvancedHero({ className = '' }: AdvancedHeroProps) {
                   {metric.value}
                 </motion.div>
                 
-                <div className="text-sm text-gray-600 dark:text-gray-400 font-medium">
+                <div className="text-sm text-muted-foreground font-medium">
                   {metric.label}
                 </div>
               </div>
@@ -309,7 +309,7 @@ export function AdvancedHero({ className = '' }: AdvancedHeroProps) {
           </motion.button>
 
           <motion.button
-            className="group px-8 py-4 border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white font-semibold text-lg rounded-2xl backdrop-blur-sm hover:bg-white/10 transition-all duration-300"
+            className="group px-8 py-4 border-2 border-border text-muted-foreground hover:text-foreground font-semibold text-lg rounded-2xl backdrop-blur-sm hover:bg-white/10 transition-all duration-300"
             whileHover={{ scale: 1.05, borderColor: '#8B5CF6' }}
             whileTap={{ scale: 0.95 }}
           >
@@ -332,7 +332,7 @@ export function AdvancedHero({ className = '' }: AdvancedHeroProps) {
           className="flex flex-col items-center"
           variants={itemVariants}
         >
-          <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+          <p className="text-sm text-muted-foreground mb-4">
             Scroll to explore advanced features
           </p>
           <motion.div
@@ -340,7 +340,7 @@ export function AdvancedHero({ className = '' }: AdvancedHeroProps) {
             transition={{ duration: 2, repeat: Infinity }}
             className="cursor-pointer"
           >
-            <ArrowDown className="w-6 h-6 text-gray-400" />
+            <ArrowDown className="w-6 h-6 text-muted-foreground" />
           </motion.div>
         </motion.div>
       </motion.div>
