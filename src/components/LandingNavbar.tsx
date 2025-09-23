@@ -31,6 +31,8 @@ export default function LandingNavbar({ className = '' }: LandingNavbarProps) {
     { label: 'Solutions', href: '#solutions' },
     { label: 'Pricing', href: '#pricing' },
     { label: 'Dashboard', href: '/dashboard' },
+    { label: 'Campaigns', href: '/campaigns' },
+    { label: 'Analytics', href: '/analytics' },
     { label: 'About', href: '#about' },
     { label: 'Contact', href: '#contact' },
   ];
@@ -65,7 +67,7 @@ export default function LandingNavbar({ className = '' }: LandingNavbarProps) {
           <div className="hidden lg:flex items-center space-x-8">
             {navigationItems.map((item, index) => (
               item.href.startsWith('/') ? (
-                <Link key={item.href} href={item.href}>
+                <Link key={item.href} href={item.href} data-testid={`nav-${item.label.toLowerCase()}`}>
                   <motion.div
                     className="font-exo-2 font-medium text-gray-800 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200 cursor-pointer"
                     whileHover={{ scale: 1.05 }}
@@ -81,6 +83,7 @@ export default function LandingNavbar({ className = '' }: LandingNavbarProps) {
                 <motion.a
                   key={item.href}
                   href={item.href}
+                  data-testid={`nav-${item.label.toLowerCase()}`}
                   className="font-exo-2 font-medium text-gray-800 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
@@ -181,6 +184,7 @@ export default function LandingNavbar({ className = '' }: LandingNavbarProps) {
             <motion.button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               whileTap={{ scale: 0.95 }}
+              data-testid="mobile-menu-button"
               className="lg:hidden p-2 rounded-lg text-gray-800 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
             >
               {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -205,6 +209,7 @@ export default function LandingNavbar({ className = '' }: LandingNavbarProps) {
                 <motion.a
                   key={item.href}
                   href={item.href}
+                  data-testid={`mobile-nav-${item.label.toLowerCase()}`}
                   onClick={() => setIsMobileMenuOpen(false)}
                   className="block px-4 py-3 text-gray-800 dark:text-gray-300 font-exo-2 font-medium hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-lg transition-all duration-200"
                   whileHover={{ x: 10 }}

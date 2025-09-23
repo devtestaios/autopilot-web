@@ -359,7 +359,7 @@ export default function EnhancedAnalyticsDashboard() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
             >
-              <Card className="hover:shadow-lg transition-all duration-200 cursor-pointer group">
+              <Card className="hover:shadow-lg transition-all duration-200 cursor-pointer group" data-testid="metric-card">
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between mb-2">
                     <div className={cn('p-2 rounded-lg bg-gray-100 dark:bg-gray-800 group-hover:bg-gray-200 dark:group-hover:bg-gray-700 transition-colors')}>
