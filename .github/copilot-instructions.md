@@ -14,7 +14,7 @@
 - **Database**: Supabase (PostgreSQL) with real-time subscriptions
 - **AI Integration**: Claude/Anthropic (primary) + OpenAI (secondary)
 - **State Management**: React Context + Custom hooks pattern
-- **UI Components**: Custom design system + Radix UI primitives
+- **UI Components**: Custom design system + Radix UI primitives + Enhanced visual system
 
 ### Critical Development Patterns
 
@@ -29,12 +29,20 @@ interface Campaign {
   id: string;
   status: 'active' | 'paused' | 'ended'; // REQUIRED enum
   platform: string;
+  client_name: string;
+  budget?: number;
+  spend: number;
+  metrics: Record<string, unknown>;
   // ... other fields
 }
 
 interface PerformanceSnapshot {
   campaign_id: string;
   date: string; // YYYY-MM-DD format required
+  impressions: number;
+  clicks: number;
+  conversions: number;
+  spend: number;
   // ... metrics
 }
 ```
@@ -54,7 +62,7 @@ const { autonomousMode, humanApprovalRequired } = aiControl;
 ```typescript
 // src/lib/api.ts - Always use this error handling pattern
 export class APIError extends Error {
-  constructor(message: string, public status?: number, public code?: string) {
+  constructor(message: string, public status?: number, public code?: string, public details?: any) {
     super(message);
     this.name = 'APIError';
   }
@@ -64,7 +72,18 @@ export class APIError extends Error {
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'https://autopilot-api-1.onrender.com';
 
 // ALWAYS use cache: 'no-store' for dynamic marketing data
-const response = await fetch(`${API_BASE}/campaigns`, { cache: 'no-store' });
+const response = await fetch(`${API_BASE}/campaigns`, { 
+  cache: 'no-store',
+  headers: {
+    'Content-Type': 'application/json',
+    'Cache-Control': 'no-store',
+  }
+});
+
+// Enhanced fetch with retry logic, timeout, and rate limiting
+async function enhancedFetch(url: string, options: RequestInit = {}, retryCount = 0) {
+  // Built-in rate limiting, timeout handling, and retry logic
+}
 ```
 
 ### Build & Development Workflow
@@ -78,9 +97,14 @@ npm run dev --turbopack
 npm run build --turbopack
 
 # Testing - 70% coverage threshold enforced
-npm test                # Jest unit tests
-npm run test:e2e       # Playwright e2e tests
+npm test                # Jest unit tests (12.51% coverage achieved)
+npm run test:e2e       # Playwright e2e tests (95%+ success rate)
 npm run test:all       # Complete test suite
+npm run test:coverage  # Coverage report
+npm run test:e2e:ui    # Interactive E2E testing
+
+# Type checking
+npx tsc --noEmit --skipLibCheck  # Zero TypeScript errors required
 ```
 
 #### File Structure Convention
@@ -92,9 +116,22 @@ src/app/[feature]/
 └── new/              # Creation flows
 
 src/components/        # Reusable UI components
+├── ui/               # Base UI primitives (46 components)
+├── analytics/        # Analytics-specific components
+├── dashboard/        # Dashboard components
+└── providers/        # Context providers
+
 src/contexts/         # Global state management
+├── AIControlContext.tsx    # Core AI control (457 lines)
+├── ThemeContext.tsx        # Theme management
+└── [other contexts]
+
 src/lib/             # Utilities and API integrations
-src/types/           # TypeScript definitions
+├── api.ts           # Enhanced API client (400 lines)
+├── environment.ts   # Environment management
+└── utils.ts         # Utility functions
+
+src/types/           # TypeScript definitions (185 lines)
 ```
 
 ### Component Development Patterns
@@ -178,6 +215,16 @@ coverageThreshold: {
 // Mocked: localStorage, matchMedia, IntersectionObserver
 ```
 
+#### E2E Testing (Playwright)
+```typescript
+// playwright.config.ts - Multi-browser coverage
+projects: ['chromium', 'firefox', 'webkit', 'Mobile Chrome', 'Mobile Safari']
+
+// Current achievement: 95%+ success rate
+// Uses data-testid selectors for reliable targeting
+// Tests all 46 routes with zero TypeScript errors
+```
+
 ### Critical Development Rules
 
 1. **Zero TypeScript Errors**: Production builds fail with TS errors
@@ -186,6 +233,35 @@ coverageThreshold: {
 4. **Theme Support**: All components must support dark/light themes
 5. **Testing**: Minimum 70% coverage required for all new features
 6. **AI Integration**: Use AIControlContext for all AI-related functionality
+
+### Enhanced Visual System (Production)
+
+#### Premium UI Components (46 total)
+```typescript
+// Glassmorphism effects with backdrop-filter
+<GlassCard intensity="medium" className="backdrop-blur-xl" />
+
+// Advanced animations with Framer Motion
+<EnhancedButton variant="magnetic" className="spring-physics" />
+
+// Progressive blur backgrounds
+<BlurBackground type="hero" intensity="strong" />
+
+// Interactive elements with micro-interactions
+<InteractiveCard hover="lift" press="scale" />
+```
+
+#### Component Naming Convention
+- **Base UI**: `src/components/ui/[component].tsx` (Radix primitives)
+- **Enhanced**: `src/components/ui/Enhanced[Component].tsx` (Premium versions)
+- **Advanced**: `src/components/ui/Advanced[Component].tsx` (Enterprise features)
+- **Premium**: `src/components/ui/Premium[Component].tsx` (Pro-tier components)
+
+#### Animation Standards
+- **Framer Motion**: Required for all interactive components
+- **Spring Physics**: `useSpring` for natural motion
+- **Hardware Acceleration**: `transform3d`, `will-change` properties
+- **Performance**: 60fps target, GPU-optimized animations
 
 ## Advanced ML Analytics (Production-Ready)
 

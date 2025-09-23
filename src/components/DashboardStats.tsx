@@ -66,31 +66,46 @@ export default function DashboardStats({ campaigns, loading }: DashboardStatsPro
   <div className="space-y-8">
       {/* System Health Status */}
       {healthStatus && (
-        <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900 dark:to-emerald-900 rounded-xl p-6 border border-green-200 dark:border-green-700">
+        <div 
+          className="rounded-xl p-6 border"
+          style={{
+            background: 'rgba(var(--brand-teal-rgb), 0.1)',
+            borderColor: 'var(--brand-teal)',
+          }}
+        >
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <div className="p-2 bg-green-100 dark:bg-green-800 rounded-lg">
-                <svg className="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div 
+                className="p-2 rounded-lg"
+                style={{
+                  backgroundColor: 'rgba(var(--brand-teal-rgb), 0.2)',
+                }}
+              >
+                <svg 
+                  className="w-6 h-6" 
+                  style={{ color: 'var(--brand-teal)' }}
+                  fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                >
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
               <div>
-                <h3 className="text-lg font-bold text-black dark:text-white">System Status</h3>
-                <p className="text-sm text-black dark:text-gray-300">All systems operational</p>
+                <h3 className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>System Status</h3>
+                <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>All systems operational</p>
               </div>
             </div>
             <div className="grid grid-cols-3 gap-4 text-sm">
               <div className="text-center">
-                <div className="font-bold text-black dark:text-white">{healthStatus.health}</div>
-                <div className="text-black dark:text-gray-400">Health</div>
+                <div className="font-bold" style={{ color: 'var(--text-primary)' }}>{healthStatus.health}</div>
+                <div style={{ color: 'var(--text-muted)' }}>Health</div>
               </div>
               <div className="text-center">
-                <div className="font-bold text-black dark:text-white">{healthStatus.version}</div>
-                <div className="text-black dark:text-gray-400">Version</div>
+                <div className="font-bold" style={{ color: 'var(--text-primary)' }}>{healthStatus.version}</div>
+                <div style={{ color: 'var(--text-muted)' }}>Version</div>
               </div>
               <div className="text-center">
-                <div className="font-bold text-black dark:text-white">{healthStatus.database}</div>
-                <div className="text-black dark:text-gray-400">Database</div>
+                <div className="font-bold" style={{ color: 'var(--text-primary)' }}>{healthStatus.database}</div>
+                <div style={{ color: 'var(--text-muted)' }}>Database</div>
               </div>
             </div>
           </div>
@@ -100,19 +115,36 @@ export default function DashboardStats({ campaigns, loading }: DashboardStatsPro
       {/* Main Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" data-testid="dashboard-stats">
   {/* Total Campaigns */}
-  <GlassCard className="p-6 group" intensity="medium" hover={true} data-testid="metric-card">
+  <GlassCard className="p-6 group metric-card" intensity="medium" hover={true} data-testid="metric-card">
           <div className="flex items-center justify-between">
             <div className="flex-1">
-              <p className="text-sm font-bold text-black dark:text-gray-300 uppercase tracking-wide">Total Campaigns</p>
-              <p className="text-3xl font-bold text-black dark:text-white mt-2">{totalCampaigns}</p>
+              <p className="metric-label">Total Campaigns</p>
+              <p className="metric-value">{totalCampaigns}</p>
               <div className="flex items-center mt-3">
-                <span className="text-sm text-green-700 dark:text-green-400 font-semibold bg-green-100 dark:bg-green-900/30 px-2 py-1 rounded-full">{activeCampaigns} active</span>
-                <span className="text-gray-400 mx-2">•</span>
-                <span className="text-sm text-black dark:text-gray-300 font-bold">{totalCampaigns - activeCampaigns} paused</span>
+                <span 
+                  className="text-sm font-semibold px-2 py-1 rounded-full"
+                  style={{
+                    color: 'var(--brand-teal)',
+                    backgroundColor: 'rgba(var(--brand-teal-rgb), 0.1)'
+                  }}
+                >
+                  {activeCampaigns} active
+                </span>
+                <span className="mx-2" style={{ color: 'var(--text-muted)' }}>•</span>
+                <span className="text-sm font-bold" style={{ color: 'var(--text-secondary)' }}>{totalCampaigns - activeCampaigns} paused</span>
               </div>
             </div>
-            <div className="p-4 bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-800 dark:to-blue-900 rounded-xl group-hover:scale-110 transition-transform duration-300 float">
-              <svg className="w-8 h-8 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div 
+              className="p-4 rounded-xl group-hover:scale-110 transition-transform duration-300 float"
+              style={{
+                background: `linear-gradient(135deg, rgba(var(--brand-teal-rgb), 0.1), rgba(var(--brand-teal-rgb), 0.2))`,
+              }}
+            >
+              <svg 
+                className="w-8 h-8" 
+                style={{ color: 'var(--brand-teal)' }}
+                fill="none" stroke="currentColor" viewBox="0 0 24 24"
+              >
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
               </svg>
             </div>
@@ -120,17 +152,34 @@ export default function DashboardStats({ campaigns, loading }: DashboardStatsPro
         </GlassCard>
 
         {/* Total Budget */}
-  <GlassCard className="p-6 group" intensity="medium" hover={true} data-testid="metric-card">
+  <GlassCard className="p-6 group metric-card" intensity="medium" hover={true} data-testid="metric-card">
           <div className="flex items-center justify-between">
             <div className="flex-1">
-              <p className="text-sm font-bold text-black dark:text-gray-300 uppercase tracking-wide">Total Budget</p>
-              <p className="text-3xl font-bold text-black dark:text-white mt-2">${totalBudget.toLocaleString()}</p>
+              <p className="metric-label">Total Budget</p>
+              <p className="metric-value">${totalBudget.toLocaleString()}</p>
               <div className="flex items-center mt-3">
-                <span className="text-sm text-blue-700 dark:text-blue-400 font-semibold bg-blue-100 dark:bg-blue-900/30 px-2 py-1 rounded-full">${totalSpend.toLocaleString()} spent</span>
+                <span 
+                  className="text-sm font-semibold px-2 py-1 rounded-full"
+                  style={{
+                    color: 'var(--brand-coral)',
+                    backgroundColor: 'rgba(var(--brand-coral-rgb), 0.1)'
+                  }}
+                >
+                  ${totalSpend.toLocaleString()} spent
+                </span>
               </div>
             </div>
-            <div className="p-4 bg-gradient-to-br from-green-100 to-green-200 dark:from-green-800 dark:to-green-900 rounded-xl group-hover:scale-110 transition-transform duration-300 float">
-              <svg className="w-8 h-8 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div 
+              className="p-4 rounded-xl group-hover:scale-110 transition-transform duration-300 float"
+              style={{
+                background: `linear-gradient(135deg, rgba(var(--brand-coral-rgb), 0.1), rgba(var(--brand-coral-rgb), 0.2))`,
+              }}
+            >
+              <svg 
+                className="w-8 h-8" 
+                style={{ color: 'var(--brand-coral)' }}
+                fill="none" stroke="currentColor" viewBox="0 0 24 24"
+              >
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
               </svg>
             </div>

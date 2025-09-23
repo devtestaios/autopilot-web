@@ -144,6 +144,11 @@ export default function AdvancedNavigation({ className, sidebarCollapsed = false
         'pointer-events-auto',
         className
       )}
+      style={{
+        background: 'var(--bg-card)',
+        borderBottomColor: 'var(--border-subtle)',
+        backdropFilter: 'blur(12px)',
+      }}
     >
       <div className={cn(
         'mx-auto px-4 sm:px-6 lg:px-8 transition-all duration-300',
@@ -163,9 +168,13 @@ export default function AdvancedNavigation({ className, sidebarCollapsed = false
                   className={cn(
                     'flex items-center gap-2 px-2 py-1 rounded-lg transition-colors duration-200',
                     index === breadcrumbs.length - 1
-                      ? 'text-pulse-cyan font-medium bg-pulse-cyan/10'
-                      : 'text-gray-800 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800'
+                      ? 'font-medium'
+                      : 'hover:bg-gray-100 dark:hover:bg-gray-800'
                   )}
+                  style={{
+                    color: index === breadcrumbs.length - 1 ? 'var(--brand-teal)' : 'var(--text-secondary)',
+                    backgroundColor: index === breadcrumbs.length - 1 ? 'rgba(var(--brand-teal-rgb), 0.1)' : 'transparent'
+                  }}
                 >
                   {item.icon}
                   <span>{item.label}</span>
@@ -188,9 +197,20 @@ export default function AdvancedNavigation({ className, sidebarCollapsed = false
               onClick={toggleTheme}
               className={cn(
                 'p-2 rounded-lg transition-all duration-200',
-                'hover:bg-gray-100 dark:hover:bg-gray-800',
-                'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
+                'hover:bg-gray-100 dark:hover:bg-gray-800'
               )}
+              style={{
+                color: 'var(--text-secondary)',
+                backgroundColor: 'transparent'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = 'var(--bg-hover)';
+                e.currentTarget.style.color = 'var(--text-primary)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'transparent';
+                e.currentTarget.style.color = 'var(--text-secondary)';
+              }}
               title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
             >
               {theme === 'light' ? (
