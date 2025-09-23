@@ -33,8 +33,8 @@ export default function DashboardStats({ campaigns, loading }: DashboardStatsPro
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         {[1, 2, 3, 4].map((i) => (
           <GlassCard key={i} className="p-6 animate-pulse" intensity="light" animated={false}>
-            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded mb-3"></div>
-            <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded"></div>
+            <div className="h-4 bg-muted rounded mb-3"></div>
+            <div className="h-8 bg-muted rounded"></div>
           </GlassCard>
         ))}
       </div>
@@ -230,13 +230,13 @@ export default function DashboardStats({ campaigns, loading }: DashboardStatsPro
       {/* Platform Breakdown */}
       {Object.keys(platformCounts).length > 0 && (
         <GlassCard className="p-8" intensity="medium" hover={false}>
-          <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-6">Platform Distribution</h3>
+          <h3 className="text-lg font-bold text-foreground mb-6">Platform Distribution</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {Object.entries(platformCounts).map(([platform, count]) => (
               <div key={platform} className="text-center">
-                <div className="text-2xl font-bold text-gray-900 dark:text-white">{count}</div>
-                <div className="text-sm text-gray-600 dark:text-gray-400 capitalize mb-2">{platform.replace('_', ' ')}</div>
-                <div className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2 mt-2">
+                <div className="text-2xl font-bold text-foreground">{count}</div>
+                <div className="text-sm text-muted-foreground capitalize mb-2">{platform.replace('_', ' ')}</div>
+                <div className="w-full bg-muted rounded-full h-2 mt-2">
                   <div 
                     className="bg-gradient-to-r from-blue-400 to-purple-500 h-2 rounded-full transition-all duration-500"
                     style={{ width: `${(count / totalCampaigns) * 100}%` }}

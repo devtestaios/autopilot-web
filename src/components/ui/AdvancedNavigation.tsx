@@ -139,7 +139,7 @@ export default function AdvancedNavigation({ className, sidebarCollapsed = false
     <nav 
       data-testid="dashboard-navigation"
       className={cn(
-        'bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl border-b border-gray-200/50 dark:border-gray-700/50',
+        'bg-background/95 backdrop-blur-xl border-b border-border',
         'sticky top-0 z-50 transition-all duration-300',
         'pointer-events-auto',
         className
@@ -160,7 +160,7 @@ export default function AdvancedNavigation({ className, sidebarCollapsed = false
             {breadcrumbs.map((item, index) => (
               <div key={item.href} className="flex items-center">
                 {index > 0 && (
-                  <ChevronRight className="w-4 h-4 text-gray-600 dark:text-gray-400 mx-2" />
+                  <ChevronRight className="w-4 h-4 text-muted-foreground mx-2" />
                 )}
                 
                 <Link
@@ -169,7 +169,7 @@ export default function AdvancedNavigation({ className, sidebarCollapsed = false
                     'flex items-center gap-2 px-2 py-1 rounded-lg transition-colors duration-200',
                     index === breadcrumbs.length - 1
                       ? 'font-medium'
-                      : 'hover:bg-gray-100 dark:hover:bg-gray-800'
+                      : 'hover:bg-muted'
                   )}
                   style={{
                     color: index === breadcrumbs.length - 1 ? 'var(--brand-teal)' : 'var(--text-secondary)',
@@ -197,7 +197,7 @@ export default function AdvancedNavigation({ className, sidebarCollapsed = false
               onClick={toggleTheme}
               className={cn(
                 'p-2 rounded-lg transition-all duration-200',
-                'hover:bg-gray-100 dark:hover:bg-gray-800'
+                'hover:bg-muted'
               )}
               style={{
                 color: 'var(--text-secondary)',

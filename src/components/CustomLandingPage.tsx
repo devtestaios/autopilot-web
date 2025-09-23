@@ -434,10 +434,10 @@ export default function AwardWinningLandingPage() {
                   
                   {/* Icon Label (hidden on mobile) */}
                   <div className="hidden lg:block text-center lg:text-left">
-                    <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-200 mb-1">
+                    <h3 className="text-sm font-semibold text-foreground mb-1">
                       {feature.title}
                     </h3>
-                    <p className="text-xs text-gray-600 dark:text-gray-400 max-w-[120px]">
+                    <p className="text-xs text-muted-foreground max-w-[120px]">
                       {feature.description.substring(0, 50)}...
                     </p>
                   </div>
@@ -462,7 +462,7 @@ export default function AwardWinningLandingPage() {
                     Capabilities
                   </span>
                 </h2>
-                <p className="text-xl text-gray-800 dark:text-gray-300 max-w-3xl leading-relaxed">
+                <p className="text-xl text-foreground max-w-3xl leading-relaxed">
                   Advanced AI features that give you an unfair advantage in the digital marketing battlefield
                 </p>
               </motion.div>
@@ -472,7 +472,7 @@ export default function AwardWinningLandingPage() {
                 {features.map((feature, index) => (
                   <motion.div
                     key={`detail-${feature.title}`}
-                    className="bg-gray-50 dark:bg-gray-700/50 rounded-2xl p-6 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-300"
+                    className="bg-muted rounded-2xl p-6 hover:bg-muted/80 transition-all duration-300"
                     initial={{ y: 30, opacity: 0 }}
                     animate={featuresInView ? { y: 0, opacity: 1 } : { y: 30, opacity: 0 }}
                     transition={{ duration: 0.6, delay: 0.2 + index * 0.1 }}
@@ -482,10 +482,10 @@ export default function AwardWinningLandingPage() {
                         <feature.icon className="w-full h-full text-white" />
                       </div>
                       <div>
-                        <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">
+                        <h3 className="text-lg font-semibold text-foreground mb-2">
                           {feature.title}
                         </h3>
-                        <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
+                        <p className="text-muted-foreground text-sm leading-relaxed">
                           {feature.description}
                         </p>
                       </div>
