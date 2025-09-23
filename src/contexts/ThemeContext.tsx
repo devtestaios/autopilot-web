@@ -37,15 +37,15 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (!mounted) return;
     
-    // Update body class for theme switching (following guide's structure)
+    // Update HTML class for Tailwind theme switching (darkMode: "class")
+    document.documentElement.classList.remove('light', 'dark');
+    document.documentElement.classList.add(theme);
+    
+    // Also update body class for backward compatibility
     document.body.classList.remove('light-theme');
     if (theme === 'light') {
       document.body.classList.add('light-theme');
     }
-    
-    // Also update document class for legacy compatibility
-    document.documentElement.classList.remove('light', 'dark');
-    document.documentElement.classList.add(theme);
     
     try {
       localStorage.setItem('theme', theme);

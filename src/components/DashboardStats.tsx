@@ -190,8 +190,8 @@ export default function DashboardStats({ campaigns, loading }: DashboardStatsPro
   <GlassCard className="p-6 group" intensity="medium" hover={true} data-testid="metric-card">
           <div className="flex items-center justify-between">
             <div className="flex-1">
-              <p className="text-sm font-bold text-black dark:text-gray-300 uppercase tracking-wide">Total Spend</p>
-              <p className="text-3xl font-bold text-black dark:text-white mt-2">{formatCurrency(totalSpend)}</p>
+              <p className="text-sm font-bold text-muted-foreground uppercase tracking-wide">Total Spend</p>
+              <p className="text-3xl font-bold text-primary dark:text-white mt-2">{formatCurrency(totalSpend)}</p>
               <div className="flex items-center mt-3">
                 <span className={`text-sm font-semibold px-2 py-1 rounded-full ${avgSpendPercentage > 80 ? 'text-red-700 bg-red-100 dark:text-red-400 dark:bg-red-900/30' : avgSpendPercentage > 60 ? 'text-yellow-700 bg-yellow-100 dark:text-yellow-400 dark:bg-yellow-900/30' : 'text-green-700 bg-green-100 dark:text-green-400 dark:bg-green-900/30'}`}>
                   {avgSpendPercentage.toFixed(1)}% of budget
@@ -210,8 +210,8 @@ export default function DashboardStats({ campaigns, loading }: DashboardStatsPro
   <GlassCard className="p-6 group" intensity="medium" hover={true} data-testid="metric-card">
           <div className="flex items-center justify-between">
             <div className="flex-1">
-              <p className="text-sm font-bold text-black dark:text-gray-300 uppercase tracking-wide">Remaining Budget</p>
-              <p className="text-3xl font-bold text-black dark:text-white mt-2">{formatCurrency(totalBudget - totalSpend)}</p>
+              <p className="text-sm font-bold text-muted-foreground uppercase tracking-wide">Remaining Budget</p>
+              <p className="text-3xl font-bold text-primary dark:text-white mt-2">{formatCurrency(totalBudget - totalSpend)}</p>
               <div className="flex items-center mt-3">
                 <span className="text-sm font-semibold text-purple-700 dark:text-purple-400 bg-purple-100 dark:bg-purple-900/30 px-2 py-1 rounded-full">
                   {((totalBudget - totalSpend) / totalBudget * 100).toFixed(1)}% available

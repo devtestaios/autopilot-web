@@ -366,14 +366,14 @@ export default function AwardWinningLandingPage() {
   };
 
   return (
-        <div className={`min-h-screen ${theme === 'dark' ? 'bg-gray-900' : 'bg-white'} overflow-hidden`}>
+        <div className="min-h-screen bg-background text-foreground overflow-hidden">
       <LandingNavbar />
       
       {/* Phase 3: Advanced Hero Section */}
       <AdvancedHero />
 
       {/* Live Metrics Section */}
-      <LiveMetrics className="bg-gray-50 dark:bg-gray-900" />
+      <LiveMetrics className="bg-secondary" />
 
       {/* Phase 3: Advanced Data Visualization */}
       <AdvancedDataViz />
