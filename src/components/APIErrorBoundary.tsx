@@ -76,8 +76,8 @@ export class APIErrorBoundary extends Component<APIErrorBoundaryProps, APIErrorB
         stack: error.stack,
         componentStack: errorInfo.componentStack,
         timestamp: new Date().toISOString(),
-        userAgent: navigator.userAgent,
-        url: window.location.href
+        userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : '',
+        url: typeof window !== 'undefined' ? window.location.href : ''
       });
     }
   };
@@ -126,7 +126,9 @@ export class APIErrorBoundary extends Component<APIErrorBoundaryProps, APIErrorB
   };
 
   private handleGoHome = () => {
-    window.location.href = '/';
+    if (typeof window !== 'undefined') {
+      window.location.href = '/';
+    }
   };
 
   componentWillUnmount() {

@@ -148,7 +148,11 @@ const DefaultErrorFallback: React.FC<DefaultErrorFallbackProps> = ({
     if (level === 'page') {
       actions.push({
         label: 'Go Home',
-        action: () => window.location.href = '/',
+        action: () => {
+          if (typeof window !== 'undefined') {
+            window.location.href = '/';
+          }
+        },
         icon: Home,
         variant: 'secondary' as const
       });

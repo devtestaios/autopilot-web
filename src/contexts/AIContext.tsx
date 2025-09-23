@@ -232,12 +232,14 @@ export function AIProvider({ children }: { children: React.ReactNode }) {
 
       if (response.ok) {
         const result = await response.json();
-        console.log('AI Action executed:', result);
+        // AI Action executed successfully
         
         // Handle navigation actions
         if (action.function === 'navigate_to_page') {
           const page = action.arguments.page;
-          window.location.href = `/${page}`;
+          if (typeof window !== 'undefined') {
+            window.location.href = `/${page}`;
+          }
         }
         
         return result;
@@ -335,7 +337,7 @@ export function AIProvider({ children }: { children: React.ReactNode }) {
         category: 'performance',
         actionable: true,
         actions: [
-          { label: 'Optimize Now', action: () => console.log('Optimizing campaign...') }
+          { label: 'Optimize Now', action: () => { /* Optimization logic here */ } }
         ],
         timestamp: new Date()
       });

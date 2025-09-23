@@ -867,7 +867,7 @@ export default function AwardWinningLandingPage() {
                 <Quote className="w-16 h-16 text-blue-500 mx-auto mb-8" />
                 
                 <blockquote className="text-2xl sm:text-3xl font-medium text-gray-900 dark:text-white mb-8 leading-relaxed">
-                  "{testimonials[currentTestimonial].content}"
+                  "{testimonials[currentTestimonial].quote}"
                 </blockquote>
                 
                 <div className="flex items-center justify-center space-x-2 mb-6">
@@ -878,11 +878,11 @@ export default function AwardWinningLandingPage() {
                 
                 <div className="flex items-center justify-center space-x-4">
                   <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-bold text-xl">
-                    {testimonials[currentTestimonial].image}
+                    {testimonials[currentTestimonial].avatar}
                   </div>
                   <div className="text-left">
                     <div className="font-bold text-gray-900 dark:text-white text-lg">
-                      {testimonials[currentTestimonial].name}
+                      {testimonials[currentTestimonial].author}
                     </div>
                     <div className="text-gray-800 dark:text-gray-300">
                       {testimonials[currentTestimonial].role} • {testimonials[currentTestimonial].company}

@@ -168,7 +168,7 @@ export default function UnifiedAIChat({
   
   // ========== PAGE DETECTION ==========
   useEffect(() => {
-    if (!pageContext) {
+    if (!pageContext && typeof window !== 'undefined') {
       const path = window.location.pathname;
       const page = path.split('/')[1] || 'dashboard';
       setCurrentPage(page);

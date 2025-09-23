@@ -176,7 +176,13 @@ export default function PerformanceAnalytics() {
           {/* Interactive Visualizations */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <InteractiveLineChart
-              data={'dailyMetrics' in performanceData ? performanceData.dailyMetrics : []}
+              data={'dailyMetrics' in performanceData 
+                ? performanceData.dailyMetrics.map(item => ({
+                    date: item.date,
+                    value: typeof item === 'object' && 'spend' in item ? item.spend : (item as any).value || 0
+                  }))
+                : []
+              }
               title="Daily Spend Trend"
               currency={true}
               showForecast={true}

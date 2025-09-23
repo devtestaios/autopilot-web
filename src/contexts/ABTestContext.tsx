@@ -116,7 +116,7 @@ export function ABTestProvider({
     }
 
     // Check page targeting
-    if (test.targetPage && !window.location.pathname.includes(test.targetPage)) {
+    if (test.targetPage && typeof window !== 'undefined' && !window.location.pathname.includes(test.targetPage)) {
       return false;
     }
 

@@ -332,7 +332,9 @@ export function AIControlProvider({ children }: { children: React.ReactNode }) {
     // Handle UI control actions
     switch (action.function) {
       case 'refresh_dashboard':
-        window.location.reload();
+        if (typeof window !== 'undefined') {
+          window.location.reload();
+        }
         return { refreshed: true };
         
       case 'show_notifications':

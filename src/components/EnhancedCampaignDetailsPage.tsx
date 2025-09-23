@@ -73,7 +73,9 @@ export default function EnhancedCampaignDetailsPage() {
     
     try {
       await deleteCampaign(campaignId);
-      window.location.href = '/campaigns';
+      if (typeof window !== 'undefined') {
+        window.location.href = '/campaigns';
+      }
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to delete campaign';
       alert(`Failed to delete campaign: ${errorMessage}`);

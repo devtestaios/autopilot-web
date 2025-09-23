@@ -248,8 +248,8 @@ export function AnalyticsProvider({
       timestamp: Date.now(),
       sessionId: session.sessionId,
       userId,
-      page: window.location.pathname,
-      userAgent: navigator.userAgent
+      page: typeof window !== 'undefined' ? window.location.pathname : '',
+      userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : ''
     };
 
     addEventToQueue(event);
@@ -264,9 +264,9 @@ export function AnalyticsProvider({
       action: 'page_view',
       label: page,
       properties: {
-        title: title || document.title,
-        url: window.location.href,
-        referrer: document.referrer
+        title: title || (typeof document !== 'undefined' ? document.title : ''),
+        url: typeof window !== 'undefined' ? window.location.href : '',
+        referrer: typeof document !== 'undefined' ? document.referrer : ''
       }
     });
 

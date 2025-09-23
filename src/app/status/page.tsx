@@ -127,7 +127,7 @@ export default function StatusPage() {
           </div>
           <div className="flex items-center gap-3">
             <button
-              onClick={() => window.location.reload()}
+              onClick={() => typeof window !== 'undefined' && window.location.reload()}
               className="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
             >
               <RefreshCw className="w-4 h-4" />
@@ -383,7 +383,7 @@ export default function StatusPage() {
           </p>
           <div className="flex flex-wrap gap-3">
             <button
-              onClick={() => window.location.reload()}
+              onClick={() => typeof window !== 'undefined' && window.location.reload()}
               className="inline-flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700 transition-colors"
             >
               <RefreshCw className="w-4 h-4" />

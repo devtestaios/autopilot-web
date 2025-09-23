@@ -17,7 +17,7 @@ import {
   Target
 } from 'lucide-react';
 import UnifiedSidebar from '@/components/UnifiedSidebar';
-import AdvancedNavigation from '@/components/AdvancedNavigation';
+import AdvancedNavigation from '@/components/ui/AdvancedNavigation';
 import { PremiumCard } from '@/components/ui/PremiumCard';
 import { PremiumButton } from '@/components/ui/PremiumButton';
 import AIControlChat from '@/components/AIControlChat';
@@ -75,7 +75,10 @@ export default function EnhancedDashboard() {
     await new Promise(resolve => setTimeout(resolve, 1000));
     setIsRefreshing(false);
     if (showToast) {
-      showToast('Dashboard data refreshed successfully');
+      showToast({
+        type: 'success',
+        title: 'Dashboard data refreshed successfully'
+      });
     }
   };
 
