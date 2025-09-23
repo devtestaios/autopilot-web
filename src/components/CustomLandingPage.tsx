@@ -376,13 +376,16 @@ export default function AwardWinningLandingPage() {
       <LiveMetrics className="bg-secondary" />
 
       {/* Phase 3: Advanced Data Visualization */}
-      <AdvancedDataViz />
+      <section id="solutions">
+        <AdvancedDataViz />
+      </section>
 
       {/* Phase 3: Scroll-Triggered Features */}
       <ScrollTriggeredFeatures />
 
       {/* Revolutionary Features Section */}
       <motion.section
+        id="features"
         ref={featuresRef}
         className="py-32 px-4 sm:px-6 lg:px-8 bg-white dark:bg-gray-800 relative"
         initial={{ opacity: 0 }}
@@ -505,7 +508,9 @@ export default function AwardWinningLandingPage() {
       />
 
       {/* Phase 3: Advanced Pricing */}
-      <AdvancedPricing />
+      <div id="pricing">
+        <AdvancedPricing />
+      </div>
       <LandingNavbar />
       <FloatingOrbs />
       
@@ -819,7 +824,7 @@ export default function AwardWinningLandingPage() {
       />
 
       {/* Testimonials Section */}
-      <section className="py-32 px-4 sm:px-6 lg:px-8 bg-white dark:bg-gray-900 relative overflow-hidden">
+      <section id="about" className="py-32 px-4 sm:px-6 lg:px-8 bg-white dark:bg-gray-900 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-900 dark:to-blue-900/10" />
         
         <div className="relative z-10 max-w-6xl mx-auto text-center">
@@ -905,7 +910,9 @@ export default function AwardWinningLandingPage() {
       </section>
 
       {/* Enhanced Final CTA Section */}
-      <EnhancedCTA className="bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600" />
+      <section id="contact">
+        <EnhancedCTA className="bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600" />
+      </section>
 
       {/* Final CTA Section */}
       <section className="py-32 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600 text-white relative overflow-hidden">
