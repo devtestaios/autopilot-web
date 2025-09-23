@@ -85,8 +85,7 @@ export default function ClientProviders({ children }: ClientProvidersProps) {
             <AuthProvider>
               <SearchProvider>
                 <UnifiedAIProvider>
-                  {/* Temporarily disabled until infinite loop fixed */}
-                  {/* <AnalyticsProvider> */}
+                  <AnalyticsProvider>
                     <ABTestProvider tests={defaultTests}>
                       <ToastProvider>
                         <PageTransition>
@@ -94,7 +93,7 @@ export default function ClientProviders({ children }: ClientProvidersProps) {
                         </PageTransition>
                       </ToastProvider>
                     </ABTestProvider>
-                  {/* </AnalyticsProvider> */}
+                  </AnalyticsProvider>
                 </UnifiedAIProvider>
               </SearchProvider>
             </AuthProvider>

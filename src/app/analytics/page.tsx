@@ -19,6 +19,20 @@ import {
 } from 'lucide-react';
 import { useAnalytics } from '@/contexts/AnalyticsContext';
 import { useABTest } from '@/contexts/ABTestContext';
+
+// Safe analytics hook that handles missing provider
+function useSafeAnalytics() {
+  try {
+    return useAnalytics();
+  } catch (error) {
+    // Return mock functions if AnalyticsProvider is not available
+    return {
+      getSessionStats: () => ({ totalSessions: 0, averageDuration: 0, bounceRate: 0 }),
+      getTotalEvents: () => 0,
+      getPerformanceStats: () => ({ averageLoadTime: 0 })
+    };
+  }
+}
 import NavigationTabs from '@/components/NavigationTabs';
 
 interface KPI {
@@ -40,7 +54,7 @@ export default function AnalyticsPage() {
   const [loading, setLoading] = useState(true);
   const [dateRange, setDateRange] = useState('7d');
   
-  const { getSessionStats, getTotalEvents, getPerformanceStats } = useAnalytics();
+  const { getSessionStats, getTotalEvents, getPerformanceStats } = useSafeAnalytics();
   const { getExperimentResults } = useABTest();
 
   useEffect(() => {

@@ -3,6 +3,20 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { useAnalytics } from './AnalyticsContext';
 
+// Safe analytics hook that handles missing provider
+function useSafeAnalytics() {
+  try {
+    return useAnalytics();
+  } catch (error) {
+    // Return mock functions if AnalyticsProvider is not available
+    return {
+      trackEvent: () => {},
+      getCurrentSessionId: () => '',
+      getSession: () => null
+    };
+  }
+}
+
 interface ABTestVariant {
   id: string;
   name: string;
@@ -65,7 +79,7 @@ export function ABTestProvider({
   tests,
   enableLocalStorage = true 
 }: ABTestProviderProps) {
-  const { trackEvent, getCurrentSessionId, getSession } = useAnalytics();
+  const { trackEvent, getCurrentSessionId, getSession } = useSafeAnalytics();
   const [assignments, setAssignments] = useState<ABTestAssignment[]>([]);
   const [forceAssignments, setForceAssignments] = useState<Record<string, string>>({});
 
