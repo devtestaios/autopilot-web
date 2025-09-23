@@ -6,7 +6,7 @@ import UnifiedSidebar from '@/components/UnifiedSidebar'
 
 export default function ReportsLoading() {
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-background">
       <NavigationTabs />
       <div className="flex">
         <UnifiedSidebar />

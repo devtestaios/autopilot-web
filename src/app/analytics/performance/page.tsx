@@ -87,8 +87,8 @@ export default function PerformanceAnalytics() {
         <CardContent className="p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-800 dark:text-gray-400">{title}</p>
-              <p className="text-2xl font-bold text-gray-900 dark:text-white mt-1">{formattedValue}</p>
+              <p className="text-sm font-medium text-muted-foreground">{title}</p>
+              <p className="text-2xl font-bold text-foreground mt-1">{formattedValue}</p>
             </div>
             <div className="h-12 w-12 bg-blue-50 dark:bg-blue-900/20 rounded-lg flex items-center justify-center">
               <Icon className="h-6 w-6 text-blue-600 dark:text-blue-400" />
@@ -103,7 +103,7 @@ export default function PerformanceAnalytics() {
             <span className={`text-sm font-medium ${isPositive ? 'text-green-600' : 'text-red-600'}`}>
               {Math.abs(change)}%
             </span>
-            <span className="text-sm text-gray-700 dark:text-gray-500 ml-1">vs last period</span>
+            <span className="text-sm text-muted-foreground ml-1">vs last period</span>
           </div>
         </CardContent>
       </Card>
@@ -111,17 +111,17 @@ export default function PerformanceAnalytics() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-background">
       <NavigationTabs />
       <div className="container mx-auto px-4 py-8">
         <div className="space-y-8">
           {/* Header */}
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+              <h1 className="text-3xl font-bold text-foreground">
                 Performance Analytics
               </h1>
-              <p className="text-gray-800 dark:text-gray-400 mt-1">
+              <p className="text-muted-foreground mt-1">
                 Detailed performance metrics and interactive visualizations
               </p>
             </div>
