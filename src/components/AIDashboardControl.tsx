@@ -22,7 +22,7 @@ import {
   Sparkles
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useAIControl } from '@/contexts/AIControlContext';
+import { useUnifiedAI } from '@/contexts/UnifiedAIContext';
 
 interface DashboardWidget {
   id: string;
@@ -83,7 +83,7 @@ export default function AIDashboardControl({ className }: AIDashboardControlProp
     executeAIAction,
     pendingActions,
     actionHistory 
-  } = useAIControl();
+  } = useUnifiedAI();
 
   const handleWidgetMove = (widgetId: string, newPosition: { x: number; y: number }) => {
     setWidgets(prev => 
@@ -344,7 +344,7 @@ function WidgetContainer({
 
 // AI-Controlled Widget Components
 function AIPerformanceWidget() {
-  const { aiStatus, actionHistory } = useAIControl();
+  const { aiStatus, actionHistory } = useUnifiedAI();
   
   return (
     <div className="space-y-4">
@@ -389,7 +389,7 @@ function AIPerformanceWidget() {
 }
 
 function AICampaignControlWidget() {
-  const { executeAIAction, autonomousMode } = useAIControl();
+  const { executeAIAction, autonomousMode } = useUnifiedAI();
   
   const handleQuickAction = (action: string) => {
     executeAIAction({
