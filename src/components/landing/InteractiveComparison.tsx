@@ -1,6 +1,6 @@
 'use client';
 
-import { motion, useInView, AnimatePresence } from 'framer-motion';
+import { motion, useInView, AnimatePresence, Variants } from 'framer-motion';
 import { useRef, useState, useEffect } from 'react';
 import { 
   Check, 
@@ -201,14 +201,14 @@ export function InteractiveComparison({ className = '' }: InteractiveComparisonP
     }
   };
 
-  const itemVariants = {
+  const itemVariants: Variants = {
     hidden: { opacity: 0, y: 30 },
     visible: { 
       opacity: 1, 
       y: 0,
       transition: { duration: 0.6, ease: "easeOut" }
     }
-  };
+  } as const;
 
   const renderCellContent = (value: boolean | string, type: 'manual' | 'competitor' | 'pulsebridge') => {
     if (typeof value === 'boolean') {

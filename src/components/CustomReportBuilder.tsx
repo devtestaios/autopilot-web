@@ -423,15 +423,20 @@ export default function CustomReportBuilder() {
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                       >
-                        <Card
+                        <div
                           className={cn(
-                            'cursor-pointer transition-all duration-200 border-2',
-                            isSelected
-                              ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
-                              : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
+                            'cursor-pointer transition-all duration-200',
                           )}
                           onClick={() => toggleMetric(metric.id)}
                         >
+                          <Card
+                            className={cn(
+                              'border-2 h-full',
+                              isSelected
+                                ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
+                                : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
+                            )}
+                          >
                           <CardContent className="p-4">
                             <div className="flex items-start justify-between mb-2">
                               <div className={cn('p-2 rounded-lg bg-gray-100 dark:bg-gray-800')}>
@@ -454,6 +459,7 @@ export default function CustomReportBuilder() {
                             </Badge>
                           </CardContent>
                         </Card>
+                        </div>
                       </motion.div>
                     );
                   })}
@@ -487,17 +493,18 @@ export default function CustomReportBuilder() {
                         key={viz.id}
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
+                        onClick={() => hasCompatibleMetrics && toggleVisualization(viz.id)}
+                        className="cursor-pointer"
                       >
                         <Card
                           className={cn(
-                            'cursor-pointer transition-all duration-200 border-2',
+                            'transition-all duration-200 border-2',
                             isSelected
                               ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
                               : hasCompatibleMetrics
                               ? 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
                               : 'border-gray-100 dark:border-gray-800 opacity-50 cursor-not-allowed'
                           )}
-                          onClick={() => hasCompatibleMetrics && toggleVisualization(viz.id)}
                         >
                           <CardContent className="p-4">
                             <div className="flex items-start justify-between mb-2">
@@ -644,14 +651,20 @@ export default function CustomReportBuilder() {
                   </h3>
                   <div className="space-y-4">
                     <label className="flex items-center space-x-2">
-                      <Switch />
+                      <Switch 
+                        checked={false} 
+                        onCheckedChange={() => {}}
+                      />
                       <span className="text-sm text-gray-700 dark:text-gray-300">
                         Make report publicly accessible
                       </span>
                     </label>
                     
                     <label className="flex items-center space-x-2">
-                      <Switch />
+                      <Switch 
+                        checked={false} 
+                        onCheckedChange={() => {}}
+                      />
                       <span className="text-sm text-gray-700 dark:text-gray-300">
                         Enable embedding in external websites
                       </span>

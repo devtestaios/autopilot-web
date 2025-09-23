@@ -10,45 +10,40 @@ const mockLeads: Lead[] = [
     email: 'john@example.com',
     source: 'website',
     created_at: new Date('2024-01-15').toISOString(),
-    status: 'new',
-    score: 9
-  } as Lead,
+    updated_at: new Date('2024-01-15').toISOString()
+  },
   {
     id: '2',
     name: 'Jane Smith',
     email: 'jane@example.com',
     source: 'social_media',
     created_at: new Date('2024-01-10').toISOString(),
-    status: 'contacted',
-    score: 6
-  } as Lead,
+    updated_at: new Date('2024-01-10').toISOString()
+  },
   {
     id: '3',
     name: 'Bob Johnson',
     email: 'bob@example.com',
     source: 'referral',
     created_at: new Date('2024-01-05').toISOString(),
-    status: 'qualified',
-    score: 3
-  } as Lead,
+    updated_at: new Date('2024-01-05').toISOString()
+  },
   {
     id: '4',
     name: 'Alice Brown',
     email: 'alice@example.com',
     source: 'website',
     created_at: new Date('2024-01-20').toISOString(),
-    status: 'new',
-    score: 0
-  } as Lead,
+    updated_at: new Date('2024-01-20').toISOString()
+  },
   {
     id: '5',
     name: 'Charlie Wilson',
     email: 'charlie@example.com',
-    source: undefined, // Test null/undefined source
+    source: null, // Test null/undefined source
     created_at: new Date('2024-01-12').toISOString(),
-    status: 'contacted',
-    score: 7
-  } as Lead
+    updated_at: new Date('2024-01-12').toISOString()
+  }
 ];
 
 describe('useLeadFilters', () => {

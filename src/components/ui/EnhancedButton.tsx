@@ -93,7 +93,7 @@ export default function EnhancedButton({
   };
 
   const springTransition = {
-    type: 'spring',
+    type: 'spring' as const,
     stiffness: 400,
     damping: 25
   };

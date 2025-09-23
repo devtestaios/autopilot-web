@@ -11,7 +11,7 @@ interface RippleProps {
   id: string;
 }
 
-interface AdvancedButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface AdvancedButtonProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'onDrag' | 'onDragStart' | 'onDragEnd' | 'onAnimationStart' | 'onAnimationEnd' | 'onAnimationIteration'> {
   variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger' | 'success' | 'gradient';
   size?: 'sm' | 'md' | 'lg' | 'xl';
   children: React.ReactNode;
@@ -220,7 +220,7 @@ export function FloatingActionButton({
   children: React.ReactNode;
   className?: string;
   size?: 'sm' | 'md' | 'lg';
-} & React.ButtonHTMLAttributes<HTMLButtonElement>) {
+} & Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'onDrag' | 'onDragStart' | 'onDragEnd' | 'onAnimationStart' | 'onAnimationEnd' | 'onAnimationIteration'>) {
   const sizes = {
     sm: 'w-10 h-10',
     md: 'w-12 h-12',
@@ -257,7 +257,7 @@ export function PulsingButton({
   children: React.ReactNode;
   pulseColor?: 'blue' | 'red' | 'green' | 'purple';
   className?: string;
-} & React.ButtonHTMLAttributes<HTMLButtonElement>) {
+} & Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'onDrag' | 'onDragStart' | 'onDragEnd' | 'onAnimationStart' | 'onAnimationEnd' | 'onAnimationIteration'>) {
   const pulseColors = {
     blue: 'shadow-blue-500/50',
     red: 'shadow-red-500/50',
@@ -306,7 +306,7 @@ export function MagneticButton({
   children: React.ReactNode;
   className?: string;
   strength?: number;
-} & React.ButtonHTMLAttributes<HTMLButtonElement>) {
+} & Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'onDrag' | 'onDragStart' | 'onDragEnd' | 'onAnimationStart' | 'onAnimationEnd' | 'onAnimationIteration'>) {
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const buttonRef = useRef<HTMLButtonElement>(null);
 
@@ -363,7 +363,7 @@ export function MorphingButton({
   currentState?: number;
   onStateChange?: (index: number) => void;
   className?: string;
-} & Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'onClick'>) {
+} & Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'onClick' | 'onDrag' | 'onDragStart' | 'onDragEnd' | 'onAnimationStart' | 'onAnimationEnd' | 'onAnimationIteration'>) {
   const [stateIndex, setStateIndex] = useState(currentState);
   const currentStateData = states[stateIndex];
 

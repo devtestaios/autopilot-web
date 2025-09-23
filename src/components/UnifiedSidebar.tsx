@@ -234,6 +234,7 @@ export default function UnifiedSidebar({
                   onSubItemClick={handleSubItemClick}
                   isItemActive={isItemActive}
                   theme={theme}
+                  pathname={pathname}
                   onClose={() => setIsMobileOpen(false)}
                 />
               </motion.div>
@@ -262,6 +263,7 @@ export default function UnifiedSidebar({
         onSubItemClick={handleSubItemClick}
         isItemActive={isItemActive}
         theme={theme}
+        pathname={pathname}
       />
 
       {/* Collapse Toggle */}
@@ -286,6 +288,7 @@ interface SidebarContentProps {
   onSubItemClick: (path: string) => void;
   isItemActive: (item: SidebarItem) => boolean;
   theme: string;
+  pathname: string;
   onClose?: () => void;
 }
 
@@ -296,6 +299,7 @@ function SidebarContent({
   onSubItemClick,
   isItemActive,
   theme,
+  pathname,
   onClose
 }: SidebarContentProps) {
   const contentVariants = {

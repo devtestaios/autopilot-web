@@ -174,7 +174,7 @@ export class APIErrorBoundary extends Component<APIErrorBoundaryProps, APIErrorB
               {retryCount < maxRetries && (
                 <PremiumButton 
                   onClick={this.handleRetry}
-                  variant="default"
+                  variant="primary"
                   size="lg"
                 >
                   <RefreshCw className="h-4 w-4 mr-2" />

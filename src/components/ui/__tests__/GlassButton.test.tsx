@@ -161,7 +161,7 @@ describe('GlassButton', () => {
   });
 
   it('handles empty children', () => {
-    render(<GlassButton></GlassButton>);
+    render(<GlassButton>{''}</GlassButton>);
     
     const button = screen.getByRole('button');
     expect(button).toBeInTheDocument();

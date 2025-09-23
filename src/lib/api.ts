@@ -96,7 +96,7 @@ async function enhancedFetch(
     clearTimeout(timeoutId);
 
     // Handle network errors with retry logic
-    if (error.name === 'AbortError') {
+    if ((error as Error).name === 'AbortError') {
       throw new APIError('Request timeout', 408, 'TIMEOUT');
     }
 
@@ -110,7 +110,7 @@ async function enhancedFetch(
     }
 
     throw new APIError(
-      `Network error: ${error.message}`,
+      `Network error: ${(error as Error).message}`,
       0,
       'NETWORK_ERROR',
       error

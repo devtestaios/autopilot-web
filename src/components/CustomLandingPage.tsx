@@ -39,7 +39,8 @@ import {
   Rocket,
   Bot,
   ChevronDown,
-  Quote
+  Quote,
+  type LucideIcon
 } from 'lucide-react';
 
 // Custom SVG Components for Advanced Animations
@@ -177,7 +178,7 @@ const AnimatedCounter = ({ target, suffix = "", duration = 2 }: { target: number
 };
 
 interface FeatureCard {
-  icon: React.ComponentType<any>;
+  icon: LucideIcon;
   title: string;
   description: string;
   gradient: string;

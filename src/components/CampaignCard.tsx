@@ -27,7 +27,7 @@ export default function CampaignCard({ campaign, onEdit, onDelete }: CampaignCar
   };
 
   const getStatusColor = (spend?: number, budget?: number) => {
-    if (!budget) return { bg: 'bg-gray-500', pulse: 'gray' as const };
+    if (!budget) return { bg: 'bg-gray-500', pulse: 'blue' as const };
     if (!spend) return { bg: 'bg-green-500', pulse: 'green' as const };
     const percentage = (spend / budget) * 100;
     if (percentage >= 90) return { bg: 'bg-red-500', pulse: 'red' as const };
@@ -99,7 +99,9 @@ export default function CampaignCard({ campaign, onEdit, onDelete }: CampaignCar
               variant="danger"
               size="sm"
               icon={<Trash2 className="w-4 h-4" />}
-            />
+            >
+              Delete
+            </EnhancedButton>
           )}
         </motion.div>
       </div>

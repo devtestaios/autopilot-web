@@ -273,7 +273,7 @@ export default function RealTimeAnalytics() {
                     cy="50%"
                     outerRadius={80}
                     dataKey="value"
-                    label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                    label={({ name, percent }) => `${name} ${((percent as number) * 100).toFixed(0)}%`}
                   >
                     {Object.keys(analytics.devices).map((device, index) => (
                       <Cell key={device} fill={deviceColors[index % deviceColors.length]} />
@@ -420,7 +420,7 @@ export default function RealTimeAnalytics() {
                         <div key={variant} className="text-sm">
                           <span className="text-gray-700 dark:text-gray-300">{variant}: </span>
                           <span className="font-medium">
-                            {Object.values(events).reduce((a: any, b: any) => a + b, 0)} events
+                            {Object.values(events as Record<string, number>).reduce((a: number, b: number) => a + b, 0)} events
                           </span>
                         </div>
                       ))}

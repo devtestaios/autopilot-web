@@ -40,7 +40,7 @@ export default function GlassCard({
     initial: { opacity: 0, y: 20, scale: 0.95 },
     animate: { opacity: 1, y: 0, scale: 1 },
     transition: { 
-      type: 'spring',
+      type: 'spring' as const,
       stiffness: 300,
       damping: 30,
       opacity: { duration: 0.2 }
@@ -48,7 +48,7 @@ export default function GlassCard({
     whileHover: hover ? { 
       scale: 1.02,
       y: -2,
-      transition: { type: 'spring', stiffness: 400, damping: 25 }
+      transition: { type: 'spring' as const, stiffness: 400, damping: 25 }
     } : undefined
   } : {};
 
@@ -100,7 +100,7 @@ export function GlassButton({
       onClick={onClick}
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
-      transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+      transition={{ type: 'spring' as const, stiffness: 400, damping: 25 }}
     >
       {children}
     </motion.button>
@@ -139,7 +139,7 @@ export function GlassModal({
         initial={{ scale: 0.9, opacity: 0, y: 20 }}
         animate={{ scale: 1, opacity: 1, y: 0 }}
         exit={{ scale: 0.9, opacity: 0, y: 20 }}
-        transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+        transition={{ type: 'spring' as const, stiffness: 300, damping: 30 }}
         className={`
           relative z-10
           ${isDark ? 'glass-card-dark' : 'glass-card'}

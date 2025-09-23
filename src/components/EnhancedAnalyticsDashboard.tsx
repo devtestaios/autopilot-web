@@ -424,7 +424,7 @@ export default function EnhancedAnalyticsDashboard() {
           </div>
         </CardHeader>
         <CardContent>
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <Tabs defaultValue={activeTab} className="w-full">
             <TabsList className="grid grid-cols-7 w-full">
               <TabsTrigger value="overview">Overview</TabsTrigger>
               <TabsTrigger value="performance">Performance</TabsTrigger>
@@ -676,17 +676,19 @@ export default function EnhancedAnalyticsDashboard() {
                 ))}
 
                 {/* Add New Report Card */}
-                <Card 
-                  className="border-dashed border-2 border-gray-300 dark:border-gray-600 cursor-pointer hover:border-blue-500 transition-colors"
+                <div 
+                  className="cursor-pointer hover:border-blue-500 transition-colors"
                   onClick={createCustomReport}
                 >
-                  <CardContent className="flex flex-col items-center justify-center h-full p-6">
-                    <Plus className="h-8 w-8 text-gray-400 mb-2" />
-                    <p className="text-sm text-gray-600 dark:text-gray-400 text-center">
-                      Create New Report
-                    </p>
-                  </CardContent>
-                </Card>
+                  <Card className="border-dashed border-2 border-gray-300 dark:border-gray-600">
+                    <CardContent className="flex flex-col items-center justify-center h-full p-6">
+                      <Plus className="h-8 w-8 text-gray-400 mb-2" />
+                      <p className="text-sm text-gray-600 dark:text-gray-400 text-center">
+                        Create New Report
+                      </p>
+                    </CardContent>
+                  </Card>
+                </div>
               </div>
             </TabsContent>
 
