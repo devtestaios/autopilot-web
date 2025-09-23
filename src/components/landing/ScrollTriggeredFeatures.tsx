@@ -181,19 +181,18 @@ export function ScrollTriggeredFeatures({ className = '' }: ScrollTriggeredFeatu
 
       {/* Fixed Header */}
       <motion.div
-        className="fixed top-0 left-0 right-0 z-30 pt-20 pb-10 bg-gradient-to-b from-white/80 to-transparent dark:from-gray-900/80 backdrop-blur-xl"
+        className="fixed top-0 left-0 right-0 z-30 pt-16 pb-4 bg-gradient-to-b from-white/80 to-transparent dark:from-gray-900/80 backdrop-blur-xl"
         style={{ y: headerY }}
       >
-        <div className="max-w-4xl mx-auto text-center px-4">
+        <div className="max-w-3xl mx-auto text-center px-4">
           <motion.h2
-            className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6"
+            className="text-lg sm:text-xl lg:text-2xl font-bold mb-2"
             animate={{
               backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
             }}
             transition={{ duration: 5, repeat: Infinity }}
           >
-            <span className="text-gray-900 dark:text-white">Advanced</span>
-            <br />
+            <span className="text-gray-900 dark:text-white">Advanced </span>
             <span 
               className={`bg-gradient-to-r ${features[activeFeature]?.gradient} bg-clip-text text-transparent`}
             >
@@ -202,9 +201,9 @@ export function ScrollTriggeredFeatures({ className = '' }: ScrollTriggeredFeatu
           </motion.h2>
           
           <motion.p
-            className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto"
+            className="text-sm text-gray-600 dark:text-gray-400 max-w-2xl mx-auto leading-tight"
             key={activeFeature}
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
