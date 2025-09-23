@@ -410,18 +410,87 @@ export default function AwardWinningLandingPage() {
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {features.map((feature, index) => (
-              <EnhancedFeatureCard
-                key={feature.title}
-                icon={feature.icon}
-                title={feature.title}
-                description={feature.description}
-                gradient={feature.gradient}
-                delay={feature.delay}
-                index={index}
-              />
-            ))}
+          {/* Layout with vertical icons on left and content on right */}
+          <div className="flex flex-col lg:flex-row gap-12 lg:gap-16">
+            
+            {/* Left Side - Vertical Icon Navigation */}
+            <div className="lg:w-1/4 flex flex-row lg:flex-col gap-6 justify-center lg:justify-start">
+              {features.map((feature, index) => (
+                <motion.div
+                  key={feature.title}
+                  className="flex flex-col items-center lg:items-start group cursor-pointer"
+                  initial={{ x: -50, opacity: 0 }}
+                  animate={featuresInView ? { x: 0, opacity: 1 } : { x: -50, opacity: 0 }}
+                  transition={{ duration: 0.8, delay: index * 0.1 }}
+                  whileHover={{ scale: 1.05 }}
+                >
+                  {/* Icon Circle */}
+                  <div className={`w-16 h-16 rounded-full ${feature.gradient} p-4 mb-3 shadow-lg group-hover:shadow-xl transition-all duration-300`}>
+                    <feature.icon className="w-full h-full text-white" />
+                  </div>
+                  
+                  {/* Icon Label (hidden on mobile) */}
+                  <div className="hidden lg:block text-center lg:text-left">
+                    <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-200 mb-1">
+                      {feature.title}
+                    </h3>
+                    <p className="text-xs text-gray-600 dark:text-gray-400 max-w-[120px]">
+                      {feature.description.substring(0, 50)}...
+                    </p>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+
+            {/* Right Side - Main Content */}
+            <div className="lg:w-3/4">
+              <motion.div
+                className="text-center lg:text-left mb-12"
+                initial={{ y: 50, opacity: 0 }}
+                animate={featuresInView ? { y: 0, opacity: 1 } : { y: 50, opacity: 0 }}
+                transition={{ duration: 0.8 }}
+              >
+                <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6">
+                  <span className="bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">
+                    Superhuman
+                  </span>
+                  <br />
+                  <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+                    Capabilities
+                  </span>
+                </h2>
+                <p className="text-xl text-gray-800 dark:text-gray-300 max-w-3xl leading-relaxed">
+                  Advanced AI features that give you an unfair advantage in the digital marketing battlefield
+                </p>
+              </motion.div>
+
+              {/* Feature Details Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {features.map((feature, index) => (
+                  <motion.div
+                    key={`detail-${feature.title}`}
+                    className="bg-gray-50 dark:bg-gray-700/50 rounded-2xl p-6 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-300"
+                    initial={{ y: 30, opacity: 0 }}
+                    animate={featuresInView ? { y: 0, opacity: 1 } : { y: 30, opacity: 0 }}
+                    transition={{ duration: 0.6, delay: 0.2 + index * 0.1 }}
+                  >
+                    <div className="flex items-start gap-4">
+                      <div className={`w-12 h-12 rounded-xl ${feature.gradient} p-3 flex-shrink-0`}>
+                        <feature.icon className="w-full h-full text-white" />
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">
+                          {feature.title}
+                        </h3>
+                        <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
+                          {feature.description}
+                        </p>
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </motion.section>
