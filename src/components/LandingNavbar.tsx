@@ -105,7 +105,7 @@ export default function LandingNavbar({ className = '' }: LandingNavbarProps) {
               onClick={toggleTheme}
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
-              className="p-2 rounded-lg text-gray-800 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+              className="p-2 rounded-lg text-foreground hover:bg-accent transition-colors"
               title="Toggle theme"
             >
               {theme === 'dark' ? (

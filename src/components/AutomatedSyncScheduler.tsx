@@ -89,9 +89,9 @@ export default function AutomatedSyncScheduler({ onSyncTrigger }: AutomatedSyncS
       case 'paused':
         return <Pause className="w-4 h-4 text-yellow-500" />;
       case 'error':
-        return <AlertTriangle className="w-4 h-4 text-red-500" />;
+        return <AlertTriangle className="w-4 h-4 text-destructive" />;
       default:
-        return <Clock className="w-4 h-4 text-gray-700 dark:text-gray-500" />;
+        return <Clock className="w-4 h-4 text-muted-foreground" />;
     }
   };
 
@@ -100,26 +100,26 @@ export default function AutomatedSyncScheduler({ onSyncTrigger }: AutomatedSyncS
       case 'success':
         return <CheckCircle className="w-4 h-4 text-green-500" />;
       case 'failed':
-        return <AlertTriangle className="w-4 h-4 text-red-500" />;
+        return <AlertTriangle className="w-4 h-4 text-destructive" />;
       case 'partial':
         return <AlertTriangle className="w-4 h-4 text-yellow-500" />;
       default:
-        return <RefreshCw className="w-4 h-4 text-gray-700 dark:text-gray-500" />;
+        return <RefreshCw className="w-4 h-4 text-muted-foreground" />;
     }
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6">
+    <div className="bg-card rounded-lg shadow-md p-6 border border-border">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
-          <Clock className="w-6 h-6 text-blue-600" />
+          <Clock className="w-6 h-6 text-primary" />
           <h3 className="text-lg font-semibold">Automated Sync Scheduler</h3>
         </div>
         <div className="flex items-center gap-2">
           <button
             onClick={() => setIsCreatingSchedule(true)}
-            className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors text-sm"
+            className="bg-primary text-primary-foreground px-4 py-2 rounded-md hover:bg-primary/90 transition-colors text-sm"
           >
             + New Schedule
           </button>
@@ -127,13 +127,13 @@ export default function AutomatedSyncScheduler({ onSyncTrigger }: AutomatedSyncS
       </div>
 
       {/* Tab Navigation */}
-      <div className="flex space-x-1 mb-6 bg-gray-100 rounded-lg p-1">
+      <div className="flex space-x-1 mb-6 bg-secondary rounded-lg p-1">
         <button
           onClick={() => setSelectedTab('schedules')}
           className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
             selectedTab === 'schedules'
-              ? 'bg-white text-blue-600 shadow-sm'
-              : 'text-gray-600 hover:text-gray-900'
+              ? 'bg-background text-primary shadow-sm'
+              : 'text-muted-foreground hover:text-foreground'
           }`}
         >
           <Calendar className="w-4 h-4 inline mr-2" />
@@ -143,8 +143,8 @@ export default function AutomatedSyncScheduler({ onSyncTrigger }: AutomatedSyncS
           onClick={() => setSelectedTab('history')}
           className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
             selectedTab === 'history'
-              ? 'bg-white text-blue-600 shadow-sm'
-              : 'text-gray-600 hover:text-gray-900'
+              ? 'bg-background text-primary shadow-sm'
+              : 'text-muted-foreground hover:text-foreground'
           }`}
         >
           <History className="w-4 h-4 inline mr-2" />
@@ -154,8 +154,8 @@ export default function AutomatedSyncScheduler({ onSyncTrigger }: AutomatedSyncS
           onClick={() => setSelectedTab('settings')}
           className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
             selectedTab === 'settings'
-              ? 'bg-white text-blue-600 shadow-sm'
-              : 'text-gray-600 hover:text-gray-900'
+              ? 'bg-background text-primary shadow-sm'
+              : 'text-muted-foreground hover:text-foreground'
           }`}
         >
           <Settings className="w-4 h-4 inline mr-2" />

@@ -387,7 +387,7 @@ export default function AwardWinningLandingPage() {
       <motion.section
         id="features"
         ref={featuresRef}
-        className="py-32 px-4 sm:px-6 lg:px-8 bg-white dark:bg-gray-800 relative"
+        className="py-32 px-4 sm:px-6 lg:px-8 bg-background relative"
         initial={{ opacity: 0 }}
         animate={featuresInView ? { opacity: 1 } : { opacity: 0 }}
         transition={{ duration: 1 }}
@@ -775,7 +775,7 @@ export default function AwardWinningLandingPage() {
       {/* Revolutionary Features Section */}
       <motion.section
         ref={featuresRef}
-        className="py-32 px-4 sm:px-6 lg:px-8 bg-white dark:bg-gray-800 relative"
+        className="py-32 px-4 sm:px-6 lg:px-8 bg-background relative"
         initial={{ opacity: 0 }}
         animate={featuresInView ? { opacity: 1 } : { opacity: 0 }}
         transition={{ duration: 1 }}
@@ -824,7 +824,7 @@ export default function AwardWinningLandingPage() {
       />
 
       {/* Testimonials Section */}
-      <section id="about" className="py-32 px-4 sm:px-6 lg:px-8 bg-white dark:bg-gray-900 relative overflow-hidden">
+      <section id="about" className="py-32 px-4 sm:px-6 lg:px-8 bg-background relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-900 dark:to-blue-900/10" />
         
         <div className="relative z-10 max-w-6xl mx-auto text-center">
