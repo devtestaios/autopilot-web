@@ -1,9 +1,9 @@
-import AwardWinningLandingPage from '@/components/CustomLandingPage';
+import CleanLandingPage from '@/components/CleanLandingPage';
 
 export default function HomePage() {
   return (
     <main>
-      <AwardWinningLandingPage />
+      <CleanLandingPage />
     </main>
   );
 }
