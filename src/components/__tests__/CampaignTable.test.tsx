@@ -289,6 +289,19 @@ describe('CampaignTable', () => {
       expect(screen.getByText('Cancel')).toBeInTheDocument();
     });
 
+    it('should handle bulk action with no selected campaigns', () => {
+      render(<CampaignTable campaigns={mockCampaigns} {...mockProps} />);
+      
+      // Try to trigger bulk action without selecting any campaigns
+      // This tests the early return when selectedCampaigns.length === 0
+      // We can't directly click the bulk action buttons because they're only shown when campaigns are selected
+      // But we can test the function behavior by checking that no selection state exists
+      expect(screen.queryByText('Resume')).not.toBeInTheDocument();
+      expect(screen.queryByText('Pause')).not.toBeInTheDocument();
+      expect(screen.queryByText('Delete')).not.toBeInTheDocument();
+      expect(mockProps.onBulkAction).not.toHaveBeenCalled();
+    });
+
     it('should call onBulkAction with resume action', async () => {
       const user = userEvent.setup();
       render(<CampaignTable campaigns={mockCampaigns} {...mockProps} />);
@@ -330,6 +343,27 @@ describe('CampaignTable', () => {
       
       expect(window.confirm).toHaveBeenCalledWith('Are you sure you want to delete 1 campaign(s)?');
       expect(mockProps.onBulkAction).toHaveBeenCalledWith('delete', ['1']);
+    });
+
+    it('should cancel delete action when user rejects confirmation', async () => {
+      const user = userEvent.setup();
+      // Mock window.confirm to return false (user cancels)
+      window.confirm = jest.fn(() => false);
+      
+      render(<CampaignTable campaigns={mockCampaigns} {...mockProps} />);
+      
+      const checkboxes = screen.getAllByRole('checkbox');
+      await user.click(checkboxes[1]);
+      
+      const deleteButton = screen.getByText('Delete');
+      await user.click(deleteButton);
+      
+      expect(window.confirm).toHaveBeenCalledWith('Are you sure you want to delete 1 campaign(s)?');
+      // onBulkAction should NOT be called when user cancels
+      expect(mockProps.onBulkAction).not.toHaveBeenCalled();
+      
+      // Selection should remain active
+      expect(screen.getByText('1 campaign(s) selected')).toBeInTheDocument();
     });
 
     it('should cancel bulk actions when cancel button is clicked', async () => {

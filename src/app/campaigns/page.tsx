@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import type { Campaign } from '@/types';
 import { fetchCampaigns, deleteCampaign } from '@/lib/api';
 import CampaignTable from '@/components/CampaignTable';
@@ -14,6 +15,7 @@ import SmartCampaignOptimizer from '@/components/SmartCampaignOptimizer';
 import { Plus, Bot } from 'lucide-react';
 
 export default function CampaignsPage() {
+  const router = useRouter();
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -44,12 +46,9 @@ export default function CampaignsPage() {
     loadCampaigns();
   }, []);
 
-  const handleEditCampaign = (campaign: Campaign) => {
-    // Navigate to edit page
-    window.location.href = `/campaigns/${campaign.id}/edit`;
-  };
-
-  const handleDeleteCampaign = async (campaignId: string) => {
+  const handleEditCampaign = (campaign: any) => {
+    router.push(`/campaigns/${campaign.id}/edit`);
+  };  const handleDeleteCampaign = async (campaignId: string) => {
     if (!confirm('Are you sure you want to delete this campaign?')) return;
     
     try {

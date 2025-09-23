@@ -172,6 +172,8 @@ export function AnalyticsProvider({
   };
 
   const extractUtmParams = (): Record<string, string> => {
+    if (typeof window === 'undefined') return {};
+    
     const params = new URLSearchParams(window.location.search);
     const utmParams: Record<string, string> = {};
     
@@ -239,7 +241,7 @@ export function AnalyticsProvider({
   };
 
   const trackEvent = (eventData: Omit<AnalyticsEvent, 'timestamp' | 'sessionId' | 'page' | 'userAgent'>) => {
-    if (!session) return;
+    if (!session || typeof window === 'undefined') return;
 
     const event: AnalyticsEvent = {
       ...eventData,
@@ -254,6 +256,8 @@ export function AnalyticsProvider({
   };
 
   const trackPageView = (page: string, title?: string) => {
+    if (typeof window === 'undefined') return;
+    
     trackEvent({
       event: 'page_view',
       category: 'navigation',
@@ -331,7 +335,7 @@ export function AnalyticsProvider({
 
   // Track page views automatically
   useEffect(() => {
-    if (session) {
+    if (session && typeof window !== 'undefined') {
       trackPageView(window.location.pathname);
     }
   }, [session]);

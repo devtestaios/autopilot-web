@@ -39,6 +39,7 @@ export default function LandingNavbar({ className = '' }: LandingNavbarProps) {
 
   return (
     <motion.nav 
+      data-testid="main-navigation"
       className={`fixed top-0 left-0 right-0 z-50 bg-white dark:bg-black backdrop-blur-md border-b border-gray-200/20 dark:border-gray-700/30 text-gray-900 dark:text-gray-300 ${className}`}
       initial={{ y: -100 }}
       animate={{ y: 0 }}

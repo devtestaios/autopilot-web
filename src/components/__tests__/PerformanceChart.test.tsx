@@ -142,7 +142,7 @@ describe('PerformanceChart', () => {
       render(<PerformanceChart data={[]} metric="spend" />);
       
       const emptyMessage = screen.getByText('No performance data available');
-      expect(emptyMessage).toHaveClass('h-64', 'flex', 'items-center', 'justify-center', 'text-gray-500');
+      expect(emptyMessage).toHaveClass('h-64', 'flex', 'items-center', 'justify-center', 'text-gray-700');
     });
   });
 
@@ -320,7 +320,7 @@ describe('CampaignComparisonChart', () => {
       render(<CampaignComparisonChart campaigns={[]} />);
       
       const emptyMessage = screen.getByText('No campaign data available');
-      expect(emptyMessage).toHaveClass('h-64', 'flex', 'items-center', 'justify-center', 'text-gray-500');
+      expect(emptyMessage).toHaveClass('h-64', 'flex', 'items-center', 'justify-center', 'text-gray-700');
     });
   });
 

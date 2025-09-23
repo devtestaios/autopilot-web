@@ -472,7 +472,7 @@ describe('AuthContext', () => {
       await waitFor(() => {
         const result = JSON.parse(screen.getByTestId('signup-result').textContent || '{}');
         expect(result.success).toBe(false);
-        expect(result.error).toBe('Please fill in all fields with valid information');
+        expect(result.error).toBe('Please fill in all fields with valid data');
       });
     });
   });

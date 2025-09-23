@@ -160,7 +160,7 @@ export default function DashboardPage() {
               className="text-center"
             >
               {/* Placeholder chart for testing */}
-              <div role="img" aria-label="Dashboard Chart" className="w-full h-48 bg-gray-200 dark:bg-gray-800 rounded-lg mb-6 flex items-center justify-center">
+              <div data-testid="dashboard-chart" role="img" aria-label="Dashboard Chart" className="w-full h-48 bg-gray-200 dark:bg-gray-800 rounded-lg mb-6 flex items-center justify-center">
                 <span className="text-gray-500 dark:text-gray-400">Dashboard Chart</span>
               </div>
               

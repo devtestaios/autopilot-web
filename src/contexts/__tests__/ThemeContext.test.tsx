@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, act, waitFor } from '@testing-library/react';
+import { render, screen, act, waitFor, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { ThemeProvider, useTheme } from '@/contexts/ThemeContext';
 
@@ -521,6 +521,31 @@ describe('ThemeContext', () => {
       // Should still provide a working theme context with default light theme
       const themeElement = screen.getByTestId('current-theme');
       expect(themeElement).toHaveTextContent('light');
+    });
+
+    it('should handle localStorage save errors gracefully', () => {
+      const consoleSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+      mockLocalStorage.setItem.mockImplementation(() => {
+        throw new Error('localStorage save error');
+      });
+      
+      render(
+        <ThemeProvider>
+          <TestComponent />
+        </ThemeProvider>
+      );
+
+      const toggleButton = screen.getByTestId('toggle-theme');
+      
+      // Toggle theme should work even if save fails
+      act(() => {
+        fireEvent.click(toggleButton);
+      });
+
+      expect(screen.getByTestId('current-theme')).toHaveTextContent('dark');
+      expect(consoleSpy).toHaveBeenCalledWith('Failed to save theme preference:', expect.any(Error));
+      
+      consoleSpy.mockRestore();
     });
 
     it('should handle missing matchMedia gracefully', () => {

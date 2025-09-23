@@ -20,7 +20,12 @@ export default function DashboardStats({ campaigns, loading }: DashboardStatsPro
   const [healthStatus, setHealthStatus] = useState<HealthStatus | null>(null);
 
   useEffect(() => {
-    checkApiHealth().then(setHealthStatus);
+    checkApiHealth()
+      .then(setHealthStatus)
+      .catch(() => {
+        // Ignore errors, healthStatus remains null
+        setHealthStatus(null);
+      });
   }, []);
 
   if (loading) {

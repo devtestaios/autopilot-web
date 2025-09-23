@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent } from '../../test-utils';
 import type { Campaign } from '@/types';
 import CampaignCard from '../CampaignCard';
 
@@ -39,8 +39,15 @@ describe('CampaignCard', () => {
     const mockOnDelete = jest.fn()
     render(<CampaignCard campaign={mockCampaign} onDelete={mockOnDelete} />)
     
-    const deleteButton = screen.getByText('Delete')
-    fireEvent.click(deleteButton)
+    // Find delete button by its red styling (the only red button should be delete)
+    const buttons = screen.getAllByRole('button')
+    const deleteButton = buttons.find(btn => 
+      btn.className.includes('red-500') || 
+      btn.className.includes('from-red-500')
+    )
+    
+    expect(deleteButton).toBeTruthy()
+    fireEvent.click(deleteButton!)
     
     expect(mockOnDelete).toHaveBeenCalledWith('1')
   })

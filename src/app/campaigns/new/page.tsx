@@ -58,6 +58,7 @@ export default function NewCampaignPage() {
 
         {/* Enhanced Campaign Form */}
         <EnhancedCampaignForm
+          data-testid="campaign-form"
           onSubmit={handleSubmit}
           onCancel={handleCancel}
           loading={loading}

@@ -136,12 +136,15 @@ export default function AdvancedNavigation({ className, sidebarCollapsed = false
   }, []);
 
   return (
-    <nav className={cn(
-      'bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl border-b border-gray-200/50 dark:border-gray-700/50',
-      'sticky top-0 z-50 transition-all duration-300',
-      'pointer-events-auto',
-      className
-    )}>
+    <nav 
+      data-testid="dashboard-navigation"
+      className={cn(
+        'bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl border-b border-gray-200/50 dark:border-gray-700/50',
+        'sticky top-0 z-50 transition-all duration-300',
+        'pointer-events-auto',
+        className
+      )}
+    >
       <div className={cn(
         'mx-auto px-4 sm:px-6 lg:px-8 transition-all duration-300',
         sidebarCollapsed ? 'max-w-none lg:ml-14' : 'max-w-7xl lg:ml-0'

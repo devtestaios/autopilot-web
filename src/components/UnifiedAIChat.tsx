@@ -716,7 +716,10 @@ function generateActions(input: string, page: string): UnifiedChatAction[] {
       label: 'View Campaigns',
       icon: <Target className="w-4 h-4" />,
       variant: 'primary',
-      action: () => window.location.href = '/campaigns'
+      action: () => {
+        const router = typeof window !== 'undefined' ? require('next/navigation').useRouter() : null;
+        if (router) router.push('/campaigns');
+      }
     });
   }
   
@@ -728,7 +731,10 @@ function generateActions(input: string, page: string): UnifiedChatAction[] {
       label: 'View Analytics',
       icon: <BarChart3 className="w-4 h-4" />,
       variant: 'primary',
-      action: () => window.location.href = '/analytics'
+      action: () => {
+        const router = typeof window !== 'undefined' ? require('next/navigation').useRouter() : null;
+        if (router) router.push('/analytics');
+      }
     });
   }
   

@@ -171,4 +171,91 @@ describe('useGlobalSearch', () => {
 
     expect(result.current.isSearchModalOpen).toBe(false);
   });
+
+  describe('Keyboard Shortcuts', () => {
+    it('opens search modal with Cmd+K on Mac', () => {
+      const { result } = renderHook(() => useGlobalSearch());
+
+      expect(result.current.isSearchModalOpen).toBe(false);
+
+      // Simulate Cmd+K keydown event
+      const event = new KeyboardEvent('keydown', {
+        key: 'k',
+        metaKey: true,
+        ctrlKey: false,
+        bubbles: true
+      });
+
+      Object.defineProperty(event, 'preventDefault', {
+        value: jest.fn(),
+        writable: true
+      });
+
+      act(() => {
+        document.dispatchEvent(event);
+      });
+
+      expect(result.current.isSearchModalOpen).toBe(true);
+      expect(event.preventDefault).toHaveBeenCalled();
+    });
+
+    it('opens search modal with Ctrl+K on Windows/Linux', () => {
+      const { result } = renderHook(() => useGlobalSearch());
+
+      expect(result.current.isSearchModalOpen).toBe(false);
+
+      // Simulate Ctrl+K keydown event
+      const event = new KeyboardEvent('keydown', {
+        key: 'k',
+        metaKey: false,
+        ctrlKey: true,
+        bubbles: true
+      });
+
+      Object.defineProperty(event, 'preventDefault', {
+        value: jest.fn(),
+        writable: true
+      });
+
+      act(() => {
+        document.dispatchEvent(event);
+      });
+
+      expect(result.current.isSearchModalOpen).toBe(true);
+      expect(event.preventDefault).toHaveBeenCalled();
+    });
+
+    it('ignores other key combinations', () => {
+      const { result } = renderHook(() => useGlobalSearch());
+
+      expect(result.current.isSearchModalOpen).toBe(false);
+
+      // Simulate other key combinations that should be ignored
+      const events = [
+        new KeyboardEvent('keydown', { key: 'j', metaKey: true }),
+        new KeyboardEvent('keydown', { key: 'k', shiftKey: true }),
+        new KeyboardEvent('keydown', { key: 'k' }), // no modifier
+      ];
+
+      events.forEach(event => {
+        act(() => {
+          document.dispatchEvent(event);
+        });
+      });
+
+      expect(result.current.isSearchModalOpen).toBe(false);
+    });
+
+    it('cleans up event listener on unmount', () => {
+      const removeEventListenerSpy = jest.spyOn(document, 'removeEventListener');
+      
+      const { unmount } = renderHook(() => useGlobalSearch());
+      
+      unmount();
+      
+      expect(removeEventListenerSpy).toHaveBeenCalledWith('keydown', expect.any(Function));
+      
+      removeEventListenerSpy.mockRestore();
+    });
+  });
 });

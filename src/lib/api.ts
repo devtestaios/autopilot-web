@@ -4,8 +4,170 @@ import type {
   PerformanceSnapshot, 
   CampaignFormData
 } from '@/types';
+import { environmentManager } from './environment';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'https://autopilot-api-1.onrender.com';
+
+// Enhanced API Error Class
+export class APIError extends Error {
+  constructor(
+    message: string,
+    public status?: number,
+    public code?: string,
+    public details?: any
+  ) {
+    super(message);
+    this.name = 'APIError';
+  }
+}
+
+// API Configuration
+const API_CONFIG = {
+  timeout: 30000, // 30 seconds
+  retries: 3,
+  retryDelay: 1000, // 1 second
+  rateLimit: {
+    maxRequests: 100,
+    windowMs: 60000 // 1 minute
+  }
+};
+
+// Rate limiting store
+const rateLimitStore = new Map<string, { count: number; resetTime: number }>();
+
+// Rate limiting check
+function checkRateLimit(key: string): boolean {
+  const now = Date.now();
+  const record = rateLimitStore.get(key);
+  
+  if (!record || now > record.resetTime) {
+    rateLimitStore.set(key, { count: 1, resetTime: now + API_CONFIG.rateLimit.windowMs });
+    return true;
+  }
+  
+  if (record.count >= API_CONFIG.rateLimit.maxRequests) {
+    return false;
+  }
+  
+  record.count++;
+  return true;
+}
+
+// Enhanced fetch with retry logic and timeout
+async function enhancedFetch(
+  url: string, 
+  options: RequestInit = {},
+  retryCount = 0
+): Promise<Response> {
+  // Check rate limiting
+  if (!checkRateLimit(url)) {
+    throw new APIError('Rate limit exceeded', 429, 'RATE_LIMIT_EXCEEDED');
+  }
+
+  // Add timeout
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), API_CONFIG.timeout);
+
+  try {
+    const response = await fetch(url, {
+      ...options,
+      signal: controller.signal,
+      headers: {
+        'Content-Type': 'application/json',
+        'Cache-Control': 'no-store', // Always fetch fresh data for marketing metrics
+        ...options.headers,
+      },
+    });
+
+    clearTimeout(timeoutId);
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new APIError(
+        errorData.message || `HTTP ${response.status}: ${response.statusText}`,
+        response.status,
+        errorData.code,
+        errorData
+      );
+    }
+
+    return response;
+  } catch (error) {
+    clearTimeout(timeoutId);
+
+    // Handle network errors with retry logic
+    if (error.name === 'AbortError') {
+      throw new APIError('Request timeout', 408, 'TIMEOUT');
+    }
+
+    if (retryCount < API_CONFIG.retries && isRetryableError(error)) {
+      await delay(API_CONFIG.retryDelay * Math.pow(2, retryCount)); // Exponential backoff
+      return enhancedFetch(url, options, retryCount + 1);
+    }
+
+    if (error instanceof APIError) {
+      throw error;
+    }
+
+    throw new APIError(
+      `Network error: ${error.message}`,
+      0,
+      'NETWORK_ERROR',
+      error
+    );
+  }
+}
+
+// Check if error is retryable
+function isRetryableError(error: any): boolean {
+  return (
+    error.name === 'TypeError' || // Network errors
+    (error instanceof APIError && error.status && error.status >= 500) // Server errors
+  );
+}
+
+// Utility delay function
+function delay(ms: number): Promise<void> {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+// Health check function
+export async function checkAPIHealth(): Promise<{
+  status: 'healthy' | 'degraded' | 'down';
+  responseTime: number;
+  features: {
+    campaigns: boolean;
+    analytics: boolean;
+    ai: boolean;
+  };
+}> {
+  const startTime = Date.now();
+  
+  try {
+    const response = await enhancedFetch(`${API_BASE}/health`);
+    const data = await response.json();
+    
+    return {
+      status: 'healthy',
+      responseTime: Date.now() - startTime,
+      features: {
+        campaigns: true,
+        analytics: true,
+        ai: data.ai_status === 'operational'
+      }
+    };
+  } catch (error) {
+    return {
+      status: 'down',
+      responseTime: Date.now() - startTime,
+      features: {
+        campaigns: false,
+        analytics: false,
+        ai: false
+      }
+    };
+  }
+}
 
 // Mock data for testing and development
 const MOCK_CAMPAIGNS = [
@@ -56,18 +218,7 @@ const MOCK_DASHBOARD_DATA = {
   totalLeads: 2847
 };
 
-// Enhanced error handling for API calls
-export class APIError extends Error {
-  constructor(
-    message: string,
-    public status?: number,
-    public code?: string
-  ) {
-    super(message);
-    this.name = 'APIError';
-  }
-}
-
+// Legacy helper function for backward compatibility
 async function handleResponse<T>(response: Response): Promise<T> {
   if (!response.ok) {
     let errorMessage = `HTTP ${response.status}: ${response.statusText}`;
@@ -100,26 +251,21 @@ export type PerformanceInput = {
   metrics: Record<string, unknown>;
 };
 
-// Campaign API Functions
+// Campaign API Functions with enhanced error handling
 export async function fetchCampaigns(): Promise<Campaign[]> {
   try {
-    const response = await fetch(`${API_BASE}/campaigns`, {
-      cache: 'no-store'
-    });
-    return await handleResponse<Campaign[]>(response);
+    const response = await enhancedFetch(`${API_BASE}/campaigns`);
+    return await response.json();
   } catch (error) {
-    // Fallback to mock data for testing/CORS issues
-    console.warn('API fetch failed, using mock data:', error);
+    console.warn('Campaign API fetch failed, using mock data:', error);
     return MOCK_CAMPAIGNS as Campaign[];
   }
 }
 
 export async function fetchCampaign(id: string): Promise<Campaign> {
   try {
-    const response = await fetch(`${API_BASE}/campaigns/${id}`, {
-      cache: 'no-store'
-    });
-    return await handleResponse<Campaign>(response);
+    const response = await enhancedFetch(`${API_BASE}/campaigns/${id}`);
+    return await response.json();
   } catch (error) {
     if (error instanceof APIError) {
       throw error;
@@ -129,97 +275,78 @@ export async function fetchCampaign(id: string): Promise<Campaign> {
 }
 
 export async function createCampaign(campaign: CampaignInput): Promise<Campaign> {
-  const response = await fetch(`${API_BASE}/campaigns`, {
+  const response = await enhancedFetch(`${API_BASE}/campaigns`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(campaign)
   });
-  if (!response.ok) {
-    const error = await response.json().catch(() => ({}));
-    throw new Error(error.detail || `Failed to create campaign: ${response.status}`);
-  }
-  return response.json();
+  return await response.json();
 }
 
 export async function updateCampaign(id: string, campaign: CampaignInput): Promise<Campaign> {
-  const response = await fetch(`${API_BASE}/campaigns/${id}`, {
+  const response = await enhancedFetch(`${API_BASE}/campaigns/${id}`, {
     method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(campaign)
   });
-  if (!response.ok) {
-    const error = await response.json().catch(() => ({}));
-    throw new Error(error.detail || `Failed to update campaign: ${response.status}`);
-  }
-  return response.json();
+  return await response.json();
 }
 
 export async function deleteCampaign(id: string): Promise<void> {
-  const response = await fetch(`${API_BASE}/campaigns/${id}`, {
+  await enhancedFetch(`${API_BASE}/campaigns/${id}`, {
     method: 'DELETE'
   });
-  if (!response.ok) {
-    const error = await response.json().catch(() => ({}));
-    throw new Error(error.detail || `Failed to delete campaign: ${response.status}`);
-  }
 }
 
-// Performance API Functions
+// Performance API Functions with enhanced error handling
 export async function fetchCampaignPerformance(campaignId: string, limit = 100): Promise<PerformanceSnapshot[]> {
-  const response = await fetch(`${API_BASE}/campaigns/${campaignId}/performance?limit=${limit}`, {
-    cache: 'no-store'
-  });
-  if (!response.ok) {
-    throw new Error(`Failed to fetch performance data: ${response.status}`);
-  }
-  return response.json();
+  const response = await enhancedFetch(`${API_BASE}/campaigns/${campaignId}/performance?limit=${limit}`);
+  return await response.json();
 }
 
 export async function addPerformanceSnapshot(campaignId: string, performance: PerformanceInput): Promise<PerformanceSnapshot> {
-  const response = await fetch(`${API_BASE}/campaigns/${campaignId}/performance`, {
+  const response = await enhancedFetch(`${API_BASE}/campaigns/${campaignId}/performance`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(performance)
   });
-  if (!response.ok) {
-    const error = await response.json().catch(() => ({}));
-    throw new Error(error.detail || `Failed to add performance data: ${response.status}`);
-  }
-  return response.json();
+  return await response.json();
 }
 
-// Dashboard API Functions
+// Dashboard API Functions with enhanced error handling and fallbacks
 export async function fetchDashboardOverview() {
-  const response = await fetch(`${API_BASE}/dashboard/overview`, {
-    cache: 'no-store'
-  });
-  if (!response.ok) {
-    throw new Error(`Failed to fetch dashboard overview: ${response.status}`);
+  try {
+    const response = await enhancedFetch(`${API_BASE}/dashboard/overview`);
+    return await response.json();
+  } catch (error) {
+    console.warn('Dashboard API fetch failed, using mock data:', error);
+    return MOCK_DASHBOARD_DATA;
   }
-  return response.json();
 }
 
 export async function fetchKPISummary() {
-  const response = await fetch(`${API_BASE}/kpi/summary`, {
-    cache: 'no-store'
-  });
-  if (!response.ok) {
-    throw new Error(`Failed to fetch KPI summary: ${response.status}`);
+  try {
+    const response = await enhancedFetch(`${API_BASE}/kpi/summary`);
+    return await response.json();
+  } catch (error) {
+    console.warn('KPI API fetch failed, using mock data:', error);
+    return MOCK_DASHBOARD_DATA;
   }
-  return response.json();
 }
 
 export async function fetchDailyKPIs(days = 30) {
-  const response = await fetch(`${API_BASE}/kpi/daily?days=${days}`, {
-    cache: 'no-store'
-  });
-  if (!response.ok) {
-    throw new Error(`Failed to fetch daily KPIs: ${response.status}`);
+  try {
+    const response = await enhancedFetch(`${API_BASE}/kpi/daily?days=${days}`);
+    return await response.json();
+  } catch (error) {
+    console.warn('Daily KPI API fetch failed, using mock data:', error);
+    return Array.from({ length: days }, (_, i) => ({
+      date: new Date(Date.now() - i * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+      revenue: Math.floor(Math.random() * 10000),
+      conversions: Math.floor(Math.random() * 100),
+      spend: Math.floor(Math.random() * 5000)
+    }));
   }
-  return response.json();
 }
 
-// Analytics API Functions
+// Analytics API Functions with enhanced error handling
 export async function fetchAnalyticsPerformance(dateRange?: { start: string; end: string }) {
   const params = new URLSearchParams();
   if (dateRange) {
@@ -227,13 +354,8 @@ export async function fetchAnalyticsPerformance(dateRange?: { start: string; end
     params.append('end_date', dateRange.end);
   }
   
-  const response = await fetch(`${API_BASE}/analytics/performance?${params}`, {
-    cache: 'no-store'
-  });
-  if (!response.ok) {
-    throw new Error(`Failed to fetch analytics performance: ${response.status}`);
-  }
-  return response.json();
+  const response = await enhancedFetch(`${API_BASE}/analytics/performance?${params}`);
+  return await response.json();
 }
 
 export async function fetchROIAnalytics(dateRange?: { start: string; end: string }) {
@@ -243,23 +365,13 @@ export async function fetchROIAnalytics(dateRange?: { start: string; end: string
     params.append('end_date', dateRange.end);
   }
   
-  const response = await fetch(`${API_BASE}/analytics/roi?${params}`, {
-    cache: 'no-store'
-  });
-  if (!response.ok) {
-    throw new Error(`Failed to fetch ROI analytics: ${response.status}`);
-  }
-  return response.json();
+  const response = await enhancedFetch(`${API_BASE}/analytics/roi?${params}`);
+  return await response.json();
 }
 
 export async function fetchPlatformBreakdown() {
-  const response = await fetch(`${API_BASE}/analytics/platform-breakdown`, {
-    cache: 'no-store'
-  });
-  if (!response.ok) {
-    throw new Error(`Failed to fetch platform breakdown: ${response.status}`);
-  }
-  return response.json();
+  const response = await enhancedFetch(`${API_BASE}/analytics/platform-breakdown`);
+  return await response.json();
 }
 
 // Health Check Functions

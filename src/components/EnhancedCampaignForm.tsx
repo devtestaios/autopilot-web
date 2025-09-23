@@ -13,6 +13,7 @@ interface EnhancedCampaignFormProps {
   onSubmit: (campaign: CampaignFormData) => void;
   onCancel: () => void;
   loading?: boolean;
+  'data-testid'?: string;
 }
 
 interface TargetingOptions {
@@ -32,7 +33,7 @@ interface ValidationError {
   message: string;
 }
 
-export default function EnhancedCampaignForm({ campaign, onSubmit, onCancel, loading }: EnhancedCampaignFormProps) {
+export default function EnhancedCampaignForm({ campaign, onSubmit, onCancel, loading, 'data-testid': dataTestId }: EnhancedCampaignFormProps) {
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState<CampaignFormData>({
     name: campaign?.name || '',
@@ -662,7 +663,7 @@ export default function EnhancedCampaignForm({ campaign, onSubmit, onCancel, loa
 
       {/* Step Content */}
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-8">
-        <form onSubmit={handleSubmit}>
+        <form data-testid={dataTestId} onSubmit={handleSubmit}>
           {renderStepContent()}
 
           {/* Navigation Buttons */}

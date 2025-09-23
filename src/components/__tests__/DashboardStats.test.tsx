@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '../../test-utils';
 import DashboardStats from '../DashboardStats';
 import { checkApiHealth } from '@/lib/api';
 import type { Campaign } from '@/types';
@@ -64,7 +64,7 @@ describe('DashboardStats', () => {
       render(<DashboardStats campaigns={[]} loading={true} />);
       
       // Should render 4 skeleton cards
-      const skeletonCards = screen.getAllByRole('generic').filter(el => 
+      const skeletonCards = screen.getAllByRole('generic').filter((el: HTMLElement) => 
         el.className.includes('animate-pulse')
       );
       expect(skeletonCards).toHaveLength(4);
@@ -96,7 +96,9 @@ describe('DashboardStats', () => {
       // Total budget: 1000 + 2000 + 1500 = 4500
       await waitFor(() => {
         expect(screen.getByText('Total Budget')).toBeInTheDocument();
-        expect(screen.getByText('4,500')).toBeInTheDocument();
+        // Find the Total Budget card specifically and check it contains 4,500
+        const budgetCard = screen.getByText('Total Budget').closest('div');
+        expect(budgetCard).toHaveTextContent('4,500');
       });
     });
 
@@ -154,15 +156,15 @@ describe('DashboardStats', () => {
       render(<DashboardStats campaigns={mockCampaigns} />);
       
       await waitFor(() => {
-        // Google Ads: 2 campaigns
-        expect(screen.getByText('Google Ads')).toBeInTheDocument();
+        // Google Ads: 2 campaigns (displayed as "google ads" due to CSS capitalize)
+        expect(screen.getByText('google ads')).toBeInTheDocument();
         
         // Meta: 1 campaign  
-        expect(screen.getByText('Meta')).toBeInTheDocument();
+        expect(screen.getByText('meta')).toBeInTheDocument();
       });
 
-      // Check the counts are displayed
-      const platformSection = screen.getByText('Campaigns by Platform').closest('div');
+      // Check the platform distribution section is displayed
+      const platformSection = screen.getByText('Platform Distribution').closest('div');
       expect(platformSection).toBeInTheDocument();
     });
 
@@ -185,7 +187,7 @@ describe('DashboardStats', () => {
       render(<DashboardStats campaigns={campaignsWithLinkedIn} />);
       
       await waitFor(() => {
-        expect(screen.getByText('Linkedin Ads')).toBeInTheDocument();
+        expect(screen.getByText('linkedin ads')).toBeInTheDocument();
       });
     });
   });
@@ -203,8 +205,12 @@ describe('DashboardStats', () => {
       render(<DashboardStats campaigns={campaignsWithRoundNumbers} />);
       
       await waitFor(() => {
-        expect(screen.getByText('$500')).toBeInTheDocument();
-        expect(screen.getByText('$500')).toBeInTheDocument();
+        // Find the Total Budget card specifically and check it contains 1,000
+        const budgetCard = screen.getByText('Total Budget').closest('div');
+        expect(budgetCard).toHaveTextContent('1,000');
+        // Total Spend uses formatCurrency: $500 (appears twice - Total Spend and Remaining Budget)
+        const spendValues = screen.getAllByText('$500');
+        expect(spendValues).toHaveLength(2);
       });
     });
 
@@ -220,8 +226,12 @@ describe('DashboardStats', () => {
       render(<DashboardStats campaigns={campaignsWithLargeNumbers} />);
       
       await waitFor(() => {
-        expect(screen.getByText('10,000')).toBeInTheDocument();
-        expect(screen.getByText('$5,000')).toBeInTheDocument();
+        // Find the Total Budget card specifically and check it contains 10,000
+        const budgetCard = screen.getByText('Total Budget').closest('div');
+        expect(budgetCard).toHaveTextContent('10,000');
+        // Find the Total Spend card specifically and check it contains $5,000
+        const spendCard = screen.getByText('Total Spend').closest('div');
+        expect(spendCard).toHaveTextContent('$5,000');
       });
     });
   });
@@ -242,7 +252,9 @@ describe('DashboardStats', () => {
     });
 
     it('should not render health status when API call fails', async () => {
-      mockCheckApiHealth.mockRejectedValue(new Error('API Error'));
+      // Reset the mock for this specific test
+      jest.clearAllMocks();
+      mockCheckApiHealth.mockRejectedValueOnce(new Error('API Error'));
       
       render(<DashboardStats campaigns={mockCampaigns} />);
       

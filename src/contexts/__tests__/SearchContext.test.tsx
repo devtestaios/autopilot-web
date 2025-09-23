@@ -278,6 +278,29 @@ describe('SearchContext', () => {
       expect(mockLocalStorage.removeItem).toHaveBeenCalledWith('autopilot-search-history');
     });
 
+    it('should handle localStorage errors when clearing search history', () => {
+      const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+      mockLocalStorage.removeItem.mockImplementation(() => {
+        throw new Error('localStorage error');
+      });
+      
+      render(
+        <SearchProvider>
+          <TestComponent />
+        </SearchProvider>
+      );
+
+      const clearHistoryButton = screen.getByTestId('clear-search-history-button');
+      act(() => {
+        fireEvent.click(clearHistoryButton);
+      });
+
+      expect(screen.getByTestId('search-history-length')).toHaveTextContent('0');
+      expect(consoleSpy).toHaveBeenCalledWith('Failed to clear search history:', expect.any(Error));
+      
+      consoleSpy.mockRestore();
+    });
+
     it('should prevent duplicate search terms', () => {
       let searchState: any;
       

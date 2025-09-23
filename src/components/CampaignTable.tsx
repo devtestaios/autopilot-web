@@ -108,6 +108,18 @@ export default function CampaignTable({ campaigns, onEdit, onDelete, onDuplicate
 
   // (Removed duplicate and misplaced code)
 
+  // Show loading state if loading prop is true
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <div className="text-center">
+          <PremiumLoading size="lg" />
+          <p className="mt-4 text-muted-foreground">Loading campaigns...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       {/* Enhanced Search and Filter Header */}

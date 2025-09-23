@@ -109,7 +109,15 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
+    // Get the request text first and check if it's empty
+    const requestText = await request.text();
+    
+    if (!requestText || requestText.trim() === '') {
+      // Return success for empty requests to prevent errors
+      return NextResponse.json({ success: true, message: 'Empty request ignored' });
+    }
+    
+    const body = JSON.parse(requestText);
     
     // In a real implementation, you would:
     // 1. Validate the event data
