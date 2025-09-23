@@ -7,6 +7,10 @@ import Link from 'next/link';
 import { PulseWaveLogo } from './PulseWaveLogo';
 import { PremiumButton } from './ui/PremiumButton';
 import { PremiumCard } from './ui/PremiumCard';
+import { TypewriterEffect } from './ui/TypewriterEffect';
+import { MagneticButton } from './ui/MagneticButton';
+import { GlassButton } from './ui/GlassButton';
+import { FloatingParticles } from './ui/FloatingParticles';
 import LandingNavbar from './LandingNavbar';
 import { 
   Zap, 
@@ -320,27 +324,37 @@ export default function AwardWinningLandingPage() {
         initial="hidden"
         animate={heroInView ? "visible" : "hidden"}
       >
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:from-gray-900 dark:via-blue-900/20 dark:to-purple-900/20" />
+        {/* Enhanced gradient background with animation */}
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:from-gray-900 dark:via-blue-900/20 dark:to-purple-900/20 animate-gradient-shift" />
         
         {/* Galaxy Background */}
         <GalaxyBackground />
+        
+        {/* Enhanced Floating Particles */}
+        <FloatingParticles count={60} colors={['#3b82f6', '#8b5cf6', '#06b6d4', '#ec4899', '#10b981']} />
         
         {/* Floating Orbs */}
         <FloatingOrbs />
         
         <div className="relative z-10 max-w-7xl mx-auto text-center">
-          {/* PulseBridge Logo */}
+          {/* PulseBridge Logo with enhanced glow */}
           <motion.div
             variants={itemVariants}
             className="mb-12 flex justify-center"
           >
-            <PulseWaveLogo 
-              size="large" 
-              variant="dark" 
-              animated={true} 
-              showText={false}
-              className="drop-shadow-2xl"
-            />
+            <motion.div
+              whileHover={{ scale: 1.05, rotate: 5 }}
+              transition={{ type: "spring", stiffness: 300, damping: 20 }}
+              className="animate-pulse-glow"
+            >
+              <PulseWaveLogo 
+                size="large" 
+                variant="dark" 
+                animated={true} 
+                showText={false}
+                className="drop-shadow-2xl"
+              />
+            </motion.div>
           </motion.div>
 
           <motion.div
@@ -348,7 +362,7 @@ export default function AwardWinningLandingPage() {
             className="mb-8"
           >
             <motion.div
-              className="inline-flex items-center px-4 py-2 rounded-full bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/30 dark:border-purple-500/50 mb-6"
+              className="inline-flex items-center px-4 py-2 rounded-full bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/30 dark:border-purple-500/50 mb-6 glassmorphism"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
@@ -359,12 +373,13 @@ export default function AwardWinningLandingPage() {
             </motion.div>
           </motion.div>
 
+          {/* Enhanced headline with typewriter effect */}
           <motion.h1
             variants={itemVariants}
             className="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-orbitron font-normal tracking-wide mb-8"
             style={{ letterSpacing: '0.1em' }}
           >
-            <span className="bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-transparent gradient-animate">
               Bridge the Gap to
             </span>
             <br />
@@ -373,7 +388,7 @@ export default function AwardWinningLandingPage() {
             </span>
             <br />
             <motion.span
-              className="bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-transparent font-bold"
+              className="bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-transparent font-bold text-glow"
               animate={{
                 backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
               }}
@@ -382,11 +397,14 @@ export default function AwardWinningLandingPage() {
                 repeat: Infinity,
                 ease: "easeInOut"
               }}
-              style={{ 
-                textShadow: '0 0 30px rgba(0, 212, 255, 0.5)' 
-              }}
             >
-              with PulseBridge.ai
+              with{' '}
+              <TypewriterEffect 
+                words={["PulseBridge.ai", "AI Automation", "Smart Campaigns", "Perfect ROI"]}
+                className="text-white dark:text-white"
+                speed={150}
+                pauseTime={2000}
+              />
             </motion.span>
           </motion.h1>
 
@@ -401,6 +419,7 @@ export default function AwardWinningLandingPage() {
             into unstoppable growth engines.
           </motion.p>
 
+          {/* Enhanced CTA section with magnetic buttons */}
           <motion.div
             variants={itemVariants}
             className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16"
@@ -415,51 +434,87 @@ export default function AwardWinningLandingPage() {
                 placeholder="Enter your email for exclusive access"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full sm:w-80 px-6 py-4 rounded-2xl border-2 border-gray-200 dark:border-gray-700 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:border-blue-500 dark:focus:border-blue-400 focus:outline-none transition-all duration-300"
+                className="w-full sm:w-80 px-6 py-4 rounded-2xl border-2 border-gray-200 dark:border-gray-700 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:border-blue-500 dark:focus:border-blue-400 focus:outline-none transition-all duration-300 glassmorphism"
               />
             </motion.div>
             
-            <PremiumButton
-              variant="primary"
-              size="lg"
-              icon={<ArrowRight className="w-5 h-5" />}
-              iconPosition="right"
-              glow
-              className="px-8 py-4"
-            >
-              Start Free Trial
-            </PremiumButton>
+            <div className="flex gap-4">
+              <MagneticButton
+                className="px-8 py-4 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 rounded-2xl text-lg font-semibold text-white shadow-2xl shadow-purple-500/50 gradient-animate hover:shadow-purple-500/70 transition-all duration-300"
+                strength={0.4}
+              >
+                <span className="flex items-center">
+                  Start Free Trial
+                  <ArrowRight className="ml-2 w-5 h-5 animate-bounce-x" />
+                </span>
+              </MagneticButton>
+              
+              <GlassButton
+                className="px-8 py-4 rounded-2xl text-lg font-semibold"
+                variant="default"
+              >
+                <span className="flex items-center">
+                  <Play className="mr-2 w-5 h-5" />
+                  Watch Demo
+                </span>
+              </GlassButton>
+            </div>
           </motion.div>
 
+          {/* Enhanced benefits section */}
           <motion.div
             variants={itemVariants}
-            className="flex items-center justify-center space-x-8 text-sm text-gray-700 dark:text-gray-400"
+            className="flex items-center justify-center space-x-8 text-sm text-gray-700 dark:text-gray-400 mb-8"
           >
-            <div className="flex items-center">
+            <motion.div 
+              className="flex items-center"
+              whileHover={{ scale: 1.05 }}
+            >
               <CheckCircle className="w-5 h-5 text-green-500 mr-2" />
               14-day free trial
-            </div>
-            <div className="flex items-center">
+            </motion.div>
+            <motion.div 
+              className="flex items-center"
+              whileHover={{ scale: 1.05 }}
+            >
               <CheckCircle className="w-5 h-5 text-green-500 mr-2" />
               No credit card required
-            </div>
-            <div className="flex items-center">
+            </motion.div>
+            <motion.div 
+              className="flex items-center"
+              whileHover={{ scale: 1.05 }}
+            >
               <CheckCircle className="w-5 h-5 text-green-500 mr-2" />
               Cancel anytime
-            </div>
+            </motion.div>
           </motion.div>
 
+          {/* Enhanced scroll indicator */}
           <motion.div
             variants={itemVariants}
             className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
           >
             <motion.div
-              animate={{ y: [0, 10, 0] }}
-              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-              className="flex flex-col items-center cursor-pointer"
+              animate={{ 
+                y: [0, 10, 0],
+                opacity: [0.7, 1, 0.7]
+              }}
+              transition={{ 
+                duration: 2, 
+                repeat: Infinity, 
+                ease: "easeInOut" 
+              }}
+              className="flex flex-col items-center cursor-pointer group"
             >
-              <span className="text-sm text-gray-700 dark:text-gray-400 mb-2">Scroll to explore</span>
-              <ChevronDown className="w-6 h-6 text-gray-600 dark:text-gray-400" />
+              <span className="text-sm text-gray-700 dark:text-gray-400 mb-2 group-hover:text-blue-500 transition-colors">
+                Scroll to explore
+              </span>
+              <motion.div
+                whileHover={{ scale: 1.2 }}
+                className="p-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20"
+              >
+                <ChevronDown className="w-6 h-6 text-gray-600 dark:text-gray-400 group-hover:text-blue-500 transition-colors" />
+              </motion.div>
             </motion.div>
           </motion.div>
         </div>
