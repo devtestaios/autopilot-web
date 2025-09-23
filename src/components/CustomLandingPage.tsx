@@ -11,6 +11,15 @@ import { TypewriterEffect } from './ui/TypewriterEffect';
 import { MagneticButton } from './ui/MagneticButton';
 import { GlassButton } from './ui/GlassButton';
 import { FloatingParticles } from './ui/FloatingParticles';
+import { EnhancedFeatureCard } from './landing/EnhancedFeatureCard';
+import { LiveMetrics } from './landing/LiveMetrics';
+import { EnhancedTestimonials } from './landing/EnhancedTestimonials';
+import { EnhancedCTA } from './landing/EnhancedCTA';
+import { AdvancedHero } from './landing/AdvancedHero';
+import { AdvancedDataViz } from './landing/AdvancedDataViz';
+import { ScrollTriggeredFeatures } from './landing/ScrollTriggeredFeatures';
+import { InteractiveComparison } from './landing/InteractiveComparison';
+import { AdvancedPricing } from './landing/AdvancedPricing';
 import LandingNavbar from './LandingNavbar';
 import { 
   Zap, 
@@ -222,36 +231,82 @@ const features: FeatureCard[] = [
 
 const testimonials = [
   {
-    name: "Sarah Chen",
+    quote: "PulseBridge.ai transformed our entire marketing operation. The AI optimization increased our ROAS by 340% while reducing manual work by 85%. It's like having a team of expert marketers working 24/7.",
+    author: "Sarah Chen",
     role: "Marketing Director",
     company: "TechFlow Inc",
-    content: "PulseBridge.ai increased our ROAS by 340% in just 3 months. The AI optimization is absolutely mind-blowing.",
+    avatar: "SC",
     rating: 5,
-    image: "SC"
+    metrics: {
+      roas: "+340% ROAS",
+      time: "85% Time Saved",
+      growth: "+200% Campaigns"
+    }
   },
   {
-    name: "Marcus Rodriguez",
+    quote: "We scaled from 20 campaigns to 200+ with the same team size. The autonomous optimization and real-time adjustments are absolutely game-changing for performance marketing.",
+    author: "Marcus Rodriguez",
     role: "CMO",
     company: "Growth Labs",
-    content: "We went from managing 20 campaigns manually to 200+ with PulseBridge. Game-changing technology.",
+    avatar: "MR",
     rating: 5,
-    image: "MR"
+    metrics: {
+      roas: "+280% ROAS",
+      time: "40h Saved/Week",
+      growth: "10x Scale"
+    }
   },
   {
-    name: "Emily Zhang",
+    quote: "The unified dashboard and predictive analytics gave us insights we never had before. ROI improvement was immediate and sustained quarter over quarter.",
+    author: "Emily Zhang",
     role: "Performance Lead",
     company: "Scale Dynamics",
-    content: "The unified dashboard saved us 40+ hours per week. ROI improvement was immediate and sustained.",
+    avatar: "EZ",
     rating: 5,
-    image: "EZ"
+    metrics: {
+      roas: "+420% ROAS",
+      time: "60% Efficiency",
+      growth: "+150% Revenue"
+    }
   },
   {
-    name: "David Park",
+    quote: "From startup to $10M revenue with PulseBridge managing our entire ad ecosystem. The AI decision-making is more sophisticated than our previous agency.",
+    author: "David Park",
     role: "Founder",
     company: "StartupX",
-    content: "From startup to $10M revenue with PulseBridge managing our entire ad ecosystem. Incredible results.",
+    avatar: "DP",
     rating: 5,
-    image: "DP"
+    metrics: {
+      roas: "+500% ROAS",
+      time: "95% Automation",
+      growth: "$10M Revenue"
+    }
+  },
+  {
+    quote: "The cross-platform optimization and budget allocation AI saved us $2M in ad spend while increasing conversions by 240%. Absolutely revolutionary technology.",
+    author: "Jennifer Torres",
+    role: "VP Marketing",
+    company: "Enterprise Solutions",
+    avatar: "JT",
+    rating: 5,
+    metrics: {
+      roas: "+380% ROAS",
+      time: "$2M Saved",
+      growth: "+240% Conv."
+    }
+  },
+  {
+    quote: "PulseBridge's autonomous campaign management allowed us to focus on strategy while AI handled execution. Results speak for themselves - best year in company history.",
+    author: "Alex Kumar",
+    role: "Growth Manager",
+    company: "Digital First",
+    avatar: "AK",
+    rating: 5,
+    metrics: {
+      roas: "+310% ROAS",
+      time: "100% Autonomous",
+      growth: "Best Year Ever"
+    }
   }
 ];
 
@@ -311,7 +366,77 @@ export default function AwardWinningLandingPage() {
   };
 
   return (
-    <div className={`min-h-screen ${theme === 'dark' ? 'bg-gray-900' : 'bg-white'} overflow-hidden`}>
+        <div className={`min-h-screen ${theme === 'dark' ? 'bg-gray-900' : 'bg-white'} overflow-hidden`}>
+      <LandingNavbar />
+      
+      {/* Phase 3: Advanced Hero Section */}
+      <AdvancedHero />
+
+      {/* Live Metrics Section */}
+      <LiveMetrics className="bg-gray-50 dark:bg-gray-900" />
+
+      {/* Phase 3: Advanced Data Visualization */}
+      <AdvancedDataViz />
+
+      {/* Phase 3: Scroll-Triggered Features */}
+      <ScrollTriggeredFeatures />
+
+      {/* Revolutionary Features Section */}
+      <motion.section
+        ref={featuresRef}
+        className="py-32 px-4 sm:px-6 lg:px-8 bg-white dark:bg-gray-800 relative"
+        initial={{ opacity: 0 }}
+        animate={featuresInView ? { opacity: 1 } : { opacity: 0 }}
+        transition={{ duration: 1 }}
+      >
+        <div className="max-w-7xl mx-auto">
+          <motion.div
+            className="text-center mb-20"
+            initial={{ y: 50, opacity: 0 }}
+            animate={featuresInView ? { y: 0, opacity: 1 } : { y: 50, opacity: 0 }}
+            transition={{ duration: 0.8 }}
+          >
+            <h2 className="text-5xl sm:text-6xl lg:text-7xl font-bold mb-6">
+              <span className="bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">
+                Superhuman
+              </span>
+              <br />
+              <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+                Capabilities
+              </span>
+            </h2>
+            <p className="text-2xl text-gray-800 dark:text-gray-300 max-w-4xl mx-auto leading-relaxed">
+              Advanced AI features that give you an unfair advantage in the digital marketing battlefield
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {features.map((feature, index) => (
+              <EnhancedFeatureCard
+                key={feature.title}
+                icon={feature.icon}
+                title={feature.title}
+                description={feature.description}
+                gradient={feature.gradient}
+                delay={feature.delay}
+                index={index}
+              />
+            ))}
+          </div>
+        </div>
+      </motion.section>
+
+      {/* Phase 3: Interactive Comparison */}
+      <InteractiveComparison />
+
+      {/* Enhanced Testimonials Section */}
+      <EnhancedTestimonials 
+        testimonials={testimonials}
+        className="bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-900 dark:to-blue-900/10"
+      />
+
+      {/* Phase 3: Advanced Pricing */}
+      <AdvancedPricing />
       <LandingNavbar />
       <FloatingOrbs />
       
@@ -570,10 +695,13 @@ export default function AwardWinningLandingPage() {
         </div>
       </motion.section>
 
+      {/* Live Metrics Section */}
+      <LiveMetrics className="bg-gray-50 dark:bg-gray-900" />
+
       {/* Revolutionary Features Section */}
       <motion.section
         ref={featuresRef}
-        className="py-32 px-4 sm:px-6 lg:px-8 bg-gray-50 dark:bg-gray-800 relative"
+        className="py-32 px-4 sm:px-6 lg:px-8 bg-white dark:bg-gray-800 relative"
         initial={{ opacity: 0 }}
         animate={featuresInView ? { opacity: 1 } : { opacity: 0 }}
         transition={{ duration: 1 }}
@@ -601,45 +729,25 @@ export default function AwardWinningLandingPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {features.map((feature, index) => (
-              <motion.div
+              <EnhancedFeatureCard
                 key={feature.title}
-                className="group relative"
-                initial={{ y: 100, opacity: 0 }}
-                animate={featuresInView ? { y: 0, opacity: 1 } : { y: 100, opacity: 0 }}
-                transition={{ duration: 0.8, delay: feature.delay }}
-                whileHover={{ y: -10 }}
-              >
-                <div className="relative p-8 bg-white dark:bg-gray-900 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-500 overflow-hidden border border-gray-100 dark:border-gray-700">
-                  <div className={`absolute inset-0 bg-gradient-to-br ${feature.gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-500`} />
-                  
-                  <motion.div
-                    className={`inline-flex p-4 rounded-2xl bg-gradient-to-br ${feature.gradient} mb-6`}
-                    whileHover={{ scale: 1.1, rotate: 5 }}
-                    transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                  >
-                    <feature.icon className="w-8 h-8 text-white" />
-                  </motion.div>
-                  
-                  <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4 group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-blue-600 group-hover:to-purple-600 group-hover:bg-clip-text transition-all duration-300">
-                    {feature.title}
-                  </h3>
-                  
-                  <p className="text-gray-800 dark:text-gray-300 leading-relaxed">
-                    {feature.description}
-                  </p>
-                  
-                  <motion.div
-                    className="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-blue-500 to-purple-500"
-                    initial={{ width: "0%" }}
-                    whileHover={{ width: "100%" }}
-                    transition={{ duration: 0.3 }}
-                  />
-                </div>
-              </motion.div>
+                icon={feature.icon}
+                title={feature.title}
+                description={feature.description}
+                gradient={feature.gradient}
+                delay={feature.delay}
+                index={index}
+              />
             ))}
           </div>
         </div>
       </motion.section>
+
+      {/* Enhanced Testimonials Section */}
+      <EnhancedTestimonials 
+        testimonials={testimonials}
+        className="bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-900 dark:to-blue-900/10"
+      />
 
       {/* Testimonials Section */}
       <section className="py-32 px-4 sm:px-6 lg:px-8 bg-white dark:bg-gray-900 relative overflow-hidden">
@@ -726,6 +834,9 @@ export default function AwardWinningLandingPage() {
           </div>
         </div>
       </section>
+
+      {/* Enhanced Final CTA Section */}
+      <EnhancedCTA className="bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600" />
 
       {/* Final CTA Section */}
       <section className="py-32 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600 text-white relative overflow-hidden">
