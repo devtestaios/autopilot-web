@@ -26,7 +26,7 @@ import {
   Users,
   Globe
 } from 'lucide-react';
-import { useAIControl } from '@/contexts/AIControlContext';
+import { useUnifiedAI } from '@/contexts/UnifiedAIContext';
 import AIMonitoringDashboard from '@/components/AIMonitoringDashboard';
 import AdvancedAIChat from '@/components/AdvancedAIChat';
 
@@ -100,7 +100,7 @@ export default function AdvancedAIControlCenter() {
     capabilities,
     toggleAutonomousMode,
     executeAIAction
-  } = useAIControl();
+  } = useUnifiedAI();
 
   const handleApproveDecision = async (decisionId: string) => {
     const decision = aiDecisions.find(d => d.id === decisionId);

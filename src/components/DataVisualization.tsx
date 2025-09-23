@@ -616,11 +616,3 @@ export function PerformanceHeatmap({
     </Card>
   );
 }
-
-// Export all components
-export {
-  InteractiveLineChart,
-  InteractiveBarChart,
-  InteractivePieChart,
-  PerformanceHeatmap
-};

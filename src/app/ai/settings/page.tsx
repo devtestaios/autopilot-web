@@ -22,7 +22,7 @@ import {
   Sparkles
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useAI } from '@/contexts/AIContext';
+import { useUnifiedAI } from '@/contexts/UnifiedAIContext';
 import { PremiumCard } from '@/components/ui/PremiumCard';
 import { PremiumButton } from '@/components/ui/PremiumButton';
 import AdvancedNavigation from '@/components/ui/AdvancedNavigation';
@@ -36,7 +36,7 @@ const AISettingsPage = () => {
     smartSuggestions,
     toggleCapability,
     updateSettings 
-  } = useAI();
+  } = useUnifiedAI();
   
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [activeTab, setActiveTab] = useState('capabilities');
@@ -52,7 +52,8 @@ const AISettingsPage = () => {
     optimization: Zap,
     analytics: BarChart3,
     automation: Bot,
-    insights: Lightbulb
+    insights: Lightbulb,
+    control: Settings
   };
 
   const handleCapabilityToggle = (capabilityId: string) => {

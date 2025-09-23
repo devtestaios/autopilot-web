@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, ComponentType } from 'react';
-import { useAnalytics } from '../contexts/AnalyticsContext';
+import { useAnalytics } from '@/contexts/AnalyticsContext';
 import { useInView } from 'framer-motion';
 import { useRef } from 'react';
 

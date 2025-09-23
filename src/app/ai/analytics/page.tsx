@@ -22,7 +22,7 @@ import {
   Eye
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useAI } from '@/contexts/AIContext';
+import { useUnifiedAI } from '@/contexts/UnifiedAIContext';
 import { PremiumCard } from '@/components/ui/PremiumCard';
 import { PremiumButton } from '@/components/ui/PremiumButton';
 import AdvancedNavigation from '@/components/ui/AdvancedNavigation';
@@ -32,7 +32,7 @@ import PredictiveAnalyticsDashboard from '@/components/PredictiveAnalyticsDashbo
 import { LineChart, Line, AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 
 const AIAnalyticsPage = () => {
-  const { insights } = useAI();
+  const { insights } = useUnifiedAI();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [timeframe, setTimeframe] = useState('7d');
   const [selectedCategory, setSelectedCategory] = useState('all');

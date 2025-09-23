@@ -502,13 +502,14 @@ export function UnifiedAIProvider({ children }: { children: React.ReactNode }) {
       return result;
     } catch (error) {
       // Update action as failed
-      const failedAction = { ...action, status: 'failed' as const, result: { error: error.message } };
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      const failedAction = { ...action, status: 'failed' as const, result: { error: errorMessage } };
       setPendingActions(prev => prev.filter(a => a.id !== action.id));
       setActionHistory(prev => [...prev, failedAction]);
       
       showNotification(
         'AI Action Failed',
-        `Failed to execute "${action.function}": ${error.message}`,
+        `Failed to execute "${action.function}": ${errorMessage}`,
         'error'
       );
       

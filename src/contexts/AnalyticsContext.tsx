@@ -165,7 +165,7 @@ export function AnalyticsProvider({
     else if (userAgent.includes('iOS')) os = 'iOS';
 
     return {
-      type: isTablet ? 'tablet' : isMobile ? 'mobile' : 'desktop',
+      type: (isTablet ? 'tablet' : isMobile ? 'mobile' : 'desktop') as 'desktop' | 'mobile' | 'tablet',
       browser,
       os
     };

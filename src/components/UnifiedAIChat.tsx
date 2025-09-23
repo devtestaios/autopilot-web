@@ -59,7 +59,7 @@ interface UnifiedChatMessage {
 
 interface UnifiedChatAction {
   id: string;
-  type: 'navigate' | 'campaign_action' | 'optimization' | 'analysis' | 'ui_control';
+  type: 'navigation' | 'campaign_action' | 'optimization' | 'analysis' | 'ui_control';
   function: string;
   label: string;
   description?: string;
@@ -249,7 +249,7 @@ export default function UnifiedAIChat({
       
     } catch (error) {
       console.error('Error sending message:', error);
-      showToast('Error sending message', 'error');
+      showToast({ type: 'error', title: 'Error sending message' });
     }
   }, [inputValue, currentPage, contextData, mode, features, sendMessage, onMessage, showToast]);
   
@@ -257,7 +257,7 @@ export default function UnifiedAIChat({
   const handleActionExecute = useCallback(async (action: UnifiedChatAction) => {
     try {
       if (humanApprovalRequired && action.requiresApproval && !autonomousMode) {
-        showToast(`Action "${action.label}" requires approval`, 'warning');
+        showToast({ type: 'warning', title: `Action "${action.label}" requires approval` });
         return;
       }
       
@@ -267,10 +267,10 @@ export default function UnifiedAIChat({
         arguments: action.parameters || {}
       });
       
-      showToast(`Executed: ${action.label}`, 'success');
+      showToast({ type: 'success', title: `Executed: ${action.label}` });
     } catch (error) {
       console.error('Error executing action:', error);
-      showToast(`Failed to execute: ${action.label}`, 'error');
+      showToast({ type: 'error', title: `Failed to execute: ${action.label}` });
     }
   }, [executeAIAction, humanApprovalRequired, autonomousMode, showToast]);
   
@@ -711,7 +711,7 @@ function generateActions(input: string, page: string): UnifiedChatAction[] {
   if (input.toLowerCase().includes('campaign')) {
     actions.push({
       id: 'view-campaigns',
-      type: 'navigate',
+      type: 'navigation',
       function: 'navigate_to_page',
       label: 'View Campaigns',
       icon: <Target className="w-4 h-4" />,
@@ -723,7 +723,7 @@ function generateActions(input: string, page: string): UnifiedChatAction[] {
   if (input.toLowerCase().includes('analytic') || input.toLowerCase().includes('performance')) {
     actions.push({
       id: 'view-analytics',
-      type: 'navigate',
+      type: 'navigation',
       function: 'navigate_to_page',
       label: 'View Analytics',
       icon: <BarChart3 className="w-4 h-4" />,

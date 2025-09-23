@@ -21,7 +21,7 @@ import {
 } from 'lucide-react';
 import AIDashboardControl from '@/components/AIDashboardControl';
 import AIControlChat from '@/components/AIControlChat';
-import { useAIControl } from '@/contexts/AIControlContext';
+import { useUnifiedAI } from '@/contexts/UnifiedAIContext';
 
 type AIView = 'overview' | 'dashboard' | 'chat' | 'settings';
 
@@ -35,7 +35,7 @@ export default function AIPage() {
     actionHistory,
     capabilities,
     toggleAutonomousMode
-  } = useAIControl();
+  } = useUnifiedAI();
 
   const stats = [
     {
@@ -48,13 +48,13 @@ export default function AIPage() {
     },
     {
       label: 'Actions Completed',
-      value: actionHistory.filter(a => a.status === 'completed').length.toString(),
+      value: (actionHistory || []).filter(a => a.status === 'completed').length.toString(),
       icon: Zap,
       color: 'text-blue-600'
     },
     {
       label: 'Pending Actions',
-      value: pendingActions.length.toString(),
+      value: (pendingActions || []).length.toString(),
       icon: Shield,
       color: 'text-orange-600'
     },
@@ -188,7 +188,7 @@ export default function AIPage() {
 }
 
 function AIOverview() {
-  const { capabilities, actionHistory, pendingActions } = useAIControl();
+  const { capabilities, actionHistory, pendingActions } = useUnifiedAI();
   
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -199,7 +199,7 @@ function AIOverview() {
             AI Capabilities
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {capabilities.map((capability) => (
+            {(capabilities || []).map((capability) => (
               <motion.div
                 key={capability.id}
                 className="bg-white dark:bg-gray-800 p-6 rounded-lg border border-gray-200 dark:border-gray-700"
@@ -222,7 +222,7 @@ function AIOverview() {
                   {capability.description}
                 </p>
                 <div className="flex flex-wrap gap-1">
-                  {capability.permissions.map((permission) => (
+                  {(capability.permissions || []).map((permission) => (
                     <span
                       key={permission}
                       className="px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-xs rounded"
@@ -246,7 +246,7 @@ function AIOverview() {
               <h3 className="font-medium text-gray-900 dark:text-white">AI Actions</h3>
             </div>
             <div className="p-4 space-y-3 max-h-96 overflow-y-auto">
-              {actionHistory.slice(-10).reverse().map((action) => (
+              {(actionHistory || []).slice(-10).reverse().map((action) => (
                 <div key={action.id} className="flex items-start space-x-3">
                   <div className={`w-2 h-2 rounded-full mt-2 ${
                     action.status === 'completed' ? 'bg-green-400' :
@@ -279,7 +279,7 @@ function AIOverview() {
                 Pending Approval ({pendingActions.length})
               </h3>
               <div className="space-y-2">
-                {pendingActions.map((action) => (
+                {(pendingActions || []).map((action) => (
                   <div key={action.id} className="text-sm text-yellow-700 dark:text-yellow-300">
                     {action.function}: Waiting for human approval
                   </div>
@@ -300,7 +300,7 @@ function AISettingsPanel() {
     grantAIPermission, 
     revokeAIPermission,
     toggleAutonomousMode 
-  } = useAIControl();
+  } = useUnifiedAI();
   
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -346,7 +346,7 @@ function AISettingsPanel() {
           </h3>
           
           <div className="space-y-4">
-            {capabilities.map((capability) => (
+            {(capabilities || []).map((capability) => (
               <div key={capability.id} className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
                 <div className="flex-1">
                   <h4 className="font-medium text-gray-900 dark:text-white">
@@ -356,7 +356,7 @@ function AISettingsPanel() {
                     {capability.description}
                   </p>
                   <div className="flex flex-wrap gap-1 mt-2">
-                    {capability.permissions.map((permission) => (
+                    {(capability.permissions || []).map((permission) => (
                       <span
                         key={permission}
                         className="px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-xs rounded"
@@ -374,7 +374,7 @@ function AISettingsPanel() {
                   </span>
                   <button
                     onClick={() => {
-                      capability.permissions.forEach(permission => {
+                      (capability.permissions || []).forEach(permission => {
                         if (capability.enabled) {
                           revokeAIPermission(permission);
                         } else {

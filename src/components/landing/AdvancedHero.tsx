@@ -68,8 +68,7 @@ export function AdvancedHero({ className = '' }: AdvancedHeroProps) {
     hidden: { opacity: 0, y: 50 },
     visible: { 
       opacity: 1, 
-      y: 0,
-      transition: { duration: 0.8, ease: [0.21, 0.47, 0.32, 0.98] }
+      y: 0
     }
   };
 
@@ -150,7 +149,7 @@ export function AdvancedHero({ className = '' }: AdvancedHeroProps) {
       {/* Main Content */}
       <motion.div
         className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center"
-        style={{ y: textY, x, y }}
+        style={{ y: textY, x }}
       >
         {/* Animated Badge */}
         <motion.div

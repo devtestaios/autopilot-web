@@ -132,7 +132,7 @@ export function GlobalSearch({
             >
               <motion.div
                 ref={containerRef}
-                role="dialog" aria-modal="true"
+                role="dialog"
                 aria-modal="true"
                 aria-label="Global Search"
                 initial={{ opacity: 0, scale: 0.95, y: -20 }}
