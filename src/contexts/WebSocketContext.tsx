@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { createContext, useContext, useEffect, useState, useRef, ReactNode } from 'react';
 
 interface WebSocketMessage {
   type: 'campaign_update' | 'performance_update' | 'alert' | 'notification';
@@ -26,7 +26,7 @@ export function WebSocketProvider({ children, url = 'ws://localhost:8000/ws' }: 
   const [socket, setSocket] = useState<WebSocket | null>(null);
   const [connected, setConnected] = useState(false);
   const [lastMessage, setLastMessage] = useState<WebSocketMessage | null>(null);
-  const [subscribers, setSubscribers] = useState<Map<string, Set<(data: any) => void>>>(new Map());
+  const subscribersRef = useRef<Map<string, Set<(data: any) => void>>>(new Map());
 
   useEffect(() => {
     // Only connect in production or when WebSocket server is available
@@ -50,9 +50,9 @@ export function WebSocketProvider({ children, url = 'ws://localhost:8000/ws' }: 
         setLastMessage(mockMessage);
         
         // Notify subscribers
-        const typeSubscribers = subscribers.get(mockMessage.type);
+        const typeSubscribers = subscribersRef.current.get(mockMessage.type);
         if (typeSubscribers) {
-          typeSubscribers.forEach(callback => callback(mockMessage.data));
+          typeSubscribers.forEach((callback: (data: any) => void) => callback(mockMessage.data));
         }
       }, 30000); // Update every 30 seconds
       
@@ -75,9 +75,9 @@ export function WebSocketProvider({ children, url = 'ws://localhost:8000/ws' }: 
             setLastMessage(message);
             
             // Notify subscribers
-            const typeSubscribers = subscribers.get(message.type);
+            const typeSubscribers = subscribersRef.current.get(message.type);
             if (typeSubscribers) {
-              typeSubscribers.forEach(callback => callback(message.data));
+              typeSubscribers.forEach((callback: (data: any) => void) => callback(message.data));
             }
           } catch (error) {
             console.error('Failed to parse WebSocket message:', error);
@@ -111,7 +111,7 @@ export function WebSocketProvider({ children, url = 'ws://localhost:8000/ws' }: 
         socket.close();
       }
     };
-  }, [url, subscribers]);
+  }, [url]);
 
   const sendMessage = (message: any) => {
     if (socket && connected) {
@@ -122,28 +122,22 @@ export function WebSocketProvider({ children, url = 'ws://localhost:8000/ws' }: 
   };
 
   const subscribe = (type: string, callback: (data: any) => void) => {
-    setSubscribers(prev => {
-      const newMap = new Map(prev);
-      if (!newMap.has(type)) {
-        newMap.set(type, new Set());
-      }
-      newMap.get(type)!.add(callback);
-      return newMap;
-    });
+    const subscribers = subscribersRef.current;
+    if (!subscribers.has(type)) {
+      subscribers.set(type, new Set());
+    }
+    subscribers.get(type)!.add(callback);
 
     // Return unsubscribe function
     return () => {
-      setSubscribers(prev => {
-        const newMap = new Map(prev);
-        const typeSubscribers = newMap.get(type);
-        if (typeSubscribers) {
-          typeSubscribers.delete(callback);
-          if (typeSubscribers.size === 0) {
-            newMap.delete(type);
-          }
+      const subscribers = subscribersRef.current;
+      const typeSubscribers = subscribers.get(type);
+      if (typeSubscribers) {
+        typeSubscribers.delete(callback);
+        if (typeSubscribers.size === 0) {
+          subscribers.delete(type);
         }
-        return newMap;
-      });
+      }
     };
   };
 

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Navigation Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-link { display: block; margin: 10px 0; padding: 10px; background: #f0f0f0; text-decoration: none; color: #333; }
+        .test-link:hover { background: #e0e0e0; }
+    </style>
+</head>
+<body>
+    <h1>PulseBridge Navigation Test</h1>
+    <p>Click these links to test navigation:</p>
+    
+    <a href="http://localhost:3000/" class="test-link">🏠 Home (Landing Page)</a>
+    <a href="http://localhost:3000/dashboard" class="test-link">📊 Dashboard</a>
+    <a href="http://localhost:3000/campaigns" class="test-link">📢 Campaigns</a>
+    <a href="http://localhost:3000/analytics" class="test-link">📈 Analytics</a>
+    <a href="http://localhost:3000/leads" class="test-link">👥 Leads</a>
+    <a href="http://localhost:3000/settings" class="test-link">⚙️ Settings</a>
+    
+    <h2>Test Results:</h2>
+    <div id="results"></div>
+    
+    <script>
+        // Test each route
+        const testRoutes = async () => {
+            const routes = ['/', '/dashboard', '/campaigns', '/analytics', '/leads', '/settings'];
+            const results = document.getElementById('results');
+            
+            for (const route of routes) {
+                try {
+                    const response = await fetch(`http://localhost:3000${route}`);
+                    const status = response.ok ? '✅ Working' : `❌ Error ${response.status}`;
+                    results.innerHTML += `<p><strong>${route}:</strong> ${status}</p>`;
+                } catch (error) {
+                    results.innerHTML += `<p><strong>${route}:</strong> ❌ Network Error</p>`;
+                }
+            }
+        };
+        
+        // Auto-run test after 1 second
+        setTimeout(testRoutes, 1000);
+    </script>
+</body>
+</html>

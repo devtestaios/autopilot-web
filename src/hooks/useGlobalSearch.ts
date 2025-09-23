@@ -1,69 +1,54 @@
-'use client';
+import { useState, useEffect, useCallback, useRef } from 'react'
 
-import { useState, useEffect, useMemo } from 'react';
-import { useDebounce } from '@/hooks/useDebounce';
-
-export interface SearchResult {
-  id: string;
-  type: 'campaign' | 'lead' | 'alert' | 'page' | 'template';
-  title: string;
-  description: string;
-  url: string;
-  metadata?: Record<string, any>;
+interface SearchResult {
+  id: string
+  title: string
+  description: string
+  url: string
+  type: 'page' | 'campaign' | 'lead' | 'template' | 'alert'
+  metadata?: Record<string, any>
 }
 
 interface SearchData {
-  campaigns?: any[];
-  leads?: any[];
-  templates?: any[];
+  campaigns?: any[]
+  leads?: any[]
+  templates?: any[]
 }
 
-export function useGlobalSearch(searchData?: SearchData) {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [isSearching, setIsSearching] = useState(false);
-  const [results, setResults] = useState<SearchResult[]>([]);
-  const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
+export const useGlobalSearch = (searchData?: SearchData) => {
+  const [isSearchModalOpen, setIsSearchModalOpen] = useState(false)
+  const [searchTerm, setSearchTerm] = useState('')
+  const [results, setResults] = useState<SearchResult[]>([])
+  const [isSearching, setIsSearching] = useState(false)
   
-  const debouncedSearchTerm = useDebounce(searchTerm, 300);
+  // Use ref to cache search content and prevent re-renders
+  const searchContentRef = useRef<SearchResult[]>([])
+  const lastSearchDataRef = useRef<SearchData>()
 
-  // Handle keyboard shortcuts for opening search
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      // Check for Cmd+K (Mac) or Ctrl+K (Windows/Linux)
-      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-        e.preventDefault()
-        setIsSearchModalOpen(true)
-      }
-    }
+  // Build search content only when data actually changes
+  const buildSearchContent = useCallback(() => {
+    const content: SearchResult[] = []
 
-    document.addEventListener('keydown', handleKeyDown)
-    return () => document.removeEventListener('keydown', handleKeyDown)
-  }, [])
-
-  // Combine mock data with real data
-  const allSearchableContent: SearchResult[] = useMemo(() => {
-    const content: SearchResult[] = [];
-
-    // Add static pages
+    // Static pages (always available)
     content.push(
+      {
+        id: 'page-dashboard',
+        type: 'page',
+        title: 'Dashboard',
+        description: 'Main dashboard with campaign overview',
+        url: '/dashboard',
+      },
       {
         id: 'page-campaigns',
         type: 'page',
-        title: 'Campaign Management',
-        description: 'Manage and monitor your marketing campaigns',
+        title: 'Campaigns',
+        description: 'Manage your marketing campaigns',
         url: '/campaigns',
-      },
-      {
-        id: 'page-leads',
-        type: 'page',
-        title: 'Lead Management',
-        description: 'Track and manage campaign leads',
-        url: '/leads',
       },
       {
         id: 'page-analytics',
         type: 'page',
-        title: 'Analytics Dashboard',
+        title: 'Analytics',
         description: 'View campaign performance and analytics',
         url: '/analytics',
       },
@@ -80,24 +65,10 @@ export function useGlobalSearch(searchData?: SearchData) {
         title: 'System Status',
         description: 'Check system and integration status',
         url: '/status',
-      },
-      {
-        id: 'page-unified',
-        type: 'page',
-        title: 'Unified Dashboard',
-        description: 'Comprehensive overview of all metrics',
-        url: '/unified',
-      },
-      {
-        id: 'page-platforms',
-        type: 'page',
-        title: 'Platform Management',
-        description: 'Manage connected advertising platforms',
-        url: '/platforms',
       }
-    );
+    )
 
-    // Add campaigns if provided
+    // Add dynamic content if available
     if (searchData?.campaigns) {
       searchData.campaigns.forEach(campaign => {
         content.push({
@@ -111,30 +82,10 @@ export function useGlobalSearch(searchData?: SearchData) {
             status: campaign.status,
             budget: campaign.budget
           }
-        });
-      });
+        })
+      })
     }
 
-    // Add templates if provided
-    if (searchData?.templates) {
-      searchData.templates.forEach(template => {
-        content.push({
-          id: `template-${template.id}`,
-          type: 'template',
-          title: template.name,
-          description: template.description,
-          url: `/campaigns/templates?search=${encodeURIComponent(template.name)}`,
-          metadata: { 
-            category: template.category, 
-            platform: template.platform,
-            rating: template.rating,
-            uses: template.uses
-          }
-        });
-      });
-    }
-
-    // Add leads if provided
     if (searchData?.leads) {
       searchData.leads.forEach(lead => {
         content.push({
@@ -148,11 +99,27 @@ export function useGlobalSearch(searchData?: SearchData) {
             email: lead.email,
             created_at: lead.created_at
           }
-        });
-      });
+        })
+      })
     }
 
-    // Add some mock alerts for demo
+    if (searchData?.templates) {
+      searchData.templates.forEach(template => {
+        content.push({
+          id: `template-${template.id}`,
+          type: 'template',
+          title: template.name,
+          description: template.description,
+          url: `/campaigns/templates?search=${encodeURIComponent(template.name)}`,
+          metadata: { 
+            category: template.category, 
+            platform: template.platform
+          }
+        })
+      })
+    }
+
+    // Mock alerts
     content.push(
       {
         id: 'alert-budget',
@@ -170,65 +137,77 @@ export function useGlobalSearch(searchData?: SearchData) {
         url: '/alerts',
         metadata: { severity: 'info' }
       }
-    );
+    )
 
-    return content;
-  }, [searchData]);
+    return content
+  }, [searchData])
 
+  // Update search content only when data changes
   useEffect(() => {
-    if (!debouncedSearchTerm.trim()) {
-      setResults([]);
-      setIsSearching(false);
-      return;
+    if (searchData !== lastSearchDataRef.current) {
+      searchContentRef.current = buildSearchContent()
+      lastSearchDataRef.current = searchData
+    }
+  }, [searchData, buildSearchContent])
+
+  // Handle keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault()
+        setIsSearchModalOpen(true)
+      }
     }
 
-    setIsSearching(true);
-    
-    // Simulate API call delay
-    const searchTimeout = setTimeout(() => {
-      const filteredResults = allSearchableContent.filter(item =>
-        item.title.toLowerCase().includes(debouncedSearchTerm.toLowerCase()) ||
-        item.description.toLowerCase().includes(debouncedSearchTerm.toLowerCase()) ||
-        (item.metadata && Object.values(item.metadata).some(value => 
-          String(value).toLowerCase().includes(debouncedSearchTerm.toLowerCase())
-        ))
-      );
-      
-      // Sort results by relevance (exact matches first, then partial matches)
-      filteredResults.sort((a, b) => {
-        const searchLower = debouncedSearchTerm.toLowerCase();
-        const aExact = a.title.toLowerCase().includes(searchLower) ? 1 : 0;
-        const bExact = b.title.toLowerCase().includes(searchLower) ? 1 : 0;
-        
-        if (aExact !== bExact) return bExact - aExact;
-        
-        // Then sort by type priority (pages, campaigns, templates, leads, alerts)
-        const typePriority: Record<SearchResult['type'], number> = { 
-          page: 5, 
-          campaign: 4, 
-          template: 3, 
-          lead: 2, 
-          alert: 1 
-        };
-        return (typePriority[b.type] || 0) - (typePriority[a.type] || 0);
-      });
-      
-      setResults(filteredResults.slice(0, 8)); // Limit to 8 results
-      setIsSearching(false);
-    }, 200);
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [])
 
-    return () => clearTimeout(searchTimeout);
-  }, [debouncedSearchTerm, allSearchableContent]);
+  // Debounced search
+  useEffect(() => {
+    if (!searchTerm.trim()) {
+      setResults([])
+      setIsSearching(false)
+      return
+    }
+
+    setIsSearching(true)
+    
+    const searchTimeout = setTimeout(() => {
+      const filteredResults = searchContentRef.current.filter(item =>
+        item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (item.metadata && Object.values(item.metadata).some(value => 
+          String(value).toLowerCase().includes(searchTerm.toLowerCase())
+        ))
+      )
+
+      // Sort by relevance
+      filteredResults.sort((a, b) => {
+        const aExact = a.title.toLowerCase().includes(searchTerm.toLowerCase())
+        const bExact = b.title.toLowerCase().includes(searchTerm.toLowerCase())
+        
+        if (aExact && !bExact) return -1
+        if (!aExact && bExact) return 1
+        return 0
+      })
+
+      setResults(filteredResults.slice(0, 10)) // Limit results
+      setIsSearching(false)
+    }, 300)
+
+    return () => clearTimeout(searchTimeout)
+  }, [searchTerm])
 
   return {
+    isSearchModalOpen,
+    setIsSearchModalOpen,
     searchTerm,
     setSearchTerm,
-    isSearching,
     results,
-    hasResults: results.length > 0,
-    showResults: debouncedSearchTerm.trim().length > 0,
-    isSearchModalOpen,
-    openSearch: () => setIsSearchModalOpen(true),
-    closeSearch: () => setIsSearchModalOpen(false)
-  };
+    isSearching,
+    searchContent: searchContentRef.current
+  }
 }
+
+export default useGlobalSearch

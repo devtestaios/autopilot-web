@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { createContext, useContext, useEffect, useState, useRef, ReactNode } from 'react';
 
 interface AnalyticsEvent {
   event: string;
@@ -74,6 +74,7 @@ export function AnalyticsProvider({
   const [session, setSession] = useState<UserSession | null>(null);
   const [eventQueue, setEventQueue] = useState<AnalyticsEvent[]>([]);
   const [userId, setUserIdState] = useState<string | undefined>();
+  const hasTrackedInitialPageView = useRef(false);
 
   // Initialize session
   useEffect(() => {
@@ -206,11 +207,22 @@ export function AnalyticsProvider({
   const addEventToQueue = (event: AnalyticsEvent) => {
     setEventQueue(prev => [...prev, event]);
     
-    // Update session with event
+    // Update session with event (but don't trigger session state changes that cause infinite loops)
     if (session) {
-      updateSession({
-        events: [...session.events, event]
-      });
+      // Use a more careful update that doesn't trigger useEffect loops
+      const updatedSession = {
+        ...session,
+        events: [...session.events, event],
+        lastActivity: Date.now()
+      };
+      
+      // Update localStorage directly to avoid state update loops
+      if (localStorage) {
+        localStorage.setItem('pulsebridge_session', JSON.stringify(updatedSession));
+      }
+      
+      // Update state without triggering the session change useEffect
+      setSession(updatedSession);
     }
   };
 
@@ -270,11 +282,20 @@ export function AnalyticsProvider({
       }
     });
 
-    // Update session page views
+    // Update session page views carefully to avoid infinite loops
     if (session) {
-      updateSession({
-        pageViews: session.pageViews + 1
-      });
+      const updatedSession = {
+        ...session,
+        pageViews: session.pageViews + 1,
+        lastActivity: Date.now()
+      };
+      
+      // Update localStorage directly
+      if (localStorage) {
+        localStorage.setItem('pulsebridge_session', JSON.stringify(updatedSession));
+      }
+      
+      setSession(updatedSession);
     }
   };
 
@@ -333,12 +354,8 @@ export function AnalyticsProvider({
 
   const getCurrentSessionId = () => session?.sessionId || '';
 
-  // Track page views automatically
-  useEffect(() => {
-    if (session && typeof window !== 'undefined') {
-      trackPageView(window.location.pathname);
-    }
-  }, [session]);
+  // Manual page tracking only - automatic tracking disabled to prevent infinite loops
+  // Call trackPageView manually when needed instead of automatic useEffect tracking
 
   // Track session end on page unload
   useEffect(() => {
