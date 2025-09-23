@@ -192,7 +192,7 @@ export function ScrollTriggeredFeatures({ className = '' }: ScrollTriggeredFeatu
             }}
             transition={{ duration: 5, repeat: Infinity }}
           >
-            <span className="text-gray-900 dark:text-white">Advanced </span>
+            <span className="text-foreground">Advanced </span>
             <span 
               className={`bg-gradient-to-r ${features[activeFeature]?.gradient} bg-clip-text text-transparent`}
             >
@@ -201,7 +201,7 @@ export function ScrollTriggeredFeatures({ className = '' }: ScrollTriggeredFeatu
           </motion.h2>
           
           <motion.p
-            className="text-sm text-gray-600 dark:text-gray-400 max-w-2xl mx-auto leading-tight"
+            className="text-sm text-muted-foreground max-w-2xl mx-auto leading-tight"
             key={activeFeature}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -229,13 +229,13 @@ export function ScrollTriggeredFeatures({ className = '' }: ScrollTriggeredFeatu
             >
               <feature.icon 
                 className={`w-6 h-6 m-auto ${
-                  activeFeature === index ? 'text-white' : 'text-gray-600 dark:text-gray-400'
+                  activeFeature === index ? 'text-white' : 'text-muted-foreground'
                 }`} 
               />
               
               {/* Tooltip */}
               <motion.div
-                className="absolute left-16 top-1/2 -translate-y-1/2 bg-black text-white px-3 py-2 rounded-lg text-sm whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+                className="absolute left-16 top-1/2 -translate-y-1/2 bg-muted text-foreground px-3 py-2 rounded-lg text-sm whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
                 initial={{ x: -10 }}
                 whileHover={{ x: 0 }}
               >
@@ -261,11 +261,11 @@ export function ScrollTriggeredFeatures({ className = '' }: ScrollTriggeredFeatu
 
       {/* Progress Indicator */}
       <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-40">
-        <div className="flex items-center space-x-2 bg-white/20 backdrop-blur-lg rounded-full px-6 py-3 border border-white/30">
-          <span className="text-sm text-gray-600 dark:text-gray-400">
+        <div className="flex items-center space-x-2 bg-muted/20 backdrop-blur-lg rounded-full px-6 py-3 border border-border/30">
+          <span className="text-sm text-muted-foreground">
             {activeFeature + 1} / {features.length}
           </span>
-          <div className="w-32 h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+          <div className="w-32 h-2 bg-muted rounded-full overflow-hidden">
             <motion.div
               className={`h-full bg-gradient-to-r ${features[activeFeature]?.gradient}`}
               initial={{ width: '0%' }}
@@ -359,13 +359,13 @@ function FeatureSection({ feature, index, isActive, onEnterView }: FeatureSectio
             {feature.benefits.map((benefit, i) => (
               <motion.div
                 key={benefit}
-                className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl rounded-2xl px-4 py-3 shadow-lg border border-gray-200/50 dark:border-gray-700/50"
+                className="bg-card/90 backdrop-blur-xl rounded-2xl px-4 py-3 shadow-lg border border-border/50"
                 initial={{ x: 50, opacity: 0 }}
                 animate={isActive ? { x: 0, opacity: 1 } : { x: 50, opacity: 0 }}
                 transition={{ delay: 0.5 + i * 0.2, duration: 0.6 }}
                 whileHover={{ scale: 1.05, x: -5 }}
               >
-                <div className="text-sm font-semibold text-gray-900 dark:text-white">
+                <div className="text-sm font-semibold text-card-foreground">
                   {benefit}
                 </div>
               </motion.div>
@@ -390,7 +390,7 @@ function FeatureSection({ feature, index, isActive, onEnterView }: FeatureSectio
               </span>
             </motion.h3>
             
-            <p className="text-xl text-gray-600 dark:text-gray-400 leading-relaxed">
+            <p className="text-xl text-muted-foreground leading-relaxed">
               {feature.description}
             </p>
           </div>
@@ -413,7 +413,7 @@ function FeatureSection({ feature, index, isActive, onEnterView }: FeatureSectio
                 >
                   <CheckCircle className="w-4 h-4 text-white" />
                 </motion.div>
-                <span className="text-gray-700 dark:text-gray-300 leading-relaxed">
+                <span className="text-foreground/80 leading-relaxed">
                   {detail}
                 </span>
               </motion.div>

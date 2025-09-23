@@ -177,7 +177,7 @@ export default function ReportsPage() {
       case 'generating': return 'text-blue-600 bg-blue-50 border-blue-200 dark:bg-blue-900/20 dark:border-blue-800';
       case 'scheduled': return 'text-yellow-600 bg-yellow-50 border-yellow-200 dark:bg-yellow-900/20 dark:border-yellow-800';
       case 'failed': return 'text-red-600 bg-red-50 border-red-200 dark:bg-red-900/20 dark:border-red-800';
-      default: return 'text-gray-600 bg-gray-50 border-gray-200 dark:bg-gray-900/20 dark:border-gray-800';
+      default: return 'text-muted-foreground bg-muted border-border';
     }
   };
 
@@ -224,7 +224,7 @@ export default function ReportsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-background">
       <UnifiedSidebar onCollapseChange={setSidebarCollapsed} />
       
       <div className={`transition-all duration-300 ${
@@ -236,16 +236,16 @@ export default function ReportsPage() {
           {/* Header */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+              <h1 className="text-2xl font-bold text-foreground">
                 Reports & Analytics
               </h1>
-              <p className="text-gray-600 dark:text-gray-400 mt-1">
+              <p className="text-muted-foreground mt-1">
                 Generate and manage comprehensive performance reports
               </p>
             </div>
             
             <div className="flex items-center gap-3">
-              <button className="flex items-center gap-2 px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">
+              <button className="flex items-center gap-2 px-4 py-2 bg-muted text-muted-foreground rounded-lg hover:bg-muted/80 transition-colors">
                 <Settings className="w-4 h-4" />
                 Settings
               </button>
@@ -257,7 +257,7 @@ export default function ReportsPage() {
           </div>
 
           {/* View Tabs */}
-          <div className="flex space-x-1 bg-gray-100 dark:bg-gray-800 p-1 rounded-lg w-fit">
+          <div className="flex space-x-1 bg-muted p-1 rounded-lg w-fit">
             {[
               { id: 'reports', label: 'My Reports', icon: <FileText className="w-4 h-4" /> },
               { id: 'templates', label: 'Templates', icon: <BarChart3 className="w-4 h-4" /> }
@@ -267,8 +267,8 @@ export default function ReportsPage() {
                 onClick={() => setSelectedView(tab.id as any)}
                 className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors ${
                   selectedView === tab.id
-                    ? 'bg-white dark:bg-gray-700 text-blue-600 dark:text-blue-400 shadow-sm'
-                    : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
+                    ? 'bg-background text-primary shadow-sm'
+                    : 'text-muted-foreground hover:text-foreground'
                 }`}
               >
                 {tab.icon}
