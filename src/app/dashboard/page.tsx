@@ -17,7 +17,6 @@ import {
 import UnifiedSidebar from '@/components/UnifiedSidebar';
 import { PremiumCard } from '@/components/ui/PremiumCard';
 import { PremiumButton } from '@/components/ui/PremiumButton';
-import AIControlChat from '@/components/AIControlChat';
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -196,8 +195,6 @@ export default function DashboardPage() {
             </motion.div>
           </div>
         </main>
-
-        <AIControlChat defaultMinimized={true} />
       </div>
     </div>
   );

@@ -1,4 +1,5 @@
 import { performance } from 'perf_hooks';
+import React from 'react';
 
 export interface PerformanceMetrics {
   renderTime: number;

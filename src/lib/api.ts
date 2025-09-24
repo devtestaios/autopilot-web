@@ -120,7 +120,7 @@ async function enhancedFetch(
 
 // Check if error is retryable
 function isRetryableError(error: any): boolean {
-  return (
+  return !!(
     error.name === 'TypeError' || // Network errors
     (error instanceof APIError && error.status && error.status >= 500) // Server errors
   );

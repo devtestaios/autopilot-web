@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 
-interface SearchResult {
+export interface SearchResult {
   id: string
   title: string
   description: string
@@ -23,7 +23,7 @@ export const useGlobalSearch = (searchData?: SearchData) => {
   
   // Use ref to cache search content and prevent re-renders
   const searchContentRef = useRef<SearchResult[]>([])
-  const lastSearchDataRef = useRef<SearchData>()
+  const lastSearchDataRef = useRef<SearchData | undefined>(undefined)
 
   // Build search content only when data actually changes
   const buildSearchContent = useCallback(() => {
@@ -206,7 +206,11 @@ export const useGlobalSearch = (searchData?: SearchData) => {
     setSearchTerm,
     results,
     isSearching,
-    searchContent: searchContentRef.current
+    searchContent: searchContentRef.current,
+    hasResults: results.length > 0,
+    showResults: searchTerm.trim().length > 0,
+    openSearch: () => setIsSearchModalOpen(true),
+    closeSearch: () => setIsSearchModalOpen(false)
   }
 }
 

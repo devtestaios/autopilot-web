@@ -13,7 +13,6 @@ import { PageSkeleton, DashboardWidgetSkeleton } from '@/components/ui/Skeleton'
 import { AsyncContent } from '@/components/ui/AsyncContent';
 import { useErrorHandler } from '@/hooks/useErrorHandler';
 import { fetchDashboardOverview, fetchCampaigns, fetchKPISummary } from '@/lib/api';
-import AIControlChat from '@/components/AIControlChat';
 
 // Widget Components
 import MetricWidget from '@/components/dashboard/widgets/MetricWidget';
@@ -271,9 +270,6 @@ export default function CustomizableDashboardPage() {
           </AsyncContent>
         </main>
       </div>
-
-      {/* AI Chat Assistant */}
-      <AIControlChat defaultMinimized={true} />
     </div>
   );
 }

@@ -15,7 +15,6 @@ import { PremiumButton } from '@/components/ui/PremiumButton';
 import { AsyncContent } from '@/components/ui/AsyncContent';
 import { useErrorHandler } from '@/hooks/useErrorHandler';
 import { fetchDashboardOverview, fetchCampaigns, fetchKPISummary } from '@/lib/api';
-import AIControlChat from '@/components/AIControlChat';
 import { 
   TrendingUp, 
   Users, 
@@ -308,9 +307,6 @@ export default function PerformanceOptimizedDashboard() {
           </AsyncContent>
         </main>
       </div>
-
-      {/* AI Chat Assistant */}
-      <AIControlChat defaultMinimized={true} />
     </div>
   );
 }

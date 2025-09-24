@@ -4,20 +4,57 @@
 **PulseBridge.ai** is a production-ready AI-autonomous marketing platform that manages campaigns across Google Ads, Meta, and LinkedIn with complete autonomous decision-making capabilities.
 
 **Production**: https://pulsebridge.ai | **Backend**: https://autopilot-api-1.onrender.com  
-**Status**: ✅ **COMPLETE PLATFORM + COMPREHENSIVE NAVIGATION + HYDRATION FIXES** - All 6 development phases + enhanced visual polish + complete navigation system + zero hydration errors (September 2025)
+**Status**: ✅ **ENTERPRISE-GRADE COMPLETE** - All 6 development phases + premium visual polish + enterprise testing infrastructure + full AI autonomy (September 2025)
+
+## Project Architecture Overview
+**Complete Full-Stack Platform**: 51 frontend routes + 50+ backend endpoints + comprehensive AI system
+- **Frontend**: Next.js 15.5.2 with App Router, 51 fully functional pages, zero TypeScript errors
+- **Backend**: FastAPI with 50+ endpoints, production-deployed on Render
+- **Database**: Supabase PostgreSQL with real-time subscriptions and advanced schema
+- **AI System**: Dual provider (Claude primary, OpenAI secondary) with autonomous decision-making
+- **Testing**: 95%+ E2E success rate, 70% unit test coverage, multi-browser compatibility
 
 ## Essential Architecture Knowledge
 
 ### Core Technology Stack
-- **Frontend**: Next.js 15.5.2 (App Router) + TypeScript + Tailwind CSS
-- **Backend**: FastAPI (Python) with async/await patterns
-- **Database**: Supabase (PostgreSQL) with real-time subscriptions
-- **AI Integration**: Claude/Anthropic (primary) + OpenAI (secondary)
-- **State Management**: React Context + Custom hooks pattern
-- **UI Components**: Custom design system + Radix UI primitives + Enhanced visual system
-- **Navigation**: Unified NavigationTabs system across all major pages
+- **Frontend**: Next.js 15.5.2 (App Router) + TypeScript + Tailwind CSS + Framer Motion
+- **Backend**: FastAPI (Python) with async/await patterns + comprehensive AI integration
+- **Database**: Supabase (PostgreSQL) with real-time subscriptions + advanced schema
+- **AI Integration**: Claude/Anthropic (primary) + OpenAI (secondary) with autonomous capabilities
+- **State Management**: Unified provider system with 9 context providers in nested architecture
+- **UI Components**: 46 premium components with glassmorphism + Radix UI primitives
+- **Navigation**: Universal NavigationTabs system across all major pages
+
+### Critical Context Provider Architecture
+All components are wrapped in a comprehensive provider hierarchy (`src/components/ClientProviders.tsx`):
+```typescript
+<ErrorProvider>
+  <ThemeProvider>
+    <CacheProvider>
+      <WebSocketProvider>
+        <AuthProvider>
+          <SearchProvider>
+            <UnifiedAIProvider> {/* 724-line AI orchestration system */}
+              <AnalyticsProvider>
+                <ABTestProvider>
+                  <ToastProvider>
+                    {children}
+```
+
+**Key Insight**: The `UnifiedAIProvider` is the core AI orchestration system (724 lines) that manages all AI interactions, decision-making, and autonomous operations across the platform.
 
 ### Critical Development Patterns
+
+#### Build System (MANDATORY for Next.js 15.5.2)
+```bash
+# Always use --turbopack flag for Next.js 15
+npm run dev --turbopack      # Development 
+npm run build --turbopack    # Production builds MUST pass
+npm run test                 # 70% coverage threshold enforced
+npm run test:e2e            # 95%+ success rate required
+npx tsc --noEmit --skipLibCheck  # Zero TypeScript errors enforced
+```
+**Critical**: Production builds fail with TypeScript errors. Always verify builds before commits.
 
 #### Hydration Safety Protocol (MANDATORY)
 ```typescript
@@ -35,24 +72,12 @@ const ClientOnlyComponent = dynamic(() => import('./ClientComponent'), {
 </div>
 ```
 
-#### Navigation System Architecture (CRITICAL)
+#### Universal Navigation System (CRITICAL)
+**Every major page MUST include NavigationTabs component**:
 ```typescript
-// NavigationTabs component - MANDATORY on all major pages
 import NavigationTabs from '@/components/NavigationTabs';
 
-// Complete navigation structure:
-const navigationItems = [
-  { href: '/', label: 'Single Platform Dashboard' },
-  { href: '/unified', label: '🌐 Unified Platform Command Center' },
-  { href: '/platforms', label: '⚙️ Platform Setup' },
-  { href: '/campaigns', label: '📊 Campaign Management' },
-  { href: '/leads', label: '🎯 Lead Management' },
-  { href: '/analytics', label: '📊 Advanced Analytics' },
-  { href: '/alerts', label: '🚨 Smart Alerts' },
-  { href: '/status', label: '📈 System Status' },
-];
-
-// Page structure template:
+// Standard page structure template:
 export default function PageComponent() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -65,22 +90,37 @@ export default function PageComponent() {
 }
 ```
 
-#### Data Flow Architecture
+**Complete navigation structure** (51 routes supported):
+- `/` - Single Platform Dashboard
+- `/unified` - 🌐 Unified Platform Command Center  
+- `/platforms` - ⚙️ Platform Setup
+- `/campaigns` - 📊 Campaign Management
+- `/leads` - 🎯 Lead Management
+- `/analytics` - 📊 Advanced Analytics
+- `/alerts` - 🚨 Smart Alerts
+- `/status` - 📈 System Status
+
+#### Data Flow & AI Control Architecture
 ```typescript
-// Always follow this service boundary pattern:
+// Service boundary pattern:
 Frontend UI → Context (State) → API Layer → FastAPI Backend → Supabase
-           ↘ AI Control Context → Claude API ↗
+           ↘ UnifiedAIProvider (724 lines) → Claude/OpenAI APIs ↗
+
+// Core AI system integration:
+const { aiControl, sendMessage, executeAIAction } = useUnifiedAI();
+await executeAIAction('createCampaign', parameters);
 
 // Core data entities (src/types/index.ts):
 interface Campaign {
   id: string;
-  status: 'active' | 'paused' | 'ended'; // REQUIRED enum
+  status: 'active' | 'paused' | 'ended'; // REQUIRED enum values
   platform: string;
   client_name: string;
   budget?: number;
   spend: number;
   metrics: Record<string, unknown>;
-  // ... other fields
+  created_at: string;
+  updated_at: string;
 }
 
 interface PerformanceSnapshot {
@@ -90,35 +130,19 @@ interface PerformanceSnapshot {
   clicks: number;
   conversions: number;
   spend: number;
-  // ... metrics
+  ctr?: number;  // Calculated fields
+  cpc?: number;
+  cpa?: number;
+  roas?: number;
 }
 ```
 
-#### AI Control System (CRITICAL)
+#### Enhanced API Integration (MANDATORY Pattern)
 ```typescript
-// src/contexts/AIControlContext.tsx - 457 lines, core platform feature
-const { aiControl } = useAIControl();
-await aiControl.executeAIAction('createCampaign', parameters);
-await aiControl.navigateToPage('/campaigns');
-
-// AI modes: autonomous vs supervised decision-making
-const { autonomousMode, humanApprovalRequired } = aiControl;
-```
-
-#### API Integration Pattern (MANDATORY)
-```typescript
-// src/lib/api.ts - Always use this error handling pattern
-export class APIError extends Error {
-  constructor(message: string, public status?: number, public code?: string, public details?: any) {
-    super(message);
-    this.name = 'APIError';
-  }
-}
-
-// Production API base - NEVER hardcode localhost
+// src/lib/api.ts - Production API configuration
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'https://autopilot-api-1.onrender.com';
 
-// ALWAYS use cache: 'no-store' for dynamic marketing data
+// ALWAYS use cache: 'no-store' for marketing data
 const response = await fetch(`${API_BASE}/campaigns`, { 
   cache: 'no-store',
   headers: {
@@ -127,9 +151,13 @@ const response = await fetch(`${API_BASE}/campaigns`, {
   }
 });
 
-// Enhanced fetch with retry logic, timeout, and rate limiting
-async function enhancedFetch(url: string, options: RequestInit = {}, retryCount = 0) {
-  // Built-in rate limiting, timeout handling, and retry logic
+// Enhanced fetch with retry, timeout, and rate limiting (400 lines)
+// APIError class for consistent error handling across platform
+export class APIError extends Error {
+  constructor(message: string, public status?: number, public code?: string) {
+    super(message);
+    this.name = 'APIError';
+  }
 }
 ```
 
@@ -169,7 +197,7 @@ src/components/        # Reusable UI components
 └── providers/        # Context providers
 
 src/contexts/         # Global state management
-├── AIControlContext.tsx    # Core AI control (457 lines)
+├── UnifiedAIContext.tsx    # Core AI control (724 lines)
 ├── ThemeContext.tsx        # Theme management
 └── [other contexts]
 

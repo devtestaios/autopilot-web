@@ -3,6 +3,8 @@
  * Ensures all required credentials are properly configured before API integration
  */
 
+import React from 'react';
+
 export interface PlatformCredentials {
   // Google Ads API
   GOOGLE_ADS_DEVELOPER_TOKEN?: string;
