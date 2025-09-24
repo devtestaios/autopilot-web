@@ -31,8 +31,6 @@ export default function LandingNavbar({ className = '' }: LandingNavbarProps) {
     { label: 'Solutions', href: '#solutions' },
     { label: 'Pricing', href: '#pricing' },
     { label: 'Dashboard', href: '/dashboard' },
-    { label: 'Campaigns', href: '/campaigns' },
-    { label: 'Analytics', href: '/analytics' },
     { label: 'About', href: '#about' },
     { label: 'Contact', href: '#contact' },
   ];

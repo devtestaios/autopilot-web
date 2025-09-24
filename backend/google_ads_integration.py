@@ -1,13 +1,13 @@
 """
-Google Ads Integration Module for Autopilot Backend
-
-This module provides Google Ads API integration functionality.
-Copy this file to your FastAPI backend project.
+Google Ads API Integration for PulseBridge AI - Phase 1 Production
+Enhanced integration with comprehensive error handling and rate limiting
 
 Requirements (add to requirements.txt):
-    google-ads==23.1.0
+    google-ads==24.1.0
     google-auth==2.23.3
     google-auth-oauthlib==1.1.0
+    structlog==23.2.0
+    tenacity==8.2.3
 
 Environment Variables Required:
     GOOGLE_ADS_DEVELOPER_TOKEN
