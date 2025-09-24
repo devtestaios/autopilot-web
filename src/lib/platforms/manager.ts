@@ -24,6 +24,7 @@ import {
 import { GoogleAdsAdapter } from './googleAds';
 import { MetaAdsAdapter } from './metaAds';
 import { LinkedInAdsAdapter } from './linkedInAds';
+import { PinterestAdsAdapter } from './pinterestAds';
 
 // ===== ENHANCED MULTI-PLATFORM TYPES =====
 
@@ -267,6 +268,7 @@ export class PlatformManager {
     platformRegistry.register('google_ads', new GoogleAdsAdapter());
     platformRegistry.register('meta_ads', new MetaAdsAdapter());
     platformRegistry.register('linkedin_ads', new LinkedInAdsAdapter());
+    platformRegistry.register('pinterest_ads', new PinterestAdsAdapter());
 
     this.initialized = true;
   }
