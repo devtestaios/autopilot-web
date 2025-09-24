@@ -334,7 +334,7 @@ export default function UnifiedAIChat({
   const renderHeader = () => (
     <div className="flex items-center justify-between p-3 border-b border-gray-200 dark:border-gray-700">
       <div className="flex items-center space-x-2">
-        <div className="p-1.5 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg">
+        <div className="p-1.5 bg-gradient-to-r from-teal-600 to-cyan-600 rounded-lg">
           <Bot className="w-4 h-4 text-white" />
         </div>
         <div>
@@ -393,7 +393,7 @@ export default function UnifiedAIChat({
           )}
         >
           {message.role === 'assistant' && (
-            <div className="p-1.5 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg self-start">
+            <div className="p-1.5 bg-gradient-to-r from-teal-600 to-cyan-600 rounded-lg self-start">
               <Bot className="w-4 h-4 text-white" />
             </div>
           )}
@@ -402,7 +402,7 @@ export default function UnifiedAIChat({
             className={cn(
               "max-w-[80%] rounded-lg p-3",
               message.role === 'user'
-                ? 'bg-blue-500 text-white'
+                ? 'bg-teal-600 text-white'
                 : 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white'
             )}
           >
@@ -471,7 +471,7 @@ export default function UnifiedAIChat({
       {/* Typing Indicator */}
       {isTyping && (
         <div className="flex space-x-3">
-          <div className="p-1.5 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg">
+          <div className="p-1.5 bg-gradient-to-r from-teal-600 to-cyan-600 rounded-lg">
             <Bot className="w-4 h-4 text-white" />
           </div>
           <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-3">
@@ -530,7 +530,7 @@ export default function UnifiedAIChat({
         <button
           onClick={handleSendMessage}
           disabled={!inputValue.trim() || isTyping}
-          className="px-3 py-2 bg-blue-500 hover:bg-blue-600 disabled:bg-gray-400 disabled:cursor-not-allowed text-white rounded-lg transition-colors"
+          className="px-3 py-2 bg-teal-600 hover:bg-teal-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white rounded-lg transition-colors"
         >
           <Send className="w-4 h-4" />
         </button>
@@ -545,7 +545,7 @@ export default function UnifiedAIChat({
         <motion.button
           onClick={handleToggle}
           className={cn(
-            "fixed z-50 p-3 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white rounded-full shadow-lg transition-all duration-200",
+            "fixed z-50 p-3 bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700 text-white rounded-full shadow-lg transition-all duration-200",
             position === 'bottom-right' && 'bottom-6 right-6',
             position === 'bottom-left' && 'bottom-6 left-6',
             position === 'top-right' && 'top-6 right-6',

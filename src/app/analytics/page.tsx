@@ -244,7 +244,7 @@ export default function AnalyticsPage() {
             </div>
           </div>
           {/* Dynamic Stats (when loaded) */}
-          {stats && (
+          {stats && stats.kpis && Array.isArray(stats.kpis) && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8" style={{ display: 'none' }}>
               {stats.kpis.map((kpi, index) => (
                 <motion.div

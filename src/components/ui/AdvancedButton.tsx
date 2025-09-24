@@ -231,7 +231,7 @@ export function FloatingActionButton({
     <motion.button
       className={`
         ${sizes[size]} rounded-full
-        bg-gradient-to-r from-blue-500 to-purple-500
+        bg-gradient-to-r from-teal-600 to-cyan-600
         text-white shadow-lg hover:shadow-xl
         flex items-center justify-center
         transition-all duration-300

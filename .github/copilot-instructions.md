@@ -4,7 +4,7 @@
 **PulseBridge.ai** is a production-ready AI-autonomous marketing platform that manages campaigns across Google Ads, Meta, and LinkedIn with complete autonomous decision-making capabilities.
 
 **Production**: https://pulsebridge.ai | **Backend**: https://autopilot-api-1.onrender.com  
-**Status**: ✅ **COMPLETE PLATFORM + CRITICAL MAINTENANCE** - All 6 development phases + enhanced visual polish + TypeScript error resolution (September 2025)
+**Status**: ✅ **COMPLETE PLATFORM + LANDING PAGE REDESIGN** - All 6 development phases + enhanced visual polish + incremental landing page enhancements (September 2025)
 
 ## Essential Architecture Knowledge
 
@@ -291,6 +291,86 @@ projects: ['chromium', 'firefox', 'webkit', 'Mobile Chrome', 'Mobile Safari']
 ```typescript
 // Supabase real-time subscriptions for live campaign data
 const { data, error } = useSupabaseSubscription('campaigns');
+```
+
+## 🎨 Landing Page Redesign Framework (September 2025)
+
+### Current Landing Page Architecture
+```
+src/app/page.tsx → CleanLandingPage.tsx (Corporate Tech Clean branding)
+├── Theme System: ThemeContext with localStorage persistence
+├── Corporate Colors: Teal (#00c9a7) + Coral (#e07856) + Cyan accents
+├── Framer Motion: useScroll, useTransform, motion components
+└── Responsive Design: Mobile-first with Tailwind breakpoints
+```
+
+### Landing Page Enhancement Strategy
+**Approach**: Incremental, non-breaking improvements following redesign guide
+**Priority**: Light/dark theme optimization first, then progressive animation enhancement
+
+#### Phase 1A: Enhanced Theme System (NEW FILES ONLY)
+```typescript
+// Create: src/styles/theme-enhancements.css
+.animated-gradient-bg {
+  background: linear-gradient(-45deg, #1e1b4b, #312e81, #1e3a8a, #1e40af);
+  background-size: 400% 400%;
+  animation: gradient-shift 15s ease infinite;
+}
+
+// Create: src/components/ui/AnimatedElements.tsx
+export function FadeInUp({ children, delay = 0 }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.6, delay }}
+    >
+      {children}
+    </motion.div>
+  );
+}
+```
+
+#### Phase 1B: Theme-Aware Component Enhancement
+```typescript
+// Create: src/components/ui/EnhancedButton.tsx
+export function EnhancedButton({ variant = 'primary', children, ...props }) {
+  const variants = {
+    primary: "bg-gradient-to-r from-teal-600 to-cyan-600 text-white",
+    secondary: "bg-white/10 backdrop-blur-sm text-white border border-white/20",
+    glass: "bg-white/5 backdrop-blur-md text-white border border-white/10"
+  };
+  
+  return (
+    <motion.button
+      whileHover={{ scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
+      className={`${variants[variant]} transition-all duration-200`}
+      {...props}
+    >
+      {children}
+    </motion.button>
+  );
+}
+```
+
+#### Landing Page Enhancement Rules
+1. **Non-Breaking Changes**: Always wrap existing content, never replace
+2. **Theme Priority**: Ensure perfect light/dark mode functionality before animations
+3. **Corporate Branding**: Maintain teal/coral Corporate Tech Clean colors
+4. **Performance**: Monitor bundle size, aim for <1.5s First Contentful Paint
+5. **Testing**: Validate each enhancement with build verification
+
+#### Implementation Safeguards
+```bash
+# Before any changes:
+git checkout -b feature/landing-page-enhancement
+npm run build --turbopack  # Verify current build
+npm run dev --turbopack    # Test theme switching
+
+# After each change:
+npm run build --turbopack  # Ensure no breaking changes
 ```
 
 This platform prioritizes **functional completeness** with **enterprise-grade reliability** and **comprehensive AI autonomy**.

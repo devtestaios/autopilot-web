@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import NavigationTabs from '@/components/NavigationTabs';
 import { 
   Plus, 
   Bot, 
@@ -79,7 +78,7 @@ interface EnhancedCampaign {
   lastOptimized: string;
 }
 
-export default function CampaignsPage() {
+export default function EnhancedCampaignsDashboard() {
   const router = useRouter();
   const [campaigns, setCampaigns] = useState<EnhancedCampaign[]>([]);
   const [loading, setLoading] = useState(true);
@@ -282,10 +281,8 @@ export default function CampaignsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <NavigationTabs />
-      <div className="bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-slate-800 p-6 min-h-[calc(100vh-80px)]">
-        <div className="max-w-7xl mx-auto space-y-8">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-900 dark:to-slate-800 p-6">
+      <div className="max-w-7xl mx-auto space-y-8">
         
         {/* Header Section */}
         <motion.div 
@@ -698,7 +695,6 @@ export default function CampaignsPage() {
             </motion.div>
           )}
         </AnimatePresence>
-        </div>
       </div>
     </div>
   );

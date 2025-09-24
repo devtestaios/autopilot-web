@@ -355,8 +355,8 @@ function SidebarContent({
                 className={`w-full flex items-center space-x-3 p-3 rounded-lg transition-all duration-200 group ${
                   isItemActive(item)
                     ? theme === 'dark'
-                      ? 'bg-blue-600/20 text-blue-400 border border-blue-500/30'
-                      : 'bg-blue-50 text-blue-600 border border-blue-200'
+                      ? 'bg-teal-600/20 text-teal-400 border border-teal-500/30'
+                      : 'bg-teal-50 text-teal-600 border border-teal-200'
                     : theme === 'dark'
                       ? 'text-gray-300 hover:bg-gray-800/60 hover:text-white'
                       : 'text-gray-800 hover:bg-gray-100 hover:text-gray-900'
@@ -421,8 +421,8 @@ function SidebarContent({
                           className={`w-full text-left p-2 rounded-md text-sm transition-colors ${
                             pathname === subItem.path
                               ? theme === 'dark'
-                                ? 'bg-blue-600/30 text-blue-300'
-                                : 'bg-blue-100 text-blue-700'
+                                ? 'bg-teal-600/30 text-teal-300'
+                                : 'bg-teal-100 text-teal-700'
                               : theme === 'dark'
                                 ? 'text-gray-400 hover:bg-gray-800/40 hover:text-gray-200'
                                 : 'text-gray-700 hover:bg-gray-50 hover:text-gray-800'

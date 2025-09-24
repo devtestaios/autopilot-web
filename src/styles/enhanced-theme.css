@@ -1,0 +1,266 @@
+/* Enhanced Theme System for PulseBridge.ai Landing Page */
+/* Incremental improvements to existing theme functionality */
+
+/* Enhanced CSS Variables for Better Light/Dark Mode Support */
+:root {
+  /* Light theme enhancements */
+  --theme-bg-primary: rgb(248, 250, 252);
+  --theme-bg-secondary: rgb(241, 245, 249);
+  --theme-bg-tertiary: rgb(255, 255, 255);
+  --theme-text-primary: rgb(15, 23, 42);
+  --theme-text-secondary: rgb(51, 65, 85);
+  --theme-text-muted: rgb(100, 116, 139);
+  --theme-border: rgb(226, 232, 240);
+  --theme-border-light: rgb(241, 245, 249);
+  
+  /* Corporate Tech Clean Colors - Light Mode */
+  --theme-accent-teal: rgb(0, 201, 167);
+  --theme-accent-teal-light: rgb(20, 184, 166);
+  --theme-accent-coral: rgb(224, 120, 86);
+  --theme-accent-coral-light: rgb(251, 146, 60);
+  --theme-accent-cyan: rgb(6, 182, 212);
+  --theme-accent-cyan-light: rgb(34, 211, 238);
+  
+  /* Glass effects */
+  --glass-bg: rgba(255, 255, 255, 0.1);
+  --glass-border: rgba(255, 255, 255, 0.2);
+  --glass-backdrop: blur(12px);
+}
+
+.dark {
+  /* Dark theme enhancements */
+  --theme-bg-primary: rgb(15, 23, 42);
+  --theme-bg-secondary: rgb(30, 41, 59);
+  --theme-bg-tertiary: rgb(51, 65, 85);
+  --theme-text-primary: rgb(248, 250, 252);
+  --theme-text-secondary: rgb(203, 213, 225);
+  --theme-text-muted: rgb(148, 163, 184);
+  --theme-border: rgb(51, 65, 85);
+  --theme-border-light: rgb(71, 85, 105);
+  
+  /* Corporate Tech Clean Colors - Dark Mode */
+  --theme-accent-teal: rgb(20, 184, 166);
+  --theme-accent-teal-light: rgb(45, 212, 191);
+  --theme-accent-coral: rgb(239, 68, 68);
+  --theme-accent-coral-light: rgb(248, 113, 113);
+  --theme-accent-cyan: rgb(34, 211, 238);
+  --theme-accent-cyan-light: rgb(103, 232, 249);
+  
+  /* Glass effects - dark mode */
+  --glass-bg: rgba(0, 0, 0, 0.2);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-backdrop: blur(16px);
+}
+
+/* Smooth theme transitions for all elements */
+* {
+  transition: 
+    background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Enhanced gradient backgrounds that adapt to theme */
+.theme-gradient-hero {
+  background: linear-gradient(135deg, 
+    var(--theme-bg-primary) 0%, 
+    var(--theme-bg-secondary) 40%, 
+    var(--theme-accent-teal) 100%
+  );
+}
+
+.theme-gradient-section {
+  background: linear-gradient(180deg,
+    var(--theme-bg-primary) 0%,
+    var(--theme-bg-secondary) 100%
+  );
+}
+
+.theme-gradient-card {
+  background: linear-gradient(145deg,
+    var(--theme-bg-tertiary) 0%,
+    var(--theme-bg-secondary) 100%
+  );
+  border: 1px solid var(--theme-border-light);
+}
+
+/* Glass morphism effects that work in both themes */
+.theme-glass-effect {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-backdrop);
+  -webkit-backdrop-filter: var(--glass-backdrop);
+  border: 1px solid var(--glass-border);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.dark .theme-glass-effect {
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* Corporate branding utilities */
+.corporate-teal {
+  color: var(--theme-accent-teal);
+}
+
+.corporate-teal-bg {
+  background-color: var(--theme-accent-teal);
+}
+
+.corporate-coral {
+  color: var(--theme-accent-coral);
+}
+
+.corporate-coral-bg {
+  background-color: var(--theme-accent-coral);
+}
+
+.corporate-gradient {
+  background: linear-gradient(135deg, 
+    var(--theme-accent-teal) 0%, 
+    var(--theme-accent-cyan) 100%
+  );
+}
+
+/* Enhanced hover and interaction states */
+.theme-hover-lift {
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.theme-hover-lift:hover {
+  transform: translateY(-2px);
+}
+
+.theme-hover-scale {
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.theme-hover-scale:hover {
+  transform: scale(1.02);
+}
+
+/* Button variants that work perfectly in both themes */
+.theme-btn-primary {
+  background: var(--theme-accent-teal);
+  color: white;
+  border: 2px solid var(--theme-accent-teal);
+}
+
+.theme-btn-primary:hover {
+  background: var(--theme-accent-teal-light);
+  border-color: var(--theme-accent-teal-light);
+  box-shadow: 0 8px 25px rgba(0, 201, 167, 0.3);
+}
+
+.theme-btn-secondary {
+  background: transparent;
+  color: var(--theme-text-primary);
+  border: 2px solid var(--theme-border);
+}
+
+.theme-btn-secondary:hover {
+  background: var(--theme-bg-secondary);
+  border-color: var(--theme-accent-teal);
+  color: var(--theme-accent-teal);
+}
+
+.theme-btn-gradient {
+  background: linear-gradient(135deg, 
+    var(--theme-accent-teal) 0%, 
+    var(--theme-accent-cyan) 100%
+  );
+  color: white;
+  border: none;
+  box-shadow: 0 4px 15px rgba(0, 201, 167, 0.2);
+}
+
+.theme-btn-gradient:hover {
+  box-shadow: 0 8px 25px rgba(0, 201, 167, 0.4);
+  transform: translateY(-2px);
+}
+
+/* Text utilities for perfect contrast */
+.theme-text-primary {
+  color: var(--theme-text-primary);
+}
+
+.theme-text-secondary {
+  color: var(--theme-text-secondary);
+}
+
+.theme-text-muted {
+  color: var(--theme-text-muted);
+}
+
+/* Background utilities */
+.theme-bg-primary {
+  background-color: var(--theme-bg-primary);
+}
+
+.theme-bg-secondary {
+  background-color: var(--theme-bg-secondary);
+}
+
+.theme-bg-card {
+  background-color: var(--theme-bg-tertiary);
+  border: 1px solid var(--theme-border);
+}
+
+/* Border utilities */
+.theme-border {
+  border-color: var(--theme-border);
+}
+
+.theme-border-light {
+  border-color: var(--theme-border-light);
+}
+
+/* Animation-ready classes for future enhancements */
+.theme-animate-ready {
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  :root {
+    --theme-border: rgb(0, 0, 0);
+    --theme-text-secondary: rgb(0, 0, 0);
+  }
+  
+  .dark {
+    --theme-border: rgb(255, 255, 255);
+    --theme-text-secondary: rgb(255, 255, 255);
+  }
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  .theme-glass-effect {
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+}
+
+/* Print styles */
+@media print {
+  * {
+    background: white !important;
+    color: black !important;
+    box-shadow: none !important;
+  }
+}

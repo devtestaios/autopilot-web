@@ -213,13 +213,13 @@ export default function DashboardStats({ campaigns, loading }: DashboardStatsPro
               <p className="text-sm font-bold text-muted-foreground uppercase tracking-wide">Remaining Budget</p>
               <p className="text-3xl font-bold text-primary dark:text-white mt-2">{formatCurrency(totalBudget - totalSpend)}</p>
               <div className="flex items-center mt-3">
-                <span className="text-sm font-semibold text-purple-700 dark:text-purple-400 bg-purple-100 dark:bg-purple-900/30 px-2 py-1 rounded-full">
+                <span className="text-sm font-semibold text-teal-700 dark:text-teal-400 bg-teal-100 dark:bg-teal-900/30 px-2 py-1 rounded-full">
                   {((totalBudget - totalSpend) / totalBudget * 100).toFixed(1)}% available
                 </span>
               </div>
             </div>
-            <div className="p-4 bg-gradient-to-br from-purple-100 to-purple-200 dark:from-purple-800 dark:to-purple-900 rounded-xl group-hover:scale-110 transition-transform duration-300 float">
-              <svg className="w-8 h-8 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="p-4 bg-gradient-to-br from-teal-100 to-cyan-200 dark:from-teal-800 dark:to-cyan-900 rounded-xl group-hover:scale-110 transition-transform duration-300 float">
+              <svg className="w-8 h-8 text-teal-600 dark:text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
@@ -238,7 +238,7 @@ export default function DashboardStats({ campaigns, loading }: DashboardStatsPro
                 <div className="text-sm text-muted-foreground capitalize mb-2">{platform.replace('_', ' ')}</div>
                 <div className="w-full bg-muted rounded-full h-2 mt-2">
                   <div 
-                    className="bg-gradient-to-r from-blue-400 to-purple-500 h-2 rounded-full transition-all duration-500"
+                    className="bg-gradient-to-r from-teal-400 to-cyan-500 h-2 rounded-full transition-all duration-500"
                     style={{ width: `${(count / totalCampaigns) * 100}%` }}
                   ></div>
                 </div>

@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "../styles/enhanced-theme.css";
 
 :root {
   /* Corporate Tech Clean - Dark Theme (Default) */

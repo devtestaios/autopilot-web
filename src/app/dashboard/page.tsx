@@ -29,24 +29,24 @@ export default function DashboardPage() {
       title: 'Total Revenue',
       value: '$847,291',
       change: '+15.3%',
-      color: 'text-green-600 dark:text-green-400',
-      bgColor: 'bg-green-100 dark:bg-green-900/30',
+      color: 'text-teal-600 dark:text-teal-400',
+      bgColor: 'bg-teal-100 dark:bg-teal-900/30',
       icon: DollarSign
     },
     {
       title: 'Active Campaigns',
       value: '24',
       change: '+8.2%',
-      color: 'text-blue-600 dark:text-blue-400',
-      bgColor: 'bg-blue-100 dark:bg-blue-900/30',
+      color: 'text-cyan-600 dark:text-cyan-400',
+      bgColor: 'bg-cyan-100 dark:bg-cyan-900/30',
       icon: Target
     },
     {
       title: 'Conversion Rate',
       value: '12.4%',
       change: '+2.1%',
-      color: 'text-purple-600 dark:text-purple-400',
-      bgColor: 'bg-purple-100 dark:bg-purple-900/30',
+      color: 'text-teal-700 dark:text-teal-300',
+      bgColor: 'bg-teal-50 dark:bg-teal-800/30',
       icon: TrendingUp
     },
     {

@@ -126,7 +126,7 @@ export default function LandingNavbar({ className = '' }: LandingNavbarProps) {
                 >
                   <Link href="/dashboard">
                     <motion.button
-                      className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-exo-2 font-medium rounded-lg hover:shadow-lg transition-all duration-200"
+                      className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-teal-600 to-cyan-600 text-white font-exo-2 font-medium rounded-lg hover:shadow-lg transition-all duration-200"
                       whileHover={{ scale: 1.05, boxShadow: "0 10px 20px rgba(0, 212, 255, 0.3)" }}
                       whileTap={{ scale: 0.95 }}
                     >
@@ -166,7 +166,7 @@ export default function LandingNavbar({ className = '' }: LandingNavbarProps) {
                 
                 <Link href="/signup">
                   <motion.button
-                    className="flex items-center space-x-2 px-6 py-2 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-exo-2 font-semibold rounded-lg hover:shadow-lg transition-all duration-200"
+                    className="flex items-center space-x-2 px-6 py-2 bg-gradient-to-r from-teal-600 to-cyan-600 text-white font-exo-2 font-semibold rounded-lg hover:shadow-lg transition-all duration-200"
                     whileHover={{ 
                       scale: 1.05, 
                       boxShadow: "0 10px 20px rgba(0, 212, 255, 0.3)",
@@ -227,7 +227,7 @@ export default function LandingNavbar({ className = '' }: LandingNavbarProps) {
                 <>
                   <Link href="/dashboard">
                     <motion.button
-                      className="w-full flex items-center justify-center space-x-2 px-4 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-exo-2 font-semibold rounded-lg"
+                      className="w-full flex items-center justify-center space-x-2 px-4 py-3 bg-gradient-to-r from-teal-600 to-cyan-600 text-white font-exo-2 font-semibold rounded-lg"
                       whileTap={{ scale: 0.98 }}
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
@@ -261,7 +261,7 @@ export default function LandingNavbar({ className = '' }: LandingNavbarProps) {
                   </Link>
                   <Link href="/signup">
                     <motion.button
-                      className="w-full flex items-center justify-center space-x-2 px-4 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-exo-2 font-semibold rounded-lg"
+                      className="w-full flex items-center justify-center space-x-2 px-4 py-3 bg-gradient-to-r from-teal-600 to-cyan-600 text-white font-exo-2 font-semibold rounded-lg"
                       whileTap={{ scale: 0.98 }}
                       onClick={() => setIsMobileMenuOpen(false)}
                     >

@@ -3,7 +3,7 @@ import { Orbitron, Exo_2 } from "next/font/google";
 import "./globals.css";
 import ClientProviders from "@/components/ClientProviders";
 import AIFloatingAssistant from "@/components/AIFloatingAssistant";
-import GlobalSearch from "@/components/GlobalSearch";
+import { ClientOnlyGlobalSearch } from '@/components/ClientOnlyGlobalSearch';
 
 export const metadata: Metadata = {
   title: "PulseBridge.ai - AI Marketing Intelligence",
@@ -61,7 +61,7 @@ export default function RootLayout({
         <ClientProviders>
           {children}
           <AIFloatingAssistant />
-          <GlobalSearch />
+          <ClientOnlyGlobalSearch />
         </ClientProviders>
       </body>
     </html>
