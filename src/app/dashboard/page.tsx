@@ -11,52 +11,29 @@ import {
   ArrowUpRight,
   Activity,
   Zap,
-  Target
+  Target,
+  RefreshCw
 } from 'lucide-react';
 
 import UnifiedSidebar from '@/components/UnifiedSidebar';
 import { PremiumCard } from '@/components/ui/PremiumCard';
 import { PremiumButton } from '@/components/ui/PremiumButton';
+import { useDashboardData } from '@/hooks/useDashboardData';
 
 export default function DashboardPage() {
   const router = useRouter();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
-  // Mock data for demonstration
-  const quickStats = [
-    {
-      title: 'Total Revenue',
-      value: '$847,291',
-      change: '+15.3%',
-      color: 'text-teal-600 dark:text-teal-400',
-      bgColor: 'bg-teal-100 dark:bg-teal-900/30',
-      icon: DollarSign
-    },
-    {
-      title: 'Active Campaigns',
-      value: '24',
-      change: '+8.2%',
-      color: 'text-cyan-600 dark:text-cyan-400',
-      bgColor: 'bg-cyan-100 dark:bg-cyan-900/30',
-      icon: Target
-    },
-    {
-      title: 'Conversion Rate',
-      value: '12.4%',
-      change: '+2.1%',
-      color: 'text-teal-700 dark:text-teal-300',
-      bgColor: 'bg-teal-50 dark:bg-teal-800/30',
-      icon: TrendingUp
-    },
-    {
-      title: 'Total Leads',
-      value: '2,847',
-      change: '+23.5%',
-      color: 'text-orange-600 dark:text-orange-400',
-      bgColor: 'bg-orange-100 dark:bg-orange-900/30',
-      icon: Users
-    }
-  ];
+  // Real-time dashboard data with 30-second refresh
+  const { quickStats, overview, campaigns, loading, error, refresh, isStale, lastUpdated } = useDashboardData(30000);
+
+  // Icon mapping for quick stats
+  const iconMap = {
+    DollarSign: DollarSign,
+    Target: Target,
+    TrendingUp: TrendingUp,
+    Users: Users
+  } as const;
 
   const navigateToAnalytics = () => {
     router.push('/analytics');
@@ -94,10 +71,17 @@ export default function DashboardPage() {
                 <PremiumButton
                   variant="ghost"
                   size="sm"
-                  icon={<Activity className="w-4 h-4" />}
+                  icon={<RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />}
+                  onClick={refresh}
+                  disabled={loading}
                 >
                   Refresh
                 </PremiumButton>
+                {lastUpdated && (
+                  <span className={`text-xs ${isStale ? 'text-orange-600 dark:text-orange-400' : 'text-gray-500 dark:text-gray-400'}`}>
+                    Last updated: {lastUpdated.toLocaleTimeString()}
+                  </span>
+                )}
               </div>
             </motion.div>
 
@@ -108,47 +92,61 @@ export default function DashboardPage() {
               transition={{ delay: 0.1 }}
               className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
             >
-              {quickStats.map((stat, index) => (
-                <motion.div
-                  key={stat.title}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <PremiumCard 
-                    variant="glassmorphism" 
-                    hover 
-                    className="p-6 cursor-pointer"
-                    data-testid="metric-card"
-                    onClick={() => {
-                      if (stat.title.includes('Revenue')) {
-                        navigateToAnalytics();
-                      } else if (stat.title.includes('Campaigns')) {
-                        navigateToCampaigns();
-                      } else {
-                        navigateToAnalytics();
-                      }
-                    }}
-                  >
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">
-                          {stat.title}
-                        </p>
-                        <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                          {stat.value}
-                        </p>
-                        <p className={`text-sm font-medium ${stat.color} flex items-center gap-1 mt-1`}>
-                          <ArrowUpRight className="w-3 h-3" />
-                          {stat.change}
-                        </p>
-                      </div>
-                      <div className={`p-3 rounded-xl ${stat.bgColor}`}>
-                        <stat.icon className={`w-6 h-6 ${stat.color}`} />
-                      </div>
-                    </div>
+              {error ? (
+                <div className="col-span-full">
+                  <PremiumCard className="p-6 text-center">
+                    <p className="text-red-600 dark:text-red-400">
+                      Error loading dashboard data: {error}
+                    </p>
+                    <PremiumButton onClick={refresh} className="mt-4">
+                      Retry
+                    </PremiumButton>
                   </PremiumCard>
-                </motion.div>
-              ))}
+                </div>
+              ) : quickStats.map((stat, index) => {
+                const IconComponent = iconMap[stat.icon as keyof typeof iconMap];
+                return (
+                  <motion.div
+                    key={stat.title}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <PremiumCard 
+                      variant="glassmorphism" 
+                      hover 
+                      className="p-6 cursor-pointer"
+                      data-testid="metric-card"
+                      onClick={() => {
+                        if (stat.title.includes('Revenue')) {
+                          navigateToAnalytics();
+                        } else if (stat.title.includes('Campaigns')) {
+                          navigateToCampaigns();
+                        } else {
+                          navigateToAnalytics();
+                        }
+                      }}
+                    >
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">
+                            {stat.title}
+                          </p>
+                          <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                            {loading ? '...' : stat.value}
+                          </p>
+                          <p className={`text-sm font-medium ${stat.color} flex items-center gap-1 mt-1`}>
+                            <ArrowUpRight className="w-3 h-3" />
+                            {stat.change}
+                          </p>
+                        </div>
+                        <div className={`p-3 rounded-xl ${stat.bgColor}`}>
+                          <IconComponent className={`w-6 h-6 ${stat.color}`} />
+                        </div>
+                      </div>
+                    </PremiumCard>
+                  </motion.div>
+                );
+              })}
             </motion.div>
 
             {/* Quick Actions */}

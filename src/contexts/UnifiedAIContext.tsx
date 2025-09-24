@@ -376,7 +376,7 @@ export function UnifiedAIProvider({ children }: { children: React.ReactNode }) {
     try {
       const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'https://autopilot-api-1.onrender.com';
       
-      const response = await fetch(`${API_BASE}/ai/chat`, {
+      const response = await fetch(`${API_BASE}/api/v1/ai/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
