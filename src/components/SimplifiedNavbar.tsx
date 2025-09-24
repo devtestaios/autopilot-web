@@ -15,7 +15,7 @@ import {
   Menu,
   X
 } from 'lucide-react';
-import { useTheme } from '@/contexts/ThemeContext';
+import { cn } from '@/lib/utils';
 import { PulseWaveLogo } from './PulseWaveLogo';
 
 const mainNavItems = [
@@ -27,7 +27,6 @@ const mainNavItems = [
 
 export default function SimplifiedNavbar() {
   const pathname = usePathname();
-  const { theme, toggleTheme } = useTheme();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -113,20 +112,6 @@ export default function SimplifiedNavbar() {
               <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full flex items-center justify-center">
                 <span className="text-xs text-white font-medium">3</span>
               </div>
-            </motion.button>
-
-            {/* Theme Toggle */}
-            <motion.button
-              onClick={toggleTheme}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="p-2 text-foreground hover:text-foreground transition-colors"
-            >
-              {theme === 'dark' ? (
-                <div className="w-5 h-5 bg-yellow-400 rounded-full" />
-              ) : (
-                <div className="w-5 h-5 bg-gray-700 rounded-full" />
-              )}
             </motion.button>
 
             {/* Profile */}

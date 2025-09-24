@@ -2,10 +2,11 @@
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
-type Theme = 'light' | 'dark';
+type Theme = 'dark'; // Simplified to dark-only
 
 interface ThemeContextProps {
   theme: Theme;
+  // Keeping these for compatibility but they won't do anything
   toggleTheme: () => void;
   setTheme: (theme: Theme) => void;
 }
@@ -13,52 +14,36 @@ interface ThemeContextProps {
 const ThemeContext = createContext<ThemeContextProps | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setTheme] = useState<Theme>('dark');
+  const [theme] = useState<Theme>('dark'); // Always dark
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
-    // Check for saved theme preference or default to dark
+    // Always ensure dark theme is applied
+    document.documentElement.classList.remove('light');
+    document.documentElement.classList.add('dark');
+    document.body.classList.remove('light-theme');
+    
+    // Clean up any old localStorage theme preferences
     try {
-      const savedTheme = localStorage.getItem('theme') as Theme;
-      if (savedTheme && (savedTheme === 'light' || savedTheme === 'dark')) {
-        setTheme(savedTheme);
-      } else {
-        // Default to dark theme as per implementation guide
-        setTheme('dark');
-      }
+      localStorage.removeItem('theme');
     } catch (error) {
-      // Handle localStorage errors gracefully - default to dark theme
-      setTheme('dark');
+      // Handle localStorage errors gracefully
+      console.warn('Failed to remove old theme preference:', error);
     }
   }, []);
 
-  useEffect(() => {
-    if (!mounted) return;
-    
-    // Update HTML class for Tailwind theme switching (darkMode: "class")
-    document.documentElement.classList.remove('light', 'dark');
-    document.documentElement.classList.add(theme);
-    
-    // Also update body class for backward compatibility
-    document.body.classList.remove('light-theme');
-    if (theme === 'light') {
-      document.body.classList.add('light-theme');
-    }
-    
-    try {
-      localStorage.setItem('theme', theme);
-    } catch (error) {
-      // Handle localStorage errors gracefully - theme will still work without persistence
-      console.warn('Failed to save theme preference:', error);
-    }
-  }, [theme, mounted]);
-
+  // No-op functions for compatibility
   const toggleTheme = () => {
-    setTheme(prev => prev === 'light' ? 'dark' : 'light');
+    // Theme is fixed to dark, so this does nothing
   };
 
-  // Always provide the context, even before mounted
+  
+  const setTheme = (newTheme: Theme) => {
+    // Theme is fixed to dark, so this does nothing
+  };
+
+  // Always provide the context with dark theme
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme, setTheme }}>
       {children}

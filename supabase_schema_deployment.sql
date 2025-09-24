@@ -1,37 +1,49 @@
 -- ===============================================
--- PULSEBRIDGE.AI DATABASE SCHEMA DEPLOYMENT
+-- PULSEBRIDGE.AI DATABASE SCHEMA DEPLOYMENT (Corrected)
 -- Multi-Platform Marketing Automation Platform
 -- Execute this script in Supabase SQL Editor
 -- ===============================================
 
--- Enable necessary extensions
+-- Extensions (install in public so uuid_generate_v4() is available unqualified)
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
+-- ===============================================
+-- Helper: updated_at trigger function
+-- ===============================================
+CREATE OR REPLACE FUNCTION set_updated_at()
+RETURNS TRIGGER
+LANGUAGE plpgsql AS $$
+BEGIN
+    NEW.updated_at = NOW();
+    RETURN NEW;
+END;
+$$;
 
 -- ===============================================
 -- 1. CORE CAMPAIGNS TABLE
 -- ===============================================
 
-CREATE TABLE IF NOT EXISTS campaigns (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS public.campaigns (
+  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
   name TEXT NOT NULL,
   platform TEXT NOT NULL CHECK (platform IN ('google_ads', 'meta', 'pinterest', 'linkedin')),
   client_name TEXT NOT NULL,
-  budget DECIMAL(10,2),
-  spend DECIMAL(10,2) DEFAULT 0,
+  budget NUMERIC(10,2),
+  spend NUMERIC(10,2) DEFAULT 0,
   status TEXT DEFAULT 'active' CHECK (status IN ('active', 'paused', 'ended', 'draft')),
   
   -- Platform-specific configuration
-  platform_config JSONB DEFAULT '{}',
+  platform_config JSONB DEFAULT '{}'::jsonb,
   
   -- Campaign metadata
   campaign_type TEXT, -- 'search', 'display', 'video', 'shopping', etc.
-  target_audience JSONB DEFAULT '{}',
-  keywords JSONB DEFAULT '[]',
-  ad_groups JSONB DEFAULT '[]',
+  target_audience JSONB DEFAULT '{}'::jsonb,
+  keywords JSONB DEFAULT '[]'::jsonb,
+  ad_groups JSONB DEFAULT '[]'::jsonb,
   
   -- Tracking and dates
-  start_date DATE,
-  end_date DATE,
+  start_date TIMESTAMP WITH TIME ZONE,
+  end_date TIMESTAMP WITH TIME ZONE,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   last_sync_at TIMESTAMP WITH TIME ZONE,
@@ -43,13 +55,17 @@ CREATE TABLE IF NOT EXISTS campaigns (
   linkedin_campaign_id TEXT
 );
 
+CREATE TRIGGER trg_campaigns_updated_at
+    BEFORE UPDATE ON public.campaigns
+    FOR EACH ROW EXECUTE FUNCTION set_updated_at();
+
 -- ===============================================
 -- 2. PERFORMANCE SNAPSHOTS TABLE
 -- ===============================================
 
-CREATE TABLE IF NOT EXISTS performance_snapshots (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  campaign_id UUID REFERENCES campaigns(id) ON DELETE CASCADE,
+CREATE TABLE IF NOT EXISTS public.performance_snapshots (
+  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  campaign_id UUID REFERENCES public.campaigns(id) ON DELETE CASCADE,
   date DATE NOT NULL,
   platform TEXT NOT NULL CHECK (platform IN ('google_ads', 'meta', 'pinterest', 'linkedin')),
   
@@ -96,7 +112,7 @@ CREATE TABLE IF NOT EXISTS ad_accounts (
   -- Account metadata
   currency TEXT DEFAULT 'USD',
   timezone TEXT DEFAULT 'UTC',
-  account_status TEXT DEFAULT 'active',
+  status TEXT DEFAULT 'active' CHECK (status IN ('active', 'inactive', 'suspended', 'pending')),
   
   -- API credentials (encrypted)
   api_credentials JSONB DEFAULT '{}',
@@ -277,7 +293,7 @@ CREATE INDEX IF NOT EXISTS idx_performance_date ON performance_snapshots(date DE
 
 -- Ad accounts indexes
 CREATE INDEX IF NOT EXISTS idx_ad_accounts_platform ON ad_accounts(platform);
-CREATE INDEX IF NOT EXISTS idx_ad_accounts_status ON ad_accounts(account_status);
+CREATE INDEX IF NOT EXISTS idx_ad_accounts_status ON ad_accounts(status);
 
 -- Keywords indexes
 CREATE INDEX IF NOT EXISTS idx_keywords_campaign ON keywords(campaign_id);
@@ -355,6 +371,69 @@ ON CONFLICT DO NOTHING;
 -- ===============================================
 -- DEPLOYMENT COMPLETE
 -- ===============================================
+
+-- ===============================================
+-- DEPLOYMENT VALIDATION & VERIFICATION
+-- ===============================================
+
+-- Verify all tables were created successfully
+DO $$
+DECLARE
+    missing_tables TEXT[];
+    expected_tables TEXT[] := ARRAY['campaigns', 'performance_snapshots', 'ad_accounts', 'keywords', 'audiences', 'leads', 'sync_logs', 'ai_insights'];
+    table_name TEXT;
+BEGIN
+    -- Check each expected table exists
+    FOREACH table_name IN ARRAY expected_tables
+    LOOP
+        IF NOT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = table_name AND table_schema = 'public') THEN
+            missing_tables := missing_tables || table_name;
+        END IF;
+    END LOOP;
+    
+    -- Report results
+    IF array_length(missing_tables, 1) > 0 THEN
+        RAISE NOTICE 'WARNING: Missing tables: %', array_to_string(missing_tables, ', ');
+    ELSE
+        RAISE NOTICE 'SUCCESS: All tables created successfully!';
+    END IF;
+END $$;
+
+-- Verify status columns exist where expected
+DO $$
+BEGIN
+    -- Check campaigns.status
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'campaigns' AND column_name = 'status') THEN
+        RAISE EXCEPTION 'Missing campaigns.status column';
+    END IF;
+    
+    -- Check ad_accounts.status
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'ad_accounts' AND column_name = 'status') THEN
+        RAISE EXCEPTION 'Missing ad_accounts.status column';
+    END IF;
+    
+    -- Check keywords.status
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'keywords' AND column_name = 'status') THEN
+        RAISE EXCEPTION 'Missing keywords.status column';
+    END IF;
+    
+    -- Check audiences.status
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'audiences' AND column_name = 'status') THEN
+        RAISE EXCEPTION 'Missing audiences.status column';
+    END IF;
+    
+    -- Check leads.status
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'leads' AND column_name = 'status') THEN
+        RAISE EXCEPTION 'Missing leads.status column';
+    END IF;
+    
+    -- Check sync_logs.status
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'sync_logs' AND column_name = 'status') THEN
+        RAISE EXCEPTION 'Missing sync_logs.status column';
+    END IF;
+    
+    RAISE NOTICE 'SUCCESS: All status columns verified!';
+END $$;
 
 -- Verify tables were created
 SELECT 

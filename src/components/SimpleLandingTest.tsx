@@ -1,11 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { useTheme } from '@/contexts/ThemeContext';
 import Link from 'next/link';
 
 export default function SimpleLandingTest() {
-  const { theme, toggleTheme } = useTheme();
   
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -13,12 +11,7 @@ export default function SimpleLandingTest() {
         <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
           <h1 className="text-xl font-bold">PulseBridge.ai</h1>
           <div className="flex items-center space-x-4">
-            <button
-              onClick={toggleTheme}
-              className="p-2 rounded-md bg-secondary hover:bg-secondary/80"
-            >
-              {theme === 'dark' ? '🌞' : '🌙'}
-            </button>
+            {/* Theme toggle removed - using fixed dark theme */}
           </div>
         </div>
       </nav>
@@ -48,7 +41,7 @@ export default function SimpleLandingTest() {
           <div className="mt-12">
             <h2 className="text-2xl font-semibold mb-4">Navigation Test Results</h2>
             <div className="max-w-2xl mx-auto space-y-2 text-left">
-              <p className="p-3 bg-green-100 dark:bg-green-900/20 rounded">✅ Theme Toggle: Working</p>
+              <p className="p-3 bg-green-100 dark:bg-green-900/20 rounded">✅ Dark Theme: Fixed & Optimized</p>
               <p className="p-3 bg-green-100 dark:bg-green-900/20 rounded">✅ CSS Variables: Working</p>
               <p className="p-3 bg-green-100 dark:bg-green-900/20 rounded">✅ Next.js Navigation: Working</p>
             </div>

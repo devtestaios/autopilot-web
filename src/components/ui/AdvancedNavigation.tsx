@@ -16,14 +16,11 @@ import {
   Settings,
   HelpCircle,
   User,
-  Home,
-  Sun,
-  Moon
+  Home
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { PremiumButton } from './PremiumButton';
 import GlobalSearch from '@/components/GlobalSearch';
-import { useTheme } from '@/contexts/ThemeContext';
 
 interface BreadcrumbItem {
   label: string;
@@ -78,7 +75,6 @@ export interface AdvancedNavigationProps {
 export default function AdvancedNavigation({ className, sidebarCollapsed = false }: AdvancedNavigationProps) {
   const pathname = usePathname();
   const [isQuickActionsOpen, setIsQuickActionsOpen] = useState(false);
-  const { theme, toggleTheme } = useTheme();
 
   // Generate breadcrumbs from current path
   const generateBreadcrumbs = (): BreadcrumbItem[] => {
@@ -191,34 +187,6 @@ export default function AdvancedNavigation({ className, sidebarCollapsed = false
               placeholder="Search campaigns, leads, templates..."
               className="w-64"
             />
-
-            {/* Theme Toggle */}
-            <button
-              onClick={toggleTheme}
-              className={cn(
-                'p-2 rounded-lg transition-all duration-200',
-                'hover:bg-muted'
-              )}
-              style={{
-                color: 'var(--text-secondary)',
-                backgroundColor: 'transparent'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = 'var(--bg-hover)';
-                e.currentTarget.style.color = 'var(--text-primary)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = 'transparent';
-                e.currentTarget.style.color = 'var(--text-secondary)';
-              }}
-              title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
-            >
-              {theme === 'light' ? (
-                <Moon className="w-5 h-5" />
-              ) : (
-                <Sun className="w-5 h-5" />
-              )}
-            </button>
 
             {/* Quick Action Button */}
             <PremiumButton

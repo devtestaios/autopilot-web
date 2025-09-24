@@ -53,6 +53,11 @@ from pinterest_ads_integration import (
     get_pinterest_ads_performance
 )
 
+# Import Hybrid AI System (NEW)
+from meta_ai_hybrid_integration import PulseBridgeAIMasterController, CrossPlatformMetrics, AIDecisionLog
+from smart_risk_management import SmartRiskManager, ClientReportingManager, RISK_MANAGEMENT_TEMPLATES, CLIENT_REPORTING_TEMPLATES
+from hybrid_ai_endpoints import hybrid_ai_router
+
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -107,6 +112,9 @@ app.include_router(analytics_router)
 
 # Include Autonomous Decision Framework router
 app.include_router(autonomous_router)
+
+# Include Hybrid AI System router (NEW)
+app.include_router(hybrid_ai_router)
 
 # ================================
 # GOOGLE ADS INTEGRATION ENDPOINTS
