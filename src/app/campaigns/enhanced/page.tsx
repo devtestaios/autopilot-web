@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import dynamic from 'next/dynamic';
 import { 
   Plus, 
   Bot, 
@@ -12,8 +13,6 @@ import {
   Settings, 
   Play, 
   Pause, 
-  BarChart3,
-  PieChart,
   Activity,
   Users,
   Globe,
@@ -33,6 +32,17 @@ import {
   Download,
   Upload
 } from 'lucide-react';
+
+// Dynamic imports for less critical icons to reduce bundle size
+const BarChart3 = dynamic(() => import('lucide-react').then(mod => ({ default: mod.BarChart3 })), { 
+  ssr: false,
+  loading: () => <div className="w-5 h-5 bg-gray-300 rounded animate-pulse" />
+});
+const PieChart = dynamic(() => import('lucide-react').then(mod => ({ default: mod.PieChart })), { 
+  ssr: false,
+  loading: () => <div className="w-5 h-5 bg-gray-300 rounded animate-pulse" />
+});
+
 import { useRouter } from 'next/navigation';
 
 // Enhanced Campaign Interface

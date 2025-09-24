@@ -1,7 +1,25 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, LineChart, Line, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import { useState, useEffect, useCallback } from 'react';
+import { motion } from 'framer-motion';
+import dynamic from 'next/dynamic';
+
+// Dynamic imports for Recharts components
+const BarChart = dynamic(() => import('recharts').then(mod => ({ default: mod.BarChart })), { 
+  ssr: false,
+  loading: () => <div className="h-64 bg-gray-100 dark:bg-gray-700 rounded animate-pulse flex items-center justify-center"><span className="text-gray-500">Loading chart...</span></div>
+});
+const Bar = dynamic(() => import('recharts').then(mod => ({ default: mod.Bar })), { ssr: false });
+const XAxis = dynamic(() => import('recharts').then(mod => ({ default: mod.XAxis })), { ssr: false });
+const YAxis = dynamic(() => import('recharts').then(mod => ({ default: mod.YAxis })), { ssr: false });
+const CartesianGrid = dynamic(() => import('recharts').then(mod => ({ default: mod.CartesianGrid })), { ssr: false });
+const Tooltip = dynamic(() => import('recharts').then(mod => ({ default: mod.Tooltip })), { ssr: false });
+const LineChart = dynamic(() => import('recharts').then(mod => ({ default: mod.LineChart })), { ssr: false });
+const Line = dynamic(() => import('recharts').then(mod => ({ default: mod.Line })), { ssr: false });
+const ResponsiveContainer = dynamic(() => import('recharts').then(mod => ({ default: mod.ResponsiveContainer })), { ssr: false });
+const PieChart = dynamic(() => import('recharts').then(mod => ({ default: mod.PieChart })), { ssr: false });
+const Pie = dynamic(() => import('recharts').then(mod => ({ default: mod.Pie })), { ssr: false });
+const Cell = dynamic(() => import('recharts').then(mod => ({ default: mod.Cell })), { ssr: false });
 import { TrendingUp, TrendingDown, DollarSign, MousePointer, Eye, Target, Calendar, Filter } from 'lucide-react';
 
 interface PerformanceMetrics {
@@ -249,9 +267,9 @@ export default function GoogleAdsPerformanceDashboard({ campaigns = [] }: Google
                 <YAxis tick={{ fontSize: 12 }} />
                 <Tooltip 
                   labelFormatter={(value) => new Date(value).toLocaleDateString()}
-                  formatter={(value: any, name: string) => [
-                    name === 'spend' ? `$${value.toFixed(2)}` : value.toLocaleString(),
-                    name.charAt(0).toUpperCase() + name.slice(1)
+                  formatter={(value: any, name: any) => [
+                    String(name) === 'spend' ? `$${value.toFixed(2)}` : value.toLocaleString(),
+                    String(name).charAt(0).toUpperCase() + String(name).slice(1)
                   ]}
                 />
                 <Line type="monotone" dataKey="clicks" stroke="#3B82F6" strokeWidth={2} />

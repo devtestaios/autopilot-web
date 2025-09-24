@@ -1,19 +1,55 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, Suspense } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
 import { 
   TrendingUp, TrendingDown, Calendar, DollarSign, MousePointer, 
   Eye, Target, ArrowRight, AlertTriangle, CheckCircle, Lightbulb,
-  BarChart3, Settings, Download, Share2, Zap
+  Download, Share2, Zap
 } from 'lucide-react';
-import {
-  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
-  BarChart, Bar, AreaChart, Area, PieChart, Pie, Cell
-} from 'recharts';
 import type { Campaign, PerformanceSnapshot } from '@/types';
 import { fetchCampaign, fetchCampaignPerformance, deleteCampaign } from '@/lib/api';
+import CampaignDetailsLoading from '@/components/CampaignDetailsLoading';
+
+// Dynamic imports for Recharts components to reduce initial bundle size
+const LineChart = dynamic(() => import('recharts').then(mod => ({ default: mod.LineChart })), { 
+  ssr: false,
+  loading: () => <div className="h-64 bg-gray-100 dark:bg-gray-700 rounded animate-pulse flex items-center justify-center"><span className="text-gray-500">Loading chart...</span></div>
+});
+const Line = dynamic(() => import('recharts').then(mod => ({ default: mod.Line })), { ssr: false });
+const XAxis = dynamic(() => import('recharts').then(mod => ({ default: mod.XAxis })), { ssr: false });
+const YAxis = dynamic(() => import('recharts').then(mod => ({ default: mod.YAxis })), { ssr: false });
+const CartesianGrid = dynamic(() => import('recharts').then(mod => ({ default: mod.CartesianGrid })), { ssr: false });
+const Tooltip = dynamic(() => import('recharts').then(mod => ({ default: mod.Tooltip })), { ssr: false });
+const ResponsiveContainer = dynamic(() => import('recharts').then(mod => ({ default: mod.ResponsiveContainer })), { ssr: false });
+const BarChart = dynamic(() => import('recharts').then(mod => ({ default: mod.BarChart })), { 
+  ssr: false,
+  loading: () => <div className="h-64 bg-gray-100 dark:bg-gray-700 rounded animate-pulse flex items-center justify-center"><span className="text-gray-500">Loading chart...</span></div>
+});
+const Bar = dynamic(() => import('recharts').then(mod => ({ default: mod.Bar })), { ssr: false });
+const AreaChart = dynamic(() => import('recharts').then(mod => ({ default: mod.AreaChart })), { ssr: false });
+const Area = dynamic(() => import('recharts').then(mod => ({ default: mod.Area })), { ssr: false });
+const PieChart = dynamic(() => import('recharts').then(mod => ({ default: mod.PieChart })), { 
+  ssr: false,
+  loading: () => <div className="h-64 bg-gray-100 dark:bg-gray-700 rounded animate-pulse flex items-center justify-center"><span className="text-gray-500">Loading chart...</span></div>
+});
+const Pie = dynamic(() => import('recharts').then(mod => ({ default: mod.Pie })), { ssr: false });
+const Cell = dynamic(() => import('recharts').then(mod => ({ default: mod.Cell })), { ssr: false });
+
+// Import Legend normally as it has TypeScript issues with dynamic import
+import { Legend } from 'recharts';
+
+// Dynamic imports for less critical icons
+const BarChart3 = dynamic(() => import('lucide-react').then(mod => ({ default: mod.BarChart3 })), { 
+  ssr: false,
+  loading: () => <div className="w-5 h-5 bg-gray-300 rounded animate-pulse" />
+});
+const Settings = dynamic(() => import('lucide-react').then(mod => ({ default: mod.Settings })), { 
+  ssr: false,
+  loading: () => <div className="w-5 h-5 bg-gray-300 rounded animate-pulse" />
+});
 
 interface MetricCard {
   title: string;

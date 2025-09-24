@@ -2,19 +2,7 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { 
-  LineChart, 
-  Line, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
-  ResponsiveContainer,
-  AreaChart,
-  Area,
-  ReferenceLine,
-  ReferenceArea
-} from 'recharts';
+import dynamic from 'next/dynamic';
 import { 
   TrendingUp, 
   TrendingDown, 
@@ -33,6 +21,23 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { OptimizedChart } from '@/components/OptimizedChart';
+
+// Dynamic imports for Recharts components to reduce bundle size
+const LineChart = dynamic(() => import('recharts').then(mod => ({ default: mod.LineChart })), { 
+  ssr: false,
+  loading: () => <div className="h-80 bg-gray-100 dark:bg-gray-700 rounded animate-pulse flex items-center justify-center"><span className="text-gray-500">Loading chart...</span></div>
+});
+const Line = dynamic(() => import('recharts').then(mod => ({ default: mod.Line })), { ssr: false });
+const XAxis = dynamic(() => import('recharts').then(mod => ({ default: mod.XAxis })), { ssr: false });
+const YAxis = dynamic(() => import('recharts').then(mod => ({ default: mod.YAxis })), { ssr: false });
+const CartesianGrid = dynamic(() => import('recharts').then(mod => ({ default: mod.CartesianGrid })), { ssr: false });
+const Tooltip = dynamic(() => import('recharts').then(mod => ({ default: mod.Tooltip })), { ssr: false });
+const ResponsiveContainer = dynamic(() => import('recharts').then(mod => ({ default: mod.ResponsiveContainer })), { ssr: false });
+const AreaChart = dynamic(() => import('recharts').then(mod => ({ default: mod.AreaChart })), { ssr: false });
+const Area = dynamic(() => import('recharts').then(mod => ({ default: mod.Area })), { ssr: false });
+
+// Import problematic components normally due to TypeScript issues
+import { ReferenceLine, ReferenceArea } from 'recharts';
 
 interface PredictionDataPoint {
   date: string;
