@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { useTheme } from '@/contexts/ThemeContext';
 import Link from 'next/link';
 import { 
   Zap, 
@@ -21,7 +20,6 @@ import {
 } from 'lucide-react';
 
 export default function CleanLandingPage() {
-  const { theme, toggleTheme } = useTheme();
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
   const { scrollYProgress } = useScroll();
   
@@ -95,27 +93,24 @@ export default function CleanLandingPage() {
             <div className="w-8 h-8 bg-gradient-to-r from-teal-500 to-cyan-500 rounded-lg flex items-center justify-center">
               <Bot className="w-5 h-5 text-white" />
             </div>
-            <span className="text-xl font-bold bg-gradient-to-r from-teal-600 to-cyan-600 bg-clip-text text-transparent">
+            <span className="text-xl font-orbitron font-bold bg-gradient-to-r from-teal-600 to-cyan-600 bg-clip-text text-transparent brand-title">
               PulseBridge.ai
             </span>
           </div>
           
           <div className="flex items-center space-x-6">
-            <Link href="/dashboard" className="text-slate-700 dark:text-slate-300 hover:text-teal-600 dark:hover:text-teal-400 transition-colors">
-              Dashboard
-            </Link>
             <Link href="/campaigns" className="text-slate-700 dark:text-slate-300 hover:text-teal-600 dark:hover:text-teal-400 transition-colors">
               Campaigns
             </Link>
             <Link href="/analytics" className="text-slate-700 dark:text-slate-300 hover:text-teal-600 dark:hover:text-teal-400 transition-colors">
               Analytics
             </Link>
-            <button
-              onClick={toggleTheme}
-              className="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+            <Link 
+              href="/login" 
+              className="px-6 py-2 bg-gradient-to-r from-teal-600 to-cyan-600 text-white rounded-full hover:from-teal-700 hover:to-cyan-700 transition-all duration-200 shadow-lg hover:shadow-xl font-medium"
             >
-              {theme === 'dark' ? '🌞' : '🌙'}
-            </button>
+              Login
+            </Link>
           </div>
         </div>
       </nav>
@@ -131,7 +126,7 @@ export default function CleanLandingPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
-            <h1 className="text-6xl md:text-7xl font-bold mb-6">
+            <h1 className="text-6xl md:text-7xl font-orbitron font-black mb-6 landing-hero">
               <span className="bg-gradient-to-r from-teal-600 via-cyan-600 to-teal-500 bg-clip-text text-transparent">
                 Autonomous
               </span>

@@ -12,6 +12,8 @@ export default {
       fontFamily: {
         'orbitron': ['var(--font-orbitron)', 'monospace'],
         'exo-2': ['var(--font-exo-2)', 'sans-serif'],
+        'brand': ['var(--font-orbitron)', 'var(--font-exo-2)', 'sans-serif'], // PulseBridge brand font
+        'sans': ['var(--font-exo-2)', 'system-ui', '-apple-system', 'sans-serif'], // Default body font
       },
       colors: {
         // PulseBridge Official Brand Colors

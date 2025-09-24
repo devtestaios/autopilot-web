@@ -1,6 +1,26 @@
 @import "tailwindcss";
 @import "../styles/enhanced-theme.css";
 
+/* PulseBridge.ai Brand Typography */
+html {
+  font-family: var(--font-exo-2), system-ui, -apple-system, sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6,
+.brand-title,
+.logo-text,
+nav .brand {
+  font-family: var(--font-orbitron), var(--font-exo-2), system-ui, -apple-system, sans-serif;
+  font-weight: 700;
+}
+
+.landing-hero h1,
+.dashboard-title,
+.page-title {
+  font-family: var(--font-orbitron), system-ui, -apple-system, sans-serif;
+  font-weight: 900;
+}
+
 :root {
   /* Corporate Tech Clean - Dark Theme (Default) */
   --bg-body: linear-gradient(135deg, #050d1a 0%, #0a1929 50%, #0d1b2a 100%);
