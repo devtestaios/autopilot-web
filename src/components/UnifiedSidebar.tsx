@@ -39,7 +39,7 @@ const sidebarItems: SidebarItem[] = [
     id: 'dashboard',
     label: 'Dashboard',
     icon: LayoutDashboard,
-    path: '/'
+    path: '/dashboard'
   },
   {
     id: 'campaigns',
@@ -158,7 +158,10 @@ export default function UnifiedSidebar({
     if (item.subItems) {
       setExpandedItem(expandedItem === item.id ? null : item.id);
     } else {
-      router.push(item.path);
+      // Don't navigate if we're already on the same page
+      if (pathname !== item.path) {
+        router.push(item.path);
+      }
       if (isMobile) {
         setIsMobileOpen(false);
       }
