@@ -719,31 +719,152 @@ def test_google_ads_token():
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Token test failed: {str(e)}")
 
+@app.get("/google-ads/oauth-diagnostic")
+def google_ads_oauth_diagnostic():
+    """Diagnostic endpoint for Google Ads OAuth issues"""
+    import requests
+    
+    try:
+        client_id = os.getenv('GOOGLE_ADS_CLIENT_ID')
+        client_secret = os.getenv('GOOGLE_ADS_CLIENT_SECRET')
+        refresh_token = os.getenv('GOOGLE_ADS_REFRESH_TOKEN')
+        
+        # Check if all variables are present
+        config_status = {
+            "client_id_present": bool(client_id),
+            "client_id_format": client_id[:20] + "..." if client_id else "MISSING",
+            "client_secret_present": bool(client_secret),
+            "refresh_token_present": bool(refresh_token),
+            "refresh_token_format": refresh_token[:30] + "..." if refresh_token else "MISSING"
+        }
+        
+        if not all([client_id, client_secret, refresh_token]):
+            return {
+                "status": "incomplete_config",
+                "config": config_status,
+                "message": "Missing required OAuth credentials"
+            }
+        
+        # Try a simple token validation call
+        token_url = "https://oauth2.googleapis.com/token"
+        data = {
+            'refresh_token': refresh_token,
+            'client_id': client_id,
+            'client_secret': client_secret,
+            'grant_type': 'refresh_token'
+        }
+        
+        response = requests.post(token_url, data=data)
+        
+        return {
+            "status": "oauth_test_complete",
+            "config": config_status,
+            "oauth_response": {
+                "status_code": response.status_code,
+                "success": response.status_code == 200,
+                "response": response.json() if response.status_code != 200 else "SUCCESS",
+                "headers": dict(response.headers)
+            }
+        }
+        
+    except Exception as e:
+        return {
+            "status": "diagnostic_error",
+            "error": str(e),
+            "config": config_status if 'config_status' in locals() else "unavailable"
+        }
+
 @app.get("/google-ads/test-api")
 def test_google_ads_api():
-    """Test Google Ads API connection"""
+    """Test Google Ads API with comprehensive error handling"""
+    import requests
+    from google.oauth2.credentials import Credentials
+    
     try:
-        # Try to initialize Google Ads client
-        from google_ads_integration import GoogleAdsIntegration
+        # Step 1: Get OAuth token
+        client_id = os.getenv('GOOGLE_ADS_CLIENT_ID')
+        client_secret = os.getenv('GOOGLE_ADS_CLIENT_SECRET')
+        refresh_token = os.getenv('GOOGLE_ADS_REFRESH_TOKEN')
         
-        google_ads = GoogleAdsIntegration()
+        token_url = "https://oauth2.googleapis.com/token"
+        data = {
+            'refresh_token': refresh_token,
+            'client_id': client_id,
+            'client_secret': client_secret,
+            'grant_type': 'refresh_token'
+        }
         
-        if google_ads.client and google_ads.customer_id:
-            return {
-                "success": True,
-                "message": "Google Ads API client initialized successfully",
-                "customer_id": google_ads.customer_id
-            }
-        else:
+        token_response = requests.post(token_url, data=data)
+        
+        if token_response.status_code != 200:
             return {
                 "success": False,
-                "message": "Failed to initialize Google Ads API client"
+                "step": "oauth_token",
+                "error": token_response.json(),
+                "status_code": token_response.status_code
+            }
+        
+        token_data = token_response.json()
+        access_token = token_data.get('access_token')
+        
+        # Step 2: Try to create Google Ads client
+        try:
+            from google.ads.googleads.client import GoogleAdsClient
+            
+            credentials = Credentials(
+                token=access_token,
+                refresh_token=refresh_token,
+                id_token=None,
+                token_uri="https://oauth2.googleapis.com/token",
+                client_id=client_id,
+                client_secret=client_secret
+            )
+            
+            client = GoogleAdsClient(
+                credentials=credentials,
+                developer_token=os.getenv('GOOGLE_ADS_DEVELOPER_TOKEN')
+            )
+            
+            # Step 3: Try a simple API call
+            customer_id = os.getenv('GOOGLE_ADS_CUSTOMER_ID', '').replace('-', '')
+            
+            if not customer_id:
+                return {
+                    "success": True,
+                    "step": "oauth_success",
+                    "message": "OAuth working, but no customer ID to test API calls",
+                    "token_obtained": True
+                }
+            
+            # Try to get customer info
+            customer_service = client.get_service("CustomerService")
+            customer = customer_service.get_customer(resource_name=f"customers/{customer_id}")
+            
+            return {
+                "success": True,
+                "step": "api_success",
+                "customer_info": {
+                    "id": customer.id,
+                    "descriptive_name": customer.descriptive_name,
+                    "currency_code": customer.currency_code,
+                    "time_zone": customer.time_zone
+                }
             }
             
+        except ImportError:
+            return {
+                "success": True,
+                "step": "oauth_success_no_client",
+                "message": "OAuth token obtained successfully, but Google Ads client library not available",
+                "token_obtained": True
+            }
+        
     except Exception as e:
         return {
             "success": False,
-            "error": str(e)
+            "step": "api_error",
+            "error": str(e),
+            "error_type": type(e).__name__
         }
 
 # Development server
