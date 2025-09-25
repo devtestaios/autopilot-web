@@ -622,6 +622,88 @@ async def internal_error_handler(request, exc):
     logger.error(f"Internal server error: {exc}")
     return {"error": "Internal server error", "status_code": 500}
 
+# Google Ads Test Endpoints
+@app.get("/google-ads/config-check")
+def google_ads_config_check():
+    """Check Google Ads configuration"""
+    config = {
+        "GOOGLE_ADS_DEVELOPER_TOKEN": os.getenv('GOOGLE_ADS_DEVELOPER_TOKEN', 'MISSING'),
+        "GOOGLE_ADS_CLIENT_ID": os.getenv('GOOGLE_ADS_CLIENT_ID', 'MISSING'),
+        "GOOGLE_ADS_CLIENT_SECRET": "SET" if os.getenv('GOOGLE_ADS_CLIENT_SECRET') else "MISSING",
+        "GOOGLE_ADS_REFRESH_TOKEN": "SET" if os.getenv('GOOGLE_ADS_REFRESH_TOKEN') else "MISSING",
+        "GOOGLE_ADS_CUSTOMER_ID": os.getenv('GOOGLE_ADS_CUSTOMER_ID', 'MISSING')
+    }
+    return config
+
+@app.post("/google-ads/test-token")
+def test_google_ads_token():
+    """Test Google Ads refresh token exchange"""
+    import requests
+    
+    try:
+        client_id = os.getenv('GOOGLE_ADS_CLIENT_ID')
+        client_secret = os.getenv('GOOGLE_ADS_CLIENT_SECRET')
+        refresh_token = os.getenv('GOOGLE_ADS_REFRESH_TOKEN')
+        
+        if not all([client_id, client_secret, refresh_token]):
+            raise HTTPException(status_code=400, detail="Missing OAuth credentials")
+        
+        # Exchange refresh token for access token
+        token_url = "https://oauth2.googleapis.com/token"
+        data = {
+            'refresh_token': refresh_token,
+            'client_id': client_id,
+            'client_secret': client_secret,
+            'grant_type': 'refresh_token'
+        }
+        
+        response = requests.post(token_url, data=data)
+        
+        if response.status_code == 200:
+            token_data = response.json()
+            return {
+                "success": True,
+                "access_token": token_data.get('access_token', '')[:20] + "...",
+                "expires_in": token_data.get('expires_in'),
+                "token_type": token_data.get('token_type')
+            }
+        else:
+            return {
+                "success": False,
+                "error": response.json(),
+                "status_code": response.status_code
+            }
+            
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Token test failed: {str(e)}")
+
+@app.get("/google-ads/test-api")
+def test_google_ads_api():
+    """Test Google Ads API connection"""
+    try:
+        # Try to initialize Google Ads client
+        from google_ads_integration import GoogleAdsIntegration
+        
+        google_ads = GoogleAdsIntegration()
+        
+        if google_ads.client and google_ads.customer_id:
+            return {
+                "success": True,
+                "message": "Google Ads API client initialized successfully",
+                "customer_id": google_ads.customer_id
+            }
+        else:
+            return {
+                "success": False,
+                "message": "Failed to initialize Google Ads API client"
+            }
+            
+    except Exception as e:
+        return {
+            "success": False,
+            "error": str(e)
+        }
+
 # Development server
 if __name__ == "__main__":
     port = int(os.getenv("PORT", 8000))
