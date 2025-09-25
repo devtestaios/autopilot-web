@@ -906,18 +906,34 @@ def test_google_ads_api():
                     "token_obtained": True
                 }
             
-            # Try to get customer info
-            customer_service = client.get_service("CustomerService")
-            customer = customer_service.get_customer(resource_name=f"customers/{customer_id}")
+            # Try to get customer info using GoogleAdsService
+            ga_service = client.get_service("GoogleAdsService")
+            query = """
+                SELECT 
+                    customer.id,
+                    customer.descriptive_name,
+                    customer.currency_code,
+                    customer.time_zone
+                FROM customer 
+                LIMIT 1
+            """
             
-            return {
-                "success": True,
-                "step": "api_success",
-                "customer_info": {
-                    "id": customer.id,
-                    "descriptive_name": customer.descriptive_name,
-                    "currency_code": customer.currency_code,
-                    "time_zone": customer.time_zone
+            search_request = client.get_type("SearchGoogleAdsRequest")
+            search_request.customer_id = customer_id
+            search_request.query = query
+            
+            results = list(ga_service.search(request=search_request))
+            
+            if results:
+                customer = results[0].customer
+                return {
+                    "success": True,
+                    "step": "api_success",
+                    "customer_info": {
+                        "id": str(customer.id),
+                        "descriptive_name": customer.descriptive_name,
+                        "currency_code": customer.currency_code,
+                        "time_zone": customer.time_zone
                 }
             }
             
