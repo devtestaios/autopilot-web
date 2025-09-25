@@ -30,7 +30,16 @@ from analytics_endpoints import router as analytics_router
 from autonomous_decision_endpoints import router as autonomous_router
 
 # Import Google Ads Integration
-from google_ads_integration import get_google_ads_client, fetch_campaigns_from_google_ads, fetch_performance_from_google_ads
+try:
+    from google_ads_integration import get_google_ads_client, fetch_campaigns_from_google_ads, fetch_performance_from_google_ads
+    GOOGLE_ADS_AVAILABLE = True
+except ImportError as e:
+    logger.warning(f"Google Ads integration not available: {e}")
+    GOOGLE_ADS_AVAILABLE = False
+    # Create placeholder functions
+    def get_google_ads_client(): return None
+    def fetch_campaigns_from_google_ads(): return []
+    def fetch_performance_from_google_ads(campaign_id: str, days: int = 30): return []
 
 # Import Meta Business API Integration - ✅ VALIDATED CREDENTIALS
 from meta_business_api import meta_api
