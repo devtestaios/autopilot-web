@@ -722,20 +722,26 @@ def test_google_ads_token():
 @app.get("/google-ads/oauth-diagnostic")
 def google_ads_oauth_diagnostic():
     """Diagnostic endpoint for Google Ads OAuth issues"""
-    import requests
-    
     try:
+        # Only import requests which should be available
+        import requests
+        
         client_id = os.getenv('GOOGLE_ADS_CLIENT_ID')
         client_secret = os.getenv('GOOGLE_ADS_CLIENT_SECRET')
         refresh_token = os.getenv('GOOGLE_ADS_REFRESH_TOKEN')
+        developer_token = os.getenv('GOOGLE_ADS_DEVELOPER_TOKEN')
+        customer_id = os.getenv('GOOGLE_ADS_CUSTOMER_ID')
         
         # Check if all variables are present
         config_status = {
             "client_id_present": bool(client_id),
-            "client_id_format": client_id[:20] + "..." if client_id else "MISSING",
+            "client_id_format": client_id[:30] + "..." if client_id and len(client_id) > 30 else client_id,
             "client_secret_present": bool(client_secret),
+            "client_secret_format": "***" + client_secret[-4:] if client_secret and len(client_secret) > 4 else "MISSING",
             "refresh_token_present": bool(refresh_token),
-            "refresh_token_format": refresh_token[:30] + "..." if refresh_token else "MISSING"
+            "refresh_token_format": refresh_token[:30] + "..." if refresh_token and len(refresh_token) > 30 else "MISSING",
+            "developer_token_present": bool(developer_token),
+            "customer_id_present": bool(customer_id)
         }
         
         if not all([client_id, client_secret, refresh_token]):
@@ -754,24 +760,43 @@ def google_ads_oauth_diagnostic():
             'grant_type': 'refresh_token'
         }
         
-        response = requests.post(token_url, data=data)
+        response = requests.post(token_url, data=data, timeout=10)
         
-        return {
-            "status": "oauth_test_complete",
-            "config": config_status,
-            "oauth_response": {
-                "status_code": response.status_code,
-                "success": response.status_code == 200,
-                "response": response.json() if response.status_code != 200 else "SUCCESS",
-                "headers": dict(response.headers)
+        # Parse response
+        if response.status_code == 200:
+            token_data = response.json()
+            return {
+                "status": "oauth_success",
+                "config": config_status,
+                "oauth_response": {
+                    "status_code": response.status_code,
+                    "success": True,
+                    "message": "OAuth token refreshed successfully",
+                    "token_type": token_data.get('token_type', 'unknown'),
+                    "expires_in": token_data.get('expires_in', 'unknown'),
+                    "access_token_preview": token_data.get('access_token', '')[:20] + "..." if token_data.get('access_token') else "NONE"
+                }
             }
-        }
+        else:
+            error_data = response.json() if response.content else {"error": "no_response"}
+            return {
+                "status": "oauth_failed",
+                "config": config_status,
+                "oauth_response": {
+                    "status_code": response.status_code,
+                    "success": False,
+                    "error": error_data,
+                    "raw_response": response.text[:500] if response.text else "empty"
+                }
+            }
         
     except Exception as e:
+        import traceback
         return {
             "status": "diagnostic_error",
             "error": str(e),
-            "config": config_status if 'config_status' in locals() else "unavailable"
+            "error_type": type(e).__name__,
+            "traceback": traceback.format_exc()
         }
 
 @app.get("/google-ads/test-api")
