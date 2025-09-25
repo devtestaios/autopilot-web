@@ -689,6 +689,39 @@ def check_google_ads_config():
     
     return config
 
+@app.get("/google-ads/oauth-help")
+def google_ads_oauth_help():
+    """Provide guidance for fixing OAuth configuration"""
+    return {
+        "issue": "OAuth client was not found",
+        "likely_cause": "Domain restrictions on OAuth client",
+        "solution_steps": [
+            "1. Go to Google Cloud Console (https://console.cloud.google.com/)",
+            "2. Navigate to 'APIs & Services' > 'Credentials'",
+            "3. Find your OAuth 2.0 client ID that starts with '141284371364-...'",
+            "4. Click 'Edit' on the OAuth client",
+            "5. In 'Authorized JavaScript origins', add:",
+            "   - https://autopilot-api-1.onrender.com",
+            "6. In 'Authorized redirect URIs', add:",
+            "   - https://autopilot-api-1.onrender.com/",
+            "   - https://autopilot-api-1.onrender.com/oauth/callback",
+            "7. Save changes and wait 5-10 minutes for propagation",
+            "8. Test again using /google-ads/oauth-diagnostic"
+        ],
+        "current_domain": "autopilot-api-1.onrender.com",
+        "test_endpoints": {
+            "config": "/google-ads/config-check",
+            "oauth_test": "/google-ads/oauth-diagnostic", 
+            "full_api_test": "/google-ads/test-api",
+            "help": "/google-ads/oauth-help"
+        },
+        "additional_notes": [
+            "The OAuth client must be configured for 'Web application' type",
+            "Make sure the Google Ads API is enabled in your project",
+            "The client ID should end with .apps.googleusercontent.com"
+        ]
+    }
+
 @app.post("/google-ads/test-token")
 def test_google_ads_token():
     """Test Google Ads refresh token exchange"""
