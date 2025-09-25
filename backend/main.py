@@ -728,9 +728,9 @@ def test_google_ads_token():
     import requests
     
     try:
-        client_id = os.getenv('GOOGLE_ADS_CLIENT_ID')
-        client_secret = os.getenv('GOOGLE_ADS_CLIENT_SECRET')
-        refresh_token = os.getenv('GOOGLE_ADS_REFRESH_TOKEN')
+        client_id = os.getenv('GOOGLE_ADS_CLIENT_ID', '').strip()
+        client_secret = os.getenv('GOOGLE_ADS_CLIENT_SECRET', '').strip()
+        refresh_token = os.getenv('GOOGLE_ADS_REFRESH_TOKEN', '').strip()
         
         if not all([client_id, client_secret, refresh_token]):
             raise HTTPException(status_code=400, detail="Missing OAuth credentials")
@@ -771,11 +771,11 @@ def google_ads_oauth_diagnostic():
         # Only import requests which should be available
         import requests
         
-        client_id = os.getenv('GOOGLE_ADS_CLIENT_ID')
-        client_secret = os.getenv('GOOGLE_ADS_CLIENT_SECRET')
-        refresh_token = os.getenv('GOOGLE_ADS_REFRESH_TOKEN')
-        developer_token = os.getenv('GOOGLE_ADS_DEVELOPER_TOKEN')
-        customer_id = os.getenv('GOOGLE_ADS_CUSTOMER_ID')
+        client_id = os.getenv('GOOGLE_ADS_CLIENT_ID', '').strip()
+        client_secret = os.getenv('GOOGLE_ADS_CLIENT_SECRET', '').strip()
+        refresh_token = os.getenv('GOOGLE_ADS_REFRESH_TOKEN', '').strip()
+        developer_token = os.getenv('GOOGLE_ADS_DEVELOPER_TOKEN', '').strip()
+        customer_id = os.getenv('GOOGLE_ADS_CUSTOMER_ID', '').strip()
         
         # Check if all variables are present
         config_status = {
@@ -852,9 +852,9 @@ def test_google_ads_api():
     
     try:
         # Step 1: Get OAuth token
-        client_id = os.getenv('GOOGLE_ADS_CLIENT_ID')
-        client_secret = os.getenv('GOOGLE_ADS_CLIENT_SECRET')
-        refresh_token = os.getenv('GOOGLE_ADS_REFRESH_TOKEN')
+        client_id = os.getenv('GOOGLE_ADS_CLIENT_ID', '').strip()
+        client_secret = os.getenv('GOOGLE_ADS_CLIENT_SECRET', '').strip()
+        refresh_token = os.getenv('GOOGLE_ADS_REFRESH_TOKEN', '').strip()
         
         token_url = "https://oauth2.googleapis.com/token"
         data = {

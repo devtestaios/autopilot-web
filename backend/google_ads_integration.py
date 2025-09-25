@@ -37,12 +37,12 @@ class GoogleAdsIntegration:
     def _initialize_client(self):
         """Initialize Google Ads client with environment variables"""
         try:
-            # Get environment variables
-            developer_token = os.getenv('GOOGLE_ADS_DEVELOPER_TOKEN')
-            client_id = os.getenv('GOOGLE_ADS_CLIENT_ID')
-            client_secret = os.getenv('GOOGLE_ADS_CLIENT_SECRET')
-            refresh_token = os.getenv('GOOGLE_ADS_REFRESH_TOKEN')
-            self.customer_id = os.getenv('GOOGLE_ADS_CUSTOMER_ID')
+            # Get environment variables and strip any whitespace/newlines
+            developer_token = os.getenv('GOOGLE_ADS_DEVELOPER_TOKEN', '').strip()
+            client_id = os.getenv('GOOGLE_ADS_CLIENT_ID', '').strip()
+            client_secret = os.getenv('GOOGLE_ADS_CLIENT_SECRET', '').strip()
+            refresh_token = os.getenv('GOOGLE_ADS_REFRESH_TOKEN', '').strip()
+            self.customer_id = os.getenv('GOOGLE_ADS_CUSTOMER_ID', '').strip()
             
             # Validate all required credentials
             missing_vars = []
