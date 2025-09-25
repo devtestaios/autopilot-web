@@ -11,10 +11,13 @@ export default function IntegrationTestPage() {
   const [results, setResults] = useState<Record<string, any>>({});
   const [loading, setLoading] = useState<string | null>(null);
 
-  const testEndpoint = async (endpoint: string, name: string) => {
+  const testEndpoint = async (endpoint: string, name: string, method: 'GET' | 'POST' = 'GET') => {
     setLoading(name);
     try {
-      const response = await fetch(`${API_BASE}${endpoint}`);
+      const response = await fetch(`${API_BASE}${endpoint}`, {
+        method,
+        headers: { 'Content-Type': 'application/json' }
+      });
       const data = await response.text();
       
       setResults(prev => ({
@@ -64,14 +67,25 @@ export default function IntegrationTestPage() {
                 {loading === 'google-config' ? 'Testing...' : 'Test Config'}
               </Button>
               
-              {results['google-config'] && (
+              <Button
+                onClick={() => testEndpoint('/google-ads/test-token', 'google-token', 'POST')}
+                disabled={loading === 'google-token'}
+                variant="outline"
+                className="w-full"
+              >
+                {loading === 'google-token' ? 'Testing...' : 'Test OAuth Token'}
+              </Button>
+              
+              {(results['google-config'] || results['google-token']) && (
                 <div className={`p-3 rounded border ${
-                  results['google-config'].success ? 'border-green-500 bg-green-50' : 'border-red-500 bg-red-50'
+                  (results['google-config']?.success || results['google-token']?.success) ? 'border-green-500 bg-green-50' : 'border-red-500 bg-red-50'
                 }`}>
-                  <Badge variant={results['google-config'].success ? 'secondary' : 'destructive'}>
-                    HTTP {results['google-config'].status}
+                  <Badge variant={(results['google-config']?.success || results['google-token']?.success) ? 'secondary' : 'destructive'}>
+                    {results['google-config'] ? `Config: HTTP ${results['google-config'].status}` : `Token: HTTP ${results['google-token']?.status}`}
                   </Badge>
-                  <pre className="text-xs mt-2 overflow-auto">{results['google-config'].data}</pre>
+                  <pre className="text-xs mt-2 overflow-auto max-h-32">
+                    {results['google-config']?.data || results['google-token']?.data}
+                  </pre>
                 </div>
               )}
             </CardContent>
@@ -84,21 +98,32 @@ export default function IntegrationTestPage() {
             </CardHeader>
             <CardContent className="space-y-3">
               <Button
-                onClick={() => testEndpoint('/meta/status', 'meta-status')}
-                disabled={loading === 'meta-status'}
+                onClick={() => testEndpoint('/meta/test', 'meta-test')}
+                disabled={loading === 'meta-test'}
                 className="w-full"
               >
-                {loading === 'meta-status' ? 'Testing...' : 'Test Meta API'}
+                {loading === 'meta-test' ? 'Testing...' : 'Test Meta API'}
               </Button>
               
-              {results['meta-status'] && (
+              <Button
+                onClick={() => testEndpoint('/meta/status', 'meta-status')}
+                disabled={loading === 'meta-status'}
+                variant="outline"
+                className="w-full"
+              >
+                {loading === 'meta-status' ? 'Testing...' : 'Test Meta Status'}
+              </Button>
+              
+              {(results['meta-test'] || results['meta-status']) && (
                 <div className={`p-3 rounded border ${
-                  results['meta-status'].success ? 'border-green-500 bg-green-50' : 'border-red-500 bg-red-50'
+                  (results['meta-test']?.success || results['meta-status']?.success) ? 'border-green-500 bg-green-50' : 'border-red-500 bg-red-50'
                 }`}>
-                  <Badge variant={results['meta-status'].success ? 'secondary' : 'destructive'}>
-                    HTTP {results['meta-status'].status}
+                  <Badge variant={(results['meta-test']?.success || results['meta-status']?.success) ? 'secondary' : 'destructive'}>
+                    {results['meta-test'] ? `Test: HTTP ${results['meta-test'].status}` : `Status: HTTP ${results['meta-status']?.status}`}
                   </Badge>
-                  <pre className="text-xs mt-2 overflow-auto">{results['meta-status'].data}</pre>
+                  <pre className="text-xs mt-2 overflow-auto max-h-32">
+                    {results['meta-test']?.data || results['meta-status']?.data}
+                  </pre>
                 </div>
               )}
             </CardContent>

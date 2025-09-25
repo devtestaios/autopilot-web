@@ -343,6 +343,39 @@ async def create_meta_campaign(campaign_data: Dict[str, Any]):
             detail=f"Failed to create Meta campaign: {str(e)}"
         )
 
+# ===== META API CONVENIENCE ALIASES =====
+# These aliases make the API more intuitive for frontend testing
+
+@app.get("/meta/status")
+async def get_meta_status_alias():
+    """Convenience alias for /meta-ads/status"""
+    return await get_meta_ads_status_endpoint()
+
+@app.get("/meta/campaigns")
+async def get_meta_campaigns_alias(limit: int = 25):
+    """Convenience alias for /meta-ads/campaigns"""
+    return await get_meta_ads_campaigns_endpoint(limit)
+
+@app.get("/meta/test")
+async def meta_api_test():
+    """Simple Meta API connectivity test"""
+    try:
+        status = await get_meta_ads_status_endpoint()
+        return {
+            "success": True,
+            "message": "Meta Business API connection successful",
+            "platform": "Meta Business API",
+            "account": status.get("status", {}).get("account_name", "Unknown"),
+            "timestamp": datetime.now(timezone.utc).isoformat()
+        }
+    except Exception as e:
+        return {
+            "success": False,
+            "message": f"Meta API connection failed: {str(e)}",
+            "platform": "Meta Business API",
+            "timestamp": datetime.now(timezone.utc).isoformat()
+        }
+
 # ===== LINKEDIN ADS ENDPOINTS =====
 
 @app.get("/linkedin-ads/status")
