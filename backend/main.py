@@ -666,15 +666,27 @@ async def internal_error_handler(request, exc):
 
 # Google Ads Test Endpoints
 @app.get("/google-ads/config-check")
-def google_ads_config_check():
-    """Check Google Ads configuration"""
-    config = {
-        "GOOGLE_ADS_DEVELOPER_TOKEN": os.getenv('GOOGLE_ADS_DEVELOPER_TOKEN', 'MISSING'),
-        "GOOGLE_ADS_CLIENT_ID": os.getenv('GOOGLE_ADS_CLIENT_ID', 'MISSING'),
-        "GOOGLE_ADS_CLIENT_SECRET": "SET" if os.getenv('GOOGLE_ADS_CLIENT_SECRET') else "MISSING",
-        "GOOGLE_ADS_REFRESH_TOKEN": "SET" if os.getenv('GOOGLE_ADS_REFRESH_TOKEN') else "MISSING",
-        "GOOGLE_ADS_CUSTOMER_ID": os.getenv('GOOGLE_ADS_CUSTOMER_ID', 'MISSING')
-    }
+def check_google_ads_config():
+    """Check if Google Ads environment variables are configured"""
+    config = {}
+    
+    # Show environment variables (safely)
+    config["GOOGLE_ADS_DEVELOPER_TOKEN"] = os.getenv('GOOGLE_ADS_DEVELOPER_TOKEN', 'NOT SET')
+    
+    client_id = os.getenv('GOOGLE_ADS_CLIENT_ID', 'NOT SET')
+    config["GOOGLE_ADS_CLIENT_ID"] = client_id  # Show full client ID for debugging
+    config["GOOGLE_ADS_CLIENT_ID_LENGTH"] = len(client_id) if client_id != 'NOT SET' else 0
+    
+    client_secret = os.getenv('GOOGLE_ADS_CLIENT_SECRET', 'NOT SET')
+    config["GOOGLE_ADS_CLIENT_SECRET"] = "***" + client_secret[-6:] if client_secret != 'NOT SET' and len(client_secret) > 6 else 'NOT SET'
+    config["GOOGLE_ADS_CLIENT_SECRET_LENGTH"] = len(client_secret) if client_secret != 'NOT SET' else 0
+    
+    refresh_token = os.getenv('GOOGLE_ADS_REFRESH_TOKEN', 'NOT SET')
+    config["GOOGLE_ADS_REFRESH_TOKEN"] = refresh_token[:30] + "..." if refresh_token != 'NOT SET' and len(refresh_token) > 30 else 'NOT SET'
+    config["GOOGLE_ADS_REFRESH_TOKEN_LENGTH"] = len(refresh_token) if refresh_token != 'NOT SET' else 0
+    
+    config["GOOGLE_ADS_CUSTOMER_ID"] = os.getenv('GOOGLE_ADS_CUSTOMER_ID', 'NOT SET')
+    
     return config
 
 @app.post("/google-ads/test-token")
