@@ -116,7 +116,9 @@ const REVERSE_OBJECTIVE_MAP: Record<CampaignObjective, string> = {
   [CampaignObjective.LEADS]: 'LEAD_GENERATION',
   [CampaignObjective.SALES]: 'WEBSITE_CONVERSIONS',
   [CampaignObjective.APP_PROMOTION]: 'WEBSITE_VISITS', // Closest match
-  [CampaignObjective.STORE_VISITS]: 'WEBSITE_VISITS' // Closest match
+  [CampaignObjective.STORE_VISITS]: 'WEBSITE_VISITS', // Closest match
+  [CampaignObjective.CONVERSIONS]: 'WEBSITE_CONVERSIONS', // Map to conversions
+  [CampaignObjective.CATALOG_SALES]: 'WEBSITE_CONVERSIONS' // Map to conversions
 };
 
 // ===== LINKEDIN ADS ADAPTER =====

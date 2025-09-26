@@ -237,7 +237,7 @@ export default function GoogleAdsTestPage() {
                 onClick={testAPI}
                 disabled={loading === 'api'}
                 className="w-full"
-                variant="secondary"
+                variant="outline"
               >
                 {loading === 'api' ? (
                   <RefreshCw className="h-4 w-4 animate-spin mr-2" />

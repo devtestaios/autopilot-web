@@ -105,7 +105,9 @@ const REVERSE_OBJECTIVE_MAP: Record<CampaignObjective, string> = {
   [CampaignObjective.VIDEO_VIEWS]: 'VIDEO_VIEWS',
   [CampaignObjective.LEADS]: 'LEAD_GENERATION',
   [CampaignObjective.SALES]: 'CONVERSIONS',
-  [CampaignObjective.STORE_VISITS]: 'STORE_VISITS'
+  [CampaignObjective.STORE_VISITS]: 'STORE_VISITS',
+  [CampaignObjective.CONVERSIONS]: 'CONVERSIONS',
+  [CampaignObjective.CATALOG_SALES]: 'CATALOG_SALES'
 };
 
 // ===== META ADS ADAPTER =====

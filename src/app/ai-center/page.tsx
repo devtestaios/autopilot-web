@@ -1,12 +1,10 @@
 'use client';
 
-import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Brain, MessageSquare, BarChart3, Settings, Zap, TrendingUp } from 'lucide-react';
 import NavigationTabs from '@/components/NavigationTabs';
 
 export default function AICenterPage() {
-  const [activeTab, setActiveTab] = useState('overview');
 
   const aiFeatures = [
     {

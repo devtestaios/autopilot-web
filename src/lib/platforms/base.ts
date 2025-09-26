@@ -52,7 +52,9 @@ export enum CampaignObjective {
   SALES = 'sales',
   APP_PROMOTION = 'app_promotion',
   VIDEO_VIEWS = 'video_views',
-  STORE_VISITS = 'store_visits'
+  STORE_VISITS = 'store_visits',
+  CONVERSIONS = 'conversions',
+  CATALOG_SALES = 'catalog_sales'
 }
 
 // ===== UNIFIED DATA MODELS =====

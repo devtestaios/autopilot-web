@@ -26,14 +26,8 @@ export default function LandingNavbar({ className = '' }: LandingNavbarProps) {
   const { user, isAuthenticated, logout } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  const navigationItems = [
-    { label: 'Features', href: '#features' },
-    { label: 'Solutions', href: '#solutions' },
-    { label: 'Pricing', href: '#pricing' },
-    { label: 'Dashboard', href: '/dashboard' },
-    { label: 'About', href: '#about' },
-    { label: 'Contact', href: '#contact' },
-  ];
+  // Simplified navigation - only logo and login button as requested
+  const navigationItems: { label: string; href: string }[] = [];
 
   return (
     <motion.nav 

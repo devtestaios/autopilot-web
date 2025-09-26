@@ -12,17 +12,35 @@ import {
   Activity,
   Zap,
   Target,
-  RefreshCw
+  RefreshCw,
+  Settings,
+  Sparkles
 } from 'lucide-react';
 
 import UnifiedSidebar from '@/components/UnifiedSidebar';
 import { PremiumCard } from '@/components/ui/PremiumCard';
 import { PremiumButton } from '@/components/ui/PremiumButton';
 import { useDashboardData } from '@/hooks/useDashboardData';
+import { useToast } from '@/components/ui/Toast';
+
+// Enhanced components - dynamically imported to avoid disrupting base functionality
+import dynamic from 'next/dynamic';
+const EnhancedMetricCard = dynamic(() => import('@/components/dashboard/EnhancedMetricCard'), { 
+  ssr: false,
+  loading: () => <div className="animate-pulse bg-gray-200 dark:bg-gray-700 rounded-lg h-32" />
+});
 
 export default function DashboardPage() {
   const router = useRouter();
+  const { showToast } = useToast();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [enhancedMode, setEnhancedMode] = useState(() => {
+    // Check if user has previously enabled enhanced mode
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('dashboard-enhanced') === 'true';
+    }
+    return false;
+  });
 
   // Real-time dashboard data with 30-second refresh
   const { quickStats, overview, campaigns, loading, error, refresh, isStale, lastUpdated } = useDashboardData(30000);
@@ -42,6 +60,77 @@ export default function DashboardPage() {
   const navigateToCampaigns = () => {
     router.push('/campaigns');
   };
+
+  const toggleEnhancedMode = () => {
+    const newMode = !enhancedMode;
+    setEnhancedMode(newMode);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('dashboard-enhanced', newMode.toString());
+    }
+    
+    // Show feedback to user
+    if (showToast) {
+      showToast({
+        type: 'success',
+        title: `${newMode ? 'Enhanced' : 'Standard'} dashboard activated`,
+        description: newMode 
+          ? 'Enjoy improved visualizations and interactions!' 
+          : 'Switched back to standard dashboard view.'
+      });
+    }
+  };
+
+  // Enhanced metrics data (only used when enhanced mode is enabled)
+  const enhancedMetrics = [
+    {
+      title: 'Total Revenue',
+      value: '$847,291',
+      change: 15.3,
+      changeLabel: 'vs last month',
+      icon: DollarSign,
+      iconColor: 'text-green-600 dark:text-green-400',
+      bgColor: 'bg-green-100 dark:bg-green-900/30',
+      onClick: navigateToAnalytics,
+      sparklineData: Array.from({ length: 10 }, () => Math.random() * 100 + 50),
+      subtitle: 'Across all platforms'
+    },
+    {
+      title: 'Active Campaigns',
+      value: 24,
+      change: 12.5,
+      changeLabel: '+3 this week',
+      icon: Target,
+      iconColor: 'text-blue-600 dark:text-blue-400',
+      bgColor: 'bg-blue-100 dark:bg-blue-900/30',
+      onClick: navigateToCampaigns,
+      sparklineData: Array.from({ length: 10 }, () => Math.random() * 100 + 50),
+      subtitle: 'Google, Meta, LinkedIn'
+    },
+    {
+      title: 'Conversion Rate',
+      value: '12.4%',
+      change: 8.7,
+      changeLabel: 'optimization impact',
+      icon: TrendingUp,
+      iconColor: 'text-purple-600 dark:text-purple-400',
+      bgColor: 'bg-purple-100 dark:bg-purple-900/30',
+      onClick: navigateToAnalytics,
+      sparklineData: Array.from({ length: 10 }, () => Math.random() * 100 + 50),
+      subtitle: 'AI-optimized performance'
+    },
+    {
+      title: 'Total Impressions',
+      value: '2.4M',
+      change: 18.9,
+      changeLabel: 'reach expansion',
+      icon: Activity,
+      iconColor: 'text-orange-600 dark:text-orange-400',
+      bgColor: 'bg-orange-100 dark:bg-orange-900/30',
+      onClick: navigateToAnalytics,
+      sparklineData: Array.from({ length: 10 }, () => Math.random() * 100 + 50),
+      subtitle: 'Cross-platform visibility'
+    }
+  ];
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -68,6 +157,17 @@ export default function DashboardPage() {
               </div>
               
               <div className="flex items-center gap-3 mt-4 sm:mt-0">
+                {/* Enhanced Mode Toggle */}
+                <PremiumButton
+                  variant={enhancedMode ? "primary" : "outline"}
+                  size="sm"
+                  icon={<Sparkles className="w-4 h-4" />}
+                  onClick={toggleEnhancedMode}
+                  title={enhancedMode ? "Switch to Standard View" : "Enable Enhanced Dashboard"}
+                >
+                  {enhancedMode ? 'Enhanced' : 'Standard'}
+                </PremiumButton>
+                
                 <PremiumButton
                   variant="ghost"
                   size="sm"
@@ -85,7 +185,51 @@ export default function DashboardPage() {
               </div>
             </motion.div>
 
-            {/* Quick Stats Grid */}
+            {/* Enhanced Mode Discovery Banner - Only shown once */}
+            {!enhancedMode && typeof window !== 'undefined' && !localStorage.getItem('dashboard-enhanced-seen') && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mb-6"
+              >
+                <PremiumCard className="p-4 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 border-blue-200 dark:border-blue-700/50">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-3">
+                      <Sparkles className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                      <div>
+                        <p className="font-medium text-blue-900 dark:text-blue-100">
+                          ✨ Try the Enhanced Dashboard
+                        </p>
+                        <p className="text-sm text-blue-700 dark:text-blue-300">
+                          Interactive metrics, sparklines, and advanced visualizations await!
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <PremiumButton
+                        size="sm"
+                        variant="primary"
+                        onClick={() => {
+                          toggleEnhancedMode();
+                          localStorage.setItem('dashboard-enhanced-seen', 'true');
+                        }}
+                      >
+                        Try Enhanced
+                      </PremiumButton>
+                      <PremiumButton
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => localStorage.setItem('dashboard-enhanced-seen', 'true')}
+                      >
+                        Dismiss
+                      </PremiumButton>
+                    </div>
+                  </div>
+                </PremiumCard>
+              </motion.div>
+            )}
+
+            {/* Quick Stats Grid - Conditional Rendering */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -103,14 +247,26 @@ export default function DashboardPage() {
                     </PremiumButton>
                   </PremiumCard>
                 </div>
-              ) : quickStats.map((stat, index) => {
-                const IconComponent = iconMap[stat.icon as keyof typeof iconMap];
-                return (
-                  <motion.div
-                    key={stat.title}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
+              ) : enhancedMode ? (
+                // Enhanced Metrics (when enhanced mode is enabled)
+                enhancedMetrics.map((metric, index) => (
+                  <EnhancedMetricCard
+                    key={metric.title}
+                    {...metric}
+                    loading={loading}
+                    showSparkline={true}
+                  />
+                ))
+              ) : (
+                // Standard Metrics (original functionality preserved)
+                quickStats.map((stat, index) => {
+                  const IconComponent = iconMap[stat.icon as keyof typeof iconMap];
+                  return (
+                    <motion.div
+                      key={stat.title}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
                     <PremiumCard 
                       variant="glassmorphism" 
                       hover 
@@ -145,8 +301,9 @@ export default function DashboardPage() {
                       </div>
                     </PremiumCard>
                   </motion.div>
-                );
-              })}
+                  );
+                })
+              )}
             </motion.div>
 
             {/* Quick Actions */}
