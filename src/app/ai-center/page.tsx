@@ -2,11 +2,13 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Brain, MessageSquare, BarChart3, Settings, Zap, TrendingUp } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { Brain, MessageSquare, BarChart3, Settings, Zap, TrendingUp, Home } from 'lucide-react';
 import NavigationTabs from '@/components/NavigationTabs';
 
 export default function AICenterPage() {
   const [activeTab, setActiveTab] = useState('overview');
+  const router = useRouter();
 
   const aiFeatures = [
     {
@@ -50,6 +52,15 @@ export default function AICenterPage() {
             className="mb-8"
           >
             <div className="flex items-center space-x-3 mb-4">
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => router.push('/')}
+                className="p-2 bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-white dark:hover:bg-slate-800 transition-all shadow-sm"
+                title="Back to Home"
+              >
+                <Home className="w-5 h-5 text-teal-600" />
+              </motion.button>
               <div className="p-3 bg-gradient-to-r from-purple-500 to-blue-500 rounded-xl">
                 <Brain className="w-8 h-8 text-white" />
               </div>

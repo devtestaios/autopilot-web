@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { 
   TrendingUp, 
   Users, 
@@ -15,7 +16,8 @@ import {
   Eye,
   Clock,
   MousePointer,
-  Zap
+  Zap,
+  Home
 } from 'lucide-react';
 import { useAnalytics } from '@/contexts/AnalyticsContext';
 import { useABTest } from '@/contexts/ABTestContext';
@@ -53,6 +55,7 @@ export default function AnalyticsPage() {
   const [stats, setStats] = useState<DateRangeStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [dateRange, setDateRange] = useState('7d');
+  const router = useRouter();
   
   const { getSessionStats, getTotalEvents, getPerformanceStats } = useSafeAnalytics();
   const { getExperimentResults } = useABTest();
@@ -194,9 +197,20 @@ export default function AnalyticsPage() {
       <div className="p-6">
         <div className="max-w-7xl mx-auto">
           <div className="flex justify-between items-center mb-8">
-            <div>
-              <h1 data-testid="analytics-title" className="text-3xl font-bold text-gray-900 dark:text-white">Analytics Dashboard</h1>
-              <p className="text-gray-600 dark:text-gray-400 mt-1">Monitor your campaign performance and user behavior</p>
+            <div className="flex items-center gap-4">
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => router.push('/')}
+                className="p-2 bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-white dark:hover:bg-slate-800 transition-all shadow-sm"
+                title="Back to Home"
+              >
+                <Home className="w-5 h-5 text-teal-600" />
+              </motion.button>
+              <div>
+                <h1 data-testid="analytics-title" className="text-3xl font-bold text-gray-900 dark:text-white">Analytics Dashboard</h1>
+                <p className="text-gray-600 dark:text-gray-400 mt-1">Monitor your campaign performance and user behavior</p>
+              </div>
             </div>
             
             <div className="flex items-center space-x-4">

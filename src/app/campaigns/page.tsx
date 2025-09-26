@@ -32,7 +32,8 @@ import {
   Search,
   Calendar,
   Download,
-  Upload
+  Upload,
+  Home
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
@@ -293,13 +294,24 @@ export default function CampaignsPage() {
           animate={{ opacity: 1, y: 0 }}
           className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6"
         >
-          <div>
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-teal-600 to-cyan-600 bg-clip-text text-transparent">
-              Campaign Command Center
-            </h1>
-            <p className="text-lg text-gray-600 dark:text-gray-400 mt-2">
-              AI-Powered Cross-Platform Campaign Optimization & Split Testing
-            </p>
+          <div className="flex items-center gap-4">
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => router.push('/')}
+              className="p-2 bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-white dark:hover:bg-slate-800 transition-all shadow-sm"
+              title="Back to Home"
+            >
+              <Home className="w-5 h-5 text-teal-600" />
+            </motion.button>
+            <div>
+              <h1 className="text-4xl font-bold bg-gradient-to-r from-teal-600 to-cyan-600 bg-clip-text text-transparent">
+                Campaign Command Center
+              </h1>
+              <p className="text-lg text-gray-600 dark:text-gray-400 mt-2">
+                AI-Powered Cross-Platform Campaign Optimization & Split Testing
+              </p>
+            </div>
           </div>
           
           <div className="flex flex-wrap gap-3">

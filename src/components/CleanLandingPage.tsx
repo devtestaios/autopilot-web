@@ -99,17 +99,11 @@ export default function CleanLandingPage() {
           </div>
           
           <div className="flex items-center space-x-6">
-            <div className="px-4 py-2 bg-gradient-to-r from-orange-500/20 to-red-500/20 rounded-full border border-orange-300 dark:border-orange-700">
-              <span className="text-sm font-medium text-orange-700 dark:text-orange-300">
-                🚧 Platform In Development
+            <div className="px-4 py-2 bg-gradient-to-r from-teal-500/20 to-cyan-500/20 rounded-full border border-teal-300 dark:border-teal-700">
+              <span className="text-sm font-medium text-teal-700 dark:text-teal-300">
+                ✨ Platform Showcase - Demo Access via /login
               </span>
             </div>
-            <Link 
-              href="/dashboard" 
-              className="px-6 py-2 bg-gradient-to-r from-teal-600 to-cyan-600 text-white rounded-full hover:from-teal-700 hover:to-cyan-700 transition-all duration-200 shadow-lg hover:shadow-xl font-medium"
-            >
-              Enter Platform
-            </Link>
           </div>
         </div>
       </nav>
@@ -142,16 +136,19 @@ export default function CleanLandingPage() {
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <Link
-                href="/dashboard"
+                href="/campaigns"
                 className="px-8 py-4 bg-gradient-to-r from-teal-600 to-cyan-600 text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 flex items-center gap-2"
               >
-                Start Free Trial
+                View Campaigns Demo
                 <ArrowRight className="w-5 h-5" />
               </Link>
               
-              <button className="px-8 py-4 border-2 border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 rounded-xl font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
-                Watch Demo
-              </button>
+              <Link
+                href="/analytics"
+                className="px-8 py-4 border-2 border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 rounded-xl font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+              >
+                Analytics Showcase
+              </Link>
             </div>
           </motion.div>
         </div>
@@ -291,16 +288,19 @@ export default function CleanLandingPage() {
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <Link
-                href="/dashboard"
+                href="/ai-center"
                 className="px-8 py-4 bg-white text-teal-600 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 flex items-center gap-2"
               >
-                Get Started Free
+                Explore AI Features
                 <ArrowRight className="w-5 h-5" />
               </Link>
               
-              <button className="px-8 py-4 border-2 border-white/30 text-white rounded-xl font-semibold hover:bg-white/10 transition-colors">
-                Schedule Demo
-              </button>
+              <Link
+                href="/status"
+                className="px-8 py-4 border-2 border-white/30 text-white rounded-xl font-semibold hover:bg-white/10 transition-colors"
+              >
+                Platform Status
+              </Link>
             </div>
           </motion.div>
         </div>
