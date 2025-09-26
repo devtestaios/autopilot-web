@@ -766,7 +766,9 @@ function generateActions(input: string, page: string): UnifiedChatAction[] {
       icon: <Zap className="w-4 h-4" />,
       variant: 'success',
       requiresApproval: true,
-      action: () => console.log('Optimizing campaigns')
+      action: () => {
+        // Optimize campaigns action placeholder
+      }
     });
   }
   

@@ -99,17 +99,16 @@ export default function CleanLandingPage() {
           </div>
           
           <div className="flex items-center space-x-6">
-            <Link href="/campaigns" className="text-slate-700 dark:text-slate-300 hover:text-teal-600 dark:hover:text-teal-400 transition-colors">
-              Campaigns
-            </Link>
-            <Link href="/analytics" className="text-slate-700 dark:text-slate-300 hover:text-teal-600 dark:hover:text-teal-400 transition-colors">
-              Analytics
-            </Link>
+            <div className="px-4 py-2 bg-gradient-to-r from-orange-500/20 to-red-500/20 rounded-full border border-orange-300 dark:border-orange-700">
+              <span className="text-sm font-medium text-orange-700 dark:text-orange-300">
+                🚧 Platform In Development
+              </span>
+            </div>
             <Link 
-              href="/login" 
+              href="/dashboard" 
               className="px-6 py-2 bg-gradient-to-r from-teal-600 to-cyan-600 text-white rounded-full hover:from-teal-700 hover:to-cyan-700 transition-all duration-200 shadow-lg hover:shadow-xl font-medium"
             >
-              Login
+              Enter Platform
             </Link>
           </div>
         </div>

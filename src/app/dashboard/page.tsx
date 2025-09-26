@@ -37,8 +37,9 @@ import { useDashboardData } from '@/hooks/useDashboardData';
 import { useToast } from '@/components/ui/Toast';
 import { useAuth } from '@/contexts/AuthContext';
 import DashboardStats from '@/components/DashboardStats';
+import { ErrorBoundary, DashboardErrorFallback } from '@/components/ErrorBoundary';
 
-export default function DashboardPage() {
+function DashboardPageContent() {
   const router = useRouter();
   const { user } = useAuth();
   const { showToast } = useToast();
@@ -95,6 +96,38 @@ export default function DashboardPage() {
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-600 mx-auto mb-4"></div>
           <p className="text-gray-600 dark:text-gray-400">Loading dashboard...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Error state with retry option
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center p-4">
+        <div className="max-w-md w-full bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 text-center">
+          <div className="flex justify-center mb-4">
+            <div className="w-12 h-12 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center">
+              <Activity className="w-6 h-6 text-red-600 dark:text-red-400" />
+            </div>
+          </div>
+          
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+            Dashboard Unavailable
+          </h2>
+          
+          <p className="text-gray-600 dark:text-gray-400 mb-6">
+            Unable to load dashboard data. Please check your connection and try again.
+          </p>
+          
+          <button
+            onClick={handleManualRefresh}
+            disabled={isRefreshing}
+            className="flex items-center justify-center px-6 py-3 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors disabled:opacity-50 w-full"
+          >
+            <RefreshCw className={`w-5 h-5 mr-2 ${isRefreshing ? 'animate-spin' : ''}`} />
+            {isRefreshing ? 'Retrying...' : 'Try Again'}
+          </button>
         </div>
       </div>
     );
@@ -319,5 +352,14 @@ export default function DashboardPage() {
       {/* AI Control Chat - RESTORED */}
       <AIControlChat />
     </div>
+  );
+}
+
+// Main export with Error Boundary
+export default function DashboardPage() {
+  return (
+    <ErrorBoundary fallback={DashboardErrorFallback}>
+      <DashboardPageContent />
+    </ErrorBoundary>
   );
 }
