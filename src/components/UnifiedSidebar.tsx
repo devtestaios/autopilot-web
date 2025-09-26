@@ -125,6 +125,9 @@ export default function UnifiedSidebar({
 
   // Check for mobile screen
   useEffect(() => {
+    // Only run on client side to prevent SSR issues
+    if (typeof window === 'undefined') return;
+    
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768);
       if (window.innerWidth >= 768) {

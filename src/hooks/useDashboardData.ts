@@ -152,9 +152,19 @@ export function useDashboardData(refreshInterval: number = 30000) {
     }
   };
 
-  const generateQuickStats = useCallback((overview: DashboardOverview, campaigns: Campaign[], leads: Lead[]): QuickStat[] => {
-    const totalRevenue = overview.total_spend * overview.avg_roas;
-    const conversionRate = campaigns.length > 0 ? (overview.total_conversions / campaigns.length) : 0;
+  const generateQuickStats = useCallback((overview: DashboardOverview | null, campaigns: Campaign[], leads: Lead[]): QuickStat[] => {
+    // Provide safe defaults when overview data is not available
+    const safeOverview = overview || {
+      total_campaigns: 0,
+      active_campaigns: 0,
+      total_spend: 0,
+      total_conversions: 0,
+      avg_roas: 0,
+      last_updated: new Date().toISOString()
+    };
+
+    const totalRevenue = safeOverview.total_spend * safeOverview.avg_roas;
+    const conversionRate = campaigns.length > 0 ? (safeOverview.total_conversions / campaigns.length) : 0;
     
     return [
       {
@@ -167,7 +177,7 @@ export function useDashboardData(refreshInterval: number = 30000) {
       },
       {
         title: 'Active Campaigns',
-        value: overview.active_campaigns.toString(),
+        value: (safeOverview.active_campaigns || 0).toString(),
         change: '+8.2%',
         color: 'text-cyan-600 dark:text-cyan-400',
         bgColor: 'bg-cyan-100 dark:bg-cyan-900/30',

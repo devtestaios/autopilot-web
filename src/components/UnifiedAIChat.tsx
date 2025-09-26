@@ -130,11 +130,20 @@ export default function UnifiedAIChat({
 }: UnifiedAIChatProps) {
   
   // ========== CORE STATE ==========
+  const [isMounted, setIsMounted] = useState(false);
   const [isOpen, setIsOpen] = useState(!defaultMinimized);
   const [isExpanded, setIsExpanded] = useState(defaultExpanded);
   const [isMinimized, setIsMinimized] = useState(defaultMinimized);
   const [inputValue, setInputValue] = useState('');
   const [currentPage, setCurrentPage] = useState(pageContext || '');
+  
+  // ========== ID GENERATOR (Hydration Safe) ==========
+  const generateId = useCallback(() => {
+    if (isMounted) {
+      return Date.now().toString() + Math.random().toString(36).substr(2, 9);
+    }
+    return 'temp-' + Math.random().toString(36).substr(2, 9);
+  }, [isMounted]);
   
   // ========== UNIFIED AI CONTEXT ==========
   const {
@@ -166,14 +175,19 @@ export default function UnifiedAIChat({
   const inputRef = useRef<HTMLInputElement>(null);
   const { showToast } = useToast();
   
+  // ========== HYDRATION SAFETY ==========
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+  
   // ========== PAGE DETECTION ==========
   useEffect(() => {
-    if (!pageContext && typeof window !== 'undefined') {
+    if (!pageContext && isMounted) {
       const path = window.location.pathname;
       const page = path.split('/')[1] || 'dashboard';
       setCurrentPage(page);
     }
-  }, [pageContext]);
+  }, [pageContext, isMounted]);
   
   // ========== AUTO SCROLL ==========
   useEffect(() => {
@@ -210,7 +224,7 @@ export default function UnifiedAIChat({
     if (!inputValue.trim()) return;
     
     const userMessage: UnifiedChatMessage = {
-      id: Date.now().toString(),
+      id: generateId(),
       content: inputValue,
       role: 'user',
       timestamp: new Date(),
@@ -237,7 +251,7 @@ export default function UnifiedAIChat({
       // In production, this would be handled by the unified context
       setTimeout(() => {
         const mockResponse: UnifiedChatMessage = {
-          id: Date.now().toString(),
+          id: generateId(),
           content: generateMockResponse(inputValue, mode, currentPage),
           role: 'assistant',
           timestamp: new Date(),
@@ -489,7 +503,7 @@ export default function UnifiedAIChat({
   );
   
   const renderQuickActions = () => {
-    if (!features.includes('quickActions')) return null;
+    if (!features.includes('quickActions') || !isMounted) return null;
     
     const quickActions = getQuickActions();
     
@@ -539,6 +553,11 @@ export default function UnifiedAIChat({
   );
   
   // ========== MODE-SPECIFIC RENDERING ==========
+  // Prevent hydration mismatch by only rendering after client mount
+  if (!isMounted) {
+    return null;
+  }
+
   if (mode === 'floating') {
     if (!isOpen) {
       return (
