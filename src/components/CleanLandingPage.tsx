@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import Link from 'next/link';
 import { 
   Zap, 
   Brain, 
@@ -99,14 +98,11 @@ export default function CleanLandingPage() {
             </span>
           </div>
           
-          {/* Right Side - Login Only */}
+          {/* Right Side - Coming Soon Badge */}
           <div className="flex items-center">
-            <Link 
-              href="/login" 
-              className="px-6 py-2 bg-gradient-to-r from-teal-600 to-cyan-600 text-white rounded-full hover:from-teal-700 hover:to-cyan-700 transition-all duration-200 shadow-lg hover:shadow-xl font-medium"
-            >
-              Login
-            </Link>
+            <div className="px-4 py-2 bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-400/30 text-amber-700 dark:text-amber-400 rounded-full font-medium text-sm">
+              🚀 In Development
+            </div>
           </div>
         </div>
       </nav>
@@ -134,17 +130,14 @@ export default function CleanLandingPage() {
             
             <p className="text-xl md:text-2xl text-slate-600 dark:text-slate-400 mb-8 max-w-3xl mx-auto leading-relaxed">
               PulseBridge.ai manages your campaigns across Google Ads, Meta, and LinkedIn 
-              with complete autonomy. Watch your ROAS soar while you focus on strategy.
+              with complete autonomy. Currently in development - coming soon!
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <Link
-                href="/dashboard"
-                className="px-8 py-4 bg-gradient-to-r from-teal-600 to-cyan-600 text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 flex items-center gap-2"
-              >
-                Start Free Trial
-                <ArrowRight className="w-5 h-5" />
-              </Link>
+              <div className="px-8 py-4 bg-gradient-to-r from-slate-100 to-slate-200 dark:from-slate-700 dark:to-slate-800 text-slate-700 dark:text-slate-300 rounded-xl font-semibold border-2 border-slate-300 dark:border-slate-600 flex items-center gap-2">
+                <Rocket className="w-5 h-5" />
+                Coming Soon
+              </div>
               
               <button className="px-8 py-4 border-2 border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 rounded-xl font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
                 Watch Demo
@@ -283,17 +276,14 @@ export default function CleanLandingPage() {
               Ready to Transform Your Marketing?
             </h2>
             <p className="text-xl mb-8 opacity-90">
-              Join 1,000+ companies using AI to scale their advertising ROI
+              Join 1,000+ companies ready to scale their advertising ROI with AI
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <Link
-                href="/dashboard"
-                className="px-8 py-4 bg-white text-teal-600 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 flex items-center gap-2"
-              >
-                Get Started Free
-                <ArrowRight className="w-5 h-5" />
-              </Link>
+              <div className="px-8 py-4 bg-white/10 border-2 border-white/30 text-white rounded-xl font-semibold flex items-center gap-2">
+                <Rocket className="w-5 h-5" />
+                Coming Soon
+              </div>
               
               <button className="px-8 py-4 border-2 border-white/30 text-white rounded-xl font-semibold hover:bg-white/10 transition-colors">
                 Schedule Demo
