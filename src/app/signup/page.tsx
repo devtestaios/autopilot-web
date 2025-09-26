@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
@@ -13,6 +13,13 @@ export default function SignupPage() {
   const router = useRouter();
   const { signup, isLoading } = useAuth();
   const { theme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  // Prevent SSR issues with theme
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -70,6 +77,11 @@ export default function SignupPage() {
   };
 
   const strength = passwordStrength(formData.password);
+
+  // Prevent SSR hydration issues
+  if (!mounted) {
+    return <div className="min-h-screen bg-gray-50 dark:bg-gray-900" />;
+  }
 
   return (
     <div className={`min-h-screen flex ${

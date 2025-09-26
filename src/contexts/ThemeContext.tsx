@@ -50,7 +50,16 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   // Don't render anything until mounted to prevent hydration mismatch
   if (!mounted) {
-    return <>{children}</>;
+    const defaultContext = {
+      theme: 'dark' as Theme,
+      toggleTheme: () => {},
+      setTheme: () => {}
+    };
+    return (
+      <ThemeContext.Provider value={defaultContext}>
+        {children}
+      </ThemeContext.Provider>
+    );
   }
 
   return (
