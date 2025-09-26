@@ -503,7 +503,7 @@ export default function UnifiedAIChat({
   );
   
   const renderQuickActions = () => {
-    if (!features.includes('quickActions')) return null;
+    if (!features.includes('quickActions') || !isMounted) return null;
     
     const quickActions = getQuickActions();
     
