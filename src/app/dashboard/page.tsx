@@ -23,16 +23,17 @@ const UnifiedSidebar = dynamic(() => import('@/components/UnifiedSidebar'), {
   ssr: false,
   loading: () => <div className="fixed left-0 top-0 h-screen w-56 bg-gray-900 animate-pulse" />
 });
+
 import { PremiumCard } from '@/components/ui/PremiumCard';
 import { PremiumButton } from '@/components/ui/PremiumButton';
 import { useDashboardData } from '@/hooks/useDashboardData';
 import { useToast } from '@/components/ui/Toast';
 
-// Enhanced components - dynamically imported to avoid disrupting base functionality
-const EnhancedMetricCard = dynamic(() => import('@/components/dashboard/EnhancedMetricCard'), { 
-  ssr: false,
-  loading: () => <div className="animate-pulse bg-gray-200 dark:bg-gray-700 rounded-lg h-32" />
-});
+// Enhanced components - temporarily commented to isolate issues
+// const EnhancedMetricCard = dynamic(() => import('@/components/dashboard/EnhancedMetricCard'), { 
+//   ssr: false,
+//   loading: () => <div className="animate-pulse bg-gray-200 dark:bg-gray-700 rounded-lg h-32" />
+// });
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -252,15 +253,17 @@ export default function DashboardPage() {
                   </PremiumCard>
                 </div>
               ) : enhancedMode ? (
-                // Enhanced Metrics (when enhanced mode is enabled)
-                enhancedMetrics.map((metric, index) => (
-                  <EnhancedMetricCard
-                    key={metric.title}
-                    {...metric}
-                    loading={loading}
-                    showSparkline={true}
-                  />
-                ))
+                // Enhanced Metrics (temporarily disabled to fix errors)
+                <div className="col-span-full">
+                  <PremiumCard className="p-6 text-center">
+                    <p className="text-blue-600 dark:text-blue-400">
+                      Enhanced mode temporarily disabled for troubleshooting.
+                    </p>
+                    <p className="text-sm text-gray-500 mt-2">
+                      Using standard dashboard view.
+                    </p>
+                  </PremiumCard>
+                </div>
               ) : (
                 // Standard Metrics (original functionality preserved)
                 quickStats.map((stat, index) => {
