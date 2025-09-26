@@ -61,12 +61,12 @@ export default function PerformanceChart({ data, metric, title }: PerformanceCha
       </h3>
       
       {data.length === 0 ? (
-        <div className="h-64 flex items-center justify-center text-muted-foreground">
+        <div className="h-64 flex items-center justify-center text-gray-700">
           No performance data available
         </div>
       ) : (
-        <ResponsiveContainer width="100%" height={300}>
-          <LineChart data={data}>
+        <ResponsiveContainer width="100%" height={300} data-testid="responsive-container">
+          <LineChart data={data} data-testid="line-chart">
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis 
               dataKey="date" 
@@ -89,6 +89,7 @@ export default function PerformanceChart({ data, metric, title }: PerformanceCha
               strokeWidth={2}
               dot={{ fill: getColor(), strokeWidth: 2, r: 4 }}
               activeDot={{ r: 6 }}
+              data-testid={`line-${metric}`}
             />
           </LineChart>
         </ResponsiveContainer>
@@ -120,12 +121,12 @@ export function CampaignComparisonChart({ campaigns }: CampaignComparisonChartPr
       <h3 className="text-lg font-semibold mb-4">Campaign Budget vs Spend</h3>
       
       {data.length === 0 ? (
-        <div className="h-64 flex items-center justify-center text-muted-foreground">
+        <div className="h-64 flex items-center justify-center text-gray-700">
           No campaign data available
         </div>
       ) : (
-        <ResponsiveContainer width="100%" height={300}>
-          <BarChart data={data}>
+        <ResponsiveContainer width="100%" height={300} data-testid="responsive-container">
+          <BarChart data={data} data-testid="bar-chart">
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis 
               dataKey="name" 
@@ -142,8 +143,8 @@ export function CampaignComparisonChart({ campaigns }: CampaignComparisonChartPr
               formatter={(value: any, name: any) => [`$${(value as number).toLocaleString()}`, name as string]}
             />
             <Legend />
-            <Bar dataKey="budget" fill="#e5e7eb" name="Budget" />
-            <Bar dataKey="spend" fill="#3b82f6" name="Spend" />
+            <Bar dataKey="budget" fill="#e5e7eb" name="Budget" data-testid="bar-budget" />
+            <Bar dataKey="spend" fill="#3b82f6" name="Spend" data-testid="bar-spend" />
           </BarChart>
         </ResponsiveContainer>
       )}

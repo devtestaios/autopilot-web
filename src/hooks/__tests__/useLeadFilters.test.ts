@@ -10,7 +10,9 @@ const mockLeads: Lead[] = [
     email: 'john@example.com',
     source: 'website',
     created_at: new Date('2024-01-15').toISOString(),
-    updated_at: new Date('2024-01-15').toISOString()
+    updated_at: new Date('2024-01-15').toISOString(),
+    status: 'new',
+    score: 9
   },
   {
     id: '2',
@@ -18,7 +20,9 @@ const mockLeads: Lead[] = [
     email: 'jane@example.com',
     source: 'social_media',
     created_at: new Date('2024-01-10').toISOString(),
-    updated_at: new Date('2024-01-10').toISOString()
+    updated_at: new Date('2024-01-10').toISOString(),
+    status: 'contacted',
+    score: 6
   },
   {
     id: '3',
@@ -26,7 +30,9 @@ const mockLeads: Lead[] = [
     email: 'bob@example.com',
     source: 'referral',
     created_at: new Date('2024-01-05').toISOString(),
-    updated_at: new Date('2024-01-05').toISOString()
+    updated_at: new Date('2024-01-05').toISOString(),
+    status: 'qualified',
+    score: 3
   },
   {
     id: '4',
@@ -34,7 +40,9 @@ const mockLeads: Lead[] = [
     email: 'alice@example.com',
     source: 'website',
     created_at: new Date('2024-01-20').toISOString(),
-    updated_at: new Date('2024-01-20').toISOString()
+    updated_at: new Date('2024-01-20').toISOString(),
+    status: 'new',
+    score: 0
   },
   {
     id: '5',
@@ -42,9 +50,11 @@ const mockLeads: Lead[] = [
     email: 'charlie@example.com',
     source: null, // Test null/undefined source
     created_at: new Date('2024-01-12').toISOString(),
-    updated_at: new Date('2024-01-12').toISOString()
+    updated_at: new Date('2024-01-12').toISOString(),
+    status: 'contacted',
+    score: 7
   }
-];
+] as (Lead & { status?: string; score?: number })[];
 
 describe('useLeadFilters', () => {
   beforeEach(() => {

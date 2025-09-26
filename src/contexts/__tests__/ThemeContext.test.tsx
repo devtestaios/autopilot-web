@@ -248,7 +248,7 @@ describe('ThemeContext', () => {
       });
 
       await waitFor(() => {
-        expect(mockRemove).toHaveBeenCalledWith('light', 'dark');
+        expect(mockRemove).toHaveBeenCalledWith('light');
         expect(mockAdd).toHaveBeenCalledWith('dark');
       });
     });

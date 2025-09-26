@@ -108,7 +108,22 @@ export function AuthProvider({ children }: AuthProviderProps) {
     const checkAuth = async () => {
       try {
         if (!isSupabaseConfigured) {
-          // For mock authentication, just set loading to false
+          // For mock authentication, try to load saved user from localStorage
+          try {
+            const savedUser = safeLocalStorage.getItem('autopilot_user');
+            const savedToken = safeLocalStorage.getItem('autopilot_token');
+            
+            if (savedUser && savedToken) {
+              const user = JSON.parse(savedUser);
+              setUser(user);
+            }
+          } catch (error) {
+            console.error('Error parsing saved user:', error);
+            // Clear corrupted data
+            safeLocalStorage.removeItem('autopilot_user');
+            safeLocalStorage.removeItem('autopilot_token');
+          }
+          
           setIsLoading(false);
           return;
         }
@@ -297,6 +312,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
             lastLogin: new Date().toISOString()
           };
 
+          // Save to localStorage for persistence
+          safeLocalStorage.setItem('autopilot_user', JSON.stringify(mockUser));
+          safeLocalStorage.setItem('autopilot_token', `mock_token_${Date.now()}`);
+
           setUser(mockUser);
           setIsLoading(false);
           return { success: true };
@@ -389,6 +408,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
             lastLogin: new Date().toISOString()
           };
 
+          // Save to localStorage for persistence
+          safeLocalStorage.setItem('autopilot_user', JSON.stringify(mockUser));
+          safeLocalStorage.setItem('autopilot_token', `mock_token_${Date.now()}`);
+
           setUser(mockUser);
           setIsLoading(false);
           return { success: true };
@@ -409,10 +432,17 @@ export function AuthProvider({ children }: AuthProviderProps) {
       if (isSupabaseConfigured) {
         await supabase.auth.signOut();
       }
+      
+      // Clear localStorage in all cases
+      safeLocalStorage.removeItem('autopilot_user');
+      safeLocalStorage.removeItem('autopilot_token');
+      
       setUser(null);
     } catch (error) {
       console.error('Logout error:', error);
-      // Even if logout fails, clear local state
+      // Even if logout fails, clear local state and localStorage
+      safeLocalStorage.removeItem('autopilot_user');
+      safeLocalStorage.removeItem('autopilot_token');
       setUser(null);
     }
   };
@@ -441,6 +471,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
         // Update local state
         const updatedUser = { ...user, ...updates };
+        
+        // Save updated user to localStorage for persistence
+        safeLocalStorage.setItem('autopilot_user', JSON.stringify(updatedUser));
+        
         setUser(updatedUser);
       } catch (error) {
         console.error('Error updating user:', error);
@@ -471,6 +505,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
           ...user,
           preferences: updatedPreferences
         };
+        
+        // Save updated user to localStorage for persistence
+        safeLocalStorage.setItem('autopilot_user', JSON.stringify(updatedUser));
+        
         setUser(updatedUser);
       } catch (error) {
         console.error('Error updating preferences:', error);

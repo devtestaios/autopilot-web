@@ -15,7 +15,9 @@ const navigationItems: NavItem[] = [
   { href: '/', label: 'Single Platform Dashboard' },
   { href: '/unified', label: '🌐 Unified Platform Command Center' },
   { href: '/platforms', label: '⚙️ Platform Setup' },
+  { href: '/campaigns', label: '📊 Campaign Management' },
   { href: '/leads', label: '🎯 Lead Management' },
+  { href: '/analytics', label: '📊 Advanced Analytics' },
   { href: '/alerts', label: '🚨 Smart Alerts' },
   { href: '/status', label: '📈 System Status' },
 ];

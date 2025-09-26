@@ -7,8 +7,11 @@ describe('Root Page', () => {
   it('should render root page', () => {
     renderWithWrapper(<RootPage />);
     
-    // Check for unique landing page elements - use getAllByTestId since there are multiple nav elements
-    expect(screen.getAllByTestId('main-navigation')).toHaveLength(2);
+    // Check for main navigation element
+    expect(screen.getByTestId('main-navigation')).toBeInTheDocument();
+    
+    // Check for landing page specific elements  
+    expect(screen.getByText('PulseBridge.ai')).toBeInTheDocument();
   });
 
   it('should render without crashing', () => {

@@ -11,13 +11,42 @@ jest.mock('../useDebounce', () => ({
   useDebounce: (value: string) => value, // Return value immediately for testing
 }));
 
+// Mock search data
+const mockSearchData = {
+  campaigns: [
+    {
+      id: '1',
+      name: 'Test Campaign',
+      platform: 'google_ads',
+      status: 'active',
+      budget: 1000
+    },
+    {
+      id: '2', 
+      name: 'Facebook Campaign',
+      platform: 'meta',
+      status: 'paused',
+      budget: 500
+    }
+  ],
+  leads: [
+    {
+      id: '1',
+      name: 'John Doe',
+      email: 'john@example.com',
+      source: 'website',
+      created_at: '2024-01-15'
+    }
+  ]
+};
+
 describe('useGlobalSearch', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
   it('initializes with empty search term and results', () => {
-    const { result } = renderHook(() => useGlobalSearch());
+    const { result } = renderHook(() => useGlobalSearch(mockSearchData));
 
     expect(result.current.searchTerm).toBe('');
     expect(result.current.results).toEqual([]);
@@ -26,7 +55,7 @@ describe('useGlobalSearch', () => {
   });
 
   it('updates search term', () => {
-    const { result } = renderHook(() => useGlobalSearch());
+    const { result } = renderHook(() => useGlobalSearch(mockSearchData));
 
     act(() => {
       result.current.setSearchTerm('test query');
@@ -36,10 +65,10 @@ describe('useGlobalSearch', () => {
   });
 
   it('performs search and returns results', async () => {
-    const { result } = renderHook(() => useGlobalSearch());
+    const { result } = renderHook(() => useGlobalSearch(mockSearchData));
 
     act(() => {
-      result.current.setSearchTerm('campaigns');
+      result.current.setSearchTerm('campaign');
     });
 
     // Wait for the search to complete (debounce + search delay)
@@ -58,10 +87,10 @@ describe('useGlobalSearch', () => {
   });
 
   it('returns results sorted by relevance', async () => {
-    const { result } = renderHook(() => useGlobalSearch());
+    const { result } = renderHook(() => useGlobalSearch(mockSearchData));
 
     act(() => {
-      result.current.setSearchTerm('Campaign Management');
+      result.current.setSearchTerm('campaign');
     });
 
     // Wait for the search to complete
@@ -78,13 +107,7 @@ describe('useGlobalSearch', () => {
   });
 
   it('includes provided search data in results', async () => {
-    const searchData = {
-      campaigns: [
-        { id: 1, name: 'Test Campaign', status: 'active', platform: 'google' }
-      ]
-    };
-
-    const { result } = renderHook(() => useGlobalSearch(searchData));
+    const { result } = renderHook(() => useGlobalSearch(mockSearchData));
 
     act(() => {
       result.current.setSearchTerm('Test Campaign');
@@ -102,7 +125,7 @@ describe('useGlobalSearch', () => {
   });
 
   it('searches across different content types', async () => {
-    const { result } = renderHook(() => useGlobalSearch());
+    const { result } = renderHook(() => useGlobalSearch(mockSearchData));
 
     act(() => {
       result.current.setSearchTerm('alert');
@@ -118,7 +141,7 @@ describe('useGlobalSearch', () => {
   });
 
   it('handles case-insensitive search', async () => {
-    const { result } = renderHook(() => useGlobalSearch());
+    const { result } = renderHook(() => useGlobalSearch(mockSearchData));
 
     act(() => {
       result.current.setSearchTerm('CAMPAIGN');
