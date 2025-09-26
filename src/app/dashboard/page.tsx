@@ -17,14 +17,18 @@ import {
   Sparkles
 } from 'lucide-react';
 
-import UnifiedSidebar from '@/components/UnifiedSidebar';
+// Dynamic imports for components with client-side dependencies
+import dynamic from 'next/dynamic';
+const UnifiedSidebar = dynamic(() => import('@/components/UnifiedSidebar'), {
+  ssr: false,
+  loading: () => <div className="fixed left-0 top-0 h-screen w-56 bg-gray-900 animate-pulse" />
+});
 import { PremiumCard } from '@/components/ui/PremiumCard';
 import { PremiumButton } from '@/components/ui/PremiumButton';
 import { useDashboardData } from '@/hooks/useDashboardData';
 import { useToast } from '@/components/ui/Toast';
 
 // Enhanced components - dynamically imported to avoid disrupting base functionality
-import dynamic from 'next/dynamic';
 const EnhancedMetricCard = dynamic(() => import('@/components/dashboard/EnhancedMetricCard'), { 
   ssr: false,
   loading: () => <div className="animate-pulse bg-gray-200 dark:bg-gray-700 rounded-lg h-32" />

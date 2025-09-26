@@ -359,6 +359,9 @@ export function AnalyticsProvider({
 
   // Track session end on page unload
   useEffect(() => {
+    // Only run on client side to prevent SSR issues
+    if (typeof window === 'undefined') return;
+    
     const handleBeforeUnload = () => {
       if (eventQueue.length > 0) {
         // Use sendBeacon for reliable delivery on page unload
