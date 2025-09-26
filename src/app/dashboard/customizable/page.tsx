@@ -1,24 +1,33 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import dynamic from 'next/dynamic';
 import { motion } from 'framer-motion';
 import { Settings } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
-import DashboardCustomizer, { DashboardWidget } from '@/components/DashboardCustomizer';
-import AdvancedNavigation from '@/components/ui/AdvancedNavigation';
-import UnifiedSidebar from '@/components/UnifiedSidebar';
-import Breadcrumb from '@/components/ui/Breadcrumb';
 import { PageSkeleton, DashboardWidgetSkeleton } from '@/components/ui/Skeleton';
 import { AsyncContent } from '@/components/ui/AsyncContent';
 import { useErrorHandler } from '@/hooks/useErrorHandler';
 import { fetchDashboardOverview, fetchCampaigns, fetchKPISummary } from '@/lib/api';
 
-// Widget Components
-import MetricWidget from '@/components/dashboard/widgets/MetricWidget';
-import ChartWidget from '@/components/dashboard/widgets/ChartWidget';
-import TableWidget from '@/components/dashboard/widgets/TableWidget';
-import InsightsWidget from '@/components/dashboard/widgets/InsightsWidget';
+// Dynamic imports to prevent SSR issues
+const DashboardCustomizer = dynamic(
+  () => import('@/components/DashboardCustomizer').then(mod => ({ default: mod.default })),
+  { ssr: false, loading: () => <div className="animate-pulse bg-gray-200 dark:bg-gray-700 h-64 rounded-lg"></div> }
+);
+const AdvancedNavigation = dynamic(() => import('@/components/ui/AdvancedNavigation'), { ssr: false });
+const UnifiedSidebar = dynamic(() => import('@/components/UnifiedSidebar'), { ssr: false });
+const Breadcrumb = dynamic(() => import('@/components/ui/Breadcrumb'), { ssr: false });
+
+// Widget Components - also load dynamically
+const MetricWidget = dynamic(() => import('@/components/dashboard/widgets/MetricWidget'), { ssr: false });
+const ChartWidget = dynamic(() => import('@/components/dashboard/widgets/ChartWidget'), { ssr: false });
+const TableWidget = dynamic(() => import('@/components/dashboard/widgets/TableWidget'), { ssr: false });
+const InsightsWidget = dynamic(() => import('@/components/dashboard/widgets/InsightsWidget'), { ssr: false });
+
+// Import the type separately
+import type { DashboardWidget } from '@/components/DashboardCustomizer';
 
 export default function CustomizableDashboardPage() {
   const { user } = useAuth();
