@@ -15,9 +15,17 @@ export default function AIFloatingAssistant({ className }: AIFloatingAssistantPr
   const pathname = usePathname();
   const [contextFeatures, setContextFeatures] = useState<AIFeature[]>(['actions', 'insights', 'suggestions', 'quickActions']);
   const [specializations, setSpecializations] = useState<AISpecialization[]>(['navigation']);
+  const [isClient, setIsClient] = useState(false);
+
+  // Ensure we're on the client side
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   // Context-aware feature adaptation based on current page
   useEffect(() => {
+    if (!isClient) return; // Skip during SSR
+
     const getContextualFeatures = () => {
       // Base features available everywhere
       let features: AIFeature[] = ['actions', 'insights', 'suggestions', 'quickActions'];
@@ -43,7 +51,12 @@ export default function AIFloatingAssistant({ className }: AIFloatingAssistantPr
     };
 
     getContextualFeatures();
-  }, [pathname]);
+  }, [pathname, isClient]);
+
+  // Don't render during SSR
+  if (!isClient) {
+    return null;
+  }
 
   return (
     <UnifiedAIChat
