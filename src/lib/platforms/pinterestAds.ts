@@ -74,8 +74,8 @@ const PINTEREST_OBJECTIVE_MAP: Record<string, CampaignObjective> = {
   'AWARENESS': CampaignObjective.AWARENESS,
   'CONSIDERATION': CampaignObjective.ENGAGEMENT,
   'VIDEO_VIEW': CampaignObjective.VIDEO_VIEWS,
-  'WEB_CONVERSION': CampaignObjective.CONVERSIONS,
-  'CATALOG_SALES': CampaignObjective.CATALOG_SALES,
+  'WEB_CONVERSION': CampaignObjective.LEADS, // Map to closest available objective
+  'CATALOG_SALES': CampaignObjective.SALES, // Map to closest available objective
 };
 
 // ===== PINTEREST ADS ADAPTER =====
@@ -468,8 +468,8 @@ export class PinterestAdsAdapter implements PlatformAdapter {
       case CampaignObjective.AWARENESS: return 'AWARENESS';
       case CampaignObjective.ENGAGEMENT: return 'CONSIDERATION';
       case CampaignObjective.VIDEO_VIEWS: return 'VIDEO_VIEW';
-      case CampaignObjective.CONVERSIONS: return 'WEB_CONVERSION';
-      case CampaignObjective.CATALOG_SALES: return 'CATALOG_SALES';
+      case CampaignObjective.LEADS: return 'WEB_CONVERSION';
+      case CampaignObjective.SALES: return 'CATALOG_SALES';
       default: return 'AWARENESS';
     }
   }

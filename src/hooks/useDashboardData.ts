@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { fetchDashboardOverview, fetchCampaigns } from '@/lib/api';
+import { Campaign } from '@/types'; // Import Campaign type from shared types
 
 // Types for dashboard data
 interface DashboardOverview {
@@ -20,16 +21,6 @@ interface QuickStat {
   color: string;
   bgColor: string;
   icon: any;
-}
-
-interface Campaign {
-  id: string;
-  name: string;
-  platform: string;
-  status: string;
-  budget?: number;
-  spend: number;
-  created_at: string;
 }
 
 interface Lead {
@@ -84,27 +75,9 @@ export function useDashboardData(refreshInterval: number = 30000) {
       const response = await fetchCampaigns();
       return response;
     } catch (error) {
-      console.warn('Campaigns fetch failed, using mock data:', error);
-      return [
-        {
-          id: "camp_001",
-          name: "Holiday Shopping Campaign",
-          platform: "google_ads",
-          status: "active",
-          budget: 5000,
-          spend: 2150.50,
-          created_at: "2025-09-15T10:00:00Z"
-        },
-        {
-          id: "camp_002", 
-          name: "Brand Awareness Q4",
-          platform: "meta",
-          status: "active",
-          budget: 3000,
-          spend: 1850.25,
-          created_at: "2025-09-10T14:30:00Z"
-        }
-      ];
+      console.warn('Campaigns fetch failed, using API mock data:', error);
+      // fetchCampaigns will return mock data when API fails
+      return [];
     }
   };
 

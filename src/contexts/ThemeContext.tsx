@@ -2,11 +2,10 @@
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
-type Theme = 'dark'; // Simplified to dark-only
+type Theme = 'light' | 'dark';
 
 interface ThemeContextProps {
   theme: Theme;
-  // Keeping these for compatibility but they won't do anything
   toggleTheme: () => void;
   setTheme: (theme: Theme) => void;
 }
@@ -14,36 +13,46 @@ interface ThemeContextProps {
 const ThemeContext = createContext<ThemeContextProps | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme] = useState<Theme>('dark'); // Always dark
+  const [theme, setThemeState] = useState<Theme>('dark');
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
-    // Always ensure dark theme is applied
-    document.documentElement.classList.remove('light');
-    document.documentElement.classList.add('dark');
-    document.body.classList.remove('light-theme');
-    
-    // Clean up any old localStorage theme preferences
-    try {
-      localStorage.removeItem('theme');
-    } catch (error) {
-      // Handle localStorage errors gracefully
-      console.warn('Failed to remove old theme preference:', error);
+    // Load theme from localStorage or default to dark
+    const savedTheme = localStorage.getItem('theme') as Theme;
+    if (savedTheme === 'light' || savedTheme === 'dark') {
+      setThemeState(savedTheme);
+      applyTheme(savedTheme);
+    } else {
+      applyTheme('dark');
     }
   }, []);
 
-  // No-op functions for compatibility
-  const toggleTheme = () => {
-    // Theme is fixed to dark, so this does nothing
+  const applyTheme = (newTheme: Theme) => {
+    document.documentElement.classList.remove('light', 'dark');
+    document.documentElement.classList.add(newTheme);
+    
+    if (newTheme === 'dark') {
+      document.body.classList.remove('light-theme');
+    }
   };
 
-  
   const setTheme = (newTheme: Theme) => {
-    // Theme is fixed to dark, so this does nothing
+    setThemeState(newTheme);
+    applyTheme(newTheme);
+    localStorage.setItem('theme', newTheme);
   };
 
-  // Always provide the context with dark theme
+  const toggleTheme = () => {
+    const newTheme = theme === 'light' ? 'dark' : 'light';
+    setTheme(newTheme);
+  };
+
+  // Don't render anything until mounted to prevent hydration mismatch
+  if (!mounted) {
+    return <>{children}</>;
+  }
+
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme, setTheme }}>
       {children}
