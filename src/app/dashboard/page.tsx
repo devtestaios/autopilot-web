@@ -328,19 +328,19 @@ function DashboardPageContent() {
                 <div className="space-y-3">
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600 dark:text-gray-400">Total Campaigns</span>
-                    <span className="font-medium text-gray-900 dark:text-white">{overview.total_campaigns}</span>
+                    <span className="font-medium text-gray-900 dark:text-white">{overview?.total_campaigns || 0}</span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600 dark:text-gray-400">Total Spend</span>
-                    <span className="font-medium text-gray-900 dark:text-white">${overview.total_spend.toLocaleString()}</span>
+                    <span className="font-medium text-gray-900 dark:text-white">${(overview?.total_spend || 0).toLocaleString()}</span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600 dark:text-gray-400">Avg ROAS</span>
-                    <span className="font-medium text-gray-900 dark:text-white">{overview.avg_roas.toFixed(2)}x</span>
+                    <span className="font-medium text-gray-900 dark:text-white">{(overview?.avg_roas || 0).toFixed(2)}x</span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600 dark:text-gray-400">Active Campaigns</span>
-                    <span className="font-medium text-green-600 dark:text-green-400">{overview.active_campaigns}</span>
+                    <span className="font-medium text-green-600 dark:text-green-400">{overview?.active_campaigns || 0}</span>
                   </div>
                 </div>
               )}
