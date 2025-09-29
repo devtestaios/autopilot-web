@@ -8,6 +8,15 @@ import { WebSocketProvider } from "@/contexts/WebSocketContext";
 import { CacheProvider } from "@/contexts/CacheContext";
 import { AnalyticsProvider } from "@/contexts/AnalyticsContext";
 import { ABTestProvider } from "@/contexts/ABTestContext";
+import { SocialMediaProvider } from "@/contexts/SocialMediaContext";
+import { EmailMarketingProvider } from "@/contexts/EmailMarketingContext";
+import { MarketingOptimizationProvider } from "@/contexts/MarketingOptimizationContext";
+import { BusinessConfigurationProvider } from "@/contexts/BusinessConfigurationContext";
+import { ProjectManagementProvider } from "@/contexts/ProjectManagementContext";
+import { AIProjectAutomationProvider } from "@/contexts/AIProjectAutomationContext";
+import { CollaborationProvider } from "@/contexts/CollaborationContext";
+import { IntegrationsProvider } from "@/contexts/IntegrationsContext";
+import { PerformanceProvider } from "@/contexts/PerformanceContext";
 import { ToastProvider } from "@/components/ui/Toast";
 import { ErrorProvider } from "@/components/providers/ErrorProvider";
 import PageTransition from "@/components/PageTransition";
@@ -86,13 +95,31 @@ export default function ClientProviders({ children }: ClientProvidersProps) {
               <SearchProvider>
                 <UnifiedAIProvider>
                   <AnalyticsProvider>
-                    <ABTestProvider tests={defaultTests}>
-                      <ToastProvider>
-                        <PageTransition>
-                          {children}
-                        </PageTransition>
-                      </ToastProvider>
-                    </ABTestProvider>
+                    <SocialMediaProvider>
+                      <EmailMarketingProvider>
+                        <MarketingOptimizationProvider>
+                          <BusinessConfigurationProvider>
+                            <ProjectManagementProvider>
+                              <AIProjectAutomationProvider>
+                                <CollaborationProvider>
+                                  <IntegrationsProvider>
+                                    <PerformanceProvider>
+                                      <ABTestProvider tests={defaultTests}>
+                                        <ToastProvider>
+                                          <PageTransition>
+                                            {children}
+                                          </PageTransition>
+                                        </ToastProvider>
+                                      </ABTestProvider>
+                                    </PerformanceProvider>
+                                  </IntegrationsProvider>
+                                </CollaborationProvider>
+                              </AIProjectAutomationProvider>
+                            </ProjectManagementProvider>
+                          </BusinessConfigurationProvider>
+                        </MarketingOptimizationProvider>
+                      </EmailMarketingProvider>
+                    </SocialMediaProvider>
                   </AnalyticsProvider>
                 </UnifiedAIProvider>
               </SearchProvider>

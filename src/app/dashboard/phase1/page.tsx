@@ -5,16 +5,79 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
+import dynamic from 'next/dynamic';
 import { motion } from 'framer-motion';
 import NavigationTabs from '@/components/NavigationTabs';
-import { 
-  LivePerformanceChart, 
-  CrossPlatformComparison, 
-  AIDecisionTimeline, 
-  SmartAlertsWidget,
-  SyncStatusWidget 
-} from '@/components/dashboard/EnhancedDashboardWidgets';
+
+// Dashboard skeleton component for lazy loading states
+const DashboardWidgetSkeleton = ({ type }: { type: 'chart' | 'comparison' | 'timeline' | 'alerts' | 'status' }) => {
+  const getSkeletonHeight = (type: string) => {
+    switch (type) {
+      case 'chart': return 'h-64';
+      case 'comparison': return 'h-48'; 
+      case 'timeline': return 'h-56';
+      case 'alerts': return 'h-40';
+      case 'status': return 'h-32';
+      default: return 'h-48';
+    }
+  };
+
+  return (
+    <div className={`${getSkeletonHeight(type)} bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 animate-pulse`}>
+      <div className="flex items-center justify-between mb-4">
+        <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-32"></div>
+        <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-16"></div>
+      </div>
+      <div className="space-y-3">
+        <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-full"></div>
+        <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-4/5"></div>
+        <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/5"></div>
+      </div>
+    </div>
+  );
+};
+
+// Phase 2B.2: Lazy-loaded dashboard widgets for 40-50kB bundle reduction
+const LivePerformanceChart = dynamic(
+  () => import('@/components/dashboard/EnhancedDashboardWidgets').then(mod => ({ default: mod.LivePerformanceChart })),
+  { 
+    ssr: false, 
+    loading: () => <DashboardWidgetSkeleton type="chart" />
+  }
+);
+
+const CrossPlatformComparison = dynamic(
+  () => import('@/components/dashboard/EnhancedDashboardWidgets').then(mod => ({ default: mod.CrossPlatformComparison })),
+  { 
+    ssr: false, 
+    loading: () => <DashboardWidgetSkeleton type="comparison" />
+  }
+);
+
+const AIDecisionTimeline = dynamic(
+  () => import('@/components/dashboard/EnhancedDashboardWidgets').then(mod => ({ default: mod.AIDecisionTimeline })),
+  { 
+    ssr: false, 
+    loading: () => <DashboardWidgetSkeleton type="timeline" />
+  }
+);
+
+const SmartAlertsWidget = dynamic(
+  () => import('@/components/dashboard/EnhancedDashboardWidgets').then(mod => ({ default: mod.SmartAlertsWidget })),
+  { 
+    ssr: false, 
+    loading: () => <DashboardWidgetSkeleton type="alerts" />
+  }
+);
+
+const SyncStatusWidget = dynamic(
+  () => import('@/components/dashboard/EnhancedDashboardWidgets').then(mod => ({ default: mod.SyncStatusWidget })),
+  { 
+    ssr: false, 
+    loading: () => <DashboardWidgetSkeleton type="status" />
+  }
+);
 import { 
   Activity, 
   TrendingUp, 

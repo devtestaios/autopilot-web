@@ -1,0 +1,293 @@
+=== COMPONENT USAGE ANALYSIS ===
+Total components in ui folder:
+      49
+
+Component files:
+total 488
+drwxr-xr-x  43 grayadkins  staff   1376 Sep 27 15:41 .
+drwxr-xr-x  92 grayadkins  staff   2944 Sep 27 15:32 ..
+-rw-r--r--   1 grayadkins  staff   5523 Sep 21 14:48 ActionDropdown.tsx
+-rw-r--r--   1 grayadkins  staff  12508 Sep 23 22:19 AdvancedButton.tsx
+-rw-r--r--   1 grayadkins  staff   5845 Sep 25 15:19 AdvancedNavigation.tsx
+-rw-r--r--   1 grayadkins  staff   2897 Sep 21 14:48 AsyncContent.tsx
+-rw-r--r--   1 grayadkins  staff   9194 Sep 23 11:22 BlurBackground.tsx
+-rw-r--r--   1 grayadkins  staff   3797 Sep 21 14:48 Breadcrumb.tsx
+-rw-r--r--   1 grayadkins  staff   6696 Sep 23 22:19 EnhancedButton.tsx
+-rw-r--r--   1 grayadkins  staff   2271 Sep 21 14:48 ErrorBoundary.tsx
+-rw-r--r--   1 grayadkins  staff   2974 Sep 21 14:48 ErrorFallback.tsx
+-rw-r--r--   1 grayadkins  staff   5356 Sep 22 09:13 FloatingActionButton.tsx
+-rw-r--r--   1 grayadkins  staff   1891 Sep 23 11:22 FloatingParticles.tsx
+-rw-r--r--   1 grayadkins  staff   1772 Sep 23 11:22 GlassButton.tsx
+-rw-r--r--   1 grayadkins  staff   3710 Sep 23 22:19 GlassCard.tsx
+-rw-r--r--   1 grayadkins  staff  10978 Sep 21 14:48 GlobalSearch.tsx
+-rw-r--r--   1 grayadkins  staff   6782 Sep 22 09:13 InteractiveElements.tsx
+-rw-r--r--   1 grayadkins  staff   6359 Sep 24 05:59 LazyChart.tsx
+-rw-r--r--   1 grayadkins  staff  10217 Sep 22 09:13 LoadingAnimations.tsx
+-rw-r--r--   1 grayadkins  staff   1012 Sep 27 18:55 LoadingSpinner.tsx
+-rw-r--r--   1 grayadkins  staff   1484 Sep 23 11:22 MagneticButton.tsx
+-rw-r--r--   1 grayadkins  staff   2104 Sep 21 14:48 PremiumBadge.tsx
+-rw-r--r--   1 grayadkins  staff   5381 Sep 20 04:40 PremiumButton.tsx
+-rw-r--r--   1 grayadkins  staff   3260 Sep 19 12:01 PremiumCard.tsx
+-rw-r--r--   1 grayadkins  staff   3655 Sep 21 14:48 PremiumLoading.tsx
+-rw-r--r--   1 grayadkins  staff   9584 Sep 22 12:49 Skeleton.tsx
+-rw-r--r--   1 grayadkins  staff   9185 Sep 22 12:49 SkeletonOld.tsx
+-rw-r--r--   1 grayadkins  staff   5416 Sep 19 12:01 Toast.tsx
+-rw-r--r--   1 grayadkins  staff   1585 Sep 23 11:22 TypewriterEffect.tsx
+drwxr-xr-x  11 grayadkins  staff    352 Sep 23 11:54 __tests__
+-rw-r--r--   1 grayadkins  staff   1404 Sep 27 18:55 avatar.tsx
+-rw-r--r--   1 grayadkins  staff    879 Sep 19 12:01 badge.tsx
+-rw-r--r--   1 grayadkins  staff   1398 Sep 27 18:55 button.tsx
+-rw-r--r--   1 grayadkins  staff   1356 Sep 19 12:01 card.tsx
+-rw-r--r--   1 grayadkins  staff   1055 Sep 27 18:55 checkbox.tsx
+-rw-r--r--   1 grayadkins  staff    822 Sep 19 12:01 input.tsx
+-rw-r--r--   1 grayadkins  staff    435 Sep 27 18:55 label.tsx
+-rw-r--r--   1 grayadkins  staff    519 Sep 19 12:01 progress.tsx
+-rw-r--r--   1 grayadkins  staff   1466 Sep 27 18:55 radio-group.tsx
+-rw-r--r--   1 grayadkins  staff   3846 Sep 27 18:55 select.tsx
+-rw-r--r--   1 grayadkins  staff    909 Sep 19 12:01 switch.tsx
+-rw-r--r--   1 grayadkins  staff   1901 Sep 19 12:01 tabs.tsx
+-rw-r--r--   1 grayadkins  staff    771 Sep 27 18:55 textarea.tsx
+
+Component import analysis:
+   1 ../src/components/ui/__tests__/input.test.tsx:import { Input } from '@/components/ui/input';
+   1 ../src/components/ui/__tests__/button.test.tsx:import { Button } from '@/components/ui/button';
+   1 ../src/components/ui/__tests__/badge.test.tsx:import { Badge } from '@/components/ui/badge';
+   1 ../src/components/project-management/ProjectManagementSeeder.tsx:import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+   1 ../src/components/project-management/ProjectManagementSeeder.tsx:import { Button } from '@/components/ui/button';
+   1 ../src/components/project-management/ProjectCreationWizard.tsx:import { Textarea } from '@/components/ui/textarea';
+   1 ../src/components/project-management/ProjectCreationWizard.tsx:import { Input } from '@/components/ui/input';
+   1 ../src/components/project-management/ProjectCreationWizard.tsx:import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+   1 ../src/components/project-management/ProjectCreationWizard.tsx:import { Button } from '@/components/ui/button';
+   1 ../src/components/project-management/ProjectCreationWizard.tsx:import { Badge } from '@/components/ui/badge';
+   1 ../src/components/project-management/ProjectAnalyticsDashboard.tsx:import { Progress } from '@/components/ui/progress';
+   1 ../src/components/project-management/ProjectAnalyticsDashboard.tsx:import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+   1 ../src/components/project-management/ProjectAnalyticsDashboard.tsx:import { Button } from '@/components/ui/button';
+   1 ../src/components/project-management/ProjectAnalyticsDashboard.tsx:import { Badge } from '@/components/ui/badge';
+   1 ../src/components/project-management/KanbanBoard.tsx:import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+   1 ../src/components/project-management/KanbanBoard.tsx:import { Button } from '@/components/ui/button';
+   1 ../src/components/project-management/KanbanBoard.tsx:import { Badge } from '@/components/ui/badge';
+   1 ../src/components/project-management/KanbanBoard.tsx:import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+   1 ../src/components/navigation/EnhancedSidebar.tsx:import { Separator } from '@/components/ui/separator';
+   1 ../src/components/navigation/EnhancedSidebar.tsx:import { ScrollArea } from '@/components/ui/scroll-area';
+   1 ../src/components/navigation/EnhancedSidebar.tsx:import { Button } from '@/components/ui/button';
+   1 ../src/components/navigation/EnhancedSidebar.tsx:import { Badge } from '@/components/ui/badge';
+   1 ../src/components/dashboard/widgets/TableWidget.tsx:import { PremiumCard } from '@/components/ui/PremiumCard';
+   1 ../src/components/dashboard/widgets/MetricWidget.tsx:import { PremiumCard } from '@/components/ui/PremiumCard';
+   1 ../src/components/dashboard/widgets/InsightsWidget.tsx:import { PremiumCard } from '@/components/ui/PremiumCard';
+   1 ../src/components/dashboard/widgets/InsightsWidget.tsx:import { PremiumButton } from '@/components/ui/PremiumButton';
+   1 ../src/components/dashboard/widgets/ChartWidget.tsx:import { PremiumCard } from '@/components/ui/PremiumCard';
+   1 ../src/components/dashboard/RealTimeWidget.tsx:import { PremiumCard } from '@/components/ui/PremiumCard';
+   1 ../src/components/dashboard/RealTimeWidget.tsx:import { PremiumButton } from '@/components/ui/PremiumButton';
+   1 ../src/components/dashboard/PerformanceChartWidget.tsx:import { PremiumCard } from '@/components/ui/PremiumCard';
+   1 ../src/components/dashboard/PerformanceChartWidget.tsx:import { PremiumButton } from '@/components/ui/PremiumButton';
+   1 ../src/components/dashboard/PerformanceChartWidget.tsx:import { PremiumBadge } from '@/components/ui/PremiumBadge';
+   1 ../src/components/dashboard/EnhancedMetricCard.tsx:import { PremiumCard } from '@/components/ui/PremiumCard';
+   1 ../src/components/dashboard/AIInsightsWidget.tsx:import { PremiumCard } from '@/components/ui/PremiumCard';
+   1 ../src/components/dashboard/AIInsightsWidget.tsx:import { PremiumButton } from '@/components/ui/PremiumButton';
+   1 ../src/components/dashboard/AIInsightsWidget.tsx:import { PremiumBadge } from '@/components/ui/PremiumBadge';
+   1 ../src/components/WhiteLabelDashboard.tsx:import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+   1 ../src/components/WhiteLabelDashboard.tsx:import { Switch } from '@/components/ui/switch';
+   1 ../src/components/WhiteLabelDashboard.tsx:import { Progress } from '@/components/ui/progress';
+   1 ../src/components/WhiteLabelDashboard.tsx:import { Input } from '@/components/ui/input';
+   1 ../src/components/WhiteLabelDashboard.tsx:import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+   1 ../src/components/WhiteLabelDashboard.tsx:import { Button } from '@/components/ui/button';
+   1 ../src/components/WhiteLabelDashboard.tsx:import { Badge } from '@/components/ui/badge';
+   1 ../src/components/UnifiedPlatformDashboard.tsx:import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+   1 ../src/components/UnifiedPlatformDashboard.tsx:import { Switch } from '@/components/ui/switch';
+   1 ../src/components/UnifiedPlatformDashboard.tsx:import { Progress } from '@/components/ui/progress';
+   1 ../src/components/UnifiedPlatformDashboard.tsx:import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+   1 ../src/components/UnifiedPlatformDashboard.tsx:import { Button } from '@/components/ui/button';
+   1 ../src/components/UnifiedPlatformDashboard.tsx:import { Badge } from '@/components/ui/badge';
+   1 ../src/components/UnifiedAIChat.tsx:import { useToast } from '@/components/ui/Toast';
+   1 ../src/components/UnifiedAIChat.tsx:import GlassCard from '@/components/ui/GlassCard';
+   1 ../src/components/SmartCampaignOptimizer.tsx:import { Switch } from '@/components/ui/switch';
+   1 ../src/components/SmartCampaignOptimizer.tsx:import { Progress } from '@/components/ui/progress';
+   1 ../src/components/SmartCampaignOptimizer.tsx:import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+   1 ../src/components/SmartCampaignOptimizer.tsx:import { Button } from '@/components/ui/button';
+   1 ../src/components/SmartCampaignOptimizer.tsx:import { Badge } from '@/components/ui/badge';
+   1 ../src/components/RealTimeOptimizationDashboard.tsx:import { Progress } from '@/components/ui/progress';
+   1 ../src/components/RealTimeOptimizationDashboard.tsx:import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+   1 ../src/components/RealTimeOptimizationDashboard.tsx:import { Button } from '@/components/ui/button';
+   1 ../src/components/RealTimeOptimizationDashboard.tsx:import { Badge } from '@/components/ui/badge';
+   1 ../src/components/ProductionInfrastructure.tsx:import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+   1 ../src/components/ProductionInfrastructure.tsx:import { Switch } from '@/components/ui/switch';
+   1 ../src/components/ProductionInfrastructure.tsx:import { Progress } from '@/components/ui/progress';
+   1 ../src/components/ProductionInfrastructure.tsx:import { Input } from '@/components/ui/input';
+   1 ../src/components/ProductionInfrastructure.tsx:import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+   1 ../src/components/ProductionInfrastructure.tsx:import { Button } from '@/components/ui/button';
+   1 ../src/components/ProductionInfrastructure.tsx:import { Badge } from '@/components/ui/badge';
+   1 ../src/components/OptimizedChart.tsx:import { PremiumCard } from '@/components/ui/PremiumCard';
+   1 ../src/components/OptimizedChart.tsx:import { PremiumButton } from '@/components/ui/PremiumButton';
+   1 ../src/components/MultiPlatformSyncDashboard.tsx:import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+   1 ../src/components/MultiPlatformSyncDashboard.tsx:import { Progress } from '@/components/ui/progress';
+   1 ../src/components/MultiPlatformSyncDashboard.tsx:import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+   1 ../src/components/MultiPlatformSyncDashboard.tsx:import { Button } from '@/components/ui/button';
+   1 ../src/components/MultiPlatformSyncDashboard.tsx:import { Badge } from '@/components/ui/badge';
+   1 ../src/components/ErrorHandlingDemo.tsx:import { ErrorFallback } from '@/components/ui/ErrorFallback';
+   1 ../src/components/ErrorHandlingDemo.tsx:import { AsyncContent, AsyncTable, AsyncChart } from '@/components/ui/AsyncContent';
+   1 ../src/components/EnterpriseAuth.tsx:import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+   1 ../src/components/EnterpriseAuth.tsx:import { Switch } from '@/components/ui/switch';
+   1 ../src/components/EnterpriseAuth.tsx:import { Progress } from '@/components/ui/progress';
+   1 ../src/components/EnterpriseAuth.tsx:import { Input } from '@/components/ui/input';
+   1 ../src/components/EnterpriseAuth.tsx:import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+   1 ../src/components/EnterpriseAuth.tsx:import { Button } from '@/components/ui/button';
+   1 ../src/components/EnterpriseAuth.tsx:import { Badge } from '@/components/ui/badge';
+   1 ../src/components/EnhancedSidebar.tsx:import { Button } from '@/components/ui/button';
+   1 ../src/components/EnhancedSidebar.tsx:import { Badge } from '@/components/ui/badge';
+   1 ../src/components/EnhancedAnalyticsDashboard.tsx:import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+   1 ../src/components/EnhancedAnalyticsDashboard.tsx:import { Switch } from '@/components/ui/switch';
+   1 ../src/components/EnhancedAnalyticsDashboard.tsx:import { Progress } from '@/components/ui/progress';
+   1 ../src/components/EnhancedAnalyticsDashboard.tsx:import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+   1 ../src/components/EnhancedAnalyticsDashboard.tsx:import { Button } from '@/components/ui/button';
+   1 ../src/components/EnhancedAnalyticsDashboard.tsx:import { Badge } from '@/components/ui/badge';
+   1 ../src/components/DynamicMasterTerminal.tsx:import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+   1 ../src/components/DynamicMasterTerminal.tsx:import { Button } from '@/components/ui/button';
+   1 ../src/components/DynamicMasterTerminal.tsx:import { Badge } from '@/components/ui/badge';
+   1 ../src/components/DataVisualization.tsx:import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+   1 ../src/components/DataVisualization.tsx:import { Button } from '@/components/ui/button';
+   1 ../src/components/DataVisualization.tsx:import { Badge } from '@/components/ui/badge';
+   1 ../src/components/DashboardStats.tsx:import GlassCard from '@/components/ui/GlassCard';
+   1 ../src/components/DashboardCustomizer.tsx:import { useToast } from '@/components/ui/Toast';
+   1 ../src/components/DashboardCustomizer.tsx:import { PremiumCard } from '@/components/ui/PremiumCard';
+   1 ../src/components/DashboardCustomizer.tsx:import { PremiumButton } from '@/components/ui/PremiumButton';
+   1 ../src/components/CustomReportBuilder.tsx:import { Switch } from '@/components/ui/switch';
+   1 ../src/components/CustomReportBuilder.tsx:import { Progress } from '@/components/ui/progress';
+   1 ../src/components/CustomReportBuilder.tsx:import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+   1 ../src/components/CustomReportBuilder.tsx:import { Button } from '@/components/ui/button';
+   1 ../src/components/CustomReportBuilder.tsx:import { Badge } from '@/components/ui/badge';
+   1 ../src/components/CompetitiveIntelligence.tsx:import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+   1 ../src/components/CompetitiveIntelligence.tsx:import { Progress } from '@/components/ui/progress';
+   1 ../src/components/CompetitiveIntelligence.tsx:import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+   1 ../src/components/CompetitiveIntelligence.tsx:import { Button } from '@/components/ui/button';
+   1 ../src/components/CompetitiveIntelligence.tsx:import { Badge } from '@/components/ui/badge';
+   1 ../src/components/ClientProviders.tsx:import { ToastProvider } from "@/components/ui/Toast";
+   1 ../src/components/CampaignDetailsLoading.tsx:import { Skeleton } from '@/components/ui/Skeleton';
+   1 ../src/components/CampaignCard.tsx:import { InteractiveCard, PulseIndicator, AnimatedCounter } from '@/components/ui/InteractiveElements';
+   1 ../src/components/CampaignCard.tsx:import EnhancedButton from '@/components/ui/EnhancedButton';
+   1 ../src/components/BusinessSetupWizard.tsx:import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+   1 ../src/components/BusinessSetupWizard.tsx:import { Label } from '@/components/ui/label';
+   1 ../src/components/BusinessSetupWizard.tsx:import { Input } from '@/components/ui/input';
+   1 ../src/components/BusinessSetupWizard.tsx:import { Checkbox } from '@/components/ui/checkbox';
+   1 ../src/components/BusinessSetupWizard.tsx:import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+   1 ../src/components/BusinessSetupWizard.tsx:import { Button } from '@/components/ui/button';
+   1 ../src/components/BusinessSetupWizard.tsx:import { Badge } from '@/components/ui/badge';
+   1 ../src/components/AlertDashboard.tsx:import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+   1 ../src/components/AlertDashboard.tsx:import { Switch } from '@/components/ui/switch';
+   1 ../src/components/AlertDashboard.tsx:import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+   1 ../src/components/AlertDashboard.tsx:import { Button } from '@/components/ui/button';
+   1 ../src/components/AlertDashboard.tsx:import { Badge } from '@/components/ui/badge';
+   1 ../src/components/AdvancedAnalyticsDashboard.tsx:import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+   1 ../src/components/AdvancedAnalyticsDashboard.tsx:import { Progress } from '@/components/ui/progress';
+   1 ../src/components/AdvancedAnalyticsDashboard.tsx:import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+   1 ../src/components/AdvancedAnalyticsDashboard.tsx:import { Button } from '@/components/ui/button';
+   1 ../src/components/AdvancedAnalyticsDashboard.tsx:import { Badge } from '@/components/ui/badge';
+   1 ../src/components/APIErrorBoundary.tsx:import { PremiumCard } from '@/components/ui/PremiumCard';
+   1 ../src/components/APIErrorBoundary.tsx:import { PremiumButton } from '@/components/ui/PremiumButton';
+   1 ../src/components/AIDashboard.tsx:import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+   1 ../src/components/AIDashboard.tsx:import { Switch } from '@/components/ui/switch';
+   1 ../src/components/AIDashboard.tsx:import { Progress } from '@/components/ui/progress';
+   1 ../src/components/AIDashboard.tsx:import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+   1 ../src/components/AIDashboard.tsx:import { Button } from '@/components/ui/button';
+   1 ../src/components/AIDashboard.tsx:import { Badge } from '@/components/ui/badge';
+   1 ../src/app/social/page.tsx:import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+   1 ../src/app/social/page.tsx:import { Progress } from '@/components/ui/progress';
+   1 ../src/app/social/page.tsx:import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+   1 ../src/app/social/page.tsx:import { Button } from '@/components/ui/button';
+   1 ../src/app/social/page.tsx:import { Badge } from '@/components/ui/badge';
+   1 ../src/app/social/composer/page.tsx:import { Input } from '@/components/ui/input';
+   1 ../src/app/social/composer/page.tsx:import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+   1 ../src/app/social/composer/page.tsx:import { Button } from '@/components/ui/button';
+   1 ../src/app/social/composer/page.tsx:import { Badge } from '@/components/ui/badge';
+   1 ../src/app/social/calendar/page.tsx:import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+   1 ../src/app/social/calendar/page.tsx:import { Button } from '@/components/ui/button';
+   1 ../src/app/social/calendar/page.tsx:import { Badge } from '@/components/ui/badge';
+   1 ../src/app/social-media/page.tsx:import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+   1 ../src/app/social-media/page.tsx:import { Input } from '@/components/ui/input';
+   1 ../src/app/social-media/page.tsx:import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+   1 ../src/app/social-media/page.tsx:import { Button } from '@/components/ui/button';
+   1 ../src/app/social-media/page.tsx:import { Badge } from '@/components/ui/badge';
+   1 ../src/app/social-media/page.tsx:import LoadingSpinner from '@/components/ui/LoadingSpinner';
+   1 ../src/app/settings/page.tsx:import { useToast } from '@/components/ui/Toast';
+   1 ../src/app/reports/loading.tsx:import { PageSkeleton, ChartSkeleton, TableSkeleton } from '@/components/ui/Skeleton'
+   1 ../src/app/project-management/page.tsx:import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+   1 ../src/app/project-management/page.tsx:import { Button } from '@/components/ui/button';
+   1 ../src/app/project-management/page.tsx:import { Badge } from '@/components/ui/badge';
+   1 ../src/app/mobile-demo/page.tsx:import { PremiumCard } from '@/components/ui/PremiumCard';
+   1 ../src/app/mobile-demo/page.tsx:import { PremiumButton } from '@/components/ui/PremiumButton';
+   1 ../src/app/master-terminal/marketing-optimization/page.tsx:import { Progress } from '@/components/ui/progress';
+   1 ../src/app/master-terminal/marketing-optimization/page.tsx:import { Input } from '@/components/ui/input';
+   1 ../src/app/master-terminal/marketing-optimization/page.tsx:import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+   1 ../src/app/master-terminal/marketing-optimization/page.tsx:import { Button } from '@/components/ui/button';
+   1 ../src/app/master-terminal/marketing-optimization/page.tsx:import { Badge } from '@/components/ui/badge';
+   1 ../src/app/leads/loading.tsx:import { PageSkeleton, TableSkeleton, DashboardWidgetSkeleton } from '@/components/ui/Skeleton'
+   1 ../src/app/integration-test/page.tsx:import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+   1 ../src/app/integration-test/page.tsx:import { Button } from '@/components/ui/button';
+   1 ../src/app/integration-test/page.tsx:import { Badge } from '@/components/ui/badge';
+   1 ../src/app/google-ads-test/page.tsx:import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+   1 ../src/app/google-ads-test/page.tsx:import { Button } from '@/components/ui/button';
+   1 ../src/app/google-ads-test/page.tsx:import { Badge } from '@/components/ui/badge';
+   1 ../src/app/email-marketing/page.tsx:import { Input } from '@/components/ui/input';
+   1 ../src/app/email-marketing/page.tsx:import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+   1 ../src/app/email-marketing/page.tsx:import { Button } from '@/components/ui/button';
+   1 ../src/app/email-marketing/page.tsx:import { Badge } from '@/components/ui/badge';
+   1 ../src/app/e-commerce/page.tsx:import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+   1 ../src/app/e-commerce/page.tsx:import { Input } from '@/components/ui/input';
+   1 ../src/app/e-commerce/page.tsx:import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+   1 ../src/app/e-commerce/page.tsx:import { Button } from '@/components/ui/button';
+   1 ../src/app/e-commerce/page.tsx:import { Badge } from '@/components/ui/badge';
+   1 ../src/app/dashboard/performance/page.tsx:import Breadcrumb from '@/components/ui/Breadcrumb';
+   1 ../src/app/dashboard/performance/page.tsx:import AdvancedNavigation from '@/components/ui/AdvancedNavigation';
+   1 ../src/app/dashboard/performance/optimized.tsx:import Breadcrumb from '@/components/ui/Breadcrumb';
+   1 ../src/app/dashboard/performance/optimized.tsx:import AdvancedNavigation from '@/components/ui/AdvancedNavigation';
+   1 ../src/app/dashboard/performance/components/RealTimeData.tsx:import { PremiumCard } from '@/components/ui/PremiumCard';
+   1 ../src/app/dashboard/performance/components/PerformanceCharts.tsx:import { PremiumCard } from '@/components/ui/PremiumCard';
+   1 ../src/app/dashboard/performance/components/DashboardMetrics.tsx:import { PremiumCard } from '@/components/ui/PremiumCard';
+   1 ../src/app/dashboard/performance/components/CampaignTable.tsx:import { PremiumCard } from '@/components/ui/PremiumCard';
+   1 ../src/app/dashboard/performance/components/CampaignTable.tsx:import { Badge } from '@/components/ui/badge';
+   1 ../src/app/dashboard/page.tsx:import { useToast } from '@/components/ui/Toast';
+   1 ../src/app/dashboard/loading.tsx:import { PageSkeleton, ChartSkeleton, DashboardWidgetSkeleton, CampaignCardSkeleton } from '@/components/ui/Skeleton'
+   1 ../src/app/dashboard/enhanced.tsx:import { useToast } from '@/components/ui/Toast';
+   1 ../src/app/dashboard/enhanced.tsx:import { PremiumCard } from '@/components/ui/PremiumCard';
+   1 ../src/app/dashboard/enhanced.tsx:import { PremiumButton } from '@/components/ui/PremiumButton';
+   1 ../src/app/dashboard/enhanced.tsx:import { AsyncContent } from '@/components/ui/AsyncContent';
+   1 ../src/app/dashboard/enhanced.tsx:import AdvancedNavigation from '@/components/ui/AdvancedNavigation';
+   1 ../src/app/dashboard/customizable/page.tsx:import { PageSkeleton, DashboardWidgetSkeleton } from '@/components/ui/Skeleton';
+   1 ../src/app/dashboard/customizable/page.tsx:import { AsyncContent } from '@/components/ui/AsyncContent';
+   1 ../src/app/dashboard/customizable/page.tsx:import Breadcrumb from '@/components/ui/Breadcrumb';
+   1 ../src/app/dashboard/customizable/page.tsx:import AdvancedNavigation from '@/components/ui/AdvancedNavigation';
+   1 ../src/app/content-suite/page.tsx:import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+   1 ../src/app/content-suite/page.tsx:import { Input } from '@/components/ui/input';
+   1 ../src/app/content-suite/page.tsx:import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+   1 ../src/app/content-suite/page.tsx:import { Button } from '@/components/ui/button';
+   1 ../src/app/content-suite/page.tsx:import { Badge } from '@/components/ui/badge';
+   1 ../src/app/capabilities/ai-bridge/page.tsx:import { PremiumCard } from '@/components/ui/PremiumCard';
+   1 ../src/app/capabilities/ai-bridge/page.tsx:import { PremiumButton } from '@/components/ui/PremiumButton';
+   1 ../src/app/campaigns/templates/page.tsx:import { useToast } from '@/components/ui/Toast';
+   1 ../src/app/campaigns/loading.tsx:import { PageSkeleton, CampaignCardSkeleton, TableSkeleton } from '@/components/ui/Skeleton'
+   1 ../src/app/button-demo/page.tsx:} from '@/components/ui/AdvancedButton';
+   1 ../src/app/business-suite/page.tsx:import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+   1 ../src/app/business-suite/page.tsx:import { Progress } from '@/components/ui/progress';
+   1 ../src/app/business-suite/page.tsx:import { Input } from '@/components/ui/input';
+   1 ../src/app/business-suite/page.tsx:import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+   1 ../src/app/business-suite/page.tsx:import { Button } from '@/components/ui/button';
+   1 ../src/app/business-suite/page.tsx:import { Badge } from '@/components/ui/badge';
+   1 ../src/app/blur-demo/page.tsx:} from '@/components/ui/BlurBackground';
+   1 ../src/app/blur-demo/page.tsx:import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+   1 ../src/app/blur-demo/page.tsx:import { Button } from '@/components/ui/button';
+   1 ../src/app/autonomous/page.tsx:import { Switch } from '@/components/ui/switch';
+   1 ../src/app/autonomous/page.tsx:import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+   1 ../src/app/autonomous/page.tsx:import { Button } from '@/components/ui/button';
+   1 ../src/app/autonomous/page.tsx:import { Badge } from '@/components/ui/badge';
+   1 ../src/app/analytics/roi/loading.tsx:import { PageSkeleton, ChartSkeleton, DashboardWidgetSkeleton, TableSkeleton } from '@/components/ui/Skeleton'
+   1 ../src/app/analytics/performance/page.tsx:import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+   1 ../src/app/analytics/performance/page.tsx:import { Button } from '@/components/ui/button';
+   1 ../src/app/analytics/performance/page.tsx:import { AsyncContent } from '@/components/ui/AsyncContent';
+   1 ../src/app/analytics/performance/loading.tsx:import { PageSkeleton, ChartSkeleton, DashboardWidgetSkeleton, TableSkeleton } from '@/components/ui/Skeleton'
+   1 ../src/app/ai/testing/page.tsx:import { PremiumCard } from '@/components/ui/PremiumCard';
+   1 ../src/app/ai/testing/page.tsx:import { PremiumButton } from '@/components/ui/PremiumButton';
+   1 ../src/app/ai/settings/page.tsx:import { PremiumCard } from '@/components/ui/PremiumCard';
+   1 ../src/app/ai/settings/page.tsx:import { PremiumButton } from '@/components/ui/PremiumButton';
+   1 ../src/app/ai/settings/page.tsx:import AdvancedNavigation from '@/components/ui/AdvancedNavigation';
+   1 ../src/app/ai/analytics/page.tsx:import { PremiumCard } from '@/components/ui/PremiumCard';
+   1 ../src/app/ai/analytics/page.tsx:import { PremiumButton } from '@/components/ui/PremiumButton';
+   1 ../src/app/ai/analytics/page.tsx:import AdvancedNavigation from '@/components/ui/AdvancedNavigation';

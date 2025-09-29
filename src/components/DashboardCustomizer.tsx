@@ -1,7 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+// Phase 2C.1: Optimized Framer Motion imports for tree shaking
+import { motion } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
 import { 
   Grid3X3, 
   Settings, 

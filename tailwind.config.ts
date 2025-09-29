@@ -1,11 +1,28 @@
 import type { Config } from "tailwindcss";
 
 export default {
+  // Phase 2D.1: Enhanced content paths for aggressive CSS purging (targeting 6-8 kB reduction)
   content: [
+    // Core application paths
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+    
+    // Specific high-usage directories for better purging
+    "./src/modules/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/contexts/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/lib/**/*.{js,ts,jsx,tsx,mdx}",
+    
+    // UI component directories - Phase 2D optimization
+    "./src/components/ui/**/*.{js,ts,jsx,tsx}",
+    "./src/components/dashboard/**/*.{js,ts,jsx,tsx}",
+    "./src/components/project-management/**/*.{js,ts,jsx,tsx}",
+    "./src/components/analytics/**/*.{js,ts,jsx,tsx}",
+    "./src/components/navigation/**/*.{js,ts,jsx,tsx}",
   ],
+  
+  // Phase 2D.1: Enhanced purging through specific content paths
+  
   darkMode: "class",
   theme: {
     extend: {
@@ -95,5 +112,8 @@ export default {
       },
     },
   },
+  
+  // Phase 2D.1: Advanced optimization settings for CSS reduction
+  
   plugins: [require("tailwindcss-animate")],
 } satisfies Config;

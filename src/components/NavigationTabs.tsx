@@ -12,12 +12,15 @@ interface NavItem {
 }
 
 const navigationItems: NavItem[] = [
-  { href: '/', label: 'Single Platform Dashboard' },
+  { href: '/master-terminal', label: '🎛️ Master Terminal' },
+  { href: '/', label: '🏠 Single Platform Dashboard' },
   { href: '/unified', label: '🌐 Unified Platform Command Center' },
+  { href: '/campaigns', label: '📊 Campaigns' },
+  { href: '/analytics', label: '📈 Analytics' },
   { href: '/platforms', label: '⚙️ Platform Setup' },
   { href: '/leads', label: '🎯 Lead Management' },
   { href: '/alerts', label: '🚨 Smart Alerts' },
-  { href: '/status', label: '📈 System Status' },
+  { href: '/status', label: '� System Status' },
 ];
 
 export default function NavigationTabs() {
@@ -25,7 +28,7 @@ export default function NavigationTabs() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
-    <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 transition-colors">
+    <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 transition-colors" data-testid="main-navigation">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Desktop Navigation */}
         <nav className="hidden md:flex space-x-8 overflow-x-auto scrollbar-hide" aria-label="Tabs">

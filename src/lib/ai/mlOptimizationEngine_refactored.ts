@@ -146,6 +146,9 @@ export class MLOptimizationEngine {
   private predictionCache: Map<string, PredictionResult> = new Map();
   private isOptimizing = false;
   private lastOptimization = new Date();
+  
+  // ✅ PERFORMANCE: Interval cleanup array for memory leak prevention
+  private cleanupIntervals: NodeJS.Timeout[] = [];
 
   constructor() {
     // Initialize specialized modules
@@ -506,11 +509,14 @@ export class MLOptimizationEngine {
    * Start continuous optimization monitoring
    */
   private startContinuousOptimization(): void {
+    // ✅ PERFORMANCE: Store interval reference for proper cleanup
     // Run optimization check every hour
-    setInterval(() => {
+    const optimizationInterval = setInterval(() => {
     // Starting continuous optimization monitoring
       // Implement continuous learning logic
     }, 60 * 60 * 1000); // 1 hour
+    
+    this.cleanupIntervals.push(optimizationInterval);
   }
 
   /**
@@ -591,6 +597,15 @@ export class MLOptimizationEngine {
       modules,
       lastOptimization: this.lastOptimization
     };
+  }
+
+  // ✅ PERFORMANCE: Memory leak prevention - cleanup method for intervals
+  public cleanup(): void {
+    console.log('Cleaning up refactored ML optimization engine intervals...');
+    this.cleanupIntervals.forEach(interval => {
+      clearInterval(interval);
+    });
+    this.cleanupIntervals = [];
   }
 }
 

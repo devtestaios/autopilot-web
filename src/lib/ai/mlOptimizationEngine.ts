@@ -627,20 +627,26 @@ export class MLOptimizationEngine {
     };
   }
 
+  // Add cleanup intervals array for proper memory management
+  private cleanupIntervals: NodeJS.Timeout[] = [];
+
   // ===== CONTINUOUS LEARNING =====
 
   private startContinuousLearning(): void {
+    // ✅ PERFORMANCE: Store interval references for proper cleanup
     // Retrain models every 6 hours
-    setInterval(async () => {
+    const retrainInterval = setInterval(async () => {
       if (!this.isTraining) {
         await this.retrainModels();
       }
     }, 6 * 60 * 60 * 1000);
+    this.cleanupIntervals.push(retrainInterval);
 
     // Collect training data every hour
-    setInterval(() => {
+    const dataInterval = setInterval(() => {
       this.collectTrainingData();
     }, 60 * 60 * 1000);
+    this.cleanupIntervals.push(dataInterval);
   }
 
   private async retrainModels(): Promise<void> {
@@ -953,6 +959,15 @@ export class MLOptimizationEngine {
   async getAnomalyAlerts(): Promise<AnomalyDetection[]> {
     // Mock recent anomalies
     return [];
+  }
+
+  // ✅ PERFORMANCE: Memory leak prevention - cleanup method for intervals
+  public cleanup(): void {
+    console.log('Cleaning up ML optimization engine intervals...');
+    this.cleanupIntervals.forEach(interval => {
+      clearInterval(interval);
+    });
+    this.cleanupIntervals = [];
   }
 }
 

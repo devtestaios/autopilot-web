@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
+import Image from 'next/image';
 import { Bell, Settings, User, Search, Menu, Plus, Sun, Moon, ChevronDown, HelpCircle, LogOut } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useSearchContext } from '@/contexts/SearchContext';
@@ -156,10 +157,15 @@ export default function Navbar({ onMenuToggle }: NavbarProps) {
               className="flex items-center gap-3 p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-all duration-200 group"
             >
               <div className="flex items-center gap-3">
-                <img
+                {/* ✅ PERFORMANCE: Next.js Image component for optimized loading and LCP improvement */}
+                <Image
                   src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                  alt="User"
-                  className="w-9 h-9 rounded-full border-2 border-transparent group-hover:border-blue-500 transition-all duration-200"
+                  alt="User profile image"
+                  width={36}
+                  height={36}
+                  className="rounded-full border-2 border-transparent group-hover:border-blue-500 transition-all duration-200"
+                  priority={false}
+                  loading="lazy"
                 />
                 <div className="hidden xl:block text-left">
                   <p className="text-sm font-semibold text-gray-900 dark:text-white">John Doe</p>

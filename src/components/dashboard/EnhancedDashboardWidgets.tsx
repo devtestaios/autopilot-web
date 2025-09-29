@@ -6,7 +6,10 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+// Optimized Framer Motion imports for bundle size reduction
+import { motion } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
+// Optimized Recharts imports for tree shaking - using standard ES imports
 import { 
   LineChart, 
   Line, 

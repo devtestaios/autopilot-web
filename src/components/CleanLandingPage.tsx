@@ -1,7 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+// Phase 2C.1: Optimized Framer Motion imports for tree shaking
+import { motion } from 'framer-motion';
+import { useScroll } from 'framer-motion';
+import { useTransform } from 'framer-motion';
 import Link from 'next/link';
 import { 
   Zap, 

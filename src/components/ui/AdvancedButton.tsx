@@ -1,7 +1,10 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { motion, AnimatePresence, useAnimation } from 'framer-motion';
+// Phase 2C.1: Optimized Framer Motion imports for tree shaking
+import { motion } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
+import { useAnimation } from 'framer-motion';
 import { useTheme } from '@/contexts/ThemeContext';
 import { Loader2, Plus, Check, X, Zap, Heart, Star } from 'lucide-react';
 

@@ -34,8 +34,14 @@ const TabsContext = React.createContext<{
 export function Tabs({ defaultValue, children, className = '' }: TabsProps) {
   const [activeTab, setActiveTab] = React.useState(defaultValue);
 
+  // ✅ PERFORMANCE: useMemo prevents context consumers from unnecessary re-renders
+  const contextValue = React.useMemo(() => ({ 
+    activeTab, 
+    setActiveTab 
+  }), [activeTab]);
+
   return (
-    <TabsContext.Provider value={{ activeTab, setActiveTab }}>
+    <TabsContext.Provider value={contextValue}>
       <div className={className}>
         {children}
       </div>

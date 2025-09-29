@@ -1,0 +1,27 @@
+=== CONTEXT PROVIDER ANALYSIS ===
+Total context files:
+      21
+
+Context file sizes:
+     326 ../src/contexts/ABTestContext.tsx
+     468 ../src/contexts/AIContext.tsx
+     458 ../src/contexts/AIControlContext.tsx
+     576 ../src/contexts/AIProjectAutomationContext.tsx
+     443 ../src/contexts/AnalyticsContext.tsx
+     497 ../src/contexts/AuthContext.tsx
+     564 ../src/contexts/BusinessConfigurationContext.tsx
+     245 ../src/contexts/CacheContext.tsx
+     506 ../src/contexts/CollaborationContext.tsx
+     776 ../src/contexts/EmailMarketingContext.tsx
+     611 ../src/contexts/IntegrationsContext.tsx
+     737 ../src/contexts/MarketingOptimizationContext.tsx
+     896 ../src/contexts/ProjectManagementContext.tsx
+     215 ../src/contexts/SearchContext.tsx
+     609 ../src/contexts/SocialMediaContext.tsx
+      77 ../src/contexts/ThemeContext.tsx
+     732 ../src/contexts/UnifiedAIContext.tsx
+     215 ../src/contexts/WebSocketContext.tsx
+    8951 total
+
+Provider import analysis:
+      68

@@ -1,0 +1,159 @@
+{
+  "timestamp": "2025-09-28T03:33:50.194Z",
+  "phase": "Phase 2C: Advanced Tree Shaking",
+  "libraryAnalysis": {
+    "framer-motion": {
+      "currentUsage": "Full library imports with motion, AnimatePresence, useScroll, useTransform",
+      "fileCount": 25,
+      "currentApproach": "import { motion, AnimatePresence } from 'framer-motion'",
+      "optimizedApproach": "import { motion } from 'framer-motion/dist/es/render/components/motion'",
+      "estimatedSavings": 18,
+      "complexity": "Medium",
+      "implementation": "Replace full imports with specific component imports"
+    },
+    "lucide-react": {
+      "currentUsage": "Individual icon imports (already optimized)",
+      "fileCount": 15,
+      "currentApproach": "import { Icon1, Icon2 } from 'lucide-react'",
+      "optimizedApproach": "Already using optimal pattern",
+      "estimatedSavings": 2,
+      "complexity": "Low",
+      "implementation": "Audit for unused icon imports"
+    },
+    "recharts": {
+      "currentUsage": "Component-specific imports from main package",
+      "fileCount": 8,
+      "currentApproach": "import { LineChart, Bar } from 'recharts'",
+      "optimizedApproach": "Bundle already tree-shakeable in current form",
+      "estimatedSavings": 5,
+      "complexity": "Low",
+      "implementation": "Verify unused chart components are removed"
+    },
+    "@radix-ui": {
+      "currentUsage": "Multiple Radix UI primitive imports",
+      "fileCount": 20,
+      "currentApproach": "import * from '@radix-ui/react-*'",
+      "optimizedApproach": "Audit and remove unused Radix components",
+      "estimatedSavings": 8,
+      "complexity": "Medium",
+      "implementation": "Component-by-component audit and cleanup"
+    }
+  },
+  "optimizationPlan": [
+    {
+      "priority": "HIGH",
+      "library": "framer-motion",
+      "target": "18 kB savings",
+      "effort": "Medium (2-3 hours)",
+      "approach": "Replace motion imports with specific component imports",
+      "files": [
+        "src/components/dashboard/EnhancedDashboardWidgets.tsx",
+        "src/app/dashboard/phase1/page.tsx",
+        "src/app/project-management/page.tsx",
+        "src/components/CleanLandingPage.tsx"
+      ],
+      "implementation": "\n// Before\nimport { motion, AnimatePresence } from 'framer-motion';\n\n// After (optimized)\nimport { motion } from 'framer-motion';\nimport { AnimatePresence } from 'framer-motion';\n\n// Or for maximum optimization:\nimport { motion } from 'framer-motion/dist/es/render/components/motion';\n        "
+    },
+    {
+      "priority": "MEDIUM",
+      "library": "@radix-ui components",
+      "target": "8 kB savings",
+      "effort": "Medium (1-2 hours)",
+      "approach": "Audit and remove unused Radix UI imports",
+      "files": [
+        "All component files using Radix UI",
+        "UI component library files"
+      ],
+      "implementation": "\n// Audit process:\n1. Scan for @radix-ui imports\n2. Verify each component is actually used\n3. Remove unused imports\n4. Consolidate similar component usage\n        "
+    },
+    {
+      "priority": "MEDIUM",
+      "library": "recharts",
+      "target": "5 kB savings",
+      "effort": "Low (1 hour)",
+      "approach": "Remove unused chart components and optimize imports",
+      "files": [
+        "src/components/dashboard/EnhancedDashboardWidgets.tsx",
+        "src/components/PerformanceChart.tsx",
+        "Dashboard and analytics components"
+      ],
+      "implementation": "\n// Chart component audit:\n1. Identify which chart types are actually rendered\n2. Remove unused chart imports (PieChart, AreaChart if not used)\n3. Optimize ResponsiveContainer usage\n        "
+    },
+    {
+      "priority": "LOW",
+      "library": "lucide-react",
+      "target": "2 kB savings",
+      "effort": "Low (30 minutes)",
+      "approach": "Remove unused icon imports",
+      "files": [
+        "All components importing lucide-react icons"
+      ],
+      "implementation": "\n// Icon audit:\n1. Search for imported icons that aren't used in JSX\n2. Remove unused icon imports\n3. Consolidate similar icons across components\n        "
+    }
+  ],
+  "framingStrategy": {
+    "step1": "Analyze current motion component usage patterns",
+    "step2": "Replace grouped imports with individual imports",
+    "step3": "Test for any breaking changes in animations",
+    "step4": "Measure bundle size reduction",
+    "expectedOutcome": "15-20 kB reduction in motion-related bundle size"
+  },
+  "commands": [
+    {
+      "step": "1. Framer Motion Optimization",
+      "commands": [
+        "# Find all framer-motion imports",
+        "grep -r \"from 'framer-motion'\" src/ --include='*.tsx' --include='*.ts'",
+        "",
+        "# Replace with optimized imports (manual process)",
+        "# Focus on most frequently used files first"
+      ]
+    },
+    {
+      "step": "2. Radix UI Audit",
+      "commands": [
+        "# Find all Radix UI imports",
+        "grep -r \"@radix-ui\" src/ --include='*.tsx' --include='*.ts'",
+        "",
+        "# Check for unused imports",
+        "# Manual audit required for each component"
+      ]
+    },
+    {
+      "step": "3. Bundle Size Verification",
+      "commands": [
+        "npm run build --turbopack",
+        "",
+        "# Compare bundle sizes before/after each optimization",
+        "# Target: 15-25 kB total reduction"
+      ]
+    }
+  ],
+  "roiProjection": {
+    "estimatedSavings": "15-25 kB bundle reduction",
+    "implementationTime": "4-6 hours total",
+    "complexity": "Medium (import pattern changes)",
+    "riskLevel": "Low (non-breaking changes)",
+    "businessValue": {
+      "performanceGain": "5-8% additional load time improvement",
+      "cumulativeImprovement": "28-35% total (combining with Phase 2B)",
+      "mobileImpact": "Significant on slower connections",
+      "seoBoost": "Further Core Web Vitals improvement"
+    },
+    "technicalBenefits": {
+      "bundleSize": "Cleaner, more efficient imports",
+      "maintainability": "Reduced dependency bloat",
+      "buildSpeed": "Faster compilation with smaller dependency graph",
+      "futureProofing": "Better prepared for library updates"
+    }
+  },
+  "estimatedSavings": 33,
+  "readyForImplementation": true,
+  "nextSteps": [
+    "Execute Framer Motion import optimization (highest impact)",
+    "Audit Radix UI component usage",
+    "Remove unused chart components",
+    "Measure and verify bundle size reductions",
+    "Proceed to Phase 2D: CSS optimization"
+  ]
+}

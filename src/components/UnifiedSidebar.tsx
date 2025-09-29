@@ -261,6 +261,7 @@ export default function UnifiedSidebar({
           ? 'bg-gray-900/95 border-gray-700'
           : 'bg-white/95 border-gray-200'
       } ${className}`}
+      data-testid="unified-sidebar"
     >
       <SidebarContent 
         isCollapsed={isCollapsed}

@@ -1,0 +1,72 @@
+
+> autopilot-web@0.1.0 build
+> next build --turbopack
+
+ ⚠ The config property `experimental.turbo` is deprecated. Move this setting to `config.turbopack` or run `npx @next/codemod@latest next-experimental-turbo-to-turbopack .`
+   ▲ Next.js 15.5.2 (Turbopack)
+   - Environments: .env.local, .env.production
+   - Experiments (use with caution):
+     · turbo
+     · optimizePackageImports
+
+   Creating an optimized production build ...
+ ✓ Finished writing to disk in 622ms
+
+> Build error occurred
+Error: Turbopack build failed with 4 errors:
+./src/app/master-terminal/marketing-optimization/page.tsx:818:7
+Ecmascript file had an error
+[0m [90m 816 |[39m [90m// ==================== CAMPAIGN COMPONENTS ====================[39m
+ [90m 817 |[39m
+[31m[1m>[22m[39m[90m 818 |[39m [36mconst[39m [33mCampaignCard[39m[33m:[39m [33mReact[39m[33m.[39m[33mFC[39m[33m<[39m{ campaign[33m:[39m any }[33m>[39m [33m=[39m ({ campaign }) [33m=>[39m {
+ [90m     |[39m       [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 819 |[39m   [36mconst[39m { setActiveCampaign[33m,[39m optimizeCampaign } [33m=[39m useMarketingOptimization()[33m;[39m
+ [90m 820 |[39m   
+ [90m 821 |[39m   [36mconst[39m statusColors [33m=[39m {[0m
+
+the name `CampaignCard` is defined multiple times
+
+
+./src/app/master-terminal/marketing-optimization/page.tsx:818:7
+Ecmascript file had an error
+[0m [90m 816 |[39m [90m// ==================== CAMPAIGN COMPONENTS ====================[39m
+ [90m 817 |[39m
+[31m[1m>[22m[39m[90m 818 |[39m [36mconst[39m [33mCampaignCard[39m[33m:[39m [33mReact[39m[33m.[39m[33mFC[39m[33m<[39m{ campaign[33m:[39m any }[33m>[39m [33m=[39m ({ campaign }) [33m=>[39m {
+ [90m     |[39m       [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 819 |[39m   [36mconst[39m { setActiveCampaign[33m,[39m optimizeCampaign } [33m=[39m useMarketingOptimization()[33m;[39m
+ [90m 820 |[39m   
+ [90m 821 |[39m   [36mconst[39m statusColors [33m=[39m {[0m
+
+the name `CampaignCard` is defined multiple times
+
+
+./src/app/master-terminal/marketing-optimization/page.tsx:818:7
+Ecmascript file had an error
+[0m [90m 816 |[39m [90m// ==================== CAMPAIGN COMPONENTS ====================[39m
+ [90m 817 |[39m
+[31m[1m>[22m[39m[90m 818 |[39m [36mconst[39m [33mCampaignCard[39m[33m:[39m [33mReact[39m[33m.[39m[33mFC[39m[33m<[39m{ campaign[33m:[39m any }[33m>[39m [33m=[39m ({ campaign }) [33m=>[39m {
+ [90m     |[39m       [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 819 |[39m   [36mconst[39m { setActiveCampaign[33m,[39m optimizeCampaign } [33m=[39m useMarketingOptimization()[33m;[39m
+ [90m 820 |[39m   
+ [90m 821 |[39m   [36mconst[39m statusColors [33m=[39m {[0m
+
+the name `CampaignCard` is defined multiple times
+
+
+./src/app/master-terminal/marketing-optimization/page.tsx:818:7
+Ecmascript file had an error
+[0m [90m 816 |[39m [90m// ==================== CAMPAIGN COMPONENTS ====================[39m
+ [90m 817 |[39m
+[31m[1m>[22m[39m[90m 818 |[39m [36mconst[39m [33mCampaignCard[39m[33m:[39m [33mReact[39m[33m.[39m[33mFC[39m[33m<[39m{ campaign[33m:[39m any }[33m>[39m [33m=[39m ({ campaign }) [33m=>[39m {
+ [90m     |[39m       [31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m[31m[1m^[22m[39m
+ [90m 819 |[39m   [36mconst[39m { setActiveCampaign[33m,[39m optimizeCampaign } [33m=[39m useMarketingOptimization()[33m;[39m
+ [90m 820 |[39m   
+ [90m 821 |[39m   [36mconst[39m statusColors [33m=[39m {[0m
+
+the name `CampaignCard` is defined multiple times
+
+
+    at <unknown> (./src/app/master-terminal/marketing-optimization/page.tsx:818:7)
+    at <unknown> (./src/app/master-terminal/marketing-optimization/page.tsx:818:7)
+    at <unknown> (./src/app/master-terminal/marketing-optimization/page.tsx:818:7)
+    at <unknown> (./src/app/master-terminal/marketing-optimization/page.tsx:818:7)

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, ReactNode } from 'react';
+import React, { createContext, useContext, ReactNode, useMemo, useCallback } from 'react';
 import { ErrorBoundary } from '../ui/ErrorBoundary';
 import { ErrorFallback } from '../ui/ErrorFallback';
 
@@ -17,19 +17,22 @@ const ErrorContext = createContext<{
 });
 
 export function ErrorProvider({ children, fallback, onError }: ErrorProviderProps) {
-  const reportError = (error: Error) => {
+  const reportError = useCallback((error: Error) => {
     console.error('Error reported:', error);
     // Here you could send to error reporting service
     // like Sentry, LogRocket, etc.
-  };
+  }, []);
 
-  const handleError = (error: Error, errorInfo: React.ErrorInfo) => {
+  const handleError = useCallback((error: Error, errorInfo: React.ErrorInfo) => {
     reportError(error);
     onError?.(error, errorInfo);
-  };
+  }, [reportError, onError]);
+
+  // ✅ PERFORMANCE: useMemo prevents context consumers from unnecessary re-renders
+  const contextValue = useMemo(() => ({ reportError }), [reportError]);
 
   return (
-    <ErrorContext.Provider value={{ reportError }}>
+    <ErrorContext.Provider value={contextValue}>
       <ErrorBoundary 
         fallback={fallback || <ErrorFallback />} 
         onError={handleError}

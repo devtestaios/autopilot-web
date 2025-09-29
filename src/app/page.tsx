@@ -1,9 +1,7 @@
-import CleanLandingPage from '@/components/CleanLandingPage';
+'use client';
+
+import LandingPage from './landing/page';
 
 export default function HomePage() {
-  return (
-    <main>
-      <CleanLandingPage />
-    </main>
-  );
+  return <LandingPage />;
 }

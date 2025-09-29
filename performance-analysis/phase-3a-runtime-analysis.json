@@ -1,0 +1,3650 @@
+{
+  "timestamp": "2025-09-28T03:53:28.099Z",
+  "phase": "Phase 3A: Runtime Performance Optimization",
+  "componentReRenderAnalysis": {
+    "missingReactMemo": [
+      {
+        "file": "src/components/AIDashboard.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/components/AIDashboardControl.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/components/AIFloatingAssistant.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/components/AIInsights.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/components/AIMonitoringDashboard.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/components/AdvancedAnalyticsDashboard.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/components/AlertDashboard.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/components/AutomatedSyncScheduler.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/components/AutopilotDashboard.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/components/BusinessSetupWizard.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/components/CampaignForm.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/components/CampaignOptimizationEngine.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/components/CampaignTable.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/components/CampaignTemplateLibrary.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/components/CleanLandingPage.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/components/CompetitiveIntelligence.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/components/CustomLandingPage.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/components/CustomReportBuilder.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/components/DashboardCustomizer.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/components/DashboardStats.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/components/DataVisualization.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/components/DynamicMasterTerminal.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/components/EnhancedAIInsights.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/components/EnhancedAnalyticsDashboard.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/components/EnhancedCampaignDetailsPage.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/components/EnhancedCampaignForm.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/components/EnhancedDashboardStats.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/components/EnhancedPerformanceCharts.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/components/EnhancedSidebar.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/components/EnterpriseAuth.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/components/GlobalSearch.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/components/GoogleAdsIntegration.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/components/GoogleAdsPerformanceDashboard.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/components/LandingNavbar.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/components/LandingPage.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/components/MultiPlatformSyncDashboard.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/components/Navbar.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/components/NavigationTabs.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/components/OptimizationDashboard.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/components/PerformanceChart.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/components/PlatformSetupManager.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/components/PredictiveAnalyticsDashboard.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/components/ProductionInfrastructure.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/components/ProtectedRoute.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/components/PulseWaveLogo.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/components/RealTimeOptimizationDashboard.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/components/SimpleLandingTest.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/components/SimplifiedDashboard.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/components/SimplifiedNavbar.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/components/SmartCampaignOptimizer.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/components/SyncStatusDashboard.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/components/UnifiedAIChat.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/components/UnifiedCampaignDashboard.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/components/UnifiedPlatformDashboard.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/components/UnifiedSidebar.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/components/WhiteLabelDashboard.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/components/analytics/AnalyticsTracker.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/components/dashboard/AIInsightsWidget.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/components/dashboard/EnhancedDashboardWidgets.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/components/dashboard/MetaDashboard.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/components/dashboard/RealTimeWidget.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/components/landing/AdvancedDataViz.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/components/landing/AdvancedHero.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/components/landing/EnhancedCTA.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/components/landing/EnhancedTestimonials.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/components/landing/InteractiveComparison.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/components/landing/LiveMetrics.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/components/landing/ScrollTriggeredFeatures.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/components/project-management/ProjectAnalyticsDashboard.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/components/project-management/ProjectManagementSeeder.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/components/providers/__tests__/ErrorProvider.test.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/components/ui/ActionDropdown.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/components/ui/AdvancedButton.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/components/ui/AdvancedNavigation.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/components/ui/FloatingActionButton.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/components/ui/FloatingParticles.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/components/ui/GlobalSearch.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/components/ui/LazyChart.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/components/ui/TypewriterEffect.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/components/ui/select.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/app/ai/advanced/page.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/app/ai/automation/page.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/app/ai/page.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/app/ai/testing/page.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/app/ai-automation/page.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/app/ai-center/page.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/app/analytics/page.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/app/analytics/performance/page.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/app/analytics/real-time/page.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/app/autonomous/page.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/app/blur-demo/page.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/app/business-intelligence/page.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/app/business-suite/page.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/app/button-demo/page.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/app/campaigns/[id]/edit/page.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/app/campaigns/enhanced/page.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/app/campaigns/new/page.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/app/campaigns/page.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/app/collaboration/page.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/app/content-suite/page.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/app/dashboard/customizable/page.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/app/dashboard/enhanced.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/app/dashboard/page.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/app/dashboard/performance/components/CampaignTable.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/app/dashboard/performance/components/DashboardMetrics.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/app/dashboard/performance/components/PerformanceCharts.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/app/dashboard/performance/components/RealTimeData.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/app/dashboard/performance/optimized.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/app/dashboard/performance/page.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/app/dashboard/phase1/page.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/app/e-commerce/page.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/app/email-marketing/page.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/app/google-ads-test/page.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/app/integration-test/page.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/app/integrations/page.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/app/leads/page.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/app/login/page.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/app/master-terminal/marketing-optimization/page.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/app/master-terminal/page.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/app/optimization/page.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/app/project-management/page.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/app/reports/page.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/app/scheduler/page.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/app/settings/page.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/app/signup/page.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/app/social/calendar/page.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/app/social/composer/page.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/app/social/page.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/app/social-media/page.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/app/status/page.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/app/unified-crm/page.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/contexts/ABTestContext.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/contexts/AIContext.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/contexts/AIControlContext.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/contexts/AnalyticsContext.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/contexts/AuthContext.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/contexts/BusinessConfigurationContext.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/contexts/CacheContext.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/contexts/CollaborationContext.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/contexts/EmailMarketingContext.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/contexts/MarketingOptimizationContext.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/contexts/ProjectManagementContext.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/contexts/SearchContext.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/contexts/SocialMediaContext.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/contexts/ThemeContext.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/contexts/UnifiedAIContext.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/contexts/WebSocketContext.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/contexts/__tests__/AuthContext.test.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/contexts/__tests__/SearchContext.test.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      },
+      {
+        "file": "src/contexts/__tests__/ThemeContext.test.tsx",
+        "issue": "Component with state/effects not wrapped in React.memo",
+        "impact": "HIGH - Unnecessary re-renders on parent updates"
+      }
+    ],
+    "unnecessaryUseEffect": [],
+    "objectsInDependencyArrays": [
+      {
+        "file": "src/components/BusinessSetupWizard.tsx",
+        "issue": "useEffect with object/property dependencies",
+        "impact": "MEDIUM - May cause excessive re-runs",
+        "suggestion": "Use useMemo/useCallback for object dependencies"
+      },
+      {
+        "file": "src/components/SyncStatusDashboard.tsx",
+        "issue": "useEffect with object/property dependencies",
+        "impact": "MEDIUM - May cause excessive re-runs",
+        "suggestion": "Use useMemo/useCallback for object dependencies"
+      },
+      {
+        "file": "src/components/dashboard/AIInsightsWidget.tsx",
+        "issue": "useEffect with object/property dependencies",
+        "impact": "MEDIUM - May cause excessive re-runs",
+        "suggestion": "Use useMemo/useCallback for object dependencies"
+      },
+      {
+        "file": "src/components/landing/EnhancedTestimonials.tsx",
+        "issue": "useEffect with object/property dependencies",
+        "impact": "MEDIUM - May cause excessive re-runs",
+        "suggestion": "Use useMemo/useCallback for object dependencies"
+      },
+      {
+        "file": "src/contexts/CollaborationContext.tsx",
+        "issue": "useEffect with object/property dependencies",
+        "impact": "MEDIUM - May cause excessive re-runs",
+        "suggestion": "Use useMemo/useCallback for object dependencies"
+      }
+    ],
+    "inlineObjectProps": [
+      {
+        "file": "src/components/AIDashboard.tsx",
+        "issue": "21 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/AIDashboardControl.tsx",
+        "issue": "18 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/AIInsights.tsx",
+        "issue": "9 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/AIMonitoringDashboard.tsx",
+        "issue": "6 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/AdvancedAnalyticsDashboard.tsx",
+        "issue": "24 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/AlertDashboard.tsx",
+        "issue": "28 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/AutomatedSyncScheduler.tsx",
+        "issue": "11 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/AutopilotDashboard.tsx",
+        "issue": "14 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/BreadcrumbNavigation.tsx",
+        "issue": "13 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/BusinessSetupWizard.tsx",
+        "issue": "30 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/CampaignCard.tsx",
+        "issue": "16 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/CampaignDetailsLoading.tsx",
+        "issue": "4 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/CampaignFilters.tsx",
+        "issue": "19 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/CampaignForm.tsx",
+        "issue": "9 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/CampaignTable.tsx",
+        "issue": "18 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/CampaignTemplateLibrary.tsx",
+        "issue": "18 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/CleanLandingPage.tsx",
+        "issue": "10 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/CompetitiveIntelligence.tsx",
+        "issue": "19 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/CustomLandingPage.tsx",
+        "issue": "54 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/CustomReportBuilder.tsx",
+        "issue": "23 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/DashboardCustomizer.tsx",
+        "issue": "15 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/DashboardStats.tsx",
+        "issue": "33 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/DataVisualization.tsx",
+        "issue": "27 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/DynamicMasterTerminal.tsx",
+        "issue": "22 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/EnhancedAIInsights.tsx",
+        "issue": "14 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/EnhancedAnalyticsDashboard.tsx",
+        "issue": "20 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/EnhancedCampaignDetailsPage.tsx",
+        "issue": "20 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/EnhancedCampaignForm.tsx",
+        "issue": "26 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/EnhancedDashboardStats.tsx",
+        "issue": "4 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/EnhancedErrorBoundary.tsx",
+        "issue": "5 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/EnhancedPerformanceCharts.tsx",
+        "issue": "17 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/EnhancedSidebar.tsx",
+        "issue": "11 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/EnterpriseAuth.tsx",
+        "issue": "21 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/ErrorBoundary.tsx",
+        "issue": "4 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/ErrorHandlingDemo.tsx",
+        "issue": "8 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/GlobalSearch.tsx",
+        "issue": "15 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/GoogleAdsIntegration.tsx",
+        "issue": "5 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/GoogleAdsPerformanceDashboard.tsx",
+        "issue": "14 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/LandingNavbar.tsx",
+        "issue": "20 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/LandingPage.tsx",
+        "issue": "31 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/LeadFilters.tsx",
+        "issue": "22 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/LoadingComponents.tsx",
+        "issue": "17 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/MultiPlatformSyncDashboard.tsx",
+        "issue": "18 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/Navbar.tsx",
+        "issue": "8 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/OptimizationDashboard.tsx",
+        "issue": "8 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/OptimizedChart.tsx",
+        "issue": "22 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/PerformanceChart.tsx",
+        "issue": "11 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/PlatformSetupManager.tsx",
+        "issue": "12 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/PredictiveAnalyticsDashboard.tsx",
+        "issue": "24 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/ProductionInfrastructure.tsx",
+        "issue": "24 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/PulseWaveLogo.tsx",
+        "issue": "10 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/RealTimeOptimizationDashboard.tsx",
+        "issue": "11 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/SearchResults.tsx",
+        "issue": "4 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/SimplifiedDashboard.tsx",
+        "issue": "56 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/SimplifiedNavbar.tsx",
+        "issue": "12 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/SmartCampaignOptimizer.tsx",
+        "issue": "33 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/SyncStatusDashboard.tsx",
+        "issue": "6 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/UnifiedAIChat.tsx",
+        "issue": "17 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/UnifiedCampaignDashboard.tsx",
+        "issue": "8 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/UnifiedPlatformDashboard.tsx",
+        "issue": "26 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/UnifiedSidebar.tsx",
+        "issue": "23 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/WhiteLabelDashboard.tsx",
+        "issue": "32 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/__tests__/CampaignCard.test.tsx",
+        "issue": "4 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/__tests__/CampaignForm.test.tsx",
+        "issue": "13 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/__tests__/CampaignTable.test.tsx",
+        "issue": "34 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/__tests__/DashboardStats.test.tsx",
+        "issue": "25 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/__tests__/LoadingComponents.test.tsx",
+        "issue": "7 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/__tests__/Navbar.test.tsx",
+        "issue": "4 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/__tests__/PerformanceChart.test.tsx",
+        "issue": "38 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/__tests__/SearchResults.test.tsx",
+        "issue": "15 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/analytics/AnalyticsTracker.tsx",
+        "issue": "5 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/dashboard/AIInsightsWidget.tsx",
+        "issue": "12 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/dashboard/EnhancedDashboardWidgets.tsx",
+        "issue": "25 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/dashboard/EnhancedMetricCard.tsx",
+        "issue": "10 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/dashboard/MetaDashboard.tsx",
+        "issue": "14 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/dashboard/PerformanceChartWidget.tsx",
+        "issue": "21 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/dashboard/RealTimeWidget.tsx",
+        "issue": "11 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/dashboard/widgets/ChartWidget.tsx",
+        "issue": "16 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/dashboard/widgets/InsightsWidget.tsx",
+        "issue": "6 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/dashboard/widgets/TableWidget.tsx",
+        "issue": "4 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/landing/AdvancedDataViz.tsx",
+        "issue": "23 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/landing/AdvancedHero.tsx",
+        "issue": "28 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/landing/AdvancedPricing.tsx",
+        "issue": "32 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/landing/EnhancedCTA.tsx",
+        "issue": "20 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/landing/EnhancedFeatureCard.tsx",
+        "issue": "13 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/landing/EnhancedTestimonials.tsx",
+        "issue": "21 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/landing/InteractiveComparison.tsx",
+        "issue": "19 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/landing/LiveMetrics.tsx",
+        "issue": "18 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/landing/ScrollTriggeredFeatures.tsx",
+        "issue": "26 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/navigation/EnhancedSidebar.tsx",
+        "issue": "15 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/project-management/KanbanBoard.tsx",
+        "issue": "22 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/project-management/ProjectAnalyticsDashboard.tsx",
+        "issue": "22 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/project-management/ProjectCreationWizard.tsx",
+        "issue": "32 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/ui/ActionDropdown.tsx",
+        "issue": "7 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/ui/AdvancedButton.tsx",
+        "issue": "11 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/ui/AdvancedNavigation.tsx",
+        "issue": "5 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/ui/AsyncContent.tsx",
+        "issue": "6 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/ui/BlurBackground.tsx",
+        "issue": "15 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/ui/EnhancedButton.tsx",
+        "issue": "7 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/ui/ErrorFallback.tsx",
+        "issue": "4 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/ui/FloatingActionButton.tsx",
+        "issue": "8 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/ui/GlassCard.tsx",
+        "issue": "4 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/ui/GlobalSearch.tsx",
+        "issue": "7 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/ui/InteractiveElements.tsx",
+        "issue": "11 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/ui/LazyChart.tsx",
+        "issue": "9 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/ui/LoadingAnimations.tsx",
+        "issue": "23 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/ui/PremiumLoading.tsx",
+        "issue": "11 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/ui/Skeleton.tsx",
+        "issue": "18 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/ui/SkeletonOld.tsx",
+        "issue": "15 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/ui/Toast.tsx",
+        "issue": "9 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/ui/__tests__/GlassButton.test.tsx",
+        "issue": "4 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/ui/__tests__/progress.test.tsx",
+        "issue": "9 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/ui/__tests__/switch.test.tsx",
+        "issue": "7 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/ui/card.tsx",
+        "issue": "5 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/ui/select.tsx",
+        "issue": "8 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/components/ui/tabs.tsx",
+        "issue": "5 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/app/ai/advanced/page.tsx",
+        "issue": "25 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/app/ai/analytics/page.tsx",
+        "issue": "32 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/app/ai/automation/page.tsx",
+        "issue": "8 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/app/ai/page.tsx",
+        "issue": "19 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/app/ai/settings/page.tsx",
+        "issue": "22 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/app/ai/testing/page.tsx",
+        "issue": "10 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/app/ai-automation/page.tsx",
+        "issue": "17 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/app/ai-center/page.tsx",
+        "issue": "6 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/app/analytics/page.tsx",
+        "issue": "23 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/app/analytics/performance/page.tsx",
+        "issue": "9 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/app/analytics/real-time/page.tsx",
+        "issue": "27 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/app/autonomous/page.tsx",
+        "issue": "9 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/app/blur-demo/page.tsx",
+        "issue": "10 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/app/business-intelligence/page.tsx",
+        "issue": "24 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/app/business-suite/page.tsx",
+        "issue": "14 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/app/button-demo/page.tsx",
+        "issue": "17 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/app/campaigns/enhanced/page.tsx",
+        "issue": "39 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/app/campaigns/page.tsx",
+        "issue": "40 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/app/capabilities/ai-bridge/page.tsx",
+        "issue": "6 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/app/collaboration/page.tsx",
+        "issue": "29 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/app/content-suite/page.tsx",
+        "issue": "7 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/app/dashboard/customizable/page.tsx",
+        "issue": "8 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/app/dashboard/enhanced.tsx",
+        "issue": "15 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/app/dashboard/page.tsx",
+        "issue": "20 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/app/dashboard/performance/components/CampaignTable.tsx",
+        "issue": "4 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/app/dashboard/performance/components/PerformanceCharts.tsx",
+        "issue": "4 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/app/dashboard/performance/components/RealTimeData.tsx",
+        "issue": "4 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/app/dashboard/performance/optimized.tsx",
+        "issue": "11 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/app/dashboard/performance/page.tsx",
+        "issue": "11 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/app/dashboard/phase1/page.tsx",
+        "issue": "15 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/app/e-commerce/page.tsx",
+        "issue": "7 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/app/email-marketing/page.tsx",
+        "issue": "34 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/app/google-ads-test/page.tsx",
+        "issue": "6 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/app/home/page.tsx",
+        "issue": "14 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/app/integration-test/page.tsx",
+        "issue": "8 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/app/integrations/page.tsx",
+        "issue": "30 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/app/leads/page.tsx",
+        "issue": "11 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/app/login/page.tsx",
+        "issue": "26 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/app/master-terminal/marketing-optimization/page.tsx",
+        "issue": "43 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/app/master-terminal/page.tsx",
+        "issue": "11 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/app/mobile-demo/page.tsx",
+        "issue": "6 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/app/optimization/page.tsx",
+        "issue": "18 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/app/project-management/page.tsx",
+        "issue": "25 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/app/reports/page.tsx",
+        "issue": "11 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/app/scheduler/page.tsx",
+        "issue": "13 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/app/settings/page.tsx",
+        "issue": "125 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/app/signup/page.tsx",
+        "issue": "32 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/app/social/calendar/page.tsx",
+        "issue": "12 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/app/social/composer/page.tsx",
+        "issue": "15 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/app/social/page.tsx",
+        "issue": "8 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/app/social-media/page.tsx",
+        "issue": "27 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/app/status/page.tsx",
+        "issue": "10 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/app/unified-crm/page.tsx",
+        "issue": "8 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/contexts/__tests__/AuthContext.test.tsx",
+        "issue": "11 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      },
+      {
+        "file": "src/contexts/__tests__/SearchContext.test.tsx",
+        "issue": "14 inline object props detected",
+        "impact": "HIGH - Creates new objects on every render",
+        "suggestion": "Move objects outside component or use useMemo"
+      }
+    ],
+    "heavyComputationsWithoutMemo": [
+      {
+        "file": "src/components/AIDashboard.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/AIDashboardControl.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/AIInsights.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/AIMonitoringDashboard.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/AdvancedAnalyticsDashboard.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/AlertDashboard.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/AutomatedSyncScheduler.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/AutopilotDashboard.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/BreadcrumbNavigation.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/BusinessSetupWizard.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/CampaignCard.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/CampaignDetailsLoading.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/CampaignFilters.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/CampaignForm.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/CampaignOptimizationEngine.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/CampaignTable.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/CampaignTemplateLibrary.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/CleanLandingPage.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/CompetitiveIntelligence.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/CustomLandingPage.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/CustomReportBuilder.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/DashboardCustomizer.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/DashboardStats.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/DataVisualization.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/DynamicMasterTerminal.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/EnhancedCampaignDetailsPage.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/EnhancedCampaignForm.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/EnhancedDashboardStats.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/EnhancedErrorBoundary.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/EnhancedPerformanceCharts.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/EnhancedSidebar.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/EnterpriseAuth.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/ErrorHandlingDemo.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/GoogleAdsPerformanceDashboard.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/LandingNavbar.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/LandingPage.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/LeadFilters.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/LoadingComponents.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/MultiPlatformSyncDashboard.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/Navbar.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/NavigationTabs.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/OptimizationDashboard.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/PerformanceChart.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/PlatformSetupManager.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/ProductionInfrastructure.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/PulseWaveLogo.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/RealTimeOptimizationDashboard.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/SearchResults.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/SimplifiedDashboard.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/SimplifiedNavbar.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/SmartCampaignOptimizer.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/SyncStatusDashboard.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/UnifiedAIChat.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/UnifiedCampaignDashboard.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/UnifiedPlatformDashboard.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/UnifiedSidebar.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/WhiteLabelDashboard.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/__tests__/DashboardStats.test.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/__tests__/NavigationTabs.test.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/dashboard/AIInsightsWidget.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/dashboard/EnhancedDashboardWidgets.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/dashboard/EnhancedMetricCard.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/dashboard/MetaDashboard.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/dashboard/PerformanceChartWidget.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/dashboard/RealTimeWidget.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/dashboard/widgets/ChartWidget.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/dashboard/widgets/InsightsWidget.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/dashboard/widgets/TableWidget.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/landing/AdvancedDataViz.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/landing/AdvancedHero.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/landing/AdvancedPricing.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/landing/EnhancedCTA.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/landing/EnhancedFeatureCard.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/landing/EnhancedTestimonials.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/landing/InteractiveComparison.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/landing/LiveMetrics.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/landing/ScrollTriggeredFeatures.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/navigation/EnhancedSidebar.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/project-management/ProjectAnalyticsDashboard.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/project-management/ProjectCreationWizard.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/project-management/ProjectManagementSeeder.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/ui/ActionDropdown.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/ui/AdvancedButton.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/ui/AdvancedNavigation.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/ui/AsyncContent.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/ui/Breadcrumb.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/ui/FloatingActionButton.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/ui/FloatingParticles.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/ui/GlobalSearch.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/ui/LoadingAnimations.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/ui/PremiumLoading.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/ui/Skeleton.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/ui/SkeletonOld.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/components/ui/Toast.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/app/ai/advanced/page.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/app/ai/analytics/page.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/app/ai/automation/page.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/app/ai/page.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/app/ai/settings/page.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/app/ai/testing/page.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/app/ai-automation/page.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/app/ai-center/page.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/app/analytics/page.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/app/analytics/performance/loading.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/app/analytics/performance/page.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/app/analytics/real-time/page.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/app/analytics/roi/loading.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/app/api/email-marketing/ai/generate-subject-lines/route.ts",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/app/api/email-marketing/campaigns/route.ts",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/app/api/email-marketing/contacts/import/route.ts",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/app/api/email-marketing/contacts/route.ts",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/app/api/marketing-optimization/alerts/route.ts",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/app/api/marketing-optimization/campaigns/route.ts",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/app/api/marketing-optimization/leads/route.ts",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/app/api/marketing-optimization/optimize/route.ts",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/app/api/social-media/posts/route.ts",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/app/api/social-media/templates/route.ts",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/app/autonomous/page.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/app/blur-demo/page.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/app/business-suite/page.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/app/button-demo/page.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/app/campaigns/enhanced/page.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/app/campaigns/loading.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/app/campaigns/page.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/app/capabilities/ai-bridge/page.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/app/collaboration/page.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/app/content-suite/page.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/app/dashboard/customizable/page.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/app/dashboard/enhanced.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/app/dashboard/loading.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/app/dashboard/page.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/app/dashboard/performance/components/CampaignTable.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/app/dashboard/performance/components/DashboardMetrics.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/app/dashboard/performance/components/PerformanceCharts.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/app/dashboard/performance/components/RealTimeData.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/app/dashboard/performance/optimized.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/app/dashboard/performance/page.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/app/dashboard/phase1/page.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/app/e-commerce/page.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/app/email-marketing/page.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/app/google-ads-test/page.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/app/home/page.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/app/integrations/page.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/app/leads/loading.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/app/leads/page.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/app/mobile-demo/page.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/app/optimization/page.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/app/project-management/page.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/app/reports/page.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/app/scheduler/page.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/app/settings/page.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/app/signup/page.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/app/social/calendar/page.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/app/social/composer/page.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/app/social/page.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/app/status/page.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/app/unified-crm/page.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/contexts/ABTestContext.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/contexts/AIContext.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/contexts/AIControlContext.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/contexts/AIProjectAutomationContext.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/contexts/AnalyticsContext.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/contexts/BusinessConfigurationContext.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/contexts/CollaborationContext.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/contexts/IntegrationsContext.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/contexts/ProjectManagementContext.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/contexts/SearchContext.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/contexts/UnifiedAIContext.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      },
+      {
+        "file": "src/contexts/__tests__/AuthContext.test.tsx",
+        "issue": "Array processing without useMemo",
+        "impact": "MEDIUM - Repeated calculations on each render",
+        "suggestion": "Wrap expensive computations in useMemo"
+      }
+    ],
+    "contextValueObjectCreation": [
+      {
+        "file": "src/components/providers/ErrorProvider.tsx",
+        "issue": "Context Provider with inline value object",
+        "impact": "CRITICAL - Causes all consumers to re-render",
+        "suggestion": "Use useMemo for context value objects"
+      },
+      {
+        "file": "src/components/ui/Toast.tsx",
+        "issue": "Context Provider with inline value object",
+        "impact": "CRITICAL - Causes all consumers to re-render",
+        "suggestion": "Use useMemo for context value objects"
+      },
+      {
+        "file": "src/components/ui/select.tsx",
+        "issue": "Context Provider with inline value object",
+        "impact": "CRITICAL - Causes all consumers to re-render",
+        "suggestion": "Use useMemo for context value objects"
+      },
+      {
+        "file": "src/components/ui/tabs.tsx",
+        "issue": "Context Provider with inline value object",
+        "impact": "CRITICAL - Causes all consumers to re-render",
+        "suggestion": "Use useMemo for context value objects"
+      },
+      {
+        "file": "src/contexts/SearchContext.tsx",
+        "issue": "Context Provider with inline value object",
+        "impact": "CRITICAL - Causes all consumers to re-render",
+        "suggestion": "Use useMemo for context value objects"
+      },
+      {
+        "file": "src/contexts/ThemeContext.tsx",
+        "issue": "Context Provider with inline value object",
+        "impact": "CRITICAL - Causes all consumers to re-render",
+        "suggestion": "Use useMemo for context value objects"
+      }
+    ]
+  },
+  "memoryUsageAnalysis": {
+    "eventListenerLeaks": [],
+    "intervalTimerLeaks": [
+      {
+        "file": "src/app/ai/testing/page.tsx",
+        "issue": "Timer without cleanup function",
+        "impact": "MEDIUM - Background processes may continue running",
+        "solution": "Clear timers in useEffect cleanup"
+      },
+      {
+        "file": "src/app/api/email-marketing/ai/generate-content/route.ts",
+        "issue": "Timer without cleanup function",
+        "impact": "MEDIUM - Background processes may continue running",
+        "solution": "Clear timers in useEffect cleanup"
+      },
+      {
+        "file": "src/app/api/email-marketing/ai/generate-subject-lines/route.ts",
+        "issue": "Timer without cleanup function",
+        "impact": "MEDIUM - Background processes may continue running",
+        "solution": "Clear timers in useEffect cleanup"
+      },
+      {
+        "file": "src/app/api/email-marketing/campaigns/[id]/send/route.ts",
+        "issue": "Timer without cleanup function",
+        "impact": "MEDIUM - Background processes may continue running",
+        "solution": "Clear timers in useEffect cleanup"
+      },
+      {
+        "file": "src/app/api/email-marketing/contacts/import/route.ts",
+        "issue": "Timer without cleanup function",
+        "impact": "MEDIUM - Background processes may continue running",
+        "solution": "Clear timers in useEffect cleanup"
+      },
+      {
+        "file": "src/app/api/social-media/accounts/route.ts",
+        "issue": "Timer without cleanup function",
+        "impact": "MEDIUM - Background processes may continue running",
+        "solution": "Clear timers in useEffect cleanup"
+      },
+      {
+        "file": "src/app/api/social-media/ai/generate-content/route.ts",
+        "issue": "Timer without cleanup function",
+        "impact": "MEDIUM - Background processes may continue running",
+        "solution": "Clear timers in useEffect cleanup"
+      },
+      {
+        "file": "src/app/api/social-media/posts/route.ts",
+        "issue": "Timer without cleanup function",
+        "impact": "MEDIUM - Background processes may continue running",
+        "solution": "Clear timers in useEffect cleanup"
+      },
+      {
+        "file": "src/app/api/social-media/templates/route.ts",
+        "issue": "Timer without cleanup function",
+        "impact": "MEDIUM - Background processes may continue running",
+        "solution": "Clear timers in useEffect cleanup"
+      },
+      {
+        "file": "src/app/button-demo/page.tsx",
+        "issue": "Timer without cleanup function",
+        "impact": "MEDIUM - Background processes may continue running",
+        "solution": "Clear timers in useEffect cleanup"
+      },
+      {
+        "file": "src/app/campaigns/enhanced/page.tsx",
+        "issue": "Timer without cleanup function",
+        "impact": "MEDIUM - Background processes may continue running",
+        "solution": "Clear timers in useEffect cleanup"
+      },
+      {
+        "file": "src/app/campaigns/page.tsx",
+        "issue": "Timer without cleanup function",
+        "impact": "MEDIUM - Background processes may continue running",
+        "solution": "Clear timers in useEffect cleanup"
+      },
+      {
+        "file": "src/app/content-suite/page.tsx",
+        "issue": "Timer without cleanup function",
+        "impact": "MEDIUM - Background processes may continue running",
+        "solution": "Clear timers in useEffect cleanup"
+      },
+      {
+        "file": "src/app/dashboard/enhanced.tsx",
+        "issue": "Timer without cleanup function",
+        "impact": "MEDIUM - Background processes may continue running",
+        "solution": "Clear timers in useEffect cleanup"
+      },
+      {
+        "file": "src/components/AIDashboard.tsx",
+        "issue": "Timer without cleanup function",
+        "impact": "MEDIUM - Background processes may continue running",
+        "solution": "Clear timers in useEffect cleanup"
+      },
+      {
+        "file": "src/components/CampaignOptimizationEngine.tsx",
+        "issue": "Timer without cleanup function",
+        "impact": "MEDIUM - Background processes may continue running",
+        "solution": "Clear timers in useEffect cleanup"
+      },
+      {
+        "file": "src/components/CompetitiveIntelligence.tsx",
+        "issue": "Timer without cleanup function",
+        "impact": "MEDIUM - Background processes may continue running",
+        "solution": "Clear timers in useEffect cleanup"
+      },
+      {
+        "file": "src/components/EnterpriseAuth.tsx",
+        "issue": "Timer without cleanup function",
+        "impact": "MEDIUM - Background processes may continue running",
+        "solution": "Clear timers in useEffect cleanup"
+      },
+      {
+        "file": "src/components/GoogleAdsIntegration.tsx",
+        "issue": "Timer without cleanup function",
+        "impact": "MEDIUM - Background processes may continue running",
+        "solution": "Clear timers in useEffect cleanup"
+      },
+      {
+        "file": "src/components/GoogleAdsPerformanceDashboard.tsx",
+        "issue": "Timer without cleanup function",
+        "impact": "MEDIUM - Background processes may continue running",
+        "solution": "Clear timers in useEffect cleanup"
+      },
+      {
+        "file": "src/components/PredictiveAnalyticsDashboard.tsx",
+        "issue": "Timer without cleanup function",
+        "impact": "MEDIUM - Background processes may continue running",
+        "solution": "Clear timers in useEffect cleanup"
+      },
+      {
+        "file": "src/components/ProductionInfrastructure.tsx",
+        "issue": "Timer without cleanup function",
+        "impact": "MEDIUM - Background processes may continue running",
+        "solution": "Clear timers in useEffect cleanup"
+      },
+      {
+        "file": "src/components/UnifiedAIChat.tsx",
+        "issue": "Timer without cleanup function",
+        "impact": "MEDIUM - Background processes may continue running",
+        "solution": "Clear timers in useEffect cleanup"
+      },
+      {
+        "file": "src/components/UnifiedPlatformDashboard.tsx",
+        "issue": "Timer without cleanup function",
+        "impact": "MEDIUM - Background processes may continue running",
+        "solution": "Clear timers in useEffect cleanup"
+      },
+      {
+        "file": "src/components/WhiteLabelDashboard.tsx",
+        "issue": "Timer without cleanup function",
+        "impact": "MEDIUM - Background processes may continue running",
+        "solution": "Clear timers in useEffect cleanup"
+      },
+      {
+        "file": "src/components/analytics/AnalyticsTracker.tsx",
+        "issue": "Timer without cleanup function",
+        "impact": "MEDIUM - Background processes may continue running",
+        "solution": "Clear timers in useEffect cleanup"
+      },
+      {
+        "file": "src/components/landing/AdvancedDataViz.tsx",
+        "issue": "Timer without cleanup function",
+        "impact": "MEDIUM - Background processes may continue running",
+        "solution": "Clear timers in useEffect cleanup"
+      },
+      {
+        "file": "src/components/landing/AdvancedHero.tsx",
+        "issue": "Timer without cleanup function",
+        "impact": "MEDIUM - Background processes may continue running",
+        "solution": "Clear timers in useEffect cleanup"
+      },
+      {
+        "file": "src/components/landing/InteractiveComparison.tsx",
+        "issue": "Timer without cleanup function",
+        "impact": "MEDIUM - Background processes may continue running",
+        "solution": "Clear timers in useEffect cleanup"
+      },
+      {
+        "file": "src/components/project-management/ProjectManagementSeeder.tsx",
+        "issue": "Timer without cleanup function",
+        "impact": "MEDIUM - Background processes may continue running",
+        "solution": "Clear timers in useEffect cleanup"
+      },
+      {
+        "file": "src/components/ui/AdvancedButton.tsx",
+        "issue": "Timer without cleanup function",
+        "impact": "MEDIUM - Background processes may continue running",
+        "solution": "Clear timers in useEffect cleanup"
+      },
+      {
+        "file": "src/components/ui/Toast.tsx",
+        "issue": "Timer without cleanup function",
+        "impact": "MEDIUM - Background processes may continue running",
+        "solution": "Clear timers in useEffect cleanup"
+      },
+      {
+        "file": "src/contexts/AIContext.tsx",
+        "issue": "Timer without cleanup function",
+        "impact": "MEDIUM - Background processes may continue running",
+        "solution": "Clear timers in useEffect cleanup"
+      },
+      {
+        "file": "src/contexts/AIProjectAutomationContext.tsx",
+        "issue": "Timer without cleanup function",
+        "impact": "MEDIUM - Background processes may continue running",
+        "solution": "Clear timers in useEffect cleanup"
+      },
+      {
+        "file": "src/contexts/AuthContext.tsx",
+        "issue": "Timer without cleanup function",
+        "impact": "MEDIUM - Background processes may continue running",
+        "solution": "Clear timers in useEffect cleanup"
+      },
+      {
+        "file": "src/contexts/IntegrationsContext.tsx",
+        "issue": "Timer without cleanup function",
+        "impact": "MEDIUM - Background processes may continue running",
+        "solution": "Clear timers in useEffect cleanup"
+      },
+      {
+        "file": "src/hooks/__tests__/useErrorHandler.test.ts",
+        "issue": "Timer without cleanup function",
+        "impact": "MEDIUM - Background processes may continue running",
+        "solution": "Clear timers in useEffect cleanup"
+      },
+      {
+        "file": "src/hooks/__tests__/useGlobalSearch.test.ts",
+        "issue": "Timer without cleanup function",
+        "impact": "MEDIUM - Background processes may continue running",
+        "solution": "Clear timers in useEffect cleanup"
+      },
+      {
+        "file": "src/lib/ai/mlOptimizationEngine.ts",
+        "issue": "Timer without cleanup function",
+        "impact": "MEDIUM - Background processes may continue running",
+        "solution": "Clear timers in useEffect cleanup"
+      },
+      {
+        "file": "src/lib/ai/mlOptimizationEngine_refactored.ts",
+        "issue": "Timer without cleanup function",
+        "impact": "MEDIUM - Background processes may continue running",
+        "solution": "Clear timers in useEffect cleanup"
+      },
+      {
+        "file": "src/modules/crm/components/CRMIntegrations.tsx",
+        "issue": "Timer without cleanup function",
+        "impact": "MEDIUM - Background processes may continue running",
+        "solution": "Clear timers in useEffect cleanup"
+      },
+      {
+        "file": "src/modules/crm/components/CustomerJourneyMapper.tsx",
+        "issue": "Timer without cleanup function",
+        "impact": "MEDIUM - Background processes may continue running",
+        "solution": "Clear timers in useEffect cleanup"
+      },
+      {
+        "file": "src/modules/crm/components/LeadScoringDashboard.tsx",
+        "issue": "Timer without cleanup function",
+        "impact": "MEDIUM - Background processes may continue running",
+        "solution": "Clear timers in useEffect cleanup"
+      }
+    ],
+    "largeStateObjects": [
+      {
+        "file": "src/app/button-demo/page.tsx",
+        "issue": "Large initial state object/array",
+        "impact": "MEDIUM - Increased memory usage and potential slow renders",
+        "solution": "Consider lazy initial state or breaking into smaller pieces"
+      },
+      {
+        "file": "src/app/dashboard/performance/components/DashboardMetrics.tsx",
+        "issue": "Large initial state object/array",
+        "impact": "MEDIUM - Increased memory usage and potential slow renders",
+        "solution": "Consider lazy initial state or breaking into smaller pieces"
+      },
+      {
+        "file": "src/app/dashboard/performance/components/PerformanceCharts.tsx",
+        "issue": "Large initial state object/array",
+        "impact": "MEDIUM - Increased memory usage and potential slow renders",
+        "solution": "Consider lazy initial state or breaking into smaller pieces"
+      },
+      {
+        "file": "src/app/login/page.tsx",
+        "issue": "Large initial state object/array",
+        "impact": "MEDIUM - Increased memory usage and potential slow renders",
+        "solution": "Consider lazy initial state or breaking into smaller pieces"
+      },
+      {
+        "file": "src/app/settings/page.tsx",
+        "issue": "Large initial state object/array",
+        "impact": "MEDIUM - Increased memory usage and potential slow renders",
+        "solution": "Consider lazy initial state or breaking into smaller pieces"
+      },
+      {
+        "file": "src/app/signup/page.tsx",
+        "issue": "Large initial state object/array",
+        "impact": "MEDIUM - Increased memory usage and potential slow renders",
+        "solution": "Consider lazy initial state or breaking into smaller pieces"
+      },
+      {
+        "file": "src/components/AIDashboardControl.tsx",
+        "issue": "Large initial state object/array",
+        "impact": "MEDIUM - Increased memory usage and potential slow renders",
+        "solution": "Consider lazy initial state or breaking into smaller pieces"
+      },
+      {
+        "file": "src/components/AdvancedAnalyticsDashboard.tsx",
+        "issue": "Large initial state object/array",
+        "impact": "MEDIUM - Increased memory usage and potential slow renders",
+        "solution": "Consider lazy initial state or breaking into smaller pieces"
+      },
+      {
+        "file": "src/components/AlertDashboard.tsx",
+        "issue": "Large initial state object/array",
+        "impact": "MEDIUM - Increased memory usage and potential slow renders",
+        "solution": "Consider lazy initial state or breaking into smaller pieces"
+      },
+      {
+        "file": "src/components/BusinessSetupWizard.tsx",
+        "issue": "Large initial state object/array",
+        "impact": "MEDIUM - Increased memory usage and potential slow renders",
+        "solution": "Consider lazy initial state or breaking into smaller pieces"
+      },
+      {
+        "file": "src/components/EnhancedAnalyticsDashboard.tsx",
+        "issue": "Large initial state object/array",
+        "impact": "MEDIUM - Increased memory usage and potential slow renders",
+        "solution": "Consider lazy initial state or breaking into smaller pieces"
+      },
+      {
+        "file": "src/components/dashboard/EnhancedDashboardWidgets.tsx",
+        "issue": "Large initial state object/array",
+        "impact": "MEDIUM - Increased memory usage and potential slow renders",
+        "solution": "Consider lazy initial state or breaking into smaller pieces"
+      },
+      {
+        "file": "src/components/landing/AdvancedHero.tsx",
+        "issue": "Large initial state object/array",
+        "impact": "MEDIUM - Increased memory usage and potential slow renders",
+        "solution": "Consider lazy initial state or breaking into smaller pieces"
+      },
+      {
+        "file": "src/components/landing/LiveMetrics.tsx",
+        "issue": "Large initial state object/array",
+        "impact": "MEDIUM - Increased memory usage and potential slow renders",
+        "solution": "Consider lazy initial state or breaking into smaller pieces"
+      },
+      {
+        "file": "src/components/project-management/ProjectCreationWizard.tsx",
+        "issue": "Large initial state object/array",
+        "impact": "MEDIUM - Increased memory usage and potential slow renders",
+        "solution": "Consider lazy initial state or breaking into smaller pieces"
+      },
+      {
+        "file": "src/components/ui/AdvancedButton.tsx",
+        "issue": "Large initial state object/array",
+        "impact": "MEDIUM - Increased memory usage and potential slow renders",
+        "solution": "Consider lazy initial state or breaking into smaller pieces"
+      },
+      {
+        "file": "src/components/ui/MagneticButton.tsx",
+        "issue": "Large initial state object/array",
+        "impact": "MEDIUM - Increased memory usage and potential slow renders",
+        "solution": "Consider lazy initial state or breaking into smaller pieces"
+      }
+    ],
+    "inefficientDataStructures": [
+      {
+        "file": "src/app/ai-center/page.tsx",
+        "issue": "Direct array mutation with push() in state",
+        "impact": "MEDIUM - React optimizations may not work properly",
+        "solution": "Use spread operator or immutable patterns"
+      },
+      {
+        "file": "src/app/analytics/page.tsx",
+        "issue": "Direct array mutation with push() in state",
+        "impact": "MEDIUM - React optimizations may not work properly",
+        "solution": "Use spread operator or immutable patterns"
+      },
+      {
+        "file": "src/app/business-intelligence/page.tsx",
+        "issue": "Direct array mutation with push() in state",
+        "impact": "MEDIUM - React optimizations may not work properly",
+        "solution": "Use spread operator or immutable patterns"
+      },
+      {
+        "file": "src/app/campaigns/[id]/edit/page.tsx",
+        "issue": "Direct array mutation with push() in state",
+        "impact": "MEDIUM - React optimizations may not work properly",
+        "solution": "Use spread operator or immutable patterns"
+      },
+      {
+        "file": "src/app/campaigns/enhanced/page.tsx",
+        "issue": "Direct array mutation with push() in state",
+        "impact": "MEDIUM - React optimizations may not work properly",
+        "solution": "Use spread operator or immutable patterns"
+      },
+      {
+        "file": "src/app/campaigns/new/page.tsx",
+        "issue": "Direct array mutation with push() in state",
+        "impact": "MEDIUM - React optimizations may not work properly",
+        "solution": "Use spread operator or immutable patterns"
+      },
+      {
+        "file": "src/app/campaigns/page.tsx",
+        "issue": "Direct array mutation with push() in state",
+        "impact": "MEDIUM - React optimizations may not work properly",
+        "solution": "Use spread operator or immutable patterns"
+      },
+      {
+        "file": "src/app/dashboard/customizable/page.tsx",
+        "issue": "Direct array mutation with push() in state",
+        "impact": "MEDIUM - React optimizations may not work properly",
+        "solution": "Use spread operator or immutable patterns"
+      },
+      {
+        "file": "src/app/dashboard/enhanced.tsx",
+        "issue": "Direct array mutation with push() in state",
+        "impact": "MEDIUM - React optimizations may not work properly",
+        "solution": "Use spread operator or immutable patterns"
+      },
+      {
+        "file": "src/app/dashboard/page.tsx",
+        "issue": "Direct array mutation with push() in state",
+        "impact": "MEDIUM - React optimizations may not work properly",
+        "solution": "Use spread operator or immutable patterns"
+      },
+      {
+        "file": "src/app/login/page.tsx",
+        "issue": "Direct array mutation with push() in state",
+        "impact": "MEDIUM - React optimizations may not work properly",
+        "solution": "Use spread operator or immutable patterns"
+      },
+      {
+        "file": "src/app/settings/page.tsx",
+        "issue": "Direct array mutation with push() in state",
+        "impact": "MEDIUM - React optimizations may not work properly",
+        "solution": "Use spread operator or immutable patterns"
+      },
+      {
+        "file": "src/app/signup/page.tsx",
+        "issue": "Direct array mutation with push() in state",
+        "impact": "MEDIUM - React optimizations may not work properly",
+        "solution": "Use spread operator or immutable patterns"
+      },
+      {
+        "file": "src/components/AIFloatingAssistant.tsx",
+        "issue": "Direct array mutation with push() in state",
+        "impact": "MEDIUM - React optimizations may not work properly",
+        "solution": "Use spread operator or immutable patterns"
+      },
+      {
+        "file": "src/components/CampaignOptimizationEngine.tsx",
+        "issue": "Direct array mutation with push() in state",
+        "impact": "MEDIUM - React optimizations may not work properly",
+        "solution": "Use spread operator or immutable patterns"
+      },
+      {
+        "file": "src/components/EnhancedCampaignDetailsPage.tsx",
+        "issue": "Direct array mutation with push() in state",
+        "impact": "MEDIUM - React optimizations may not work properly",
+        "solution": "Use spread operator or immutable patterns"
+      },
+      {
+        "file": "src/components/EnhancedCampaignForm.tsx",
+        "issue": "Direct array mutation with push() in state",
+        "impact": "MEDIUM - React optimizations may not work properly",
+        "solution": "Use spread operator or immutable patterns"
+      },
+      {
+        "file": "src/components/EnhancedPerformanceCharts.tsx",
+        "issue": "Direct array mutation with push() in state",
+        "impact": "MEDIUM - React optimizations may not work properly",
+        "solution": "Use spread operator or immutable patterns"
+      },
+      {
+        "file": "src/components/GoogleAdsPerformanceDashboard.tsx",
+        "issue": "Direct array mutation with push() in state",
+        "impact": "MEDIUM - React optimizations may not work properly",
+        "solution": "Use spread operator or immutable patterns"
+      },
+      {
+        "file": "src/components/PlatformSetupManager.tsx",
+        "issue": "Direct array mutation with push() in state",
+        "impact": "MEDIUM - React optimizations may not work properly",
+        "solution": "Use spread operator or immutable patterns"
+      },
+      {
+        "file": "src/components/PredictiveAnalyticsDashboard.tsx",
+        "issue": "Direct array mutation with push() in state",
+        "impact": "MEDIUM - React optimizations may not work properly",
+        "solution": "Use spread operator or immutable patterns"
+      },
+      {
+        "file": "src/components/UnifiedAIChat.tsx",
+        "issue": "Direct array mutation with push() in state",
+        "impact": "MEDIUM - React optimizations may not work properly",
+        "solution": "Use spread operator or immutable patterns"
+      },
+      {
+        "file": "src/components/UnifiedSidebar.tsx",
+        "issue": "Direct array mutation with push() in state",
+        "impact": "MEDIUM - React optimizations may not work properly",
+        "solution": "Use spread operator or immutable patterns"
+      },
+      {
+        "file": "src/components/project-management/KanbanBoard.tsx",
+        "issue": "Direct array mutation with push() in state",
+        "impact": "MEDIUM - React optimizations may not work properly",
+        "solution": "Use spread operator or immutable patterns"
+      },
+      {
+        "file": "src/components/project-management/ProjectManagementSeeder.tsx",
+        "issue": "Direct array mutation with push() in state",
+        "impact": "MEDIUM - React optimizations may not work properly",
+        "solution": "Use spread operator or immutable patterns"
+      },
+      {
+        "file": "src/components/ui/AdvancedNavigation.tsx",
+        "issue": "Direct array mutation with push() in state",
+        "impact": "MEDIUM - React optimizations may not work properly",
+        "solution": "Use spread operator or immutable patterns"
+      },
+      {
+        "file": "src/components/ui/GlobalSearch.tsx",
+        "issue": "Direct array mutation with push() in state",
+        "impact": "MEDIUM - React optimizations may not work properly",
+        "solution": "Use spread operator or immutable patterns"
+      },
+      {
+        "file": "src/contexts/AIContext.tsx",
+        "issue": "Direct array mutation with push() in state",
+        "impact": "MEDIUM - React optimizations may not work properly",
+        "solution": "Use spread operator or immutable patterns"
+      },
+      {
+        "file": "src/contexts/AIControlContext.tsx",
+        "issue": "Direct array mutation with push() in state",
+        "impact": "MEDIUM - React optimizations may not work properly",
+        "solution": "Use spread operator or immutable patterns"
+      },
+      {
+        "file": "src/contexts/AIProjectAutomationContext.tsx",
+        "issue": "Direct array mutation with push() in state",
+        "impact": "MEDIUM - React optimizations may not work properly",
+        "solution": "Use spread operator or immutable patterns"
+      },
+      {
+        "file": "src/contexts/BusinessConfigurationContext.tsx",
+        "issue": "Direct array mutation with push() in state",
+        "impact": "MEDIUM - React optimizations may not work properly",
+        "solution": "Use spread operator or immutable patterns"
+      },
+      {
+        "file": "src/contexts/UnifiedAIContext.tsx",
+        "issue": "Direct array mutation with push() in state",
+        "impact": "MEDIUM - React optimizations may not work properly",
+        "solution": "Use spread operator or immutable patterns"
+      },
+      {
+        "file": "src/hooks/useAdvancedAnalytics.ts",
+        "issue": "Direct array mutation with push() in state",
+        "impact": "MEDIUM - React optimizations may not work properly",
+        "solution": "Use spread operator or immutable patterns"
+      },
+      {
+        "file": "src/hooks/useGlobalSearch.broken.ts",
+        "issue": "Direct array mutation with push() in state",
+        "impact": "MEDIUM - React optimizations may not work properly",
+        "solution": "Use spread operator or immutable patterns"
+      },
+      {
+        "file": "src/hooks/useGlobalSearch.ts",
+        "issue": "Direct array mutation with push() in state",
+        "impact": "MEDIUM - React optimizations may not work properly",
+        "solution": "Use spread operator or immutable patterns"
+      },
+      {
+        "file": "src/lib/environment.ts",
+        "issue": "Direct array mutation with push() in state",
+        "impact": "MEDIUM - React optimizations may not work properly",
+        "solution": "Use spread operator or immutable patterns"
+      }
+    ],
+    "memoryLeaksInEffects": []
+  },
+  "coreWebVitalsAnalysis": {
+    "lcp": {
+      "imageOptimization": [
+        {
+          "file": "src/components/Navbar.tsx",
+          "issue": "Regular img tags instead of Next.js Image component",
+          "impact": "HIGH - Slower image loading affects LCP",
+          "solution": "Replace with next/image for automatic optimization"
+        }
+      ],
+      "lazyLoadingMissing": [
+        {
+          "file": "src/components/Navbar.tsx",
+          "issue": "Images without loading strategy specified",
+          "impact": "MEDIUM - May load unnecessary images immediately",
+          "solution": "Add loading=\"lazy\" or priority for above-fold images"
+        }
+      ],
+      "renderBlockingResources": []
+    },
+    "fid": {
+      "heavyJavaScriptTasks": [
+        {
+          "file": "src/app/autonomous/page.tsx",
+          "issue": "3 synchronous JSON operations",
+          "impact": "MEDIUM - May block main thread and increase FID",
+          "solution": "Consider using web workers or async processing"
+        },
+        {
+          "file": "src/contexts/AIContext.tsx",
+          "issue": "6 synchronous JSON operations",
+          "impact": "MEDIUM - May block main thread and increase FID",
+          "solution": "Consider using web workers or async processing"
+        },
+        {
+          "file": "src/contexts/AIControlContext.tsx",
+          "issue": "6 synchronous JSON operations",
+          "impact": "MEDIUM - May block main thread and increase FID",
+          "solution": "Consider using web workers or async processing"
+        },
+        {
+          "file": "src/contexts/AIProjectAutomationContext.tsx",
+          "issue": "13 synchronous JSON operations",
+          "impact": "MEDIUM - May block main thread and increase FID",
+          "solution": "Consider using web workers or async processing"
+        },
+        {
+          "file": "src/contexts/AnalyticsContext.tsx",
+          "issue": "7 synchronous JSON operations",
+          "impact": "MEDIUM - May block main thread and increase FID",
+          "solution": "Consider using web workers or async processing"
+        },
+        {
+          "file": "src/contexts/BusinessConfigurationContext.tsx",
+          "issue": "6 synchronous JSON operations",
+          "impact": "MEDIUM - May block main thread and increase FID",
+          "solution": "Consider using web workers or async processing"
+        },
+        {
+          "file": "src/contexts/EmailMarketingContext.tsx",
+          "issue": "4 synchronous JSON operations",
+          "impact": "MEDIUM - May block main thread and increase FID",
+          "solution": "Consider using web workers or async processing"
+        },
+        {
+          "file": "src/contexts/SocialMediaContext.tsx",
+          "issue": "3 synchronous JSON operations",
+          "impact": "MEDIUM - May block main thread and increase FID",
+          "solution": "Consider using web workers or async processing"
+        },
+        {
+          "file": "src/contexts/UnifiedAIContext.tsx",
+          "issue": "5 synchronous JSON operations",
+          "impact": "MEDIUM - May block main thread and increase FID",
+          "solution": "Consider using web workers or async processing"
+        },
+        {
+          "file": "src/contexts/__tests__/AuthContext.test.tsx",
+          "issue": "7 synchronous JSON operations",
+          "impact": "MEDIUM - May block main thread and increase FID",
+          "solution": "Consider using web workers or async processing"
+        },
+        {
+          "file": "src/contexts/__tests__/SearchContext.test.tsx",
+          "issue": "3 synchronous JSON operations",
+          "impact": "MEDIUM - May block main thread and increase FID",
+          "solution": "Consider using web workers or async processing"
+        },
+        {
+          "file": "src/lib/api.ts",
+          "issue": "3 synchronous JSON operations",
+          "impact": "MEDIUM - May block main thread and increase FID",
+          "solution": "Consider using web workers or async processing"
+        },
+        {
+          "file": "src/lib/platforms/linkedInAds.ts",
+          "issue": "3 synchronous JSON operations",
+          "impact": "MEDIUM - May block main thread and increase FID",
+          "solution": "Consider using web workers or async processing"
+        },
+        {
+          "file": "src/lib/platforms/metaAds.ts",
+          "issue": "4 synchronous JSON operations",
+          "impact": "MEDIUM - May block main thread and increase FID",
+          "solution": "Consider using web workers or async processing"
+        },
+        {
+          "file": "src/lib/syncApi.ts",
+          "issue": "3 synchronous JSON operations",
+          "impact": "MEDIUM - May block main thread and increase FID",
+          "solution": "Consider using web workers or async processing"
+        },
+        {
+          "file": "src/modules/crm/services/crm-api.service.ts",
+          "issue": "22 synchronous JSON operations",
+          "impact": "MEDIUM - May block main thread and increase FID",
+          "solution": "Consider using web workers or async processing"
+        }
+      ],
+      "unoptimizedEventHandlers": []
+    },
+    "cls": {
+      "imagesWithoutDimensions": [
+        {
+          "file": "src/components/Navbar.tsx",
+          "issue": "1 images without explicit dimensions",
+          "impact": "HIGH - Causes layout shifts when images load",
+          "solution": "Add explicit width/height or aspect-ratio CSS"
+        }
+      ],
+      "dynamicContentInsertion": [],
+      "webFontsIssues": []
+    }
+  },
+  "interactivePerformanceAnalysis": {},
+  "optimizationOpportunities": [
+    {
+      "priority": "CRITICAL",
+      "category": "Context Provider Optimization",
+      "issue": "Context providers creating new objects on every render",
+      "impact": "Causes all consumer components to re-render unnecessarily",
+      "solution": "Implement useMemo for context value objects",
+      "effort": "1-2 hours",
+      "estimatedImprovement": "30-50% reduction in re-renders for context consumers"
+    },
+    {
+      "priority": "HIGH",
+      "category": "Component Memoization",
+      "issue": "Components missing React.memo wrapping",
+      "impact": "Unnecessary re-renders when parent components update",
+      "solution": "Wrap functional components with React.memo",
+      "effort": "2-3 hours",
+      "estimatedImprovement": "20-40% reduction in component re-renders"
+    },
+    {
+      "priority": "HIGH",
+      "category": "Image Optimization",
+      "issue": "Regular img tags instead of Next.js optimized images",
+      "impact": "Slower loading and poor LCP scores",
+      "solution": "Replace img tags with next/image components",
+      "effort": "1-2 hours",
+      "estimatedImprovement": "25-40% improvement in LCP scores"
+    },
+    {
+      "priority": "HIGH",
+      "category": "Memory Leak Prevention",
+      "issue": "Event listeners and timers without cleanup",
+      "impact": "Memory usage increases over time, performance degrades",
+      "solution": "Add proper cleanup in useEffect return functions",
+      "effort": "1-2 hours",
+      "estimatedImprovement": "Prevents memory leaks and performance degradation"
+    },
+    {
+      "priority": "MEDIUM",
+      "category": "Inline Object Props",
+      "issue": "Objects created inline in JSX props",
+      "impact": "New objects created on every render causing child re-renders",
+      "solution": "Move objects outside render or use useMemo",
+      "effort": "2-4 hours",
+      "estimatedImprovement": "15-30% reduction in unnecessary re-renders"
+    },
+    {
+      "priority": "MEDIUM",
+      "category": "Heavy Computations",
+      "issue": "Array processing without memoization",
+      "impact": "Repeated calculations on every render",
+      "solution": "Wrap expensive operations in useMemo",
+      "effort": "1-3 hours",
+      "estimatedImprovement": "10-25% reduction in CPU usage during renders"
+    }
+  ]
+}

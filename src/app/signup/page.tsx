@@ -54,7 +54,7 @@ export default function SignupPage() {
     const result = await signup(formData.email, formData.password, formData.name);
     
     if (result.success) {
-      router.push('/dashboard');
+      router.push('/onboarding?step=welcome');
     } else {
       setError(result.error || 'Signup failed');
     }

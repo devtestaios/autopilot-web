@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useState, useCallback, ReactNode } from 'react';
+import { createContext, useContext, useState, useCallback, useMemo, ReactNode } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   CheckCircle, 
@@ -176,8 +176,15 @@ export function ToastProvider({ children }: ToastProviderProps) {
     setToasts(prev => prev.filter(toast => toast.id !== id));
   }, []);
 
+  // ✅ PERFORMANCE: useMemo prevents context consumers from unnecessary re-renders
+  const contextValue = useMemo(() => ({ 
+    toasts, 
+    showToast, 
+    hideToast 
+  }), [toasts, showToast, hideToast]);
+
   return (
-    <ToastContext.Provider value={{ toasts, showToast, hideToast }}>
+    <ToastContext.Provider value={contextValue}>
       {children}
       
       {/* Toast Container */}
