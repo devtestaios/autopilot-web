@@ -1,6 +1,6 @@
 /**
  * Email Marketing Platform - Main Interface
- * Comprehensive email marketing management with campaigns, automation, and analytics
+ * Enhanced with mature dashboard architecture from /dashboard
  */
 
 'use client';
@@ -11,7 +11,24 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import NavigationTabs from '@/components/NavigationTabs';
+
+// UPGRADED: Using mature dashboard components
+import dynamic from 'next/dynamic';
+const UnifiedSidebar = dynamic(() => import('@/components/UnifiedSidebar'), {
+  ssr: false,
+  loading: () => <div className="fixed left-0 top-0 h-screen w-56 bg-gray-900 animate-pulse" />
+});
+
+const AdvancedNavigation = dynamic(() => import('@/components/ui/AdvancedNavigation'), {
+  ssr: false,
+  loading: () => <div className="h-16 bg-white dark:bg-gray-900 border-b animate-pulse" />
+});
+
+const AIControlChat = dynamic(() => import('@/components/AIControlChat'), {
+  ssr: false,
+  loading: () => null
+});
+
 import { 
   Mail, 
   Users, 
@@ -607,6 +624,7 @@ const AutomationsOverview: React.FC = () => {
 
 export default function EmailMarketingPlatform() {
   const [activeTab, setActiveTab] = useState<'overview' | 'campaigns' | 'contacts' | 'automations' | 'analytics' | 'templates'>('overview');
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const { 
     campaigns, 
     contacts, 
@@ -797,26 +815,30 @@ export default function EmailMarketingPlatform() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <NavigationTabs />
+      {/* UPGRADED: Using mature dashboard architecture */}
+      <UnifiedSidebar onCollapseChange={setSidebarCollapsed} />
       
-      <div className="container mx-auto px-4 py-8">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-        >
-          {/* Header */}
-          <div className="mb-8">
-            <div className="flex items-center gap-3 mb-2">
-              <div className="p-2 bg-blue-600 rounded-lg">
-                <Mail className="h-6 w-6 text-white" />
+      <div className={`transition-all duration-300 ${sidebarCollapsed ? 'ml-14' : 'ml-56'}`}>
+        <AdvancedNavigation sidebarCollapsed={sidebarCollapsed} />
+        
+        <div className="container mx-auto px-4 py-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            {/* Header */}
+            <div className="mb-8">
+              <div className="flex items-center gap-3 mb-2">
+                <div className="p-2 bg-blue-600 rounded-lg">
+                  <Mail className="h-6 w-6 text-white" />
               </div>
               <div>
                 <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
                   Email Marketing
                 </h1>
                 <p className="text-gray-600 dark:text-gray-400">
-                  Create, send, and analyze email campaigns with AI-powered optimization
+                  Create, send, and analyze email campaigns • AI-Enhanced Dashboard
                 </p>
               </div>
             </div>
@@ -866,7 +888,11 @@ export default function EmailMarketingPlatform() {
             {renderTabContent()}
           </motion.div>
         </motion.div>
+        </div>
       </div>
+      
+      {/* UPGRADED: AI Control Chat with email marketing-specific capabilities */}
+      <AIControlChat />
     </div>
   );
 }

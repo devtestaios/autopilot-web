@@ -12,6 +12,26 @@ import uvicorn
 from typing import List, Dict, Any, Optional
 from datetime import datetime, timezone, timedelta
 import logging
+from pydantic import BaseModel
+
+# Supabase Integration
+try:
+    from supabase import create_client, Client
+    SUPABASE_URL = os.getenv('SUPABASE_URL')
+    SUPABASE_ANON_KEY = os.getenv('SUPABASE_ANON_KEY')
+    
+    if SUPABASE_URL and SUPABASE_ANON_KEY:
+        supabase: Client = create_client(SUPABASE_URL, SUPABASE_ANON_KEY)
+        SUPABASE_AVAILABLE = True
+        logger.info("✅ Supabase client initialized successfully")
+    else:
+        logger.warning("❌ Supabase environment variables not found")
+        supabase = None
+        SUPABASE_AVAILABLE = False
+except ImportError as e:
+    logger.warning(f"Supabase not available: {e}")
+    supabase = None
+    SUPABASE_AVAILABLE = False
 
 # Import AI Services
 from ai_endpoints import ai_router
@@ -952,6 +972,1391 @@ def test_google_ads_api():
             "error": str(e),
             "error_type": type(e).__name__
         }
+
+# ===============================================
+# SOCIAL MEDIA API INTEGRATION - DATABASE ENDPOINTS
+# ===============================================
+
+# Pydantic Models for Social Media
+class SocialMediaAccountIn(BaseModel):
+    platform: str  # 'facebook', 'instagram', 'twitter', 'linkedin', 'tiktok', 'youtube', 'pinterest'
+    username: str
+    display_name: Optional[str] = None
+    avatar_url: Optional[str] = None
+    access_token: Optional[str] = None
+    refresh_token: Optional[str] = None
+    permissions: List[str] = []
+    status: str = 'active'
+    followers: int = 0
+
+class SocialMediaPostIn(BaseModel):
+    content: str
+    media_urls: List[str] = []
+    target_accounts: List[str] = []  # Account IDs to post to
+    scheduled_date: Optional[datetime] = None
+    post_type: str = 'text'  # 'text', 'image', 'video', 'carousel', 'story', 'reel'
+    hashtags: List[str] = []
+    mentions: List[str] = []
+    location: Optional[Dict[str, Any]] = None
+    campaign_id: Optional[str] = None
+    approval_status: str = 'pending'
+
+class SocialMediaCommentIn(BaseModel):
+    post_id: str
+    platform: str
+    platform_comment_id: str
+    author_username: str
+    author_name: Optional[str] = None
+    comment_text: str
+    parent_comment_id: Optional[str] = None
+    sentiment_score: Optional[float] = None
+
+# Social Media API Endpoints
+@app.get("/api/social-media/accounts")
+async def get_social_accounts():
+    """Get all connected social media accounts"""
+    if not SUPABASE_AVAILABLE or not supabase:
+        raise HTTPException(status_code=503, detail="Database not available")
+    
+    try:
+        response = supabase.table("social_media_accounts").select("*").order("created_at", desc=True).execute()
+        return {
+            "accounts": response.data or [],
+            "count": len(response.data or []),
+            "timestamp": datetime.now(timezone.utc).isoformat()
+        }
+    except Exception as e:
+        logger.error(f"Error fetching social media accounts: {e}")
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+
+@app.post("/api/social-media/accounts")
+async def create_social_account(account: SocialMediaAccountIn):
+    """Connect a new social media account"""
+    if not SUPABASE_AVAILABLE or not supabase:
+        raise HTTPException(status_code=503, detail="Database not available")
+    
+    try:
+        account_data = account.dict()
+        account_data["created_at"] = datetime.now(timezone.utc).isoformat()
+        
+        response = supabase.table("social_media_accounts").insert(account_data).execute()
+        return response.data[0] if response.data else {}
+    except Exception as e:
+        logger.error(f"Error creating social media account: {e}")
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+
+@app.get("/api/social-media/accounts/{account_id}")
+async def get_social_account(account_id: str):
+    """Get a specific social media account"""
+    if not SUPABASE_AVAILABLE or not supabase:
+        raise HTTPException(status_code=503, detail="Database not available")
+    
+    try:
+        response = supabase.table("social_media_accounts").select("*").eq("id", account_id).execute()
+        if not response.data:
+            raise HTTPException(status_code=404, detail="Social media account not found")
+        return response.data[0]
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error fetching social media account: {e}")
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+
+@app.put("/api/social-media/accounts/{account_id}")
+async def update_social_account(account_id: str, account: SocialMediaAccountIn):
+    """Update a social media account"""
+    if not SUPABASE_AVAILABLE or not supabase:
+        raise HTTPException(status_code=503, detail="Database not available")
+    
+    try:
+        account_data = account.dict()
+        account_data["updated_at"] = datetime.now(timezone.utc).isoformat()
+        
+        response = supabase.table("social_media_accounts").update(account_data).eq("id", account_id).execute()
+        if not response.data:
+            raise HTTPException(status_code=404, detail="Social media account not found")
+        return response.data[0]
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error updating social media account: {e}")
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+
+@app.delete("/api/social-media/accounts/{account_id}")
+async def delete_social_account(account_id: str):
+    """Disconnect a social media account"""
+    if not SUPABASE_AVAILABLE or not supabase:
+        raise HTTPException(status_code=503, detail="Database not available")
+    
+    try:
+        response = supabase.table("social_media_accounts").delete().eq("id", account_id).execute()
+        return {"success": True, "message": "Social media account disconnected"}
+    except Exception as e:
+        logger.error(f"Error deleting social media account: {e}")
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+
+@app.get("/api/social-media/posts")
+async def get_social_posts(limit: int = 50, platform: Optional[str] = None, status: Optional[str] = None):
+    """Get social media posts with filtering and pagination"""
+    if not SUPABASE_AVAILABLE or not supabase:
+        raise HTTPException(status_code=503, detail="Database not available")
+    
+    try:
+        query = supabase.table("social_media_posts").select("*")
+        
+        if platform:
+            # Join with accounts to filter by platform
+            query = supabase.table("social_media_posts").select("*, social_media_accounts!inner(platform)").eq("social_media_accounts.platform", platform)
+        
+        if status:
+            query = query.eq("status", status)
+            
+        response = query.order("created_at", desc=True).limit(limit).execute()
+        return {
+            "posts": response.data or [],
+            "count": len(response.data or []),
+            "filters": {"platform": platform, "status": status, "limit": limit}
+        }
+    except Exception as e:
+        logger.error(f"Error fetching social media posts: {e}")
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+
+@app.post("/api/social-media/posts")
+async def create_social_post(post: SocialMediaPostIn):
+    """Create and optionally schedule a social media post"""
+    if not SUPABASE_AVAILABLE or not supabase:
+        raise HTTPException(status_code=503, detail="Database not available")
+    
+    try:
+        post_data = post.dict()
+        post_data["created_at"] = datetime.now(timezone.utc).isoformat()
+        
+        # Set initial engagement metrics
+        post_data["engagement"] = {
+            "likes": 0,
+            "shares": 0,
+            "comments": 0,
+            "reach": 0,
+            "impressions": 0
+        }
+        
+        response = supabase.table("social_media_posts").insert(post_data).execute()
+        return response.data[0] if response.data else {}
+    except Exception as e:
+        logger.error(f"Error creating social media post: {e}")
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+
+@app.get("/api/social-media/posts/{post_id}")
+async def get_social_post(post_id: str):
+    """Get a specific social media post with account details"""
+    if not SUPABASE_AVAILABLE or not supabase:
+        raise HTTPException(status_code=503, detail="Database not available")
+    
+    try:
+        response = supabase.table("social_media_posts")\
+            .select("*, social_media_accounts(platform, username, display_name)")\
+            .eq("id", post_id)\
+            .execute()
+        
+        if not response.data:
+            raise HTTPException(status_code=404, detail="Social media post not found")
+        return response.data[0]
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error fetching social media post: {e}")
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+
+@app.put("/api/social-media/posts/{post_id}")
+async def update_social_post(post_id: str, post: SocialMediaPostIn):
+    """Update a social media post"""
+    if not SUPABASE_AVAILABLE or not supabase:
+        raise HTTPException(status_code=503, detail="Database not available")
+    
+    try:
+        post_data = post.dict()
+        post_data["updated_at"] = datetime.now(timezone.utc).isoformat()
+        
+        response = supabase.table("social_media_posts").update(post_data).eq("id", post_id).execute()
+        if not response.data:
+            raise HTTPException(status_code=404, detail="Social media post not found")
+        return response.data[0]
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error updating social media post: {e}")
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+
+@app.delete("/api/social-media/posts/{post_id}")
+async def delete_social_post(post_id: str):
+    """Delete a social media post"""
+    if not SUPABASE_AVAILABLE or not supabase:
+        raise HTTPException(status_code=503, detail="Database not available")
+    
+    try:
+        response = supabase.table("social_media_posts").delete().eq("id", post_id).execute()
+        return {"success": True, "message": "Social media post deleted"}
+    except Exception as e:
+        logger.error(f"Error deleting social media post: {e}")
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+
+@app.get("/api/social-media/posts/{post_id}/comments")
+async def get_post_comments(post_id: str, limit: int = 50):
+    """Get comments for a specific social media post"""
+    if not SUPABASE_AVAILABLE or not supabase:
+        raise HTTPException(status_code=503, detail="Database not available")
+    
+    try:
+        response = supabase.table("social_media_comments")\
+            .select("*")\
+            .eq("post_id", post_id)\
+            .order("created_at", desc=True)\
+            .limit(limit)\
+            .execute()
+        
+        return {
+            "comments": response.data or [],
+            "count": len(response.data or []),
+            "post_id": post_id
+        }
+    except Exception as e:
+        logger.error(f"Error fetching post comments: {e}")
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+
+@app.post("/api/social-media/comments")
+async def create_comment(comment: SocialMediaCommentIn):
+    """Add a comment to the database (from platform sync)"""
+    if not SUPABASE_AVAILABLE or not supabase:
+        raise HTTPException(status_code=503, detail="Database not available")
+    
+    try:
+        comment_data = comment.dict()
+        comment_data["created_at"] = datetime.now(timezone.utc).isoformat()
+        
+        response = supabase.table("social_media_comments").insert(comment_data).execute()
+        return response.data[0] if response.data else {}
+    except Exception as e:
+        logger.error(f"Error creating comment: {e}")
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+
+@app.get("/api/social-media/analytics/overview")
+async def get_social_media_overview():
+    """Get social media analytics overview"""
+    if not SUPABASE_AVAILABLE or not supabase:
+        raise HTTPException(status_code=503, detail="Database not available")
+    
+    try:
+        # Get accounts count by platform
+        accounts_response = supabase.table("social_media_accounts")\
+            .select("platform")\
+            .eq("is_connected", True)\
+            .execute()
+        
+        # Get posts count and engagement
+        posts_response = supabase.table("social_media_posts")\
+            .select("status, engagement")\
+            .execute()
+        
+        # Calculate metrics
+        platforms = {}
+        for account in accounts_response.data or []:
+            platform = account["platform"]
+            platforms[platform] = platforms.get(platform, 0) + 1
+        
+        total_posts = len(posts_response.data or [])
+        total_engagement = 0
+        posts_by_status = {}
+        
+        for post in posts_response.data or []:
+            status = post.get("status", "unknown")
+            posts_by_status[status] = posts_by_status.get(status, 0) + 1
+            
+            engagement = post.get("engagement", {})
+            if isinstance(engagement, dict):
+                total_engagement += sum([
+                    engagement.get("likes", 0),
+                    engagement.get("shares", 0),
+                    engagement.get("comments", 0)
+                ])
+        
+        return {
+            "connected_platforms": platforms,
+            "total_accounts": len(accounts_response.data or []),
+            "total_posts": total_posts,
+            "posts_by_status": posts_by_status,
+            "total_engagement": total_engagement,
+            "timestamp": datetime.now(timezone.utc).isoformat()
+        }
+    except Exception as e:
+        logger.error(f"Error fetching social media overview: {e}")
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+
+# ===============================================
+# EMAIL MARKETING API ENDPOINTS
+# ===============================================
+
+# Email Campaign Management
+@app.get("/api/email-marketing/campaigns")
+def get_email_campaigns(limit: int = 50):
+    """Get all email campaigns with pagination"""
+    if not supabase:
+        raise HTTPException(status_code=500, detail="Supabase not configured")
+    
+    try:
+        res = supabase.table("email_campaigns").select("*").order("created_at", desc=True).limit(limit).execute()
+        return {"campaigns": res.data or []}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch email campaigns: {str(e)}")
+
+@app.post("/api/email-marketing/campaigns")
+def create_email_campaign(campaign: dict):
+    """Create a new email campaign"""
+    if not supabase:
+        raise HTTPException(status_code=500, detail="Supabase not configured")
+    
+    try:
+        res = supabase.table("email_campaigns").insert(campaign).execute()
+        if res.data:
+            return res.data[0]
+        raise HTTPException(status_code=400, detail="Failed to create campaign")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to create email campaign: {str(e)}")
+
+@app.get("/api/email-marketing/campaigns/{campaign_id}")
+def get_email_campaign(campaign_id: str):
+    """Get a specific email campaign by ID"""
+    if not supabase:
+        raise HTTPException(status_code=500, detail="Supabase not configured")
+    
+    try:
+        res = supabase.table("email_campaigns").select("*").eq("id", campaign_id).execute()
+        if res.data:
+            return res.data[0]
+        raise HTTPException(status_code=404, detail="Campaign not found")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch email campaign: {str(e)}")
+
+@app.put("/api/email-marketing/campaigns/{campaign_id}")
+def update_email_campaign(campaign_id: str, campaign: dict):
+    """Update an existing email campaign"""
+    if not supabase:
+        raise HTTPException(status_code=500, detail="Supabase not configured")
+    
+    try:
+        campaign["updated_at"] = datetime.now(timezone.utc).isoformat()
+        res = supabase.table("email_campaigns").update(campaign).eq("id", campaign_id).execute()
+        if res.data:
+            return res.data[0]
+        raise HTTPException(status_code=404, detail="Campaign not found")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to update email campaign: {str(e)}")
+
+@app.delete("/api/email-marketing/campaigns/{campaign_id}")
+def delete_email_campaign(campaign_id: str):
+    """Delete an email campaign"""
+    if not supabase:
+        raise HTTPException(status_code=500, detail="Supabase not configured")
+    
+    try:
+        res = supabase.table("email_campaigns").delete().eq("id", campaign_id).execute()
+        return {"success": True, "message": "Campaign deleted successfully"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to delete email campaign: {str(e)}")
+
+# Email Subscriber Management
+@app.get("/api/email-marketing/subscribers")
+def get_email_subscribers(limit: int = 100, status: str = None):
+    """Get email subscribers with optional status filter"""
+    if not supabase:
+        raise HTTPException(status_code=500, detail="Supabase not configured")
+    
+    try:
+        query = supabase.table("email_subscribers").select("*").order("created_at", desc=True).limit(limit)
+        if status:
+            query = query.eq("status", status)
+        
+        res = query.execute()
+        return {"subscribers": res.data or []}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch email subscribers: {str(e)}")
+
+@app.post("/api/email-marketing/subscribers")
+def create_email_subscriber(subscriber: dict):
+    """Add a new email subscriber"""
+    if not supabase:
+        raise HTTPException(status_code=500, detail="Supabase not configured")
+    
+    try:
+        res = supabase.table("email_subscribers").insert(subscriber).execute()
+        if res.data:
+            return res.data[0]
+        raise HTTPException(status_code=400, detail="Failed to create subscriber")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to create email subscriber: {str(e)}")
+
+@app.get("/api/email-marketing/subscribers/{subscriber_id}")
+def get_email_subscriber(subscriber_id: str):
+    """Get a specific email subscriber by ID"""
+    if not supabase:
+        raise HTTPException(status_code=500, detail="Supabase not configured")
+    
+    try:
+        res = supabase.table("email_subscribers").select("*").eq("id", subscriber_id).execute()
+        if res.data:
+            return res.data[0]
+        raise HTTPException(status_code=404, detail="Subscriber not found")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch email subscriber: {str(e)}")
+
+@app.put("/api/email-marketing/subscribers/{subscriber_id}")
+def update_email_subscriber(subscriber_id: str, subscriber: dict):
+    """Update an existing email subscriber"""
+    if not supabase:
+        raise HTTPException(status_code=500, detail="Supabase not configured")
+    
+    try:
+        subscriber["updated_at"] = datetime.now(timezone.utc).isoformat()
+        res = supabase.table("email_subscribers").update(subscriber).eq("id", subscriber_id).execute()
+        if res.data:
+            return res.data[0]
+        raise HTTPException(status_code=404, detail="Subscriber not found")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to update email subscriber: {str(e)}")
+
+@app.delete("/api/email-marketing/subscribers/{subscriber_id}")
+def delete_email_subscriber(subscriber_id: str):
+    """Delete an email subscriber"""
+    if not supabase:
+        raise HTTPException(status_code=500, detail="Supabase not configured")
+    
+    try:
+        res = supabase.table("email_subscribers").delete().eq("id", subscriber_id).execute()
+        return {"success": True, "message": "Subscriber deleted successfully"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to delete email subscriber: {str(e)}")
+
+# Email Template Management
+@app.get("/api/email-marketing/templates")
+def get_email_templates(limit: int = 50):
+    """Get all email templates"""
+    if not supabase:
+        raise HTTPException(status_code=500, detail="Supabase not configured")
+    
+    try:
+        res = supabase.table("email_templates").select("*").order("created_at", desc=True).limit(limit).execute()
+        return {"templates": res.data or []}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch email templates: {str(e)}")
+
+@app.post("/api/email-marketing/templates")
+def create_email_template(template: dict):
+    """Create a new email template"""
+    if not supabase:
+        raise HTTPException(status_code=500, detail="Supabase not configured")
+    
+    try:
+        res = supabase.table("email_templates").insert(template).execute()
+        if res.data:
+            return res.data[0]
+        raise HTTPException(status_code=400, detail="Failed to create template")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to create email template: {str(e)}")
+
+@app.get("/api/email-marketing/templates/{template_id}")
+def get_email_template(template_id: str):
+    """Get a specific email template by ID"""
+    if not supabase:
+        raise HTTPException(status_code=500, detail="Supabase not configured")
+    
+    try:
+        res = supabase.table("email_templates").select("*").eq("id", template_id).execute()
+        if res.data:
+            return res.data[0]
+        raise HTTPException(status_code=404, detail="Template not found")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch email template: {str(e)}")
+
+@app.put("/api/email-marketing/templates/{template_id}")
+def update_email_template(template_id: str, template: dict):
+    """Update an existing email template"""
+    if not supabase:
+        raise HTTPException(status_code=500, detail="Supabase not configured")
+    
+    try:
+        template["updated_at"] = datetime.now(timezone.utc).isoformat()
+        res = supabase.table("email_templates").update(template).eq("id", template_id).execute()
+        if res.data:
+            return res.data[0]
+        raise HTTPException(status_code=404, detail="Template not found")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to update email template: {str(e)}")
+
+@app.delete("/api/email-marketing/templates/{template_id}")
+def delete_email_template(template_id: str):
+    """Delete an email template"""
+    if not supabase:
+        raise HTTPException(status_code=500, detail="Supabase not configured")
+    
+    try:
+        res = supabase.table("email_templates").delete().eq("id", template_id).execute()
+        return {"success": True, "message": "Template deleted successfully"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to delete email template: {str(e)}")
+
+# Email Analytics
+@app.get("/api/email-marketing/analytics/overview")
+def get_email_marketing_overview():
+    """Get comprehensive email marketing analytics overview"""
+    if not supabase:
+        raise HTTPException(status_code=500, detail="Supabase not configured")
+    
+    try:
+        # Get campaign statistics
+        campaigns_res = supabase.table("email_campaigns").select("status, sent_count, open_rate, click_rate").execute()
+        campaigns_by_status = {}
+        total_sent = 0
+        total_opens = 0
+        total_clicks = 0
+        
+        for campaign in campaigns_res.data or []:
+            status = campaign.get("status", "unknown")
+            campaigns_by_status[status] = campaigns_by_status.get(status, 0) + 1
+            
+            sent = campaign.get("sent_count", 0)
+            open_rate = campaign.get("open_rate", 0)
+            click_rate = campaign.get("click_rate", 0)
+            
+            total_sent += sent
+            total_opens += int(sent * (open_rate / 100) if open_rate else 0)
+            total_clicks += int(sent * (click_rate / 100) if click_rate else 0)
+        
+        # Get subscriber statistics
+        subscribers_res = supabase.table("email_subscribers").select("status").execute()
+        subscribers_by_status = {}
+        for subscriber in subscribers_res.data or []:
+            status = subscriber.get("status", "unknown")
+            subscribers_by_status[status] = subscribers_by_status.get(status, 0) + 1
+        
+        # Calculate average rates
+        avg_open_rate = (total_opens / total_sent * 100) if total_sent > 0 else 0
+        avg_click_rate = (total_clicks / total_sent * 100) if total_sent > 0 else 0
+        
+        return {
+            "total_campaigns": len(campaigns_res.data or []),
+            "campaigns_by_status": campaigns_by_status,
+            "total_subscribers": len(subscribers_res.data or []),
+            "subscribers_by_status": subscribers_by_status,
+            "total_emails_sent": total_sent,
+            "average_open_rate": round(avg_open_rate, 2),
+            "average_click_rate": round(avg_click_rate, 2),
+            "timestamp": datetime.now(timezone.utc).isoformat()
+        }
+    
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch email marketing overview: {str(e)}")
+
+@app.get("/api/email-marketing/campaigns/{campaign_id}/analytics")
+def get_campaign_analytics(campaign_id: str):
+    """Get detailed analytics for a specific email campaign"""
+    if not supabase:
+        raise HTTPException(status_code=500, detail="Supabase not configured")
+    
+    try:
+        # Get campaign details
+        campaign_res = supabase.table("email_campaigns").select("*").eq("id", campaign_id).execute()
+        if not campaign_res.data:
+            raise HTTPException(status_code=404, detail="Campaign not found")
+        
+        campaign = campaign_res.data[0]
+        
+        # Get related analytics data (you might have separate analytics tables)
+        # For now, return the campaign data with calculated metrics
+        return {
+            "campaign_id": campaign_id,
+            "campaign_name": campaign.get("name", ""),
+            "status": campaign.get("status", ""),
+            "sent_count": campaign.get("sent_count", 0),
+            "delivered_count": campaign.get("delivered_count", 0),
+            "opened_count": campaign.get("opened_count", 0),
+            "clicked_count": campaign.get("clicked_count", 0),
+            "unsubscribed_count": campaign.get("unsubscribed_count", 0),
+            "bounced_count": campaign.get("bounced_count", 0),
+            "open_rate": campaign.get("open_rate", 0),
+            "click_rate": campaign.get("click_rate", 0),
+            "unsubscribe_rate": campaign.get("unsubscribe_rate", 0),
+            "bounce_rate": campaign.get("bounce_rate", 0),
+            "created_at": campaign.get("created_at", ""),
+            "sent_at": campaign.get("sent_at", "")
+        }
+    
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch campaign analytics: {str(e)}")
+
+# ===============================================
+# COLLABORATION API ENDPOINTS
+# ===============================================
+
+# Team Member Management
+@app.get("/api/collaboration/team-members")
+def get_team_members(limit: int = 100):
+    """Get all team members with their roles and status"""
+    if not supabase:
+        raise HTTPException(status_code=500, detail="Supabase not configured")
+    
+    try:
+        res = supabase.table("team_members").select("*").order("created_at", desc=True).limit(limit).execute()
+        return {"team_members": res.data or []}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch team members: {str(e)}")
+
+@app.post("/api/collaboration/team-members")
+def create_team_member(member: dict):
+    """Add a new team member"""
+    if not supabase:
+        raise HTTPException(status_code=500, detail="Supabase not configured")
+    
+    try:
+        res = supabase.table("team_members").insert(member).execute()
+        if res.data:
+            return res.data[0]
+        raise HTTPException(status_code=400, detail="Failed to create team member")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to create team member: {str(e)}")
+
+@app.get("/api/collaboration/team-members/{member_id}")
+def get_team_member(member_id: str):
+    """Get a specific team member by ID"""
+    if not supabase:
+        raise HTTPException(status_code=500, detail="Supabase not configured")
+    
+    try:
+        res = supabase.table("team_members").select("*").eq("id", member_id).execute()
+        if res.data:
+            return res.data[0]
+        raise HTTPException(status_code=404, detail="Team member not found")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch team member: {str(e)}")
+
+@app.put("/api/collaboration/team-members/{member_id}")
+def update_team_member(member_id: str, member: dict):
+    """Update an existing team member"""
+    if not supabase:
+        raise HTTPException(status_code=500, detail="Supabase not configured")
+    
+    try:
+        member["updated_at"] = datetime.now(timezone.utc).isoformat()
+        res = supabase.table("team_members").update(member).eq("id", member_id).execute()
+        if res.data:
+            return res.data[0]
+        raise HTTPException(status_code=404, detail="Team member not found")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to update team member: {str(e)}")
+
+@app.delete("/api/collaboration/team-members/{member_id}")
+def delete_team_member(member_id: str):
+    """Remove a team member"""
+    if not supabase:
+        raise HTTPException(status_code=500, detail="Supabase not configured")
+    
+    try:
+        res = supabase.table("team_members").delete().eq("id", member_id).execute()
+        return {"success": True, "message": "Team member removed successfully"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to delete team member: {str(e)}")
+
+# Real-time Activity Feed
+@app.get("/api/collaboration/activities")
+def get_activities(limit: int = 50, user_id: str = None, activity_type: str = None):
+    """Get recent team activities with optional filters"""
+    if not supabase:
+        raise HTTPException(status_code=500, detail="Supabase not configured")
+    
+    try:
+        query = supabase.table("team_activities").select("*").order("created_at", desc=True).limit(limit)
+        
+        if user_id:
+            query = query.eq("user_id", user_id)
+        if activity_type:
+            query = query.eq("activity_type", activity_type)
+        
+        res = query.execute()
+        return {"activities": res.data or []}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch activities: {str(e)}")
+
+@app.post("/api/collaboration/activities")
+def create_activity(activity: dict):
+    """Log a new team activity"""
+    if not supabase:
+        raise HTTPException(status_code=500, detail="Supabase not configured")
+    
+    try:
+        res = supabase.table("team_activities").insert(activity).execute()
+        if res.data:
+            return res.data[0]
+        raise HTTPException(status_code=400, detail="Failed to create activity")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to create activity: {str(e)}")
+
+@app.get("/api/collaboration/activities/{activity_id}")
+def get_activity(activity_id: str):
+    """Get a specific activity by ID"""
+    if not supabase:
+        raise HTTPException(status_code=500, detail="Supabase not configured")
+    
+    try:
+        res = supabase.table("team_activities").select("*").eq("id", activity_id).execute()
+        if res.data:
+            return res.data[0]
+        raise HTTPException(status_code=404, detail="Activity not found")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch activity: {str(e)}")
+
+# User Presence and Status
+@app.get("/api/collaboration/presence")
+def get_user_presence():
+    """Get current online status of all team members"""
+    if not supabase:
+        raise HTTPException(status_code=500, detail="Supabase not configured")
+    
+    try:
+        # Get presence data from last 5 minutes (active users)
+        cutoff_time = (datetime.now(timezone.utc) - timedelta(minutes=5)).isoformat()
+        res = supabase.table("user_presence").select("*").gte("last_seen", cutoff_time).execute()
+        return {"presence": res.data or []}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch user presence: {str(e)}")
+
+@app.post("/api/collaboration/presence")
+def update_user_presence(presence: dict):
+    """Update user presence status"""
+    if not supabase:
+        raise HTTPException(status_code=500, detail="Supabase not configured")
+    
+    try:
+        presence["last_seen"] = datetime.now(timezone.utc).isoformat()
+        res = supabase.table("user_presence").upsert(presence).execute()
+        if res.data:
+            return res.data[0]
+        raise HTTPException(status_code=400, detail="Failed to update presence")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to update user presence: {str(e)}")
+
+@app.get("/api/collaboration/presence/{user_id}")
+def get_user_presence_status(user_id: str):
+    """Get presence status for a specific user"""
+    if not supabase:
+        raise HTTPException(status_code=500, detail="Supabase not configured")
+    
+    try:
+        res = supabase.table("user_presence").select("*").eq("user_id", user_id).execute()
+        if res.data:
+            return res.data[0]
+        raise HTTPException(status_code=404, detail="User presence not found")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch user presence: {str(e)}")
+
+# Project Management
+@app.get("/api/collaboration/projects")
+def get_projects(limit: int = 50, status: str = None):
+    """Get all collaborative projects with optional status filter"""
+    if not supabase:
+        raise HTTPException(status_code=500, detail="Supabase not configured")
+    
+    try:
+        query = supabase.table("collaboration_projects").select("*").order("created_at", desc=True).limit(limit)
+        if status:
+            query = query.eq("status", status)
+        
+        res = query.execute()
+        return {"projects": res.data or []}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch projects: {str(e)}")
+
+@app.post("/api/collaboration/projects")
+def create_project(project: dict):
+    """Create a new collaborative project"""
+    if not supabase:
+        raise HTTPException(status_code=500, detail="Supabase not configured")
+    
+    try:
+        res = supabase.table("collaboration_projects").insert(project).execute()
+        if res.data:
+            return res.data[0]
+        raise HTTPException(status_code=400, detail="Failed to create project")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to create project: {str(e)}")
+
+@app.get("/api/collaboration/projects/{project_id}")
+def get_project(project_id: str):
+    """Get a specific project by ID"""
+    if not supabase:
+        raise HTTPException(status_code=500, detail="Supabase not configured")
+    
+    try:
+        res = supabase.table("collaboration_projects").select("*").eq("id", project_id).execute()
+        if res.data:
+            return res.data[0]
+        raise HTTPException(status_code=404, detail="Project not found")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch project: {str(e)}")
+
+@app.put("/api/collaboration/projects/{project_id}")
+def update_project(project_id: str, project: dict):
+    """Update an existing project"""
+    if not supabase:
+        raise HTTPException(status_code=500, detail="Supabase not configured")
+    
+    try:
+        project["updated_at"] = datetime.now(timezone.utc).isoformat()
+        res = supabase.table("collaboration_projects").update(project).eq("id", project_id).execute()
+        if res.data:
+            return res.data[0]
+        raise HTTPException(status_code=404, detail="Project not found")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to update project: {str(e)}")
+
+@app.delete("/api/collaboration/projects/{project_id}")
+def delete_project(project_id: str):
+    """Delete a collaborative project"""
+    if not supabase:
+        raise HTTPException(status_code=500, detail="Supabase not configured")
+    
+    try:
+        res = supabase.table("collaboration_projects").delete().eq("id", project_id).execute()
+        return {"success": True, "message": "Project deleted successfully"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to delete project: {str(e)}")
+
+# Live Cursors and Real-time Collaboration
+@app.get("/api/collaboration/cursors")
+def get_live_cursors(page: str = None):
+    """Get current cursor positions for real-time collaboration"""
+    if not supabase:
+        raise HTTPException(status_code=500, detail="Supabase not configured")
+    
+    try:
+        # Get cursor data from last 30 seconds (active cursors)
+        cutoff_time = (datetime.now(timezone.utc) - timedelta(seconds=30)).isoformat()
+        query = supabase.table("live_cursors").select("*").gte("updated_at", cutoff_time)
+        
+        if page:
+            query = query.eq("page", page)
+        
+        res = query.execute()
+        return {"cursors": res.data or []}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch live cursors: {str(e)}")
+
+@app.post("/api/collaboration/cursors")
+def update_cursor_position(cursor: dict):
+    """Update user cursor position for real-time collaboration"""
+    if not supabase:
+        raise HTTPException(status_code=500, detail="Supabase not configured")
+    
+    try:
+        cursor["updated_at"] = datetime.now(timezone.utc).isoformat()
+        res = supabase.table("live_cursors").upsert(cursor).execute()
+        if res.data:
+            return res.data[0]
+        raise HTTPException(status_code=400, detail="Failed to update cursor")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to update cursor position: {str(e)}")
+
+# Notifications and Alerts
+@app.get("/api/collaboration/notifications")
+def get_notifications(user_id: str, limit: int = 50, unread_only: bool = False):
+    """Get notifications for a specific user"""
+    if not supabase:
+        raise HTTPException(status_code=500, detail="Supabase not configured")
+    
+    try:
+        query = supabase.table("notifications").select("*").eq("user_id", user_id).order("created_at", desc=True).limit(limit)
+        
+        if unread_only:
+            query = query.eq("read", False)
+        
+        res = query.execute()
+        return {"notifications": res.data or []}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch notifications: {str(e)}")
+
+@app.post("/api/collaboration/notifications")
+def create_notification(notification: dict):
+    """Create a new notification"""
+    if not supabase:
+        raise HTTPException(status_code=500, detail="Supabase not configured")
+    
+    try:
+        res = supabase.table("notifications").insert(notification).execute()
+        if res.data:
+            return res.data[0]
+        raise HTTPException(status_code=400, detail="Failed to create notification")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to create notification: {str(e)}")
+
+@app.put("/api/collaboration/notifications/{notification_id}/read")
+def mark_notification_read(notification_id: str):
+    """Mark a notification as read"""
+    if not supabase:
+        raise HTTPException(status_code=500, detail="Supabase not configured")
+    
+    try:
+        res = supabase.table("notifications").update({"read": True, "read_at": datetime.now(timezone.utc).isoformat()}).eq("id", notification_id).execute()
+        if res.data:
+            return res.data[0]
+        raise HTTPException(status_code=404, detail="Notification not found")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to mark notification as read: {str(e)}")
+
+# Collaboration Analytics
+@app.get("/api/collaboration/analytics/overview")
+def get_collaboration_overview():
+    """Get comprehensive collaboration analytics overview"""
+    if not supabase:
+        raise HTTPException(status_code=500, detail="Supabase not configured")
+    
+    try:
+        # Get team member statistics
+        members_res = supabase.table("team_members").select("role, status").execute()
+        members_by_role = {}
+        members_by_status = {}
+        
+        for member in members_res.data or []:
+            role = member.get("role", "unknown")
+            status = member.get("status", "unknown")
+            members_by_role[role] = members_by_role.get(role, 0) + 1
+            members_by_status[status] = members_by_status.get(status, 0) + 1
+        
+        # Get project statistics
+        projects_res = supabase.table("collaboration_projects").select("status").execute()
+        projects_by_status = {}
+        for project in projects_res.data or []:
+            status = project.get("status", "unknown")
+            projects_by_status[status] = projects_by_status.get(status, 0) + 1
+        
+        # Get activity statistics (last 24 hours)
+        yesterday = (datetime.now(timezone.utc) - timedelta(days=1)).isoformat()
+        activities_res = supabase.table("team_activities").select("activity_type").gte("created_at", yesterday).execute()
+        activities_by_type = {}
+        for activity in activities_res.data or []:
+            activity_type = activity.get("activity_type", "unknown")
+            activities_by_type[activity_type] = activities_by_type.get(activity_type, 0) + 1
+        
+        # Get online users (last 5 minutes)
+        online_cutoff = (datetime.now(timezone.utc) - timedelta(minutes=5)).isoformat()
+        online_res = supabase.table("user_presence").select("user_id").gte("last_seen", online_cutoff).execute()
+        
+        return {
+            "total_team_members": len(members_res.data or []),
+            "members_by_role": members_by_role,
+            "members_by_status": members_by_status,
+            "total_projects": len(projects_res.data or []),
+            "projects_by_status": projects_by_status,
+            "online_users": len(online_res.data or []),
+            "activities_last_24h": len(activities_res.data or []),
+            "activities_by_type": activities_by_type,
+            "timestamp": datetime.now(timezone.utc).isoformat()
+        }
+    
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch collaboration overview: {str(e)}")
+
+# ===============================================
+# INTEGRATIONS API ENDPOINTS
+# ===============================================
+
+# Integration App Management
+@app.get("/api/integrations/apps")
+def get_integration_apps(category: str = None, limit: int = 100):
+    """Get all available integration apps with optional category filter"""
+    if not supabase:
+        raise HTTPException(status_code=500, detail="Supabase not configured")
+    
+    try:
+        query = supabase.table("integration_apps").select("*").order("name").limit(limit)
+        if category:
+            query = query.eq("category", category)
+        
+        res = query.execute()
+        return {"apps": res.data or []}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch integration apps: {str(e)}")
+
+@app.post("/api/integrations/apps")
+def create_integration_app(app: dict):
+    """Create a new integration app"""
+    if not supabase:
+        raise HTTPException(status_code=500, detail="Supabase not configured")
+    
+    try:
+        res = supabase.table("integration_apps").insert(app).execute()
+        if res.data:
+            return res.data[0]
+        raise HTTPException(status_code=400, detail="Failed to create integration app")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to create integration app: {str(e)}")
+
+@app.get("/api/integrations/apps/{app_id}")
+def get_integration_app(app_id: str):
+    """Get a specific integration app by ID"""
+    if not supabase:
+        raise HTTPException(status_code=500, detail="Supabase not configured")
+    
+    try:
+        res = supabase.table("integration_apps").select("*").eq("id", app_id).execute()
+        if res.data:
+            return res.data[0]
+        raise HTTPException(status_code=404, detail="Integration app not found")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch integration app: {str(e)}")
+
+@app.put("/api/integrations/apps/{app_id}")
+def update_integration_app(app_id: str, app: dict):
+    """Update an existing integration app"""
+    if not supabase:
+        raise HTTPException(status_code=500, detail="Supabase not configured")
+    
+    try:
+        app["updated_at"] = datetime.now(timezone.utc).isoformat()
+        res = supabase.table("integration_apps").update(app).eq("id", app_id).execute()
+        if res.data:
+            return res.data[0]
+        raise HTTPException(status_code=404, detail="Integration app not found")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to update integration app: {str(e)}")
+
+@app.delete("/api/integrations/apps/{app_id}")
+def delete_integration_app(app_id: str):
+    """Delete an integration app"""
+    if not supabase:
+        raise HTTPException(status_code=500, detail="Supabase not configured")
+    
+    try:
+        res = supabase.table("integration_apps").delete().eq("id", app_id).execute()
+        return {"success": True, "message": "Integration app deleted successfully"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to delete integration app: {str(e)}")
+
+# User Integration Management
+@app.get("/api/integrations/user-integrations")
+def get_user_integrations(user_id: str = None, limit: int = 100):
+    """Get user's installed integrations"""
+    if not supabase:
+        raise HTTPException(status_code=500, detail="Supabase not configured")
+    
+    try:
+        query = supabase.table("user_integrations").select("*").order("created_at", desc=True).limit(limit)
+        if user_id:
+            query = query.eq("user_id", user_id)
+        
+        res = query.execute()
+        return {"integrations": res.data or []}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch user integrations: {str(e)}")
+
+@app.post("/api/integrations/user-integrations")
+def install_integration(integration: dict):
+    """Install an integration for a user"""
+    if not supabase:
+        raise HTTPException(status_code=500, detail="Supabase not configured")
+    
+    try:
+        res = supabase.table("user_integrations").insert(integration).execute()
+        if res.data:
+            return res.data[0]
+        raise HTTPException(status_code=400, detail="Failed to install integration")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to install integration: {str(e)}")
+
+@app.get("/api/integrations/user-integrations/{integration_id}")
+def get_user_integration(integration_id: str):
+    """Get a specific user integration by ID"""
+    if not supabase:
+        raise HTTPException(status_code=500, detail="Supabase not configured")
+    
+    try:
+        res = supabase.table("user_integrations").select("*").eq("id", integration_id).execute()
+        if res.data:
+            return res.data[0]
+        raise HTTPException(status_code=404, detail="User integration not found")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch user integration: {str(e)}")
+
+@app.put("/api/integrations/user-integrations/{integration_id}")
+def update_user_integration(integration_id: str, integration: dict):
+    """Update an existing user integration"""
+    if not supabase:
+        raise HTTPException(status_code=500, detail="Supabase not configured")
+    
+    try:
+        integration["updated_at"] = datetime.now(timezone.utc).isoformat()
+        res = supabase.table("user_integrations").update(integration).eq("id", integration_id).execute()
+        if res.data:
+            return res.data[0]
+        raise HTTPException(status_code=404, detail="User integration not found")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to update user integration: {str(e)}")
+
+@app.delete("/api/integrations/user-integrations/{integration_id}")
+def uninstall_integration(integration_id: str):
+    """Uninstall a user integration"""
+    if not supabase:
+        raise HTTPException(status_code=500, detail="Supabase not configured")
+    
+    try:
+        res = supabase.table("user_integrations").delete().eq("id", integration_id).execute()
+        return {"success": True, "message": "Integration uninstalled successfully"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to uninstall integration: {str(e)}")
+
+# API Key Management
+@app.get("/api/integrations/api-keys")
+def get_api_keys(user_id: str = None, service: str = None):
+    """Get API keys for integrations"""
+    if not supabase:
+        raise HTTPException(status_code=500, detail="Supabase not configured")
+    
+    try:
+        query = supabase.table("integration_api_keys").select("id, user_id, service, name, status, created_at, updated_at")
+        if user_id:
+            query = query.eq("user_id", user_id)
+        if service:
+            query = query.eq("service", service)
+        
+        res = query.execute()
+        return {"api_keys": res.data or []}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch API keys: {str(e)}")
+
+@app.post("/api/integrations/api-keys")
+def create_api_key(api_key: dict):
+    """Create a new API key for integration"""
+    if not supabase:
+        raise HTTPException(status_code=500, detail="Supabase not configured")
+    
+    try:
+        res = supabase.table("integration_api_keys").insert(api_key).execute()
+        if res.data:
+            # Return without exposing the actual key value
+            result = res.data[0].copy()
+            if "key_value" in result:
+                del result["key_value"]
+            return result
+        raise HTTPException(status_code=400, detail="Failed to create API key")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to create API key: {str(e)}")
+
+@app.get("/api/integrations/api-keys/{key_id}")
+def get_api_key(key_id: str):
+    """Get a specific API key by ID (without exposing the key value)"""
+    if not supabase:
+        raise HTTPException(status_code=500, detail="Supabase not configured")
+    
+    try:
+        res = supabase.table("integration_api_keys").select("id, user_id, service, name, status, created_at, updated_at").eq("id", key_id).execute()
+        if res.data:
+            return res.data[0]
+        raise HTTPException(status_code=404, detail="API key not found")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch API key: {str(e)}")
+
+@app.put("/api/integrations/api-keys/{key_id}")
+def update_api_key(key_id: str, api_key: dict):
+    """Update an existing API key"""
+    if not supabase:
+        raise HTTPException(status_code=500, detail="Supabase not configured")
+    
+    try:
+        api_key["updated_at"] = datetime.now(timezone.utc).isoformat()
+        res = supabase.table("integration_api_keys").update(api_key).eq("id", key_id).execute()
+        if res.data:
+            # Return without exposing the actual key value
+            result = res.data[0].copy()
+            if "key_value" in result:
+                del result["key_value"]
+            return result
+        raise HTTPException(status_code=404, detail="API key not found")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to update API key: {str(e)}")
+
+@app.delete("/api/integrations/api-keys/{key_id}")
+def delete_api_key(key_id: str):
+    """Delete an API key"""
+    if not supabase:
+        raise HTTPException(status_code=500, detail="Supabase not configured")
+    
+    try:
+        res = supabase.table("integration_api_keys").delete().eq("id", key_id).execute()
+        return {"success": True, "message": "API key deleted successfully"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to delete API key: {str(e)}")
+
+# Integration Usage Analytics
+@app.get("/api/integrations/usage")
+def get_integration_usage(user_id: str = None, integration_id: str = None, days: int = 30):
+    """Get integration usage analytics"""
+    if not supabase:
+        raise HTTPException(status_code=500, detail="Supabase not configured")
+    
+    try:
+        # Get usage from last N days
+        start_date = (datetime.now(timezone.utc) - timedelta(days=days)).isoformat()
+        query = supabase.table("integration_usage").select("*").gte("created_at", start_date).order("created_at", desc=True)
+        
+        if user_id:
+            query = query.eq("user_id", user_id)
+        if integration_id:
+            query = query.eq("integration_id", integration_id)
+        
+        res = query.execute()
+        return {"usage": res.data or []}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch integration usage: {str(e)}")
+
+@app.post("/api/integrations/usage")
+def log_integration_usage(usage: dict):
+    """Log integration usage event"""
+    if not supabase:
+        raise HTTPException(status_code=500, detail="Supabase not configured")
+    
+    try:
+        res = supabase.table("integration_usage").insert(usage).execute()
+        if res.data:
+            return res.data[0]
+        raise HTTPException(status_code=400, detail="Failed to log usage")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to log integration usage: {str(e)}")
+
+# Integration Categories
+@app.get("/api/integrations/categories")
+def get_integration_categories():
+    """Get all integration categories with app counts"""
+    if not supabase:
+        raise HTTPException(status_code=500, detail="Supabase not configured")
+    
+    try:
+        # Get category distribution
+        apps_res = supabase.table("integration_apps").select("category").execute()
+        categories = {}
+        for app in apps_res.data or []:
+            category = app.get("category", "Other")
+            categories[category] = categories.get(category, 0) + 1
+        
+        return {"categories": categories}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch integration categories: {str(e)}")
+
+# Marketplace Revenue Analytics
+@app.get("/api/integrations/revenue")
+def get_marketplace_revenue(days: int = 30):
+    """Get marketplace revenue analytics"""
+    if not supabase:
+        raise HTTPException(status_code=500, detail="Supabase not configured")
+    
+    try:
+        # Get revenue from last N days
+        start_date = (datetime.now(timezone.utc) - timedelta(days=days)).isoformat()
+        
+        # Get installations (revenue events)
+        installations_res = supabase.table("user_integrations").select("app_id, created_at").gte("created_at", start_date).execute()
+        
+        # Get app pricing information
+        apps_res = supabase.table("integration_apps").select("id, name, price, commission_rate").execute()
+        app_pricing = {app["id"]: app for app in apps_res.data or []}
+        
+        total_revenue = 0
+        total_commission = 0
+        installations_by_app = {}
+        
+        for installation in installations_res.data or []:
+            app_id = installation.get("app_id")
+            if app_id in app_pricing:
+                app = app_pricing[app_id]
+                price = app.get("price", 0)
+                commission_rate = app.get("commission_rate", 0.3)  # Default 30%
+                
+                total_revenue += price
+                total_commission += price * commission_rate
+                
+                app_name = app.get("name", "Unknown")
+                if app_name not in installations_by_app:
+                    installations_by_app[app_name] = {"count": 0, "revenue": 0}
+                installations_by_app[app_name]["count"] += 1
+                installations_by_app[app_name]["revenue"] += price
+        
+        return {
+            "total_revenue": round(total_revenue, 2),
+            "total_commission": round(total_commission, 2),
+            "total_installations": len(installations_res.data or []),
+            "installations_by_app": installations_by_app,
+            "period_days": days,
+            "timestamp": datetime.now(timezone.utc).isoformat()
+        }
+    
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch marketplace revenue: {str(e)}")
+
+# Integration Analytics Overview
+@app.get("/api/integrations/analytics/overview")
+def get_integrations_overview():
+    """Get comprehensive integrations analytics overview"""
+    if not supabase:
+        raise HTTPException(status_code=500, detail="Supabase not configured")
+    
+    try:
+        # Get app statistics
+        apps_res = supabase.table("integration_apps").select("category, status").execute()
+        apps_by_category = {}
+        apps_by_status = {}
+        
+        for app in apps_res.data or []:
+            category = app.get("category", "Other")
+            status = app.get("status", "unknown")
+            apps_by_category[category] = apps_by_category.get(category, 0) + 1
+            apps_by_status[status] = apps_by_status.get(status, 0) + 1
+        
+        # Get user integration statistics
+        user_integrations_res = supabase.table("user_integrations").select("status").execute()
+        integrations_by_status = {}
+        for integration in user_integrations_res.data or []:
+            status = integration.get("status", "unknown")
+            integrations_by_status[status] = integrations_by_status.get(status, 0) + 1
+        
+        # Get API key statistics
+        api_keys_res = supabase.table("integration_api_keys").select("service, status").execute()
+        keys_by_service = {}
+        keys_by_status = {}
+        for key in api_keys_res.data or []:
+            service = key.get("service", "unknown")
+            status = key.get("status", "unknown")
+            keys_by_service[service] = keys_by_service.get(service, 0) + 1
+            keys_by_status[status] = keys_by_status.get(status, 0) + 1
+        
+        # Get usage statistics (last 24 hours)
+        yesterday = (datetime.now(timezone.utc) - timedelta(days=1)).isoformat()
+        usage_res = supabase.table("integration_usage").select("action").gte("created_at", yesterday).execute()
+        usage_by_action = {}
+        for usage in usage_res.data or []:
+            action = usage.get("action", "unknown")
+            usage_by_action[action] = usage_by_action.get(action, 0) + 1
+        
+        return {
+            "total_apps": len(apps_res.data or []),
+            "apps_by_category": apps_by_category,
+            "apps_by_status": apps_by_status,
+            "total_user_integrations": len(user_integrations_res.data or []),
+            "integrations_by_status": integrations_by_status,
+            "total_api_keys": len(api_keys_res.data or []),
+            "keys_by_service": keys_by_service,
+            "keys_by_status": keys_by_status,
+            "usage_last_24h": len(usage_res.data or []),
+            "usage_by_action": usage_by_action,
+            "timestamp": datetime.now(timezone.utc).isoformat()
+        }
+    
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch integrations overview: {str(e)}")
 
 # Development server
 if __name__ == "__main__":

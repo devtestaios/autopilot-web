@@ -19,7 +19,23 @@ import {
   BarChart3
 } from 'lucide-react';
 
-import NavigationTabs from '@/components/NavigationTabs';
+// UPGRADED: Using mature dashboard components
+import dynamic from 'next/dynamic';
+const UnifiedSidebar = dynamic(() => import('@/components/UnifiedSidebar'), {
+  ssr: false,
+  loading: () => <div className="fixed left-0 top-0 h-screen w-56 bg-gray-900 animate-pulse" />
+});
+
+const AdvancedNavigation = dynamic(() => import('@/components/ui/AdvancedNavigation'), {
+  ssr: false,
+  loading: () => <div className="h-16 bg-white dark:bg-gray-900 border-b animate-pulse" />
+});
+
+const AIControlChat = dynamic(() => import('@/components/AIControlChat'), {
+  ssr: false,
+  loading: () => null
+});
+
 import { useSocialMedia } from '@/contexts/SocialMediaContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -162,6 +178,7 @@ export default function SocialMediaPlatform() {
   const [activeTab, setActiveTab] = useState('overview');
   const [searchQuery, setSearchQuery] = useState('');
   const [showComposer, setShowComposer] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   // Calculate metrics from current data
   const metrics = useMemo(() => {
@@ -195,10 +212,16 @@ export default function SocialMediaPlatform() {
   if (loading.accounts) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-        <NavigationTabs />
-        <div className="container mx-auto px-4 py-8">
-          <div className="flex items-center justify-center h-64">
-            <LoadingSpinner size="lg" />
+        {/* UPGRADED: Using mature dashboard architecture */}
+        <UnifiedSidebar onCollapseChange={setSidebarCollapsed} />
+        
+        <div className={`transition-all duration-300 ${sidebarCollapsed ? 'ml-14' : 'ml-56'}`}>
+          <AdvancedNavigation sidebarCollapsed={sidebarCollapsed} />
+          
+          <div className="container mx-auto px-4 py-8">
+            <div className="flex items-center justify-center h-64">
+              <LoadingSpinner size="lg" />
+            </div>
           </div>
         </div>
       </div>
@@ -207,24 +230,28 @@ export default function SocialMediaPlatform() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <NavigationTabs />
+      {/* UPGRADED: Using mature dashboard architecture */}
+      <UnifiedSidebar onCollapseChange={setSidebarCollapsed} />
       
-      {/* Header */}
-      <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
-        <div className="container mx-auto px-4 py-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="p-3 bg-gradient-to-r from-pink-500 to-purple-500 rounded-xl">
-                <Share2 className="w-8 h-8 text-white" />
-              </div>
-              <div>
-                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                  Social Media Management
-                </h1>
-                <p className="text-gray-600 dark:text-gray-400">
-                  Manage all your social media accounts from one unified platform
-                </p>
-              </div>
+      <div className={`transition-all duration-300 ${sidebarCollapsed ? 'ml-14' : 'ml-56'}`}>
+        <AdvancedNavigation sidebarCollapsed={sidebarCollapsed} />
+        
+        {/* Header */}
+        <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+          <div className="container mx-auto px-4 py-6">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="p-3 bg-gradient-to-r from-pink-500 to-purple-500 rounded-xl">
+                  <Share2 className="w-8 h-8 text-white" />
+                </div>
+                <div>
+                  <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+                    Social Media Management
+                  </h1>
+                  <p className="text-gray-600 dark:text-gray-400">
+                    Manage all your social media accounts • AI-Enhanced Dashboard
+                  </p>
+                </div>
             </div>
             
             <div className="flex items-center gap-4">
@@ -314,7 +341,7 @@ export default function SocialMediaPlatform() {
                       </p>
                     </div>
                     <Badge 
-                      variant={account.status === 'active' ? 'success' : 'warning'}
+                      variant={account.status === 'active' ? 'default' : 'secondary'}
                       className="ml-auto"
                     >
                       {account.status}
@@ -327,7 +354,7 @@ export default function SocialMediaPlatform() {
         )}
 
         {/* Main Content Tabs */}
-        <Tabs value={activeTab} onValueChange={setActiveTab}>
+        <Tabs defaultValue={activeTab}>
           <TabsList className="grid w-full grid-cols-4 lg:grid-cols-5">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="posts">Posts</TabsTrigger>
@@ -510,6 +537,10 @@ export default function SocialMediaPlatform() {
           </motion.div>
         )}
       </AnimatePresence>
+      </div>
+      
+      {/* UPGRADED: AI Control Chat with social media-specific capabilities */}
+      <AIControlChat />
     </div>
   );
 }

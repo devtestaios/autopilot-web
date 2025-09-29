@@ -49,11 +49,16 @@ function DashboardPageContent() {
   // Real-time dashboard data with 30-second refresh
   const { quickStats, overview, campaigns, loading, error, refresh, isStale, lastUpdated } = useDashboardData(30000);
 
-  // Navigation functions
+  // Cross-platform navigation functions
+  const navigateToMarketing = () => router.push('/marketing');
+  const navigateToSocialMedia = () => router.push('/social-media');
+  const navigateToEmailMarketing = () => router.push('/email-marketing');
+  const navigateToCollaboration = () => router.push('/collaboration');
+  const navigateToIntegrations = () => router.push('/integrations');
   const navigateToAnalytics = () => router.push('/analytics');
+  const navigateToAICenter = () => router.push('/ai-center');
   const navigateToCampaigns = () => router.push('/campaigns');
   const navigateToNewCampaign = () => router.push('/campaigns/new');
-  const navigateToAICenter = () => router.push('/ai-center');
 
   // Manual refresh functionality
   const handleManualRefresh = async () => {
@@ -344,6 +349,219 @@ function DashboardPageContent() {
                   </div>
                 </div>
               )}
+            </div>
+          </div>
+
+          {/* MASTER TERMINAL: Cross-Platform Control Center */}
+          <div className="bg-gradient-to-r from-teal-50 via-blue-50 to-purple-50 dark:from-teal-900/20 dark:via-blue-900/20 dark:to-purple-900/20 rounded-lg p-6 border border-teal-200 dark:border-teal-800">
+            <div className="flex items-center mb-6">
+              <Target className="w-6 h-6 text-teal-600 dark:text-teal-400 mr-3" />
+              <div>
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+                  Master Terminal Control Center
+                </h2>
+                <p className="text-gray-600 dark:text-gray-400 text-sm">
+                  Access all platforms with AI-enhanced dashboards and unified control
+                </p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {/* Marketing Command Center */}
+              <motion.div
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm hover:shadow-md transition-all cursor-pointer border border-orange-200 dark:border-orange-800"
+                onClick={navigateToMarketing}
+              >
+                <div className="flex items-center mb-3">
+                  <div className="p-2 bg-orange-100 dark:bg-orange-900/30 rounded-lg">
+                    <Target className="w-5 h-5 text-orange-600 dark:text-orange-400" />
+                  </div>
+                  <div className="ml-3">
+                    <h3 className="font-semibold text-gray-900 dark:text-white">Marketing Hub</h3>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">Unified campaigns</p>
+                  </div>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-xs text-orange-600 dark:text-orange-400 bg-orange-50 dark:bg-orange-900/30 px-2 py-1 rounded-full">
+                    AI Enhanced
+                  </span>
+                  <button className="text-orange-600 dark:text-orange-400 hover:text-orange-700 dark:hover:text-orange-300">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </button>
+                </div>
+              </motion.div>
+
+              {/* Social Media Dashboard */}
+              <motion.div
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm hover:shadow-md transition-all cursor-pointer border border-pink-200 dark:border-pink-800"
+                onClick={navigateToSocialMedia}
+              >
+                <div className="flex items-center mb-3">
+                  <div className="p-2 bg-pink-100 dark:bg-pink-900/30 rounded-lg">
+                    <Users className="w-5 h-5 text-pink-600 dark:text-pink-400" />
+                  </div>
+                  <div className="ml-3">
+                    <h3 className="font-semibold text-gray-900 dark:text-white">Social Media</h3>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">Multi-platform</p>
+                  </div>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-xs text-pink-600 dark:text-pink-400 bg-pink-50 dark:bg-pink-900/30 px-2 py-1 rounded-full">
+                    AI Enhanced
+                  </span>
+                  <button className="text-pink-600 dark:text-pink-400 hover:text-pink-700 dark:hover:text-pink-300">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </button>
+                </div>
+              </motion.div>
+
+              {/* Email Marketing Platform */}
+              <motion.div
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm hover:shadow-md transition-all cursor-pointer border border-blue-200 dark:border-blue-800"
+                onClick={navigateToEmailMarketing}
+              >
+                <div className="flex items-center mb-3">
+                  <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
+                    <TrendingUp className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                  </div>
+                  <div className="ml-3">
+                    <h3 className="font-semibold text-gray-900 dark:text-white">Email Marketing</h3>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">Campaign automation</p>
+                  </div>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-xs text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-2 py-1 rounded-full">
+                    AI Enhanced
+                  </span>
+                  <button className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </button>
+                </div>
+              </motion.div>
+
+              {/* Collaboration Hub */}
+              <motion.div
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm hover:shadow-md transition-all cursor-pointer border border-green-200 dark:border-green-800"
+                onClick={navigateToCollaboration}
+              >
+                <div className="flex items-center mb-3">
+                  <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-lg">
+                    <Users className="w-5 h-5 text-green-600 dark:text-green-400" />
+                  </div>
+                  <div className="ml-3">
+                    <h3 className="font-semibold text-gray-900 dark:text-white">Team Collaboration</h3>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">Real-time workspace</p>
+                  </div>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-xs text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/30 px-2 py-1 rounded-full">
+                    Ready for Connection
+                  </span>
+                  <button className="text-green-600 dark:text-green-400 hover:text-green-700 dark:hover:text-green-300">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </button>
+                </div>
+              </motion.div>
+
+              {/* Integrations Marketplace */}
+              <motion.div
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm hover:shadow-md transition-all cursor-pointer border border-purple-200 dark:border-purple-800"
+                onClick={navigateToIntegrations}
+              >
+                <div className="flex items-center mb-3">
+                  <div className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
+                    <Zap className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+                  </div>
+                  <div className="ml-3">
+                    <h3 className="font-semibold text-gray-900 dark:text-white">Integrations</h3>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">App marketplace</p>
+                  </div>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-xs text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-900/30 px-2 py-1 rounded-full">
+                    Ready for Connection
+                  </span>
+                  <button className="text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </button>
+                </div>
+              </motion.div>
+
+              {/* Master Terminal Analytics */}
+              <motion.div
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm hover:shadow-md transition-all cursor-pointer border border-teal-200 dark:border-teal-800"
+                onClick={navigateToAnalytics}
+              >
+                <div className="flex items-center mb-3">
+                  <div className="p-2 bg-teal-100 dark:bg-teal-900/30 rounded-lg">
+                    <BarChart3 className="w-5 h-5 text-teal-600 dark:text-teal-400" />
+                  </div>
+                  <div className="ml-3">
+                    <h3 className="font-semibold text-gray-900 dark:text-white">Cross-Platform Analytics</h3>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">Unified insights</p>
+                  </div>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-xs text-teal-600 dark:text-teal-400 bg-teal-50 dark:bg-teal-900/30 px-2 py-1 rounded-full">
+                    AI Powered
+                  </span>
+                  <button className="text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </button>
+                </div>
+              </motion.div>
+            </div>
+
+            {/* Master Terminal Quick Actions */}
+            <div className="mt-6 pt-6 border-t border-teal-200 dark:border-teal-800">
+              <div className="flex flex-wrap gap-3">
+                <button
+                  onClick={navigateToAICenter}
+                  className="flex items-center px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg hover:from-purple-700 hover:to-pink-700 transition-all text-sm font-medium"
+                >
+                  <Zap className="w-4 h-4 mr-2" />
+                  AI Control Center
+                </button>
+                <button
+                  onClick={navigateToAnalytics}
+                  className="flex items-center px-4 py-2 bg-gradient-to-r from-teal-600 to-cyan-600 text-white rounded-lg hover:from-teal-700 hover:to-cyan-700 transition-all text-sm font-medium"
+                >
+                  <BarChart3 className="w-4 h-4 mr-2" />
+                  Unified Analytics
+                </button>
+                <button
+                  onClick={handleManualRefresh}
+                  disabled={isRefreshing}
+                  className="flex items-center px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all text-sm font-medium disabled:opacity-50"
+                >
+                  <RefreshCw className={`w-4 h-4 mr-2 ${isRefreshing ? 'animate-spin' : ''}`} />
+                  Refresh All Data
+                </button>
+              </div>
             </div>
           </div>
         </main>

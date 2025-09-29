@@ -1,6 +1,6 @@
 /**
  * Marketing Command Center - Unified Marketing Dashboard
- * Consolidates campaigns, social media, email, and content into one interface
+ * Enhanced with mature dashboard architecture from /dashboard
  */
 
 'use client';
@@ -25,7 +25,23 @@ import {
   ArrowRight
 } from 'lucide-react';
 
-import NavigationTabs from '@/components/NavigationTabs';
+// UPGRADED: Using mature dashboard components
+import dynamic from 'next/dynamic';
+const UnifiedSidebar = dynamic(() => import('@/components/UnifiedSidebar'), {
+  ssr: false,
+  loading: () => <div className="fixed left-0 top-0 h-screen w-56 bg-gray-900 animate-pulse" />
+});
+
+const AdvancedNavigation = dynamic(() => import('@/components/ui/AdvancedNavigation'), {
+  ssr: false,
+  loading: () => <div className="h-16 bg-white dark:bg-gray-900 border-b animate-pulse" />
+});
+
+const AIControlChat = dynamic(() => import('@/components/AIControlChat'), {
+  ssr: false,
+  loading: () => null
+});
+
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -260,28 +276,34 @@ function CrossChannelInsights() {
 
 export default function MarketingCommandCenter() {
   const [activeView, setActiveView] = useState('overview');
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <NavigationTabs />
+      {/* UPGRADED: Using mature dashboard architecture */}
+      <UnifiedSidebar onCollapseChange={setSidebarCollapsed} />
       
-      <div className="container mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                Marketing Command Center
-              </h1>
-              <p className="text-gray-600 dark:text-gray-400 mt-1">
-                Unified marketing operations across all channels
-              </p>
-            </div>
-            <div className="flex items-center space-x-3">
-              <Button variant="outline" size="sm">
-                <Settings className="w-4 h-4 mr-2" />
-                Settings
-              </Button>
+      {/* UPGRADED: Advanced navigation with sidebar awareness */}
+      <div className={`transition-all duration-300 ${sidebarCollapsed ? 'ml-14' : 'ml-56'}`}>
+        <AdvancedNavigation sidebarCollapsed={sidebarCollapsed} />
+        
+        <div className="container mx-auto px-4 py-8">
+          {/* Header */}
+          <div className="mb-8">
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+                  Marketing Command Center
+                </h1>
+                <p className="text-gray-600 dark:text-gray-400 mt-1">
+                  Unified marketing operations across all channels • AI-Enhanced Dashboard
+                </p>
+              </div>
+              <div className="flex items-center space-x-3">
+                <Button variant="outline" size="sm">
+                  <Settings className="w-4 h-4 mr-2" />
+                  Settings
+                </Button>
               <Button size="sm">
                 <Plus className="w-4 h-4 mr-2" />
                 New Campaign
@@ -341,7 +363,11 @@ export default function MarketingCommandCenter() {
             </div>
           </TabsContent>
         </Tabs>
+        </div>
       </div>
+      
+      {/* UPGRADED: AI Control Chat with marketing-specific capabilities */}
+      <AIControlChat />
     </div>
   );
 }

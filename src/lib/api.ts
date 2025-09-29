@@ -2,7 +2,45 @@
 import type { 
   Campaign, 
   PerformanceSnapshot, 
-  CampaignFormData
+  CampaignFormData,
+  SocialMediaAccount,
+  SocialMediaPost,
+  SocialMediaComment,
+  SocialMediaAccountInput,
+  SocialMediaPostInput,
+  SocialMediaCommentInput,
+  EmailCampaign,
+  EmailSubscriber,
+  EmailTemplate,
+  EmailCampaignInput,
+  EmailSubscriberInput,
+  EmailTemplateInput,
+  EmailMarketingOverview,
+  EmailCampaignAnalytics,
+  TeamMember,
+  TeamActivity,
+  UserPresence,
+  CollaborationProject,
+  LiveCursor,
+  Notification,
+  TeamMemberInput,
+  TeamActivityInput,
+  UserPresenceInput,
+  CollaborationProjectInput,
+  LiveCursorInput,
+  NotificationInput,
+  CollaborationOverview,
+  IntegrationApp,
+  UserIntegration,
+  IntegrationApiKey,
+  IntegrationUsage,
+  IntegrationAppInput,
+  UserIntegrationInput,
+  IntegrationApiKeyInput,
+  IntegrationUsageInput,
+  IntegrationsOverview,
+  MarketplaceRevenue,
+  IntegrationCategories
 } from '@/types';
 import { environmentManager } from './environment';
 
@@ -395,6 +433,755 @@ export async function checkApiHealth() {
       health: `❌ Error: ${errorMessage}`,
       version: '❌ Unreachable',
       database: '❌ Unreachable'
+    };
+  }
+}
+
+// ===============================================
+// SOCIAL MEDIA API FUNCTIONS
+// ===============================================
+
+// Social Media Account Management
+export async function fetchSocialMediaAccounts(): Promise<SocialMediaAccount[]> {
+  try {
+    const response = await enhancedFetch(`${API_BASE}/api/social-media/accounts`);
+    const data = await response.json();
+    return data.accounts || [];
+  } catch (error) {
+    console.warn('Social Media Accounts API fetch failed:', error);
+    return [];
+  }
+}
+
+export async function createSocialMediaAccount(account: SocialMediaAccountInput): Promise<SocialMediaAccount> {
+  const response = await enhancedFetch(`${API_BASE}/api/social-media/accounts`, {
+    method: 'POST',
+    body: JSON.stringify(account)
+  });
+  return await response.json();
+}
+
+export async function fetchSocialMediaAccount(accountId: string): Promise<SocialMediaAccount> {
+  const response = await enhancedFetch(`${API_BASE}/api/social-media/accounts/${accountId}`);
+  return await response.json();
+}
+
+export async function updateSocialMediaAccount(accountId: string, account: SocialMediaAccountInput): Promise<SocialMediaAccount> {
+  const response = await enhancedFetch(`${API_BASE}/api/social-media/accounts/${accountId}`, {
+    method: 'PUT',
+    body: JSON.stringify(account)
+  });
+  return await response.json();
+}
+
+export async function deleteSocialMediaAccount(accountId: string): Promise<void> {
+  await enhancedFetch(`${API_BASE}/api/social-media/accounts/${accountId}`, {
+    method: 'DELETE'
+  });
+}
+
+// Social Media Post Management
+export async function fetchSocialMediaPosts(options?: {
+  limit?: number;
+  platform?: string;
+  status?: string;
+}): Promise<SocialMediaPost[]> {
+  try {
+    const params = new URLSearchParams();
+    if (options?.limit) params.append('limit', options.limit.toString());
+    if (options?.platform) params.append('platform', options.platform);
+    if (options?.status) params.append('status', options.status);
+    
+    const url = `${API_BASE}/api/social-media/posts${params.toString() ? `?${params.toString()}` : ''}`;
+    const response = await enhancedFetch(url);
+    const data = await response.json();
+    return data.posts || [];
+  } catch (error) {
+    console.warn('Social Media Posts API fetch failed:', error);
+    return [];
+  }
+}
+
+export async function createSocialMediaPost(post: SocialMediaPostInput): Promise<SocialMediaPost> {
+  const response = await enhancedFetch(`${API_BASE}/api/social-media/posts`, {
+    method: 'POST',
+    body: JSON.stringify(post)
+  });
+  return await response.json();
+}
+
+export async function fetchSocialMediaPost(postId: string): Promise<SocialMediaPost> {
+  const response = await enhancedFetch(`${API_BASE}/api/social-media/posts/${postId}`);
+  return await response.json();
+}
+
+export async function updateSocialMediaPost(postId: string, post: SocialMediaPostInput): Promise<SocialMediaPost> {
+  const response = await enhancedFetch(`${API_BASE}/api/social-media/posts/${postId}`, {
+    method: 'PUT',
+    body: JSON.stringify(post)
+  });
+  return await response.json();
+}
+
+export async function deleteSocialMediaPost(postId: string): Promise<void> {
+  await enhancedFetch(`${API_BASE}/api/social-media/posts/${postId}`, {
+    method: 'DELETE'
+  });
+}
+
+// Social Media Comments Management
+export async function fetchPostComments(postId: string, limit = 50): Promise<SocialMediaComment[]> {
+  try {
+    const response = await enhancedFetch(`${API_BASE}/api/social-media/posts/${postId}/comments?limit=${limit}`);
+    const data = await response.json();
+    return data.comments || [];
+  } catch (error) {
+    console.warn('Post Comments API fetch failed:', error);
+    return [];
+  }
+}
+
+export async function createSocialMediaComment(comment: SocialMediaCommentInput): Promise<SocialMediaComment> {
+  const response = await enhancedFetch(`${API_BASE}/api/social-media/comments`, {
+    method: 'POST',
+    body: JSON.stringify(comment)
+  });
+  return await response.json();
+}
+
+// Social Media Analytics
+export async function fetchSocialMediaOverview(): Promise<{
+  connected_platforms: Record<string, number>;
+  total_accounts: number;
+  total_posts: number;
+  posts_by_status: Record<string, number>;
+  total_engagement: number;
+  timestamp: string;
+}> {
+  try {
+    const response = await enhancedFetch(`${API_BASE}/api/social-media/analytics/overview`);
+    return await response.json();
+  } catch (error) {
+    console.warn('Social Media Overview API fetch failed:', error);
+    return {
+      connected_platforms: {},
+      total_accounts: 0,
+      total_posts: 0,
+      posts_by_status: {},
+      total_engagement: 0,
+      timestamp: new Date().toISOString()
+    };
+  }
+}
+
+// ===============================================
+// EMAIL MARKETING API FUNCTIONS
+// ===============================================
+
+// Email Campaign Management
+export async function fetchEmailCampaigns(limit = 50): Promise<EmailCampaign[]> {
+  try {
+    const response = await enhancedFetch(`${API_BASE}/api/email-marketing/campaigns?limit=${limit}`);
+    const data = await response.json();
+    return data.campaigns || [];
+  } catch (error) {
+    console.warn('Email Campaigns API fetch failed:', error);
+    return [];
+  }
+}
+
+export async function createEmailCampaign(campaign: EmailCampaignInput): Promise<EmailCampaign> {
+  const response = await enhancedFetch(`${API_BASE}/api/email-marketing/campaigns`, {
+    method: 'POST',
+    body: JSON.stringify(campaign)
+  });
+  return await response.json();
+}
+
+export async function fetchEmailCampaign(campaignId: string): Promise<EmailCampaign> {
+  const response = await enhancedFetch(`${API_BASE}/api/email-marketing/campaigns/${campaignId}`);
+  return await response.json();
+}
+
+export async function updateEmailCampaign(campaignId: string, campaign: EmailCampaignInput): Promise<EmailCampaign> {
+  const response = await enhancedFetch(`${API_BASE}/api/email-marketing/campaigns/${campaignId}`, {
+    method: 'PUT',
+    body: JSON.stringify(campaign)
+  });
+  return await response.json();
+}
+
+export async function deleteEmailCampaign(campaignId: string): Promise<void> {
+  await enhancedFetch(`${API_BASE}/api/email-marketing/campaigns/${campaignId}`, {
+    method: 'DELETE'
+  });
+}
+
+// Email Subscriber Management
+export async function fetchEmailSubscribers(options?: {
+  limit?: number;
+  status?: string;
+}): Promise<EmailSubscriber[]> {
+  try {
+    const params = new URLSearchParams();
+    if (options?.limit) params.append('limit', options.limit.toString());
+    if (options?.status) params.append('status', options.status);
+    
+    const url = `${API_BASE}/api/email-marketing/subscribers${params.toString() ? `?${params.toString()}` : ''}`;
+    const response = await enhancedFetch(url);
+    const data = await response.json();
+    return data.subscribers || [];
+  } catch (error) {
+    console.warn('Email Subscribers API fetch failed:', error);
+    return [];
+  }
+}
+
+export async function createEmailSubscriber(subscriber: EmailSubscriberInput): Promise<EmailSubscriber> {
+  const response = await enhancedFetch(`${API_BASE}/api/email-marketing/subscribers`, {
+    method: 'POST',
+    body: JSON.stringify(subscriber)
+  });
+  return await response.json();
+}
+
+export async function fetchEmailSubscriber(subscriberId: string): Promise<EmailSubscriber> {
+  const response = await enhancedFetch(`${API_BASE}/api/email-marketing/subscribers/${subscriberId}`);
+  return await response.json();
+}
+
+export async function updateEmailSubscriber(subscriberId: string, subscriber: EmailSubscriberInput): Promise<EmailSubscriber> {
+  const response = await enhancedFetch(`${API_BASE}/api/email-marketing/subscribers/${subscriberId}`, {
+    method: 'PUT',
+    body: JSON.stringify(subscriber)
+  });
+  return await response.json();
+}
+
+export async function deleteEmailSubscriber(subscriberId: string): Promise<void> {
+  await enhancedFetch(`${API_BASE}/api/email-marketing/subscribers/${subscriberId}`, {
+    method: 'DELETE'
+  });
+}
+
+// Email Template Management
+export async function fetchEmailTemplates(limit = 50): Promise<EmailTemplate[]> {
+  try {
+    const response = await enhancedFetch(`${API_BASE}/api/email-marketing/templates?limit=${limit}`);
+    const data = await response.json();
+    return data.templates || [];
+  } catch (error) {
+    console.warn('Email Templates API fetch failed:', error);
+    return [];
+  }
+}
+
+export async function createEmailTemplate(template: EmailTemplateInput): Promise<EmailTemplate> {
+  const response = await enhancedFetch(`${API_BASE}/api/email-marketing/templates`, {
+    method: 'POST',
+    body: JSON.stringify(template)
+  });
+  return await response.json();
+}
+
+export async function fetchEmailTemplate(templateId: string): Promise<EmailTemplate> {
+  const response = await enhancedFetch(`${API_BASE}/api/email-marketing/templates/${templateId}`);
+  return await response.json();
+}
+
+export async function updateEmailTemplate(templateId: string, template: EmailTemplateInput): Promise<EmailTemplate> {
+  const response = await enhancedFetch(`${API_BASE}/api/email-marketing/templates/${templateId}`, {
+    method: 'PUT',
+    body: JSON.stringify(template)
+  });
+  return await response.json();
+}
+
+export async function deleteEmailTemplate(templateId: string): Promise<void> {
+  await enhancedFetch(`${API_BASE}/api/email-marketing/templates/${templateId}`, {
+    method: 'DELETE'
+  });
+}
+
+// Email Marketing Analytics
+export async function fetchEmailMarketingOverview(): Promise<EmailMarketingOverview> {
+  try {
+    const response = await enhancedFetch(`${API_BASE}/api/email-marketing/analytics/overview`);
+    return await response.json();
+  } catch (error) {
+    console.warn('Email Marketing Overview API fetch failed:', error);
+    return {
+      total_campaigns: 0,
+      campaigns_by_status: {},
+      total_subscribers: 0,
+      subscribers_by_status: {},
+      total_emails_sent: 0,
+      average_open_rate: 0,
+      average_click_rate: 0,
+      timestamp: new Date().toISOString()
+    };
+  }
+}
+
+export async function fetchEmailCampaignAnalytics(campaignId: string): Promise<EmailCampaignAnalytics> {
+  const response = await enhancedFetch(`${API_BASE}/api/email-marketing/campaigns/${campaignId}/analytics`);
+  return await response.json();
+}
+
+// ===============================================
+// COLLABORATION API FUNCTIONS
+// ===============================================
+
+// Team Member Management
+export async function fetchTeamMembers(limit = 100): Promise<TeamMember[]> {
+  try {
+    const response = await enhancedFetch(`${API_BASE}/api/collaboration/team-members?limit=${limit}`);
+    const data = await response.json();
+    return data.team_members || [];
+  } catch (error) {
+    console.warn('Team Members API fetch failed:', error);
+    return [];
+  }
+}
+
+export async function createTeamMember(member: TeamMemberInput): Promise<TeamMember> {
+  const response = await enhancedFetch(`${API_BASE}/api/collaboration/team-members`, {
+    method: 'POST',
+    body: JSON.stringify(member)
+  });
+  return await response.json();
+}
+
+export async function fetchTeamMember(memberId: string): Promise<TeamMember> {
+  const response = await enhancedFetch(`${API_BASE}/api/collaboration/team-members/${memberId}`);
+  return await response.json();
+}
+
+export async function updateTeamMember(memberId: string, member: TeamMemberInput): Promise<TeamMember> {
+  const response = await enhancedFetch(`${API_BASE}/api/collaboration/team-members/${memberId}`, {
+    method: 'PUT',
+    body: JSON.stringify(member)
+  });
+  return await response.json();
+}
+
+export async function deleteTeamMember(memberId: string): Promise<void> {
+  await enhancedFetch(`${API_BASE}/api/collaboration/team-members/${memberId}`, {
+    method: 'DELETE'
+  });
+}
+
+// Team Activity Management
+export async function fetchTeamActivities(options?: {
+  limit?: number;
+  userId?: string;
+  activityType?: string;
+}): Promise<TeamActivity[]> {
+  try {
+    const params = new URLSearchParams();
+    if (options?.limit) params.append('limit', options.limit.toString());
+    if (options?.userId) params.append('user_id', options.userId);
+    if (options?.activityType) params.append('activity_type', options.activityType);
+    
+    const url = `${API_BASE}/api/collaboration/activities${params.toString() ? `?${params.toString()}` : ''}`;
+    const response = await enhancedFetch(url);
+    const data = await response.json();
+    return data.activities || [];
+  } catch (error) {
+    console.warn('Team Activities API fetch failed:', error);
+    return [];
+  }
+}
+
+export async function createTeamActivity(activity: TeamActivityInput): Promise<TeamActivity> {
+  const response = await enhancedFetch(`${API_BASE}/api/collaboration/activities`, {
+    method: 'POST',
+    body: JSON.stringify(activity)
+  });
+  return await response.json();
+}
+
+export async function fetchTeamActivity(activityId: string): Promise<TeamActivity> {
+  const response = await enhancedFetch(`${API_BASE}/api/collaboration/activities/${activityId}`);
+  return await response.json();
+}
+
+// User Presence Management
+export async function fetchUserPresence(): Promise<UserPresence[]> {
+  try {
+    const response = await enhancedFetch(`${API_BASE}/api/collaboration/presence`);
+    const data = await response.json();
+    return data.presence || [];
+  } catch (error) {
+    console.warn('User Presence API fetch failed:', error);
+    return [];
+  }
+}
+
+export async function updateUserPresence(presence: UserPresenceInput): Promise<UserPresence> {
+  const response = await enhancedFetch(`${API_BASE}/api/collaboration/presence`, {
+    method: 'POST',
+    body: JSON.stringify(presence)
+  });
+  return await response.json();
+}
+
+export async function fetchUserPresenceStatus(userId: string): Promise<UserPresence> {
+  const response = await enhancedFetch(`${API_BASE}/api/collaboration/presence/${userId}`);
+  return await response.json();
+}
+
+// Collaboration Project Management
+export async function fetchCollaborationProjects(options?: {
+  limit?: number;
+  status?: string;
+}): Promise<CollaborationProject[]> {
+  try {
+    const params = new URLSearchParams();
+    if (options?.limit) params.append('limit', options.limit.toString());
+    if (options?.status) params.append('status', options.status);
+    
+    const url = `${API_BASE}/api/collaboration/projects${params.toString() ? `?${params.toString()}` : ''}`;
+    const response = await enhancedFetch(url);
+    const data = await response.json();
+    return data.projects || [];
+  } catch (error) {
+    console.warn('Collaboration Projects API fetch failed:', error);
+    return [];
+  }
+}
+
+export async function createCollaborationProject(project: CollaborationProjectInput): Promise<CollaborationProject> {
+  const response = await enhancedFetch(`${API_BASE}/api/collaboration/projects`, {
+    method: 'POST',
+    body: JSON.stringify(project)
+  });
+  return await response.json();
+}
+
+export async function fetchCollaborationProject(projectId: string): Promise<CollaborationProject> {
+  const response = await enhancedFetch(`${API_BASE}/api/collaboration/projects/${projectId}`);
+  return await response.json();
+}
+
+export async function updateCollaborationProject(projectId: string, project: CollaborationProjectInput): Promise<CollaborationProject> {
+  const response = await enhancedFetch(`${API_BASE}/api/collaboration/projects/${projectId}`, {
+    method: 'PUT',
+    body: JSON.stringify(project)
+  });
+  return await response.json();
+}
+
+export async function deleteCollaborationProject(projectId: string): Promise<void> {
+  await enhancedFetch(`${API_BASE}/api/collaboration/projects/${projectId}`, {
+    method: 'DELETE'
+  });
+}
+
+// Live Cursor Management
+export async function fetchLiveCursors(page?: string): Promise<LiveCursor[]> {
+  try {
+    const params = new URLSearchParams();
+    if (page) params.append('page', page);
+    
+    const url = `${API_BASE}/api/collaboration/cursors${params.toString() ? `?${params.toString()}` : ''}`;
+    const response = await enhancedFetch(url);
+    const data = await response.json();
+    return data.cursors || [];
+  } catch (error) {
+    console.warn('Live Cursors API fetch failed:', error);
+    return [];
+  }
+}
+
+export async function updateCursorPosition(cursor: LiveCursorInput): Promise<LiveCursor> {
+  const response = await enhancedFetch(`${API_BASE}/api/collaboration/cursors`, {
+    method: 'POST',
+    body: JSON.stringify(cursor)
+  });
+  return await response.json();
+}
+
+// Notification Management
+export async function fetchNotifications(userId: string, options?: {
+  limit?: number;
+  unreadOnly?: boolean;
+}): Promise<Notification[]> {
+  try {
+    const params = new URLSearchParams();
+    params.append('user_id', userId);
+    if (options?.limit) params.append('limit', options.limit.toString());
+    if (options?.unreadOnly) params.append('unread_only', 'true');
+    
+    const url = `${API_BASE}/api/collaboration/notifications?${params.toString()}`;
+    const response = await enhancedFetch(url);
+    const data = await response.json();
+    return data.notifications || [];
+  } catch (error) {
+    console.warn('Notifications API fetch failed:', error);
+    return [];
+  }
+}
+
+export async function createNotification(notification: NotificationInput): Promise<Notification> {
+  const response = await enhancedFetch(`${API_BASE}/api/collaboration/notifications`, {
+    method: 'POST',
+    body: JSON.stringify(notification)
+  });
+  return await response.json();
+}
+
+export async function markNotificationAsRead(notificationId: string): Promise<Notification> {
+  const response = await enhancedFetch(`${API_BASE}/api/collaboration/notifications/${notificationId}/read`, {
+    method: 'PUT'
+  });
+  return await response.json();
+}
+
+// Collaboration Analytics
+export async function fetchCollaborationOverview(): Promise<CollaborationOverview> {
+  try {
+    const response = await enhancedFetch(`${API_BASE}/api/collaboration/analytics/overview`);
+    return await response.json();
+  } catch (error) {
+    console.warn('Collaboration Overview API fetch failed:', error);
+    return {
+      total_team_members: 0,
+      members_by_role: {},
+      members_by_status: {},
+      total_projects: 0,
+      projects_by_status: {},
+      online_users: 0,
+      activities_last_24h: 0,
+      activities_by_type: {},
+      timestamp: new Date().toISOString()
+    };
+  }
+}
+
+// ===============================================
+// INTEGRATIONS API FUNCTIONS
+// ===============================================
+
+// Integration App Management
+export async function fetchIntegrationApps(options?: {
+  category?: string;
+  limit?: number;
+}): Promise<IntegrationApp[]> {
+  try {
+    const params = new URLSearchParams();
+    if (options?.category) params.append('category', options.category);
+    if (options?.limit) params.append('limit', options.limit.toString());
+    
+    const url = `${API_BASE}/api/integrations/apps${params.toString() ? `?${params.toString()}` : ''}`;
+    const response = await enhancedFetch(url);
+    const data = await response.json();
+    return data.apps || [];
+  } catch (error) {
+    console.warn('Integration Apps API fetch failed:', error);
+    return [];
+  }
+}
+
+export async function createIntegrationApp(app: IntegrationAppInput): Promise<IntegrationApp> {
+  const response = await enhancedFetch(`${API_BASE}/api/integrations/apps`, {
+    method: 'POST',
+    body: JSON.stringify(app)
+  });
+  return await response.json();
+}
+
+export async function fetchIntegrationApp(appId: string): Promise<IntegrationApp> {
+  const response = await enhancedFetch(`${API_BASE}/api/integrations/apps/${appId}`);
+  return await response.json();
+}
+
+export async function updateIntegrationApp(appId: string, app: IntegrationAppInput): Promise<IntegrationApp> {
+  const response = await enhancedFetch(`${API_BASE}/api/integrations/apps/${appId}`, {
+    method: 'PUT',
+    body: JSON.stringify(app)
+  });
+  return await response.json();
+}
+
+export async function deleteIntegrationApp(appId: string): Promise<void> {
+  await enhancedFetch(`${API_BASE}/api/integrations/apps/${appId}`, {
+    method: 'DELETE'
+  });
+}
+
+// User Integration Management
+export async function fetchUserIntegrations(options?: {
+  userId?: string;
+  limit?: number;
+}): Promise<UserIntegration[]> {
+  try {
+    const params = new URLSearchParams();
+    if (options?.userId) params.append('user_id', options.userId);
+    if (options?.limit) params.append('limit', options.limit.toString());
+    
+    const url = `${API_BASE}/api/integrations/user-integrations${params.toString() ? `?${params.toString()}` : ''}`;
+    const response = await enhancedFetch(url);
+    const data = await response.json();
+    return data.integrations || [];
+  } catch (error) {
+    console.warn('User Integrations API fetch failed:', error);
+    return [];
+  }
+}
+
+export async function installIntegration(integration: UserIntegrationInput): Promise<UserIntegration> {
+  const response = await enhancedFetch(`${API_BASE}/api/integrations/user-integrations`, {
+    method: 'POST',
+    body: JSON.stringify(integration)
+  });
+  return await response.json();
+}
+
+export async function fetchUserIntegration(integrationId: string): Promise<UserIntegration> {
+  const response = await enhancedFetch(`${API_BASE}/api/integrations/user-integrations/${integrationId}`);
+  return await response.json();
+}
+
+export async function updateUserIntegration(integrationId: string, integration: UserIntegrationInput): Promise<UserIntegration> {
+  const response = await enhancedFetch(`${API_BASE}/api/integrations/user-integrations/${integrationId}`, {
+    method: 'PUT',
+    body: JSON.stringify(integration)
+  });
+  return await response.json();
+}
+
+export async function uninstallIntegration(integrationId: string): Promise<void> {
+  await enhancedFetch(`${API_BASE}/api/integrations/user-integrations/${integrationId}`, {
+    method: 'DELETE'
+  });
+}
+
+// API Key Management
+export async function fetchApiKeys(options?: {
+  userId?: string;
+  service?: string;
+}): Promise<IntegrationApiKey[]> {
+  try {
+    const params = new URLSearchParams();
+    if (options?.userId) params.append('user_id', options.userId);
+    if (options?.service) params.append('service', options.service);
+    
+    const url = `${API_BASE}/api/integrations/api-keys${params.toString() ? `?${params.toString()}` : ''}`;
+    const response = await enhancedFetch(url);
+    const data = await response.json();
+    return data.api_keys || [];
+  } catch (error) {
+    console.warn('API Keys fetch failed:', error);
+    return [];
+  }
+}
+
+export async function createApiKey(apiKey: IntegrationApiKeyInput): Promise<IntegrationApiKey> {
+  const response = await enhancedFetch(`${API_BASE}/api/integrations/api-keys`, {
+    method: 'POST',
+    body: JSON.stringify(apiKey)
+  });
+  return await response.json();
+}
+
+export async function fetchApiKey(keyId: string): Promise<IntegrationApiKey> {
+  const response = await enhancedFetch(`${API_BASE}/api/integrations/api-keys/${keyId}`);
+  return await response.json();
+}
+
+export async function updateApiKey(keyId: string, apiKey: Partial<IntegrationApiKeyInput>): Promise<IntegrationApiKey> {
+  const response = await enhancedFetch(`${API_BASE}/api/integrations/api-keys/${keyId}`, {
+    method: 'PUT',
+    body: JSON.stringify(apiKey)
+  });
+  return await response.json();
+}
+
+export async function deleteApiKey(keyId: string): Promise<void> {
+  await enhancedFetch(`${API_BASE}/api/integrations/api-keys/${keyId}`, {
+    method: 'DELETE'
+  });
+}
+
+// Integration Usage Analytics
+export async function fetchIntegrationUsage(options?: {
+  userId?: string;
+  integrationId?: string;
+  days?: number;
+}): Promise<IntegrationUsage[]> {
+  try {
+    const params = new URLSearchParams();
+    if (options?.userId) params.append('user_id', options.userId);
+    if (options?.integrationId) params.append('integration_id', options.integrationId);
+    if (options?.days) params.append('days', options.days.toString());
+    
+    const url = `${API_BASE}/api/integrations/usage${params.toString() ? `?${params.toString()}` : ''}`;
+    const response = await enhancedFetch(url);
+    const data = await response.json();
+    return data.usage || [];
+  } catch (error) {
+    console.warn('Integration Usage API fetch failed:', error);
+    return [];
+  }
+}
+
+export async function logIntegrationUsage(usage: IntegrationUsageInput): Promise<IntegrationUsage> {
+  const response = await enhancedFetch(`${API_BASE}/api/integrations/usage`, {
+    method: 'POST',
+    body: JSON.stringify(usage)
+  });
+  return await response.json();
+}
+
+// Integration Categories
+export async function fetchIntegrationCategories(): Promise<IntegrationCategories> {
+  try {
+    const response = await enhancedFetch(`${API_BASE}/api/integrations/categories`);
+    return await response.json();
+  } catch (error) {
+    console.warn('Integration Categories API fetch failed:', error);
+    return { categories: {} };
+  }
+}
+
+// Marketplace Revenue Analytics
+export async function fetchMarketplaceRevenue(days = 30): Promise<MarketplaceRevenue> {
+  try {
+    const response = await enhancedFetch(`${API_BASE}/api/integrations/revenue?days=${days}`);
+    return await response.json();
+  } catch (error) {
+    console.warn('Marketplace Revenue API fetch failed:', error);
+    return {
+      total_revenue: 0,
+      total_commission: 0,
+      total_installations: 0,
+      installations_by_app: {},
+      period_days: days,
+      timestamp: new Date().toISOString()
+    };
+  }
+}
+
+// Integrations Analytics Overview
+export async function fetchIntegrationsOverview(): Promise<IntegrationsOverview> {
+  try {
+    const response = await enhancedFetch(`${API_BASE}/api/integrations/analytics/overview`);
+    return await response.json();
+  } catch (error) {
+    console.warn('Integrations Overview API fetch failed:', error);
+    return {
+      total_apps: 0,
+      apps_by_category: {},
+      apps_by_status: {},
+      total_user_integrations: 0,
+      integrations_by_status: {},
+      total_api_keys: 0,
+      keys_by_service: {},
+      keys_by_status: {},
+      usage_last_24h: 0,
+      usage_by_action: {},
+      timestamp: new Date().toISOString()
     };
   }
 }
