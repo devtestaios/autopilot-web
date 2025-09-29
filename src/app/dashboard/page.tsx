@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import {
   BarChart3,
   TrendingUp,
@@ -13,7 +14,15 @@ import {
   Plus,
   Eye,
   Zap,
-  Target
+  Target,
+  MessageSquare,
+  Mail,
+  Calendar,
+  LayoutDashboard,
+  Search,
+  Filter,
+  Sparkles,
+  Clock
 } from 'lucide-react';
 
 // Dynamic imports for SSR safety
@@ -39,12 +48,20 @@ import { useAuth } from '@/contexts/AuthContext';
 import DashboardStats from '@/components/DashboardStats';
 import { ErrorBoundary, DashboardErrorFallback } from '@/components/ErrorBoundary';
 
+// MASTER TERMINAL: Platform registry integration
+import { EXISTING_PLATFORMS, PLANNED_PLATFORMS, PLATFORM_CATEGORIES, PlatformModule } from '@/config/platformRegistry';
+import { FEATURE_FLAGS, isFeatureEnabled } from '@/config/featureFlags';
+
 function DashboardPageContent() {
   const router = useRouter();
   const { user } = useAuth();
   const { showToast } = useToast();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
+
+  // MASTER TERMINAL: Platform filtering state
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [searchQuery, setSearchQuery] = useState<string>('');
 
   // Real-time dashboard data with 30-second refresh
   const { quickStats, overview, campaigns, loading, error, refresh, isStale, lastUpdated } = useDashboardData(30000);
@@ -57,6 +74,37 @@ function DashboardPageContent() {
   const navigateToIntegrations = () => router.push('/integrations');
   const navigateToAnalytics = () => router.push('/analytics');
   const navigateToAICenter = () => router.push('/ai-center');
+
+  // MASTER TERMINAL: Platform filtering logic
+  const availablePlatforms = useMemo(() => {
+    let platforms = [...EXISTING_PLATFORMS];
+    
+    // Add development platforms if their feature flags are enabled
+    const enabledPlannedPlatforms = PLANNED_PLATFORMS.filter(platform => 
+      isFeatureEnabled('masterTerminal') && 
+      (platform.status === 'development' ? 
+        isFeatureEnabled(platform.id.replace('-', '') as any) : 
+        false)
+    );
+    
+    platforms = [...platforms, ...enabledPlannedPlatforms];
+    
+    // Filter by category
+    if (selectedCategory !== 'all') {
+      platforms = platforms.filter(platform => platform.category === selectedCategory);
+    }
+    
+    // Filter by search query
+    if (searchQuery) {
+      platforms = platforms.filter(platform =>
+        platform.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        platform.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        platform.features.some(feature => feature.toLowerCase().includes(searchQuery.toLowerCase()))
+      );
+    }
+    
+    return platforms;
+  }, [selectedCategory, searchQuery]);
   const navigateToCampaigns = () => router.push('/campaigns');
   const navigateToNewCampaign = () => router.push('/campaigns/new');
 
@@ -154,13 +202,18 @@ function DashboardPageContent() {
         <main className="p-4 lg:p-6 space-y-6">
           {/* Header Section */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-                Dashboard
-              </h1>
-              <p className="text-gray-600 dark:text-gray-400">
-                Welcome back, {user?.email || 'Demo User'}! Here's your campaign overview.
-              </p>
+            <div className="flex items-center gap-4">
+              <div className="p-3 bg-gradient-to-r from-teal-500 to-cyan-500 rounded-xl">
+                <Target className="w-8 h-8 text-white" />
+              </div>
+              <div>
+                <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+                  Master Terminal
+                </h1>
+                <p className="text-gray-600 dark:text-gray-400">
+                  Unified command center for all platform operations • AI-Enhanced Dashboard
+                </p>
+              </div>
             </div>
             
             <div className="flex items-center gap-3 mt-4 sm:mt-0">
@@ -561,6 +614,255 @@ function DashboardPageContent() {
                   <RefreshCw className={`w-4 h-4 mr-2 ${isRefreshing ? 'animate-spin' : ''}`} />
                   Refresh All Data
                 </button>
+              </div>
+            </div>
+          </div>
+
+          {/* MASTER TERMINAL: Platform Control Center */}
+          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm border-t-4 border-teal-500">
+            {/* Master Terminal Navigation Breadcrumb */}
+            <div className="flex items-center text-sm text-gray-500 dark:text-gray-400 mb-4">
+              <span className="font-medium text-teal-600 dark:text-teal-400">Master Terminal</span>
+              <span className="mx-2">›</span>
+              <span>Platform Registry</span>
+              <span className="mx-2">›</span>
+              <span className="text-gray-900 dark:text-white font-medium">
+                {selectedCategory === 'all' ? 'All Platforms' : PLATFORM_CATEGORIES[selectedCategory as keyof typeof PLATFORM_CATEGORIES]}
+              </span>
+            </div>
+            
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center">
+                <LayoutDashboard className="w-6 h-6 text-teal-600 dark:text-teal-400 mr-3" />
+                <div>
+                  <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+                    Platform Control Registry
+                  </h2>
+                  <p className="text-gray-600 dark:text-gray-400 text-sm">
+                    {availablePlatforms.length} platforms available • Hierarchical Navigation • Central Command
+                  </p>
+                </div>
+              </div>
+              
+              {/* Master Terminal Badge */}
+              <div className="flex items-center gap-2 px-3 py-1 bg-gradient-to-r from-teal-500/20 to-cyan-500/20 rounded-full border border-teal-300 dark:border-teal-700">
+                <Target className="w-4 h-4 text-teal-600 dark:text-teal-400" />
+                <span className="text-sm font-medium text-teal-700 dark:text-teal-300">
+                  Master Terminal
+                </span>
+              </div>
+            </div>
+
+            {/* Category Filter & Search */}
+            <div className="mb-6">
+              <div className="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
+                {/* Master Terminal Quick Navigation */}
+                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3 w-full mb-4">
+                  <button
+                    onClick={() => setSelectedCategory('all')}
+                    className={`p-3 rounded-lg border-2 transition-all text-sm font-medium ${ 
+                      selectedCategory === 'all'
+                        ? 'border-teal-500 bg-teal-50 dark:bg-teal-900/20 text-teal-700 dark:text-teal-300'
+                        : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 text-gray-700 dark:text-gray-300'
+                    }`}
+                  >
+                    <div className="flex flex-col items-center">
+                      <LayoutDashboard className="w-5 h-5 mb-1" />
+                      <span>All Platforms</span>
+                      <span className="text-xs opacity-75">({EXISTING_PLATFORMS.length})</span>
+                    </div>
+                  </button>
+                  {Object.entries(PLATFORM_CATEGORIES).map(([categoryId, categoryName]) => {
+                    const count = EXISTING_PLATFORMS.filter(p => p.category === categoryId).length;
+                    const IconComponent = categoryId === 'marketing' ? Target : 
+                                         categoryId === 'business' ? Users :
+                                         categoryId === 'analytics' ? BarChart3 :
+                                         categoryId === 'ai' ? Zap :
+                                         categoryId === 'integrations' ? RefreshCw : Settings;
+                    return (
+                      <button
+                        key={categoryId}
+                        onClick={() => setSelectedCategory(categoryId)}
+                        className={`p-3 rounded-lg border-2 transition-all text-sm font-medium ${
+                          selectedCategory === categoryId
+                            ? 'border-teal-500 bg-teal-50 dark:bg-teal-900/20 text-teal-700 dark:text-teal-300'
+                            : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 text-gray-700 dark:text-gray-300'
+                        }`}
+                      >
+                        <div className="flex flex-col items-center">
+                          <IconComponent className="w-5 h-5 mb-1" />
+                          <span className="line-clamp-1">{categoryName}</span>
+                          <span className="text-xs opacity-75">({count})</span>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Search */}
+                <div className="relative min-w-64">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  <input
+                    type="text"
+                    placeholder="Search platforms..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full pl-10 pr-4 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-sm focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Platform Grid - Master Terminal Style */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              {availablePlatforms.map((platform: PlatformModule, index: number) => (
+                <motion.div
+                  key={platform.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                  className="group"
+                >
+                  <Link href={platform.route} className="block">
+                    <div className={`
+                      relative p-5 rounded-xl border-2 transition-all duration-300 cursor-pointer
+                      ${platform.status === 'active' 
+                        ? 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-teal-300 dark:hover:border-teal-600 hover:shadow-xl hover:scale-105' 
+                        : 'border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-900 opacity-60'
+                      }
+                    `}>
+                      {/* Platform Status & Hierarchy Indicator */}
+                      <div className="absolute top-3 right-3 flex items-center gap-2">
+                        {platform.status === 'active' && (
+                          <div className="w-3 h-3 bg-green-500 rounded-full shadow-lg"></div>
+                        )}
+                        {platform.status === 'development' && (
+                          <div className="flex items-center gap-1 px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full text-xs font-medium">
+                            <Zap className="w-3 h-3" />
+                            DEV
+                          </div>
+                        )}
+                        {platform.status === 'planning' && (
+                          <div className="flex items-center gap-1 px-2 py-1 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 rounded-full text-xs font-medium">
+                            <Clock className="w-3 h-3" />
+                            SOON
+                          </div>
+                        )}
+                        {/* Hierarchy Level Badge */}
+                        <div className="w-1 h-6 bg-gradient-to-b from-teal-400 to-teal-600 rounded-full opacity-30 group-hover:opacity-100 transition-opacity"></div>
+                      </div>
+                      
+                      {/* Platform Content */}
+                      <div className="mb-4">
+                        {/* Platform Header */}
+                        <div className="flex items-start mb-3">
+                          <div className="w-10 h-10 bg-gradient-to-br from-teal-500 to-cyan-600 rounded-lg flex items-center justify-center text-white font-bold text-lg mr-3 shadow-md">
+                            {platform.name.charAt(0)}
+                          </div>
+                          <div className="flex-1">
+                            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
+                              {platform.name}
+                            </h3>
+                            <div className="text-xs text-gray-500 dark:text-gray-400 font-medium uppercase tracking-wide">
+                              {PLATFORM_CATEGORIES[platform.category as keyof typeof PLATFORM_CATEGORIES]}
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 line-clamp-3 leading-relaxed">
+                          {platform.description}
+                        </p>
+                        
+                        {/* Master Terminal Navigation Hierarchy */}
+                        <div className="text-xs text-gray-500 dark:text-gray-400 mb-3 font-mono">
+                          <span className="text-teal-600 dark:text-teal-400">Master Terminal</span> 
+                          <span className="mx-1">›</span>
+                          <span>{PLATFORM_CATEGORIES[platform.category as keyof typeof PLATFORM_CATEGORIES]}</span>
+                          <span className="mx-1">›</span>
+                          <span className="text-gray-900 dark:text-white">{platform.name}</span>
+                        </div>
+                        
+                        {/* Features */}
+                        <div className="flex flex-wrap gap-1 mb-4">
+                          {platform.features.slice(0, 3).map((feature: string) => (
+                            <span 
+                              key={feature}
+                              className="px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 rounded-md text-xs font-medium"
+                            >
+                              {feature.replace('-', ' ')}
+                            </span>
+                          ))}
+                          {platform.features.length > 3 && (
+                            <span className="px-2 py-1 bg-teal-100 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400 rounded-md text-xs font-medium">
+                              +{platform.features.length - 3} more
+                            </span>
+                          )}
+                        </div>
+                        
+                        {/* Quick Actions & Capabilities */}
+                        {platform.status === 'active' && (platform.quickActions.length > 0 || platform.aiCapabilities.length > 0) && (
+                          <div className="pt-4 border-t border-gray-100 dark:border-gray-700">
+                            <div className="flex items-center justify-between">
+                              {platform.quickActions.length > 0 && (
+                                <div className="flex items-center gap-1">
+                                  <Target className="w-3 h-3 text-teal-500" />
+                                  <span className="text-xs text-gray-500 dark:text-gray-400">
+                                    {platform.quickActions.length} quick actions
+                                  </span>
+                                </div>
+                              )}
+                              {platform.aiCapabilities.length > 0 && (
+                                <div className="flex items-center gap-1">
+                                  <Sparkles className="w-3 h-3 text-purple-500" />
+                                  <span className="text-xs text-purple-600 dark:text-purple-400 font-medium">AI Enhanced</span>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </Link>
+                </motion.div>
+              ))}
+            </div>
+
+            {/* No Results */}
+            {availablePlatforms.length === 0 && (
+              <div className="text-center py-16">
+                <Filter className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+                  No platforms found
+                </h3>
+                <p className="text-gray-600 dark:text-gray-400">
+                  Try adjusting your filters or search query.
+                </p>
+              </div>
+            )}
+
+            {/* Development Notice */}
+            <div className="mt-8 p-6 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-200 dark:border-blue-800">
+              <h3 className="text-lg font-semibold text-blue-900 dark:text-blue-100 mb-2">
+                🚀 Platform Roadmap
+              </h3>
+              <p className="text-blue-700 dark:text-blue-200 mb-4">
+                Building toward 20 integrated platforms. Currently {EXISTING_PLATFORMS.length} platforms are active 
+                with {PLANNED_PLATFORMS.length} more in development.
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {PLANNED_PLATFORMS.slice(0, 6).map(platform => (
+                  <span 
+                    key={platform.id}
+                    className="px-3 py-1 bg-blue-100 dark:bg-blue-800 text-blue-800 dark:text-blue-200 rounded-full text-sm"
+                  >
+                    {platform.name} - {platform.status}
+                  </span>
+                ))}
+                {PLANNED_PLATFORMS.length > 6 && (
+                  <span className="px-3 py-1 bg-blue-100 dark:bg-blue-800 text-blue-800 dark:text-blue-200 rounded-full text-sm">
+                    +{PLANNED_PLATFORMS.length - 6} more
+                  </span>
+                )}
               </div>
             </div>
           </div>

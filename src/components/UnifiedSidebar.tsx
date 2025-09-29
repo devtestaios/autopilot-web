@@ -36,71 +36,84 @@ interface SidebarItem {
 
 const sidebarItems: SidebarItem[] = [
   {
-    id: 'dashboard',
-    label: 'Dashboard',
+    id: 'master-terminal',
+    label: 'Master Terminal',
     icon: LayoutDashboard,
-    path: '/dashboard'
+    path: '/dashboard',
+    badge: 'Command'
   },
   {
-    id: 'campaigns',
-    label: 'Campaigns',
+    id: 'marketing-platforms',
+    label: 'Marketing Platforms',
     icon: Megaphone,
-    path: '/campaigns',
+    path: '/marketing',
     subItems: [
-      { id: 'all-campaigns', label: 'All Campaigns', path: '/campaigns' },
-      { id: 'create-campaign', label: 'Create New', path: '/campaigns/new' },
-      { id: 'templates', label: 'Templates', path: '/campaigns/templates' }
+      { id: 'campaigns', label: 'Campaign Management', path: '/campaigns' },
+      { id: 'email-marketing', label: 'Email Marketing', path: '/email-marketing' },
+      { id: 'social-media', label: 'Social Media', path: '/social-media' },
+      { id: 'content-suite', label: 'Content Suite', path: '/content-suite' }
     ]
   },
   {
-    id: 'analytics',
-    label: 'Analytics',
+    id: 'business-platforms',
+    label: 'Business Operations',
+    icon: Users,
+    path: '/business-suite',
+    subItems: [
+      { id: 'collaboration', label: 'Team Collaboration', path: '/collaboration' },
+      { id: 'project-management', label: 'Project Management', path: '/project-management' },
+      { id: 'leads', label: 'Lead Management', path: '/leads' },
+      { id: 'unified-crm', label: 'Unified CRM', path: '/unified-crm' }
+    ]
+  },
+  {
+    id: 'analytics-platforms',
+    label: 'Analytics & Insights',
     icon: BarChart3,
     path: '/analytics',
     subItems: [
-      { id: 'overview', label: 'Overview', path: '/analytics' },
-      { id: 'performance', label: 'Performance', path: '/analytics/performance' },
-      { id: 'roi', label: 'ROI Analysis', path: '/analytics/roi' }
+      { id: 'overview', label: 'Analytics Overview', path: '/analytics' },
+      { id: 'performance', label: 'Performance Tracking', path: '/analytics/performance' },
+      { id: 'roi', label: 'ROI Analysis', path: '/analytics/roi' },
+      { id: 'reports', label: 'Advanced Reports', path: '/reports' }
     ]
   },
   {
-    id: 'leads',
-    label: 'Leads',
-    icon: Users,
-    path: '/leads',
-    badge: 'New'
-  },
-  {
-    id: 'scheduler',
-    label: 'Scheduler',
-    icon: Calendar,
-    path: '/scheduler'
-  },
-  {
-    id: 'optimization',
-    label: 'AI Optimizer',
+    id: 'ai-platforms',
+    label: 'AI & Automation',
     icon: Target,
-    path: '/optimization',
-    badge: 'Beta'
+    path: '/ai-center',
+    badge: 'AI',
+    subItems: [
+      { id: 'ai-center', label: 'AI Control Center', path: '/ai-center' },
+      { id: 'optimization', label: 'AI Optimizer', path: '/optimization' },
+      { id: 'ai-automation', label: 'Automation Hub', path: '/ai-automation' },
+      { id: 'ai-analytics', label: 'AI Analytics', path: '/ai/analytics' }
+    ]
   },
   {
-    id: 'sync',
-    label: 'Multi-Platform Sync',
+    id: 'integration-platforms',
+    label: 'Integrations & Tools',
     icon: RefreshCw,
-    path: '/sync',
-    badge: 'New'
+    path: '/integrations',
+    subItems: [
+      { id: 'integrations', label: 'App Marketplace', path: '/integrations' },
+      { id: 'sync', label: 'Multi-Platform Sync', path: '/sync' },
+      { id: 'scheduler', label: 'Smart Scheduler', path: '/scheduler' },
+      { id: 'platforms', label: 'Platform Manager', path: '/platforms' }
+    ]
   },
   {
-    id: 'reports',
-    label: 'Reports',
-    icon: TrendingUp,
-    path: '/reports'
-  },
-  {
-    id: 'settings',
-    label: 'Settings',
+    id: 'enterprise-platforms',
+    label: 'Enterprise & Settings',
     icon: Settings,
-    path: '/settings'
+    path: '/enterprise',
+    subItems: [
+      { id: 'enterprise', label: 'Enterprise Suite', path: '/enterprise' },
+      { id: 'business-intelligence', label: 'Business Intelligence', path: '/business-intelligence' },
+      { id: 'settings', label: 'Platform Settings', path: '/settings' },
+      { id: 'infrastructure', label: 'Infrastructure', path: '/infrastructure' }
+    ]
   }
 ];
 

@@ -47,6 +47,10 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
+// PHASE 2A: Real-time data integration
+import { useMarketingData } from '@/hooks/useMarketingData';
+import { useToast } from '@/components/ui/Toast';
+
 // Import existing contexts
 import { useMarketingOptimization } from '@/contexts/MarketingOptimizationContext';
 import { useSocialMedia } from '@/contexts/SocialMediaContext';
@@ -92,18 +96,19 @@ function KPICard({ title, value, change, icon, trend = 'neutral', description }:
 }
 
 function UnifiedKPIDashboard() {
-  // Get data from all marketing contexts
-  const { campaigns, leads, alerts } = useMarketingOptimization();
+  // Get data from marketing optimization context for compatibility
+  const { campaigns: contextCampaigns, leads, alerts } = useMarketingOptimization();
   const { posts, accounts } = useSocialMedia();
   const { campaigns: emailCampaigns, contacts } = useEmailMarketing();
 
-  // Calculate unified metrics with comprehensive null checks and safe property access
-  const totalBudget = campaigns?.reduce((sum, campaign) => sum + (campaign?.budget || 0), 0) || 0;
-  const totalSpend = campaigns?.reduce((sum, campaign) => sum + (campaign?.spend || 0), 0) || 0;
+  // PHASE 2A: Use real-time marketing data from the hook (passed down from parent)
+  // This will be enhanced to use quickStats directly once we refactor to pass props
+  const totalBudget = contextCampaigns?.reduce((sum, campaign) => sum + (campaign?.budget || 0), 0) || 0;
+  const totalSpend = contextCampaigns?.reduce((sum, campaign) => sum + (campaign?.spend || 0), 0) || 0;
   const totalLeads = leads?.length || 0;
   const activeEmailCampaigns = (Array.isArray(emailCampaigns) ? emailCampaigns.filter(c => c?.status === 'sending' || c?.status === 'scheduled') : []).length || 0;
   const totalSocialPosts = (Array.isArray(posts) ? posts.filter(p => p?.status === 'published') : []).length || 0;
-  const avgROAS = campaigns?.reduce((sum, campaign) => sum + (campaign?.metrics?.roas || 0), 0) / (campaigns?.length || 1) || 0;
+  const avgROAS = contextCampaigns?.reduce((sum, campaign) => sum + (campaign?.metrics?.roas || 0), 0) / (contextCampaigns?.length || 1) || 0;
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
@@ -133,7 +138,7 @@ function UnifiedKPIDashboard() {
       />
       <KPICard
         title="Active Campaigns"
-        value={`${(Array.isArray(campaigns) ? campaigns.filter(c => c?.status === 'active') : []).length || 0}`}
+        value={`${(Array.isArray(contextCampaigns) ? contextCampaigns.filter(c => c?.status === 'active') : []).length || 0}`}
         change="3 new"
         trend="up"
         icon={<Activity className="w-4 h-4" />}
@@ -277,6 +282,38 @@ function CrossChannelInsights() {
 export default function MarketingCommandCenter() {
   const [activeView, setActiveView] = useState('overview');
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  // PHASE 2A: Real-time marketing data with 30-second refresh
+  const { overview, campaigns, quickStats, loading, error, refresh, isStale, lastUpdated } = useMarketingData(30000);
+  const { showToast } = useToast();
+
+  // Manual refresh functionality
+  const handleManualRefresh = async () => {
+    if (isRefreshing) return;
+    setIsRefreshing(true);
+    
+    try {
+      await refresh();
+      if (showToast) {
+        showToast({
+          type: 'success',
+          title: 'Marketing data refreshed',
+          description: 'All marketing data has been updated'
+        });
+      }
+    } catch (error) {
+      if (showToast) {
+        showToast({
+          type: 'error',
+          title: 'Refresh failed',
+          description: 'Unable to refresh marketing data'
+        });
+      }
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -295,11 +332,29 @@ export default function MarketingCommandCenter() {
                 <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
                   Marketing Command Center
                 </h1>
-                <p className="text-gray-600 dark:text-gray-400 mt-1">
-                  Unified marketing operations across all channels • AI-Enhanced Dashboard
-                </p>
+                <div className="flex items-center space-x-4 mt-1">
+                  <p className="text-gray-600 dark:text-gray-400">
+                    Unified marketing operations across all channels • AI-Enhanced Dashboard
+                  </p>
+                  {/* Real-time data status */}
+                  <div className="flex items-center space-x-2">
+                    <div className={`w-2 h-2 rounded-full ${isStale ? 'bg-yellow-500' : 'bg-green-500'}`} />
+                    <span className="text-xs text-gray-500 dark:text-gray-400">
+                      {lastUpdated ? `Updated ${new Date(lastUpdated).toLocaleTimeString()}` : 'Loading...'}
+                    </span>
+                  </div>
+                </div>
               </div>
               <div className="flex items-center space-x-3">
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={handleManualRefresh}
+                  disabled={isRefreshing}
+                >
+                  <Activity className={`w-4 h-4 mr-2 ${isRefreshing ? 'animate-spin' : ''}`} />
+                  {isRefreshing ? 'Refreshing...' : 'Refresh Data'}
+                </Button>
                 <Button variant="outline" size="sm">
                   <Settings className="w-4 h-4 mr-2" />
                   Settings

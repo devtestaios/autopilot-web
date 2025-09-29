@@ -37,6 +37,11 @@ const AIControlChat = dynamic(() => import('@/components/AIControlChat'), {
 });
 
 import { useSocialMedia } from '@/contexts/SocialMediaContext';
+
+// PHASE 2A: Real-time data integration
+import { useSocialMediaData } from '@/hooks/useSocialMediaData';
+import { useToast } from '@/components/ui/Toast';
+
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -179,6 +184,38 @@ export default function SocialMediaPlatform() {
   const [searchQuery, setSearchQuery] = useState('');
   const [showComposer, setShowComposer] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  // PHASE 2A: Real-time social media data with 30-second refresh
+  const { overview, posts: realTimePosts, quickStats, loading: dataLoading, error, refresh, isStale, lastUpdated } = useSocialMediaData(30000);
+  const { showToast } = useToast();
+
+  // Manual refresh functionality
+  const handleManualRefresh = async () => {
+    if (isRefreshing) return;
+    setIsRefreshing(true);
+    
+    try {
+      await refresh();
+      if (showToast) {
+        showToast({
+          type: 'success',
+          title: 'Social media data refreshed',
+          description: 'All social media data has been updated'
+        });
+      }
+    } catch (error) {
+      if (showToast) {
+        showToast({
+          type: 'error',
+          title: 'Refresh failed',
+          description: 'Unable to refresh social media data'
+        });
+      }
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
 
   // Calculate metrics from current data
   const metrics = useMemo(() => {

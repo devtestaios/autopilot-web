@@ -7,6 +7,11 @@
 
 import React, { useState, useEffect } from 'react';
 import { useEmailMarketing } from '@/contexts/EmailMarketingContext';
+
+// PHASE 2A: Real-time data integration
+import { useEmailMarketingData } from '@/hooks/useEmailMarketingData';
+import { useToast } from '@/components/ui/Toast';
+
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -625,6 +630,8 @@ const AutomationsOverview: React.FC = () => {
 export default function EmailMarketingPlatform() {
   const [activeTab, setActiveTab] = useState<'overview' | 'campaigns' | 'contacts' | 'automations' | 'analytics' | 'templates'>('overview');
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
   const { 
     campaigns, 
     contacts, 
@@ -633,6 +640,37 @@ export default function EmailMarketingPlatform() {
     createCampaign,
     importContacts
   } = useEmailMarketing();
+
+  // PHASE 2A: Real-time email marketing data with 30-second refresh
+  const { overview, campaigns: realTimeCampaigns, subscribers, quickStats, loading: dataLoading, error, refresh, isStale, lastUpdated } = useEmailMarketingData(30000);
+  const { showToast } = useToast();
+
+  // Manual refresh functionality
+  const handleManualRefresh = async () => {
+    if (isRefreshing) return;
+    setIsRefreshing(true);
+    
+    try {
+      await refresh();
+      if (showToast) {
+        showToast({
+          type: 'success',
+          title: 'Email marketing data refreshed',
+          description: 'All email marketing data has been updated'
+        });
+      }
+    } catch (error) {
+      if (showToast) {
+        showToast({
+          type: 'error',
+          title: 'Refresh failed',
+          description: 'Unable to refresh email marketing data'
+        });
+      }
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
 
   // Calculate overview stats with proper null checks
   const totalCampaigns = (Array.isArray(campaigns) ? campaigns : []).length;
