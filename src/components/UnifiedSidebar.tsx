@@ -50,7 +50,7 @@ const sidebarItems: SidebarItem[] = [
     subItems: [
       { id: 'campaigns', label: 'Campaign Management', path: '/campaigns' },
       { id: 'email-marketing', label: 'Email Marketing', path: '/email-marketing' },
-      { id: 'social-media', label: 'Social Media', path: '/social-media' },
+      { id: 'social-media', label: 'Social Media', path: '/social' },
       { id: 'content-suite', label: 'Content Suite', path: '/content-suite' }
     ]
   },
