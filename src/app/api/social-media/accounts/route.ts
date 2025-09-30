@@ -213,5 +213,3 @@ export async function POST(request: NextRequest) {
 // - /api/social-media/templates/route.ts
 // - /api/social-media/analytics/route.ts
 // - /api/social-media/ai/route.ts
-
-export { GET as GET, POST as POST };

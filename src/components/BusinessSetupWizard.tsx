@@ -10,6 +10,7 @@ import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useBusinessConfiguration, BusinessType, BusinessSize, BusinessTemplate } from '@/contexts/BusinessConfigurationContext';
+import { useDashboardCustomization } from '@/contexts/DashboardCustomizationContext';
 import { 
   ArrowRight, 
   ArrowLeft, 
@@ -126,6 +127,8 @@ export default function BusinessSetupWizard({ onComplete, onSkip }: BusinessSetu
     completeSetup
   } = useBusinessConfiguration();
 
+  const { applyBusinessSetupResults } = useDashboardCustomization();
+
   // Setup form state
   const [step, setStep] = useState(0);
   const [formData, setFormData] = useState({
@@ -200,6 +203,27 @@ export default function BusinessSetupWizard({ onComplete, onSkip }: BusinessSetu
           automationLevel: formData.businessSize === 'solo' ? 'basic' : 'intermediate',
           reportingDepth: formData.businessSize === 'enterprise' ? 'comprehensive' : 'standard'
         }
+      });
+
+      // Apply setup results to dashboard customization
+      await applyBusinessSetupResults({
+        businessName: formData.businessName,
+        businessType: formData.businessType,
+        businessSize: formData.businessSize,
+        industry: formData.industry,
+        goals: formData.goals,
+        selectedPlatforms: [
+          ...formData.selectedTemplate.essentialPlatforms,
+          ...formData.selectedTemplate.recommendedPlatforms,
+          ...formData.customPlatforms
+        ],
+        dashboardLayout: formData.businessSize === 'solo' ? 'minimal' : 
+                        formData.businessSize === 'enterprise' ? 'comprehensive' : 'balanced',
+        priorityMetrics: formData.goals.includes('Increase sales and revenue') ? ['revenue', 'conversion_rate'] :
+                        formData.goals.includes('Improve marketing effectiveness') ? ['campaigns', 'leads'] :
+                        ['revenue', 'leads'],
+        automationLevel: formData.businessSize === 'solo' ? 'basic' : 
+                        formData.businessSize === 'enterprise' ? 'advanced' : 'intermediate'
       });
 
       completeSetup();

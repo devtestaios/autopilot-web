@@ -29,8 +29,8 @@ function OnboardingContent() {
   }, [step]);
 
   const handleSetupComplete = () => {
-    // Redirect to dashboard after setup
-    window.location.href = '/dashboard';
+    // Redirect to dashboard with customization enabled after setup
+    window.location.href = '/dashboard?setup=complete&customize=true';
   };
 
   const handleSetupSkip = () => {

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -26,6 +26,8 @@ import {
   Settings
 } from 'lucide-react';
 
+import { useDashboardCustomization } from '@/contexts/DashboardCustomizationContext';
+
 // Dynamic imports for SSR safety
 import dynamic from 'next/dynamic';
 const UnifiedSidebar = dynamic(() => import('@/components/UnifiedSidebar'), {
@@ -41,6 +43,11 @@ const AdvancedNavigation = dynamic(() => import('@/components/ui/AdvancedNavigat
 const AIControlChat = dynamic(() => import('@/components/AIControlChat'), {
   ssr: false,
   loading: () => null
+});
+
+const CustomizableDashboard = dynamic(() => import('@/components/CustomizableDashboard'), {
+  ssr: false,
+  loading: () => <div className="h-64 bg-gray-100 dark:bg-gray-800 rounded-lg animate-pulse" />
 });
 
 import { useDashboardData } from '@/hooks/useDashboardData';
@@ -59,6 +66,30 @@ function DashboardPageContent() {
   const { showToast } = useToast();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  
+  // Dashboard customization integration
+  const { currentLayout, personalization } = useDashboardCustomization();
+  const [showCustomizableDashboard, setShowCustomizableDashboard] = useState(false);
+
+  // Check if setup was just completed
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const setupComplete = urlParams.get('setup') === 'complete';
+    const enableCustomize = urlParams.get('customize') === 'true';
+    
+    if (setupComplete && enableCustomize) {
+      setShowCustomizableDashboard(true);
+      // Clean up URL parameters
+      window.history.replaceState({}, document.title, '/dashboard');
+    }
+  }, []);
+
+  // Auto-enable customizable dashboard if user has personalization
+  useEffect(() => {
+    if (personalization && currentLayout) {
+      setShowCustomizableDashboard(true);
+    }
+  }, [personalization, currentLayout]);
 
   // MASTER TERMINAL: Platform filtering state
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
@@ -209,13 +240,43 @@ function DashboardPageContent() {
               </div>
               <div>
                 <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-                  Master Terminal
+                  {showCustomizableDashboard ? 'Custom Dashboard' : 'Master Terminal'}
                 </h1>
                 <p className="text-gray-600 dark:text-gray-400">
-                  Unified command center for all platform operations • AI-Enhanced Dashboard
+                  {showCustomizableDashboard ? 
+                    'Personalized dashboard based on your business setup' :
+                    'Unified command center for all platform operations • AI-Enhanced Dashboard'
+                  }
                 </p>
               </div>
             </div>
+            
+            <div className="flex items-center gap-3 mt-4 sm:mt-0">
+              {/* Dashboard View Toggle */}
+              <div className="flex items-center gap-2 p-1 bg-gray-100 dark:bg-gray-800 rounded-lg">
+                <button
+                  onClick={() => setShowCustomizableDashboard(false)}
+                  className={`px-3 py-2 text-sm font-medium rounded-md transition-colors ${
+                    !showCustomizableDashboard
+                      ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm'
+                      : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+                  }`}
+                >
+                  <LayoutDashboard className="w-4 h-4 mr-2 inline" />
+                  Master Terminal
+                </button>
+                <button
+                  onClick={() => setShowCustomizableDashboard(true)}
+                  className={`px-3 py-2 text-sm font-medium rounded-md transition-colors ${
+                    showCustomizableDashboard
+                      ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm'
+                      : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+                  }`}
+                >
+                  <Settings className="w-4 h-4 mr-2 inline" />
+                  Custom View
+                </button>
+              </div>
             
             <div className="flex items-center gap-3 mt-4 sm:mt-0">
               {/* Data Freshness Indicator */}
@@ -251,20 +312,11 @@ function DashboardPageContent() {
               </button>
             </div>
           </div>
+        </div>
 
-          {/* Error State */}
-          {error && (
-            <div className="p-4 border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/10 rounded-lg">
-              <div className="text-red-600 dark:text-red-400">
-                <p className="font-semibold mb-1">Dashboard Error</p>
-                <p className="text-sm">Error loading dashboard data: {error}</p>
-                <p className="text-sm mt-2">Using cached data where available.</p>
-              </div>
-            </div>
-          )}
-
-          {/* Enhanced Metrics Grid - RESTORED with real data */}
-          {quickStats.length > 0 && (
+          {/* Dashboard Content */
+          <div className="space-y-6">
+            {/* Master Terminal Content */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {quickStats.map((stat, index) => {
                 const IconComponent = iconMap[stat.icon as keyof typeof iconMap] || DollarSign;
@@ -303,7 +355,6 @@ function DashboardPageContent() {
                 );
               })}
             </div>
-          )}
 
           {/* DashboardStats Component - ENHANCED INTEGRATION */}
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
