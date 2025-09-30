@@ -1339,7 +1339,7 @@ async def initiate_social_media_oauth(request: dict):
         config = request.get("config", {})
         
         if platform == "instagram":
-            # Instagram OAuth via Facebook Graph API
+            # Instagram API with Instagram Login (replaces deprecated Basic Display API)
             app_id = config.get("appId") or os.getenv("NEXT_PUBLIC_INSTAGRAM_APP_ID")
             # Handle empty string case
             if not app_id or app_id == "":
@@ -1352,11 +1352,12 @@ async def initiate_social_media_oauth(request: dict):
             base_url = os.getenv('NEXT_PUBLIC_BASE_URL', 'https://pulsebridge.ai')
             redirect_uri = f"{base_url}/auth/instagram/callback"
             
-            # Instagram permissions
-            scope = "instagram_basic,instagram_content_publish,pages_show_list,pages_read_engagement"
+            # Instagram API with Instagram Login permissions (updated for new API)
+            scope = "instagram_business_basic,instagram_business_manage_messages,instagram_business_manage_comments,instagram_business_content_publish"
             
+            # Use Instagram API with Instagram Login endpoint
             auth_url = (
-                f"https://www.facebook.com/v18.0/dialog/oauth?"
+                f"https://api.instagram.com/oauth/authorize?"
                 f"client_id={app_id}&"
                 f"redirect_uri={redirect_uri}&"
                 f"scope={scope}&"
