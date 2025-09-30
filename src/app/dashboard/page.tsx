@@ -22,7 +22,8 @@ import {
   Search,
   Filter,
   Sparkles,
-  Clock
+  Clock,
+  Settings
 } from 'lucide-react';
 
 // Dynamic imports for SSR safety
