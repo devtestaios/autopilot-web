@@ -219,12 +219,20 @@ export default function EnhancedSocialMediaPlatform() {
 
   // Connect new social media account
   const handleConnectAccount = async (platform: string) => {
+    console.log('Connect Account button clicked for platform:', platform);
+    
     try {
+      console.log('Initiating OAuth for platform:', platform);
+      console.log('API Base:', process.env.NEXT_PUBLIC_API_BASE);
+      
       const authUrl = await socialMediaService.initiateOAuth(platform);
+      console.log('Generated auth URL:', authUrl);
+      
       // Open OAuth window
       window.open(authUrl, '_blank', 'width=600,height=700');
     } catch (error) {
       console.error('Error connecting account:', error);
+      alert(`Error connecting account: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   };
 
