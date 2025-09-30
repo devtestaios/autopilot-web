@@ -1339,7 +1339,8 @@ async def initiate_social_media_oauth(request: dict):
         config = request.get("config", {})
         
         if platform == "instagram":
-            # Instagram via Facebook Login - use Facebook App ID/Secret
+            # Instagram API with Facebook Login (post-December 2024 approach)
+            # Instagram Basic Display API was deprecated on December 4th, 2024
             app_id = config.get("appId") or os.getenv("NEXT_PUBLIC_FACEBOOK_APP_ID") or os.getenv("NEXT_PUBLIC_INSTAGRAM_APP_ID")
             # Handle empty string case
             if not app_id or app_id == "":
@@ -1347,16 +1348,16 @@ async def initiate_social_media_oauth(request: dict):
             if not app_id:
                 raise HTTPException(status_code=400, detail="Facebook App ID not configured")
             
-            logger.info(f"Facebook OAuth for Instagram: Using App ID {app_id[:4]}...{app_id[-4:]} (length: {len(app_id)})")
+            logger.info(f"Instagram API with Facebook Login: Using App ID {app_id[:4]}...{app_id[-4:]} (length: {len(app_id)})")
                 
             base_url = os.getenv('NEXT_PUBLIC_BASE_URL', 'https://pulsebridge.ai')
             redirect_uri = f"{base_url}/auth/instagram/callback"
             
-            # Instagram Basic Display permissions
-            # Note: instagram_basic is required for Instagram access
-            scope = "public_profile,email,instagram_basic"
+            # Instagram API with Facebook Login permissions
+            # Required for business/creator Instagram accounts
+            scope = "pages_show_list,pages_read_engagement,instagram_basic,instagram_content_publish"
             
-            # Facebook Login endpoint
+            # Facebook Login endpoint for Instagram API access
             auth_url = (
                 f"https://www.facebook.com/v19.0/dialog/oauth?"
                 f"client_id={app_id}&"

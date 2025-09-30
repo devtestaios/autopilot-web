@@ -222,20 +222,21 @@ export default function EnhancedSocialMediaPlatform() {
     console.log('Connect Account button clicked for platform:', platform);
     
     if (platform === 'instagram') {
-      // Use Facebook SDK for Instagram OAuth with proper permissions
+      // Use Facebook SDK for Instagram API with Facebook Login (post-Dec 2024)
+      // Instagram Basic Display API was deprecated on December 4th, 2024
       if (typeof window !== 'undefined' && window.FB) {
-        console.log('Using Facebook SDK for Instagram OAuth');
+        console.log('Using Facebook SDK for Instagram API with Facebook Login');
         
         window.FB.login(function(response: any) {
           console.log('FB.login response:', response);
           
           if (response.authResponse) {
-            console.log('Instagram OAuth successful!');
+            console.log('Instagram API OAuth successful!');
             console.log('Access Token:', response.authResponse.accessToken);
             
             // Here you would typically save the access token and redirect to callback
             // For now, let's show success
-            alert('Instagram account connected successfully!');
+            alert('Instagram business account connected successfully!');
             
             // You can also call your backend to save the token
             // await saveInstagramToken(response.authResponse.accessToken);
@@ -244,7 +245,7 @@ export default function EnhancedSocialMediaPlatform() {
             console.log('User cancelled Instagram login or did not fully authorize.');
           }
         }, {
-          scope: 'public_profile,email,instagram_basic',
+          scope: 'pages_show_list,pages_read_engagement,instagram_basic,instagram_content_publish',
           return_scopes: true
         });
         
