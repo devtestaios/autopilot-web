@@ -14,6 +14,10 @@ from datetime import datetime, timezone, timedelta
 import logging
 from pydantic import BaseModel
 
+# Configure logging first
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 # Supabase Integration
 try:
     from supabase import create_client, Client
@@ -82,10 +86,6 @@ from pinterest_ads_integration import (
 from meta_ai_hybrid_integration import PulseBridgeAIMasterController, CrossPlatformMetrics, AIDecisionLog
 from smart_risk_management import SmartRiskManager, ClientReportingManager, RISK_MANAGEMENT_TEMPLATES, CLIENT_REPORTING_TEMPLATES
 from hybrid_ai_endpoints import hybrid_ai_router
-
-# Configure logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
 
 # Security
 security = HTTPBearer(auto_error=False)
