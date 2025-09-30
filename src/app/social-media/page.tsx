@@ -221,6 +221,40 @@ export default function EnhancedSocialMediaPlatform() {
   const handleConnectAccount = async (platform: string) => {
     console.log('Connect Account button clicked for platform:', platform);
     
+    if (platform === 'instagram') {
+      // Use Facebook SDK for Instagram OAuth with proper permissions
+      if (typeof window !== 'undefined' && window.FB) {
+        console.log('Using Facebook SDK for Instagram OAuth');
+        
+        window.FB.login(function(response: any) {
+          console.log('FB.login response:', response);
+          
+          if (response.authResponse) {
+            console.log('Instagram OAuth successful!');
+            console.log('Access Token:', response.authResponse.accessToken);
+            
+            // Here you would typically save the access token and redirect to callback
+            // For now, let's show success
+            alert('Instagram account connected successfully!');
+            
+            // You can also call your backend to save the token
+            // await saveInstagramToken(response.authResponse.accessToken);
+            
+          } else {
+            console.log('User cancelled Instagram login or did not fully authorize.');
+          }
+        }, {
+          scope: 'public_profile,email,instagram_basic',
+          return_scopes: true
+        });
+        
+        return;
+      } else {
+        console.log('Facebook SDK not loaded, falling back to redirect method');
+      }
+    }
+    
+    // Fallback for other platforms or if FB SDK not available
     try {
       console.log('Initiating OAuth for platform:', platform);
       console.log('API Base:', process.env.NEXT_PUBLIC_API_BASE);

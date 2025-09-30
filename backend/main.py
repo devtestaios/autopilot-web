@@ -28,7 +28,7 @@ try:
         supabase: Client = create_client(SUPABASE_URL, SUPABASE_ANON_KEY)
         SUPABASE_AVAILABLE = True
         logger.info("✅ Supabase client initialized successfully")
-    else:
+    else:    https://pulsebridge.ai/auth/deauthorize
         logger.warning("❌ Supabase environment variables not found")
         supabase = None
         SUPABASE_AVAILABLE = False
@@ -1352,8 +1352,9 @@ async def initiate_social_media_oauth(request: dict):
             base_url = os.getenv('NEXT_PUBLIC_BASE_URL', 'https://pulsebridge.ai')
             redirect_uri = f"{base_url}/auth/instagram/callback"
             
-            # Basic Facebook permissions that work in Development mode
-            scope = "public_profile"
+            # Instagram Basic Display permissions
+            # Note: instagram_basic is required for Instagram access
+            scope = "public_profile,email,instagram_basic"
             
             # Facebook Login endpoint
             auth_url = (
