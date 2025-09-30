@@ -9,9 +9,18 @@ import {
   Activity, Clock, AlertCircle, ChevronRight, ExternalLink,
   Layers, Globe, Rocket, Shield, Brain, Lightbulb
 } from 'lucide-react';
-import MasterTerminalLayout from '@/components/layout/MasterTerminalLayout';
 
 // Dynamic imports for SSR safety (following dissertation patterns)
+const UnifiedSidebar = dynamic(() => import('@/components/UnifiedSidebar'), {
+  ssr: false,
+  loading: () => null
+});
+
+const AdvancedNavigation = dynamic(() => import('@/components/ui/AdvancedNavigation'), {
+  ssr: false,
+  loading: () => null
+});
+
 const IntelligentDashboardCore = dynamic(() => import('@/components/dashboard/IntelligentDashboardCore'), {
   ssr: false,
   loading: () => (
@@ -19,6 +28,11 @@ const IntelligentDashboardCore = dynamic(() => import('@/components/dashboard/In
       <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
     </div>
   )
+});
+
+const AIControlChat = dynamic(() => import('@/components/AIControlChat'), {
+  ssr: false,
+  loading: () => null
 });
 
 // Enterprise KPI Dashboard Component
@@ -64,6 +78,7 @@ interface QuickAction {
 
 export default function DashboardPage() {
   const router = useRouter();
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   
   // Enterprise KPIs - Real-time business metrics
   const [enterpriseKPIs, setEnterpriseKPIs] = useState<EnterpriseKPI[]>([
@@ -292,214 +307,277 @@ export default function DashboardPage() {
   };
 
   return (
-    <MasterTerminalLayout>
-      <div className="max-w-7xl mx-auto p-6 space-y-8">
-        {/* Enterprise KPI Overview */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
-        >
-          {enterpriseKPIs.map((kpi, index) => (
-            <motion.div
-              key={kpi.title}
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: index * 0.1 }}
-              className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md transition-shadow"
-            >
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex-1">
-                  <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">
-                    {kpi.title}
-                  </p>
-                  <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                    {kpi.value}
-                  </p>
-                </div>
-                <div className={`p-3 rounded-xl ${kpi.bgColor}`}>
-                  <kpi.icon className={`w-6 h-6 ${kpi.color}`} />
-                </div>
-              </div>
-              <div className="flex items-center text-sm">
-                <TrendingUp className={`w-4 h-4 mr-1 ${kpi.color}`} />
-                <span className={`font-medium ${kpi.color}`}>
-                  {kpi.change}
-                </span>
-                <span className="text-gray-500 dark:text-gray-400 ml-1">
-                  vs last month
-                </span>
-              </div>
-            </motion.div>
-          ))}
-        </motion.div>
-
-        {/* Platform Suites */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="space-y-6"
-        >
-          <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-              Platform Suites
-            </h2>
-            <button className="text-sm text-teal-600 dark:text-teal-400 hover:underline">
-              View All Platforms →
-            </button>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {platformSuites.map((suite, index) => (
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      {/* Unified Sidebar */}
+      <UnifiedSidebar onCollapseChange={setSidebarCollapsed} />
+      
+      {/* Main Content */}
+      <div className={`transition-all duration-300 ${
+        sidebarCollapsed ? 'ml-14' : 'ml-56'
+      }`}>
+        <AdvancedNavigation sidebarCollapsed={sidebarCollapsed} />
+        
+        <div className="max-w-7xl mx-auto p-6 space-y-8">
+          {/* Enterprise KPI Overview */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+          >
+            {enterpriseKPIs.map((kpi, index) => (
               <motion.div
-                key={suite.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                className={`${suite.bgGradient} rounded-xl p-6 border border-gray-200 dark:border-gray-700`}
-              >
-                <div className="flex items-start justify-between mb-4">
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                      {suite.name}
-                    </h3>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                      {suite.description}
-                    </p>
-                  </div>
-                  <div className={`w-3 h-3 rounded-full bg-gradient-to-r ${suite.color}`}></div>
-                </div>
-
-                <div className="space-y-3 mb-4">
-                  {suite.platforms.map((platform) => (
-                    <div key={platform.name} className="flex items-center justify-between p-3 bg-white/50 dark:bg-gray-800/50 rounded-lg">
-                      <div className="flex items-center gap-3">
-                        <platform.icon className="w-4 h-4 text-gray-600 dark:text-gray-400" />
-                        <span className="text-sm font-medium text-gray-900 dark:text-white">
-                          {platform.name}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className={`w-2 h-2 rounded-full ${
-                          platform.status === 'active' ? 'bg-green-500' : 'bg-gray-400'
-                        }`}></span>
-                        <span className="text-xs text-gray-500 capitalize">
-                          {platform.status}
-                        </span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                <button 
-                  onClick={() => router.push(`/${suite.id}`)}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-                >
-                  <span className="text-sm font-medium">Open Suite</span>
-                  <ExternalLink className="w-4 h-4" />
-                </button>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
-
-        {/* Intelligent Dashboard Core */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.15 }}
-        >
-          <IntelligentDashboardCore />
-        </motion.div>
-
-        {/* Quick Actions */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="space-y-6"
-        >
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-            Quick Actions
-          </h2>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {quickActions.map((action, index) => (
-              <motion.button
-                key={action.id}
+                key={kpi.title}
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: index * 0.05 }}
-                onClick={action.action}
-                className={`p-4 rounded-xl border-2 text-left hover:shadow-md transition-all ${getCategoryColor(action.category)}`}
+                transition={{ delay: index * 0.1 }}
+                className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md transition-shadow"
               >
-                <div className="flex items-start justify-between mb-3">
-                  <action.icon className="w-6 h-6" />
-                  <div className="flex items-center gap-2">
-                    <span className={`px-2 py-1 text-xs font-medium rounded-full ${getImpactBadge(action.impact)}`}>
-                      {action.impact.toUpperCase()}
-                    </span>
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">
+                      {kpi.title}
+                    </p>
+                    <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                      {kpi.value}
+                    </p>
+                  </div>
+                  <div className={`p-3 rounded-xl ${kpi.bgColor}`}>
+                    <kpi.icon className={`w-6 h-6 ${kpi.color}`} />
                   </div>
                 </div>
-                <h3 className="font-semibold mb-1">{action.title}</h3>
-                <p className="text-sm opacity-80 mb-2">{action.description}</p>
-                <div className="flex items-center justify-between">
-                  <span className="text-xs opacity-60">~{action.estimatedTime}</span>
-                  <ChevronRight className="w-4 h-4" />
+                <div className="flex items-center text-sm">
+                  <TrendingUp className={`w-4 h-4 mr-1 ${kpi.color}`} />
+                  <span className={`font-medium ${kpi.color}`}>
+                    {kpi.change}
+                  </span>
+                  <span className="text-gray-500 dark:text-gray-400 ml-1">
+                    vs last month
+                  </span>
                 </div>
-              </motion.button>
+              </motion.div>
             ))}
-          </div>
-        </motion.div>
+          </motion.div>
 
-        {/* System Status */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.25 }}
-          className="bg-gradient-to-r from-teal-50 via-blue-50 to-purple-50 dark:from-teal-900/20 dark:via-blue-900/20 dark:to-purple-900/20 rounded-xl p-6 border border-teal-200 dark:border-teal-800"
-        >
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-3">
-              <Activity className="w-6 h-6 text-teal-600 dark:text-teal-400" />
-              <div>
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white">
-                  Enterprise System Status
-                </h2>
-                <p className="text-gray-600 dark:text-gray-400 text-sm">
-                  All systems operational • Last updated: {systemStatus.lastUpdated.toLocaleTimeString()}
-                </p>
-              </div>
+          {/* Platform Suites */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="space-y-6"
+          >
+            <div className="flex items-center justify-between">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                Platform Suites
+              </h2>
+              <button className="text-sm text-teal-600 dark:text-teal-400 hover:underline">
+                View All Platforms →
+              </button>
             </div>
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-              <span className="text-sm font-medium text-green-600 dark:text-green-400">Live</span>
-            </div>
-          </div>
-          
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {[
-              { label: 'Uptime', value: systemStatus.uptime, color: 'text-green-600 dark:text-green-400' },
-              { label: 'Response', value: systemStatus.response, color: 'text-blue-600 dark:text-blue-400' },
-              { label: 'Routes', value: systemStatus.routes, color: 'text-purple-600 dark:text-purple-400' },
-              { label: 'Status', value: systemStatus.status, color: 'text-orange-600 dark:text-orange-400' }
-            ].map((metric) => (
-              <div key={metric.label} className="text-center">
-                <motion.div 
-                  className={`text-2xl font-bold ${metric.color}`}
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ type: "spring", stiffness: 100 }}
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {platformSuites.map((suite, index) => (
+                <motion.div
+                  key={suite.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                  className={`${suite.bgGradient} rounded-xl p-6 border border-gray-200 dark:border-gray-700`}
                 >
-                  {metric.value}
+                  <div className="flex items-start justify-between mb-4">
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                        {suite.name}
+                      </h3>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                        {suite.description}
+                      </p>
+                    </div>
+                    <div className={`w-3 h-3 rounded-full bg-gradient-to-r ${suite.color}`}></div>
+                  </div>
+
+                  <div className="space-y-3 mb-4">
+                    {suite.platforms.map((platform) => (
+                      <div key={platform.name} className="flex items-center justify-between p-3 bg-white/50 dark:bg-gray-800/50 rounded-lg">
+                        <div className="flex items-center gap-3">
+                          <platform.icon className="w-4 h-4 text-gray-600 dark:text-gray-400" />
+                          <span className="text-sm font-medium text-gray-900 dark:text-white">
+                            {platform.name}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className={`w-2 h-2 rounded-full ${
+                            platform.status === 'active' ? 'bg-green-500' : 'bg-gray-400'
+                          }`}></span>
+                          <span className="text-xs text-gray-500 capitalize">
+                            {platform.status}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  <button 
+                    onClick={() => router.push(`/${suite.id}`)}
+                    className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                  >
+                    <span className="text-sm font-medium">Open Suite</span>
+                    <ExternalLink className="w-4 h-4" />
+                  </button>
                 </motion.div>
-                <div className="text-sm text-gray-600 dark:text-gray-400">{metric.label}</div>
+              ))}
+            </div>
+          </motion.div>
+
+          {/* Intelligent Dashboard Core */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.15 }}
+          >
+            <IntelligentDashboardCore />
+          </motion.div>
+
+          {/* Quick Actions */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="space-y-6"
+          >
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+              Quick Actions
+            </h2>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              {quickActions.map((action, index) => (
+                <motion.button
+                  key={action.id}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: index * 0.05 }}
+                  onClick={action.action}
+                  className={`p-4 rounded-xl border-2 text-left hover:shadow-md transition-all ${getCategoryColor(action.category)}`}
+                >
+                  <div className="flex items-start justify-between mb-3">
+                    <action.icon className="w-6 h-6" />
+                    <div className="flex items-center gap-2">
+                      <span className={`px-2 py-1 text-xs font-medium rounded-full ${getImpactBadge(action.impact)}`}>
+                        {action.impact.toUpperCase()}
+                      </span>
+                    </div>
+                  </div>
+                  <h3 className="font-semibold mb-1">{action.title}</h3>
+                  <p className="text-sm opacity-80 mb-2">{action.description}</p>
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs opacity-60">~{action.estimatedTime}</span>
+                    <ChevronRight className="w-4 h-4" />
+                  </div>
+                </motion.button>
+              ))}
+            </div>
+          </motion.div>
+
+          {/* System Status */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.25 }}
+            className="bg-gradient-to-r from-teal-50 via-blue-50 to-purple-50 dark:from-teal-900/20 dark:via-blue-900/20 dark:to-purple-900/20 rounded-xl p-6 border border-teal-200 dark:border-teal-800"
+          >
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-3">
+                <Activity className="w-6 h-6 text-teal-600 dark:text-teal-400" />
+                <div>
+                  <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+                    Enterprise System Status
+                  </h2>
+                  <p className="text-gray-600 dark:text-gray-400 text-sm">
+                    All systems operational • Last updated: {systemStatus.lastUpdated.toLocaleTimeString()}
+                  </p>
+                </div>
               </div>
-            ))}
-          </div>
-        </motion.div>
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+                <span className="text-sm font-medium text-green-600 dark:text-green-400">Live</span>
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+              {[
+                { label: 'Uptime', value: systemStatus.uptime, color: 'text-green-600 dark:text-green-400' },
+                { label: 'Response', value: systemStatus.response, color: 'text-blue-600 dark:text-blue-400' },
+                { label: 'Routes', value: systemStatus.routes, color: 'text-purple-600 dark:text-purple-400' },
+                { label: 'Status', value: systemStatus.status, color: 'text-orange-600 dark:text-orange-400' }
+              ].map((metric) => (
+                <div key={metric.label} className="text-center">
+                  <motion.div 
+                    className={`text-2xl font-bold ${metric.color}`}
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ type: "spring", stiffness: 100 }}
+                  >
+                    {metric.value}
+                  </motion.div>
+                  <div className="text-sm text-gray-600 dark:text-gray-400">{metric.label}</div>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        </div>
       </div>
-    </MasterTerminalLayout>
+
+      {/* AI Control Chat - Bottom Right */}
+      <AIControlChat defaultMinimized={true} />
+    </div>
   );
+}
+
+const CrossPlatformIntegrationDashboard = dynamic(() => import('@/components/dashboard/CrossPlatformIntegrationDashboard'), {
+  ssr: false,
+  loading: () => (
+    <div className="flex items-center justify-center min-h-[200px]">
+      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+    </div>
+  )
+});
+
+// Enterprise KPI Dashboard Component
+interface EnterpriseKPI {
+  title: string;
+  value: string;
+  change: string;
+  changeType: 'positive' | 'negative' | 'neutral';
+  icon: React.ComponentType<any>;
+  color: string;
+  bgColor: string;
+}
+
+interface PlatformSuite {
+  id: string;
+  name: string;
+  description: string;
+  platforms: Array<{
+    name: string;
+    status: 'active' | 'inactive' | 'maintenance';
+    route: string;
+    icon: React.ComponentType<any>;
+    metrics?: {
+      label: string;
+      value: string;
+      trend: 'up' | 'down' | 'stable';
+    }[];
+  }>;
+  color: string;
+  bgGradient: string;
+}
+
+interface QuickAction {
+  id: string;
+  title: string;
+  description: string;
+  icon: React.ComponentType<any>;
+  action: () => void;
+  category: 'create' | 'optimize' | 'analyze' | 'automate';
+  estimatedTime: string;
+  impact: 'high' | 'medium' | 'low';
 }

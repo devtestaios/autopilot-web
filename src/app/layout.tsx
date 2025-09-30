@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Orbitron, Exo_2 } from "next/font/google";
 import "./globals.css";
 import ClientProviders from "@/components/ClientProviders";
-import AIFloatingAssistant from "@/components/AIFloatingAssistant";
 import { ClientOnlyGlobalSearch } from '@/components/ClientOnlyGlobalSearch';
 import FacebookSDK from '@/components/FacebookSDK';
 
@@ -61,7 +60,6 @@ export default function RootLayout({
           <main className="min-h-screen">
             {children}
           </main>
-          <AIFloatingAssistant />
           <ClientOnlyGlobalSearch />
         </ClientProviders>
       </body>

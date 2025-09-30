@@ -16,6 +16,7 @@ import { ProjectManagementProvider } from "@/contexts/ProjectManagementContext";
 import { AIProjectAutomationProvider } from "@/contexts/AIProjectAutomationContext";
 import { CollaborationProvider } from "@/contexts/CollaborationContext";
 import { IntegrationsProvider } from "@/contexts/IntegrationsContext";
+import { CrossPlatformProvider } from "@/contexts/CrossPlatformContext";
 import { PerformanceProvider } from "@/contexts/PerformanceContext";
 import { UserTierProvider } from "@/contexts/UserTierContext";
 import { DashboardCustomizationProvider } from "@/contexts/DashboardCustomizationContext";
@@ -107,15 +108,17 @@ export default function ClientProviders({ children }: ClientProvidersProps) {
                                   <AIProjectAutomationProvider>
                                     <CollaborationProvider>
                                       <IntegrationsProvider>
-                                        <PerformanceProvider>
-                                          <ABTestProvider tests={defaultTests}>
-                                            <ToastProvider>
-                                              <PageTransition>
-                                                {children}
-                                              </PageTransition>
-                                            </ToastProvider>
-                                          </ABTestProvider>
-                                        </PerformanceProvider>
+                                        <CrossPlatformProvider>
+                                          <PerformanceProvider>
+                                            <ABTestProvider tests={defaultTests}>
+                                              <ToastProvider>
+                                                <PageTransition>
+                                                  {children}
+                                                </PageTransition>
+                                              </ToastProvider>
+                                            </ABTestProvider>
+                                          </PerformanceProvider>
+                                        </CrossPlatformProvider>
                                       </IntegrationsProvider>
                                     </CollaborationProvider>
                                   </AIProjectAutomationProvider>
