@@ -3,10 +3,35 @@
 import React, { useState, useEffect, Suspense } from 'react';
 import dynamic from 'next/dynamic';
 import { motion } from 'framer-motion';
-import NavigationTabs from '@/components/NavigationTabs';
 import { useProjectManagement } from '@/contexts/ProjectManagementContext';
 import { useUserTier } from '@/contexts/UserTierContext';
 import UpgradePrompt from '@/components/UpgradePrompt';
+
+// SSR-safe imports using social-media pattern
+const UnifiedSidebar = dynamic(() => import('@/components/UnifiedSidebar'), {
+  ssr: false,
+  loading: () => <div className="fixed left-0 top-0 h-screen w-56 bg-gray-900 animate-pulse" />
+});
+
+const AdvancedNavigation = dynamic(() => import('@/components/ui/AdvancedNavigation'), {
+  ssr: false,
+  loading: () => <div className="h-16 bg-white dark:bg-gray-900 border-b animate-pulse" />
+});
+
+const AIControlChat = dynamic(() => import('@/components/AIControlChat'), {
+  ssr: false,
+  loading: () => null
+});
+
+const MasterTerminalBreadcrumb = dynamic(() => import('@/components/MasterTerminalBreadcrumb'), {
+  ssr: false,
+  loading: () => <div className="h-8 bg-gray-100 dark:bg-gray-800 animate-pulse rounded" />
+});
+
+const NavigationTabs = dynamic(() => import('@/components/NavigationTabs'), {
+  ssr: false,
+  loading: () => <div className="h-12 bg-white dark:bg-gray-900 border-b animate-pulse" />
+});
 
 // Project management skeleton component for lazy loading states
 const ProjectManagementSkeleton = ({ type }: { type: 'wizard' | 'kanban' | 'seeder' | 'analytics' }) => {
@@ -116,6 +141,8 @@ import {
 // ============================================================================
 
 export default function ProjectManagementDashboard() {
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  
   const {
     currentProject,
     projects,
@@ -181,18 +208,33 @@ export default function ProjectManagementDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
-      <NavigationTabs />
+    <div className="flex min-h-screen bg-gray-50 dark:bg-gray-900">
+      {/* Unified Sidebar */}
+      <UnifiedSidebar onCollapseChange={setSidebarCollapsed} />
       
-      <div className="container mx-auto px-4 py-8">
-        {/* ========== HEADER SECTION ========== */}
-        <motion.div 
-          className="mb-8"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+      {/* Main Content Area */}
+      <div className={`flex-1 transition-all duration-300 ${
+        sidebarCollapsed ? 'ml-14' : 'ml-56'
+      }`}>
+        {/* Advanced Navigation */}
+        <AdvancedNavigation sidebarCollapsed={sidebarCollapsed} />
+        
+        {/* Navigation Tabs */}
+        <NavigationTabs />
+        
+        {/* Content Container */}
+        <div className="container mx-auto px-4 py-6">
+          {/* Breadcrumb */}
+          <MasterTerminalBreadcrumb />
+          
+          {/* Header with Project Status */}
+          <motion.div 
+            className="mb-8"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
             <div>
               <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">
                 Project Command Center
@@ -726,7 +768,11 @@ export default function ProjectManagementDashboard() {
           isOpen={showCreateWizard}
           onClose={() => setShowCreateWizard(false)}
         />
+        </div>
       </div>
+
+      {/* AI Control Chat - Bottom Right */}
+      <AIControlChat defaultMinimized={true} />
     </div>
   );
 }
