@@ -16,11 +16,6 @@ const MasterTerminalCore = dynamic(() => import('@/components/dashboard/MasterTe
   )
 });
 
-const AutonomousAIControl = dynamic(() => import('@/components/AutonomousAIControl'), {
-  ssr: false,
-  loading: () => null
-});
-
 // Enterprise KPI Dashboard Component
 interface EnterpriseKPI {
   title: string;
@@ -178,12 +173,6 @@ export default function DashboardPage() {
           />
         </motion.div>
       </div>
-
-      {/* Unified AI Control Assistant */}
-      <AutonomousAIControl 
-        position="bottom-right"
-        defaultMinimized={true}
-      />
     </div>
   );
 }
