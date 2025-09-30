@@ -1341,8 +1341,13 @@ async def initiate_social_media_oauth(request: dict):
         if platform == "instagram":
             # Instagram OAuth via Facebook Graph API
             app_id = config.get("appId") or os.getenv("NEXT_PUBLIC_INSTAGRAM_APP_ID")
+            # Handle empty string case
+            if not app_id or app_id == "":
+                app_id = os.getenv("NEXT_PUBLIC_INSTAGRAM_APP_ID")
             if not app_id:
                 raise HTTPException(status_code=400, detail="Instagram App ID not configured")
+            
+            logger.info(f"Instagram OAuth: Using App ID {app_id[:4]}...{app_id[-4:]} (length: {len(app_id)})")
                 
             base_url = os.getenv('NEXT_PUBLIC_BASE_URL', 'https://pulsebridge.ai')
             redirect_uri = f"{base_url}/auth/instagram/callback"
