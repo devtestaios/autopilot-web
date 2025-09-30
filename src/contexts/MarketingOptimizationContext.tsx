@@ -6,8 +6,10 @@
 
 'use client';
 
-import React, { createContext, useContext, useReducer, useEffect, useCallback, useMemo, useRef } from 'react';
+import React, { createContext, useContext, useState, useCallback, useReducer, useRef, useEffect, useMemo } from 'react';
+import { useUnifiedAI } from '@/contexts/UnifiedAIContext';
 import { useWebSocket } from '@/contexts/WebSocketContext';
+import { toast } from 'sonner';
 
 // ==================== TYPE DEFINITIONS ====================
 
@@ -484,11 +486,11 @@ export function MarketingOptimizationProvider({ children }: { children: React.Re
       const newCampaign: Campaign = await response.json();
       dispatch({ type: 'ADD_CAMPAIGN', payload: newCampaign });
       
-      toast('Campaign created successfully', 'success');
+      toast.success('Campaign created successfully');
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Failed to create campaign';
       dispatch({ type: 'SET_ERROR', payload: { key: 'campaigns', value: message } });
-      toast(message, 'error');
+      toast.error(message);
     } finally {
       dispatch({ type: 'SET_LOADING', payload: { key: 'campaigns', value: false } });
     }
@@ -507,7 +509,7 @@ export function MarketingOptimizationProvider({ children }: { children: React.Re
       }
 
       const optimization = await response.json();
-      toast('Campaign optimization completed', 'success');
+      toast.success('Campaign optimization completed');
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Failed to optimize campaign';
       toast(message, 'error');
@@ -537,7 +539,7 @@ export function MarketingOptimizationProvider({ children }: { children: React.Re
       const { leads } = await response.json();
       dispatch({ type: 'SET_LEADS', payload: leads });
       
-      toast('Lead scoring completed', 'success');
+      toast.success('Lead scoring completed');
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Failed to score leads';
       toast(message, 'error');
@@ -568,7 +570,7 @@ export function MarketingOptimizationProvider({ children }: { children: React.Re
       const { decisions } = await response.json();
       dispatch({ type: 'SET_OPTIMIZATION_DECISIONS', payload: decisions });
       
-      toast('AI optimization analysis completed', 'success');
+      toast.success('AI optimization analysis completed');
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Failed to trigger optimization';
       toast(message, 'error');

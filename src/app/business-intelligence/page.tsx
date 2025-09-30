@@ -2,6 +2,7 @@
 
 import React, { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
+import dynamic from 'next/dynamic';
 import { 
   TrendingUp, 
   BarChart3, 

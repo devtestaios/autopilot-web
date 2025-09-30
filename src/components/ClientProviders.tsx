@@ -17,6 +17,7 @@ import { AIProjectAutomationProvider } from "@/contexts/AIProjectAutomationConte
 import { CollaborationProvider } from "@/contexts/CollaborationContext";
 import { IntegrationsProvider } from "@/contexts/IntegrationsContext";
 import { PerformanceProvider } from "@/contexts/PerformanceContext";
+import { UserTierProvider } from "@/contexts/UserTierContext";
 import { ToastProvider } from "@/components/ui/Toast";
 import { ErrorProvider } from "@/components/providers/ErrorProvider";
 import PageTransition from "@/components/PageTransition";
@@ -92,37 +93,39 @@ export default function ClientProviders({ children }: ClientProvidersProps) {
         <CacheProvider>
           <WebSocketProvider>
             <AuthProvider>
-              <SearchProvider>
-                <UnifiedAIProvider>
-                  <AnalyticsProvider>
-                    <SocialMediaProvider>
-                      <EmailMarketingProvider>
-                        <MarketingOptimizationProvider>
-                          <BusinessConfigurationProvider>
-                            <ProjectManagementProvider>
-                              <AIProjectAutomationProvider>
-                                <CollaborationProvider>
-                                  <IntegrationsProvider>
-                                    <PerformanceProvider>
-                                      <ABTestProvider tests={defaultTests}>
-                                        <ToastProvider>
-                                          <PageTransition>
-                                            {children}
-                                          </PageTransition>
-                                        </ToastProvider>
-                                      </ABTestProvider>
-                                    </PerformanceProvider>
-                                  </IntegrationsProvider>
-                                </CollaborationProvider>
-                              </AIProjectAutomationProvider>
-                            </ProjectManagementProvider>
-                          </BusinessConfigurationProvider>
-                        </MarketingOptimizationProvider>
-                      </EmailMarketingProvider>
-                    </SocialMediaProvider>
-                  </AnalyticsProvider>
-                </UnifiedAIProvider>
-              </SearchProvider>
+              <UserTierProvider>
+                <SearchProvider>
+                  <UnifiedAIProvider>
+                    <AnalyticsProvider>
+                      <SocialMediaProvider>
+                        <EmailMarketingProvider>
+                          <MarketingOptimizationProvider>
+                            <BusinessConfigurationProvider>
+                              <ProjectManagementProvider>
+                                <AIProjectAutomationProvider>
+                                  <CollaborationProvider>
+                                    <IntegrationsProvider>
+                                      <PerformanceProvider>
+                                        <ABTestProvider tests={defaultTests}>
+                                          <ToastProvider>
+                                            <PageTransition>
+                                              {children}
+                                            </PageTransition>
+                                          </ToastProvider>
+                                        </ABTestProvider>
+                                      </PerformanceProvider>
+                                    </IntegrationsProvider>
+                                  </CollaborationProvider>
+                                </AIProjectAutomationProvider>
+                              </ProjectManagementProvider>
+                            </BusinessConfigurationProvider>
+                          </MarketingOptimizationProvider>
+                        </EmailMarketingProvider>
+                      </SocialMediaProvider>
+                    </AnalyticsProvider>
+                  </UnifiedAIProvider>
+                </SearchProvider>
+              </UserTierProvider>
             </AuthProvider>
           </WebSocketProvider>
         </CacheProvider>

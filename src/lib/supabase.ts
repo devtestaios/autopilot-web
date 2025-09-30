@@ -6,7 +6,8 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 // Create a fallback client if environment variables are not set
 let supabase: any;
 
-if (supabaseUrl && supabaseAnonKey) {
+// Only initialize Supabase if we have valid environment variables and we're in a browser environment
+if (typeof window !== 'undefined' && supabaseUrl && supabaseAnonKey && supabaseUrl.startsWith('http')) {
   supabase = createClient(supabaseUrl, supabaseAnonKey, {
     auth: {
       autoRefreshToken: true,
@@ -15,7 +16,9 @@ if (supabaseUrl && supabaseAnonKey) {
     }
   });
 } else {
-  console.warn('Supabase environment variables not found. Using mock authentication.');
+  if (typeof window !== 'undefined') {
+    console.warn('Supabase environment variables not found or invalid. Using mock authentication.');
+  }
   // Create a mock client for development/demo purposes
   supabase = {
     auth: {

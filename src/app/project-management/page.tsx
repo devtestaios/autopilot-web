@@ -5,6 +5,8 @@ import dynamic from 'next/dynamic';
 import { motion } from 'framer-motion';
 import NavigationTabs from '@/components/NavigationTabs';
 import { useProjectManagement } from '@/contexts/ProjectManagementContext';
+import { useUserTier } from '@/contexts/UserTierContext';
+import UpgradePrompt from '@/components/UpgradePrompt';
 
 // Project management skeleton component for lazy loading states
 const ProjectManagementSkeleton = ({ type }: { type: 'wizard' | 'kanban' | 'seeder' | 'analytics' }) => {
@@ -72,6 +74,22 @@ const ProjectAnalyticsDashboard = dynamic(
     loading: () => <ProjectManagementSkeleton type="analytics" />
   }
 );
+
+const TimerWidget = dynamic(
+  () => import('@/components/project-management/TimerWidget'),
+  { 
+    ssr: false, 
+    loading: () => <div className="bg-white dark:bg-gray-800 rounded-lg p-4 animate-pulse"><div className="h-32 bg-gray-200 dark:bg-gray-700 rounded"></div></div>
+  }
+);
+
+const BudgetTracking = dynamic(
+  () => import('@/components/project-management/BudgetTracking'),
+  { 
+    ssr: false, 
+    loading: () => <div className="bg-white dark:bg-gray-800 rounded-lg p-4 animate-pulse"><div className="h-40 bg-gray-200 dark:bg-gray-700 rounded"></div></div>
+  }
+);
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -110,6 +128,8 @@ export default function ProjectManagementDashboard() {
     createProject,
     createTask
   } = useProjectManagement();
+
+  const { canAccess } = useUserTier();
 
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedFilter, setSelectedFilter] = useState('all');
@@ -288,22 +308,45 @@ export default function ProjectManagementDashboard() {
                 </CardContent>
               </Card>
 
-              <Card className="bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700">
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-300">
-                    Team Members
-                  </CardTitle>
-                  <Users className="h-4 w-4 text-purple-600" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold text-gray-900 dark:text-white">
-                    {overallStats.activeMembers}
-                  </div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                    {overallStats.teamMembers} total members
-                  </p>
-                </CardContent>
-              </Card>
+              {canAccess('teamManagement') ? (
+                <Card className="bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700">
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-300">
+                      Team Members
+                    </CardTitle>
+                    <Users className="h-4 w-4 text-purple-600" />
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold text-gray-900 dark:text-white">
+                      {overallStats.activeMembers}
+                    </div>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                      {overallStats.teamMembers} total members
+                    </p>
+                  </CardContent>
+                </Card>
+              ) : (
+                <Card className="bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-purple-900/20 dark:to-indigo-900/20 border border-purple-200 dark:border-purple-800 relative overflow-hidden">
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium text-purple-700 dark:text-purple-300">
+                      Team Management
+                    </CardTitle>
+                    <Users className="h-4 w-4 text-purple-600" />
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold text-purple-800 dark:text-purple-200">
+                      Pro Feature
+                    </div>
+                    <p className="text-xs text-purple-600 dark:text-purple-400 mt-1">
+                      <UpgradePrompt 
+                        size="small"
+                        feature="Team Management"
+                        description="Invite team members, track collaboration"
+                      />
+                    </p>
+                  </CardContent>
+                </Card>
+              )}
 
               <Card className="bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -322,6 +365,95 @@ export default function ProjectManagementDashboard() {
                 </CardContent>
               </Card>
             </motion.div>
+
+            {/* ========== TIMER & QUICK ACTIONS ========== */}
+            <motion.div 
+              className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.15 }}
+            >
+              <div className="lg:col-span-1">
+                <TimerWidget 
+                  taskId={tasks.find(t => t.status === 'in_progress')?.id}
+                  taskTitle={tasks.find(t => t.status === 'in_progress')?.title}
+                />
+              </div>
+              
+              <div className="lg:col-span-2">
+                <Card className="bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 h-full">
+                  <CardHeader>
+                    <CardTitle className="text-lg text-gray-900 dark:text-white">
+                      Recent Activity
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-3">
+                      {tasks.slice(0, 3).map((task) => (
+                        <div key={task.id} className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700">
+                          <div className={`w-2 h-2 rounded-full ${
+                            task.status === 'done' ? 'bg-green-500' :
+                            task.status === 'in_progress' ? 'bg-blue-500' :
+                            'bg-gray-400'
+                          }`} />
+                          <div className="flex-1">
+                            <div className="text-sm font-medium text-gray-900 dark:text-white">
+                              {task.title}
+                            </div>
+                            <div className="text-xs text-gray-500 dark:text-gray-400">
+                              {task.timeSpent ? `${Math.round(task.timeSpent / 60)}h logged` : 'No time logged'}
+                            </div>
+                          </div>
+                          <Badge
+                            className={`text-xs ${
+                              task.priority === 'highest' || task.priority === 'critical' ? 'bg-red-100 text-red-800' :
+                              task.priority === 'high' ? 'bg-orange-100 text-orange-800' :
+                              task.priority === 'medium' ? 'bg-yellow-100 text-yellow-800' :
+                              'bg-gray-100 text-gray-800'
+                            }`}
+                          >
+                            {task.priority}
+                          </Badge>
+                        </div>
+                      ))}
+                      {tasks.length === 0 && (
+                        <div className="text-center py-4 text-gray-500 dark:text-gray-400">
+                          No recent activity
+                        </div>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </motion.div>
+
+            {/* ========== BUDGET TRACKING ========== */}
+            {canAccess('budgetTracking') ? (
+              <motion.div 
+                className="mb-8"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.25 }}
+              >
+                <BudgetTracking 
+                  projectId={currentProject?.id}
+                  showDetailed={true}
+                />
+              </motion.div>
+            ) : (
+              <motion.div 
+                className="mb-8"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.25 }}
+              >
+                <UpgradePrompt 
+                  size="medium"
+                  feature="Budget Tracking & Financial Management"
+                  description="Track project budgets, expenses, and financial performance with detailed analytics and forecasting."
+                />
+              </motion.div>
+            )}
 
             {/* ========== CURRENT PROJECT OVERVIEW ========== */}
             {currentProject && projectAnalytics && (
@@ -496,20 +628,34 @@ export default function ProjectManagementDashboard() {
                 })}
 
                   {/* ========== CREATE PROJECT CARD ========== */}
-                  <Card className="bg-white dark:bg-slate-800 border-2 border-dashed border-gray-300 dark:border-slate-600 hover:border-blue-400 dark:hover:border-blue-400 transition-colors duration-200 cursor-pointer">
-                    <CardContent className="flex flex-col items-center justify-center h-full min-h-[200px] text-center">
-                      <Plus className="h-8 w-8 text-gray-400 dark:text-slate-500 mb-3" />
-                      <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
-                        Create New Project
-                      </h3>
-                      <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
-                        Start a new project from scratch or use a template
-                      </p>
-                      <Button size="sm" onClick={() => setShowCreateWizard(true)}>
-                        Get Started
-                      </Button>
-                    </CardContent>
-                  </Card>
+                  {(canAccess('multipleProjects') || projects.length === 0) ? (
+                    <Card className="bg-white dark:bg-slate-800 border-2 border-dashed border-gray-300 dark:border-slate-600 hover:border-blue-400 dark:hover:border-blue-400 transition-colors duration-200 cursor-pointer">
+                      <CardContent className="flex flex-col items-center justify-center h-full min-h-[200px] text-center">
+                        <Plus className="h-8 w-8 text-gray-400 dark:text-slate-500 mb-3" />
+                        <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
+                          Create New Project
+                        </h3>
+                        <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
+                          Start a new project from scratch or use a template
+                        </p>
+                        <Button size="sm" onClick={() => setShowCreateWizard(true)}>
+                          Get Started
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  ) : (
+                    <Card className="bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 border border-amber-200 dark:border-amber-800">
+                      <CardContent className="flex flex-col items-center justify-center h-full min-h-[200px] text-center">
+                        <div className="mb-4">
+                          <UpgradePrompt 
+                            size="medium"
+                            feature="Multiple Projects"
+                            description="TaskMaster includes 1 project. Upgrade to ProjectSuite for unlimited projects and advanced team collaboration."
+                          />
+                        </div>
+                      </CardContent>
+                    </Card>
+                  )}
                 </div>
               )}
             </motion.div>
@@ -534,7 +680,18 @@ export default function ProjectManagementDashboard() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <ProjectAnalyticsDashboard />
+            {canAccess('advancedAnalytics') ? (
+              <ProjectAnalyticsDashboard />
+            ) : (
+              <div className="max-w-4xl mx-auto">
+                <UpgradePrompt 
+                  size="large"
+                  feature="Advanced Analytics & Reporting"
+                  description="Access comprehensive project analytics, team performance insights, time tracking reports, and predictive project forecasting to optimize your team's productivity."
+                  icon={BarChart3}
+                />
+              </div>
+            )}
           </motion.div>
         )}
 

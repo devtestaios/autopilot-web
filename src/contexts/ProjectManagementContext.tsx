@@ -44,6 +44,7 @@ export interface Task {
   dueDate?: Date;
   estimatedHours?: number;
   actualHours?: number;
+  timeSpent?: number; // Minutes spent on task
   completedDate?: Date;
   tags: string[];
   attachments: Attachment[];
@@ -83,10 +84,12 @@ export interface Milestone {
 export interface TimeEntry {
   id: string;
   taskId: string;
-  projectId: string;
+  projectId?: string;
   userId: string;
-  date: Date;
-  hours: number;
+  startTime: Date;
+  endTime: Date;
+  duration: number; // Minutes
+  hours: number; // For backward compatibility
   description: string;
   billable: boolean;
   rate?: number;
@@ -219,10 +222,17 @@ interface ProjectManagementContextValue {
   getTeamWorkload: () => Record<string, number>;
   
   // ========== TIME TRACKING ==========
+  activeTimer: {
+    taskId: string;
+    startTime: Date;
+    description?: string;
+    elapsed: number;
+  } | null;
   startTimer: (taskId: string, description?: string) => void;
-  stopTimer: () => void;
+  stopTimer: () => Promise<TimeEntry | null>;
   addTimeEntry: (entry: Omit<TimeEntry, 'id' | 'createdAt'>) => Promise<TimeEntry>;
   getTimeReport: (projectId?: string, startDate?: Date, endDate?: Date) => TimeReport;
+  formatElapsedTime: (milliseconds: number) => string;
   
   // ========== MILESTONES ==========
   createMilestone: (milestone: Omit<Milestone, 'id' | 'createdAt'>) => Promise<Milestone>;
@@ -307,9 +317,24 @@ interface TeamAnalytics {
   totalMembers: number;
   activeMembers: number;
   averageWorkload: number;
-  topPerformers: string[];
-  capacityUtilization: Record<string, number>;
-  skillDistribution: Record<string, number>;
+  topPerformers: {
+    id: string;
+    name: string;
+    completionRate: number;
+    efficiency: number;
+    hoursLogged: number;
+  }[];
+  capacityUtilization: Record<string, {
+    name: string;
+    currentTasks: number;
+    workload: number;
+    available: number;
+    status: 'overloaded' | 'busy' | 'optimal' | 'available';
+  }>;
+  skillDistribution: Record<string, {
+    count: number;
+    percentage: number;
+  }>;
 }
 
 interface ProductivityReport {
@@ -635,16 +660,87 @@ export function ProjectManagementProvider({ children }: { children: React.ReactN
     }, {} as Record<string, number>);
   }, [teamMembers]);
 
+  // ========== TIMER STATE ==========
+  const [activeTimer, setActiveTimer] = useState<{
+    taskId: string;
+    startTime: Date;
+    description?: string;
+    elapsed: number;
+  } | null>(null);
+  const [timerInterval, setTimerInterval] = useState<NodeJS.Timeout | null>(null);
+
   // ========== TIME TRACKING ==========
   const startTimer = useCallback((taskId: string, description?: string) => {
-    // TODO: Implement timer functionality
-    console.log('Starting timer for task:', taskId, description);
-  }, []);
+    // Stop any existing timer
+    if (timerInterval) {
+      clearInterval(timerInterval);
+    }
 
-  const stopTimer = useCallback(() => {
-    // TODO: Implement timer functionality
-    console.log('Stopping timer');
-  }, []);
+    const startTime = new Date();
+    setActiveTimer({
+      taskId,
+      startTime,
+      description,
+      elapsed: 0
+    });
+
+    // Start interval to update elapsed time every second
+    const interval = setInterval(() => {
+      setActiveTimer(prev => {
+        if (!prev) return null;
+        return {
+          ...prev,
+          elapsed: Date.now() - prev.startTime.getTime()
+        };
+      });
+    }, 1000);
+
+    setTimerInterval(interval);
+    console.log('Timer started for task:', taskId, description);
+  }, [timerInterval]);
+
+  const stopTimer = useCallback(async () => {
+    if (!activeTimer || !timerInterval) return null;
+
+    clearInterval(timerInterval);
+    setTimerInterval(null);
+
+    const endTime = new Date();
+    const duration = Math.round((endTime.getTime() - activeTimer.startTime.getTime()) / 1000 / 60); // Convert to minutes
+
+    // Create time entry
+    const timeEntry: TimeEntry = {
+      id: `time_${Date.now()}`,
+      taskId: activeTimer.taskId,
+      userId: teamMembers[0]?.id || 'user_1', // TODO: Use actual current user
+      startTime: activeTimer.startTime,
+      endTime,
+      duration,
+      hours: duration / 60, // Convert minutes to hours
+      description: activeTimer.description || 'Timer session',
+      billable: true,
+      createdAt: new Date()
+    };
+
+    // Add to time entries
+    setTimeEntries(prev => [timeEntry, ...prev]);
+
+    // Update task with time spent
+    const task = tasks.find(t => t.id === activeTimer.taskId);
+    if (task) {
+      const newTimeSpent = (task.timeSpent || 0) + duration;
+      setTasks(prev => prev.map(t => 
+        t.id === activeTimer.taskId 
+          ? { ...t, timeSpent: newTimeSpent, updatedAt: new Date() }
+          : t
+      ));
+    }
+
+    setActiveTimer(null);
+    console.log('Timer stopped. Duration:', duration, 'minutes');
+    
+    return timeEntry;
+  }, [activeTimer, timerInterval, teamMembers, tasks]);
 
   const addTimeEntry = useCallback(async (entryData: Omit<TimeEntry, 'id' | 'createdAt'>) => {
     const newEntry: TimeEntry = {
@@ -653,9 +749,44 @@ export function ProjectManagementProvider({ children }: { children: React.ReactN
       createdAt: new Date()
     };
 
-    setTimeEntries(prev => [...prev, newEntry]);
+    setTimeEntries(prev => [newEntry, ...prev]);
+
+    // Update task with additional time
+    const task = tasks.find(t => t.id === entryData.taskId);
+    if (task) {
+      const newTimeSpent = (task.timeSpent || 0) + entryData.duration;
+      setTasks(prev => prev.map(t => 
+        t.id === entryData.taskId 
+          ? { ...t, timeSpent: newTimeSpent, updatedAt: new Date() }
+          : t
+      ));
+    }
+
+    console.log('Time entry added:', newEntry);
     return newEntry;
+  }, [tasks]);
+
+  // Format elapsed time for display
+  const formatElapsedTime = useCallback((milliseconds: number) => {
+    const totalSeconds = Math.floor(milliseconds / 1000);
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+
+    if (hours > 0) {
+      return `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    }
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
   }, []);
+
+  // Cleanup timer on unmount
+  useEffect(() => {
+    return () => {
+      if (timerInterval) {
+        clearInterval(timerInterval);
+      }
+    };
+  }, [timerInterval]);
 
   const getTimeReport = useCallback((projectId?: string, startDate?: Date, endDate?: Date): TimeReport => {
     let filteredEntries = timeEntries;
@@ -665,11 +796,11 @@ export function ProjectManagementProvider({ children }: { children: React.ReactN
     }
 
     if (startDate) {
-      filteredEntries = filteredEntries.filter(entry => entry.date >= startDate);
+      filteredEntries = filteredEntries.filter(entry => entry.startTime >= startDate);
     }
 
     if (endDate) {
-      filteredEntries = filteredEntries.filter(entry => entry.date <= endDate);
+      filteredEntries = filteredEntries.filter(entry => entry.startTime <= endDate);
     }
 
     const totalHours = filteredEntries.reduce((sum, entry) => sum + entry.hours, 0);
@@ -687,38 +818,194 @@ export function ProjectManagementProvider({ children }: { children: React.ReactN
 
   // ========== ANALYTICS ==========
   const getProjectAnalytics = useCallback((projectId: string): ProjectAnalytics => {
+    const project = projects.find(p => p.id === projectId);
     const projectTasks = tasks.filter(t => t.projectId === projectId);
     const completedTasks = projectTasks.filter(t => t.status === 'done');
+    const inProgressTasks = projectTasks.filter(t => t.status === 'in_progress');
+    const overdueTasks = projectTasks.filter(t => 
+      t.dueDate && new Date(t.dueDate) < new Date() && t.status !== 'done'
+    );
+    
     const totalTasks = projectTasks.length;
     const completion = totalTasks > 0 ? (completedTasks.length / totalTasks) * 100 : 0;
+    
+    // Calculate hours spent from time entries
+    const projectTimeEntries = timeEntries.filter(entry => 
+      projectTasks.find(task => task.id === entry.taskId)
+    );
+    const hoursSpent = projectTimeEntries.reduce((total, entry) => total + entry.hours, 0);
+    
+    // Calculate budget used (labor + materials)
+    const laborCost = projectTimeEntries.reduce((total, entry) => {
+      const member = teamMembers.find(m => m.id === entry.userId);
+      const rate = member?.hourlyRate || 75; // Default hourly rate
+      return total + (entry.hours * rate);
+    }, 0);
+    const materialCost = project?.spent || 0;
+    const totalBudgetUsed = laborCost + materialCost;
+    const budgetUsed = project?.budget ? (totalBudgetUsed / project.budget) * 100 : 0;
+    
+    // Calculate team efficiency (tasks completed vs estimated time)
+    const tasksWithEstimates = projectTasks.filter(t => t.estimatedHours && t.timeSpent);
+    const efficiency = tasksWithEstimates.length > 0 
+      ? tasksWithEstimates.reduce((avg, task) => {
+          const estimatedHours = task.estimatedHours || 0;
+          const actualMinutes = task.timeSpent || 0;
+          const actualHours = actualMinutes / 60;
+          const taskEfficiency = estimatedHours > 0 ? (estimatedHours / actualHours) * 100 : 100;
+          return avg + Math.min(taskEfficiency, 200); // Cap at 200% efficiency
+        }, 0) / tasksWithEstimates.length
+      : 85; // Default efficiency if no data
+    
+    // Calculate milestone progress
+    const projectMilestones = milestones.filter(m => m.projectId === projectId);
+    const completedMilestones = projectMilestones.filter(m => m.status === 'completed');
+    const milestoneProgress = projectMilestones.length > 0 
+      ? (completedMilestones.length / projectMilestones.length) * 100 
+      : 0;
+    
+    // Identify risk factors
+    const riskFactors: string[] = [];
+    if (overdueTasks.length > 0) {
+      riskFactors.push(`${overdueTasks.length} overdue task${overdueTasks.length > 1 ? 's' : ''}`);
+    }
+    if (budgetUsed > 90) {
+      riskFactors.push('Budget nearly exhausted');
+    }
+    if (project?.endDate && new Date(project.endDate) < new Date()) {
+      riskFactors.push('Project past deadline');
+    }
+    if (efficiency < 70) {
+      riskFactors.push('Low team efficiency');
+    }
+    
+    // Identify bottlenecks
+    const bottlenecks: string[] = [];
+    const stalledTasks = projectTasks.filter(t => 
+      t.status === 'review' && t.updatedAt && 
+      new Date().getTime() - new Date(t.updatedAt).getTime() > 7 * 24 * 60 * 60 * 1000 // 7 days old
+    );
+    if (stalledTasks.length > 0) {
+      bottlenecks.push(`${stalledTasks.length} stalled task${stalledTasks.length > 1 ? 's' : ''} in review`);
+    }
+    if (inProgressTasks.length > totalTasks * 0.3) {
+      bottlenecks.push('Too many tasks in progress');
+    }
+    
+    const assignedMembers = [...new Set(projectTasks.flatMap(t => t.assignedTo))];
+    const busyMembers = assignedMembers.filter(memberId => {
+      const member = teamMembers.find(m => m.id === memberId);
+      return member && member.workload > 90;
+    });
+    if (busyMembers.length > 0) {
+      bottlenecks.push(`${busyMembers.length} team member${busyMembers.length > 1 ? 's' : ''} at capacity`);
+    }
 
     return {
       completion,
       tasksCompleted: completedTasks.length,
       totalTasks,
-      hoursSpent: 0, // TODO: Calculate from time entries
-      budgetUsed: 0, // TODO: Calculate from project budget
-      teamEfficiency: 85, // TODO: Calculate actual efficiency
-      milestoneProgress: 0, // TODO: Calculate milestone progress
-      riskFactors: [],
-      bottlenecks: []
+      hoursSpent: Math.round(hoursSpent * 10) / 10, // Round to 1 decimal
+      budgetUsed: Math.round(budgetUsed * 10) / 10,
+      teamEfficiency: Math.round(efficiency * 10) / 10,
+      milestoneProgress: Math.round(milestoneProgress * 10) / 10,
+      riskFactors,
+      bottlenecks
     };
-  }, [tasks]);
+  }, [tasks, projects, timeEntries, teamMembers, milestones]);
 
   const getTeamAnalytics = useCallback((): TeamAnalytics => {
     const activeMembers = teamMembers.filter(m => m.isActive);
     const totalWorkload = activeMembers.reduce((sum, m) => sum + m.workload, 0);
     const averageWorkload = activeMembers.length > 0 ? totalWorkload / activeMembers.length : 0;
 
+    // Calculate top performers based on task completion and efficiency
+    const memberPerformance = activeMembers.map(member => {
+      const memberTasks = tasks.filter(t => t.assignedTo.includes(member.id));
+      const completedTasks = memberTasks.filter(t => t.status === 'done');
+      const memberTimeEntries = timeEntries.filter(e => e.userId === member.id);
+      
+      const completionRate = memberTasks.length > 0 ? (completedTasks.length / memberTasks.length) * 100 : 0;
+      const totalHours = memberTimeEntries.reduce((sum, e) => sum + e.hours, 0);
+      
+      // Calculate efficiency (estimated vs actual time)
+      const tasksWithEstimates = completedTasks.filter(t => t.estimatedHours && t.timeSpent);
+      const efficiency = tasksWithEstimates.length > 0 
+        ? tasksWithEstimates.reduce((avg, task) => {
+            const estimatedHours = task.estimatedHours || 0;
+            const actualMinutes = task.timeSpent || 0;
+            const actualHours = actualMinutes / 60;
+            return avg + (estimatedHours > 0 ? (estimatedHours / actualHours) * 100 : 100);
+          }, 0) / tasksWithEstimates.length
+        : 100;
+
+      return {
+        member,
+        completionRate,
+        totalHours,
+        efficiency: Math.min(efficiency, 200), // Cap at 200%
+        score: (completionRate * 0.4) + (Math.min(efficiency, 150) * 0.4) + (Math.min(totalHours * 2, 100) * 0.2)
+      };
+    });
+
+    const topPerformers = memberPerformance
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 5)
+      .map(p => ({
+        id: p.member.id,
+        name: p.member.name,
+        completionRate: Math.round(p.completionRate),
+        efficiency: Math.round(p.efficiency),
+        hoursLogged: Math.round(p.totalHours * 10) / 10
+      }));
+
+    // Calculate capacity utilization
+    const capacityUtilization = activeMembers.reduce((acc, member) => {
+      const memberTasks = tasks.filter(t => 
+        t.assignedTo.includes(member.id) && 
+        (t.status === 'in_progress' || t.status === 'review')
+      );
+      const workloadPercentage = member.workload;
+      
+      acc[member.id] = {
+        name: member.name,
+        currentTasks: memberTasks.length,
+        workload: workloadPercentage,
+        available: 100 - workloadPercentage,
+        status: workloadPercentage > 90 ? 'overloaded' : 
+                workloadPercentage > 70 ? 'busy' : 
+                workloadPercentage > 40 ? 'optimal' : 'available'
+      };
+      return acc;
+    }, {} as Record<string, any>);
+
+    // Calculate skill distribution
+    const allSkills = activeMembers.flatMap(m => m.skills || []);
+    const skillCounts = allSkills.reduce((acc, skill) => {
+      acc[skill] = (acc[skill] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+
+    const skillDistribution = Object.entries(skillCounts)
+      .sort(([,a], [,b]) => b - a)
+      .slice(0, 10)
+      .reduce((acc, [skill, count]) => {
+        acc[skill] = {
+          count,
+          percentage: Math.round((count / activeMembers.length) * 100)
+        };
+        return acc;
+      }, {} as Record<string, any>);
+
     return {
       totalMembers: teamMembers.length,
       activeMembers: activeMembers.length,
-      averageWorkload,
-      topPerformers: [],
-      capacityUtilization: {},
-      skillDistribution: {}
+      averageWorkload: Math.round(averageWorkload * 10) / 10,
+      topPerformers,
+      capacityUtilization,
+      skillDistribution
     };
-  }, [teamMembers]);
+  }, [teamMembers, tasks, timeEntries]);
 
   // ========== VIEW MANAGEMENT ==========
   const updateFilters = useCallback((newFilters: Partial<ProjectFilter>) => {
@@ -835,10 +1122,12 @@ export function ProjectManagementProvider({ children }: { children: React.ReactN
     getTeamWorkload,
     
     // Time tracking
+    activeTimer,
     startTimer,
     stopTimer,
     addTimeEntry,
     getTimeReport,
+    formatElapsedTime,
     
     // Milestones
     createMilestone: async () => ({} as Milestone), // TODO: Implement

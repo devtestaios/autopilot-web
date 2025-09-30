@@ -19,7 +19,7 @@
 ```bash
 # Facebook & Instagram Secrets
 FACEBOOK_APP_SECRET=your_facebook_app_secret_here
-INSTAGRAM_APP_SECRET=68944f08577717087ddcfce75914fe5d
+INSTAGRAM_APP_SECRET=a7d04912a36f6847993c7fe099a6b07a
 
 # Twitter API Secrets  
 TWITTER_CLIENT_SECRET=your_twitter_client_secret_here

@@ -28,7 +28,7 @@ try:
         supabase: Client = create_client(SUPABASE_URL, SUPABASE_ANON_KEY)
         SUPABASE_AVAILABLE = True
         logger.info("✅ Supabase client initialized successfully")
-    else:    https://pulsebridge.ai/auth/deauthorize
+    else:
         logger.warning("❌ Supabase environment variables not found")
         supabase = None
         SUPABASE_AVAILABLE = False

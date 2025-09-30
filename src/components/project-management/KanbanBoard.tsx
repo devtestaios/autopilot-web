@@ -114,11 +114,23 @@ interface TaskCardProps {
 }
 
 function TaskCard({ task, index, teamMembers, onClick }: TaskCardProps) {
+  const { activeTimer, startTimer, stopTimer, formatElapsedTime } = useProjectManagement();
   const assignee = task.assignee || teamMembers.find(m => task.assignedTo.includes(m.id));
   const isOverdue = task.dueDate && new Date(task.dueDate) < new Date() && task.status !== 'done';
   const daysUntilDue = task.dueDate 
     ? Math.ceil((new Date(task.dueDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))
     : null;
+
+  const isTimerActive = activeTimer?.taskId === task.id;
+
+  const handleTimerClick = async (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent card click
+    if (isTimerActive) {
+      await stopTimer();
+    } else {
+      startTimer(task.id, task.title);
+    }
+  };
 
   return (
     <Draggable draggableId={task.id} index={index}>
@@ -136,14 +148,14 @@ function TaskCard({ task, index, teamMembers, onClick }: TaskCardProps) {
             whileHover={{ scale: 1.02 }}
             className={`group ${snapshot.isDragging ? 'rotate-3 shadow-xl' : ''}`}
           >
-            <Card 
-              className={`mb-3 cursor-pointer transition-all duration-200 hover:shadow-md ${
-                snapshot.isDragging 
-                  ? 'shadow-xl ring-2 ring-blue-500' 
-                  : 'hover:shadow-lg'
-              } ${isOverdue ? 'border-red-300 bg-red-50 dark:bg-red-900/10' : ''}`}
-              onClick={onClick}
-            >
+            <div onClick={onClick} className="cursor-pointer">
+              <Card 
+                className={`mb-3 transition-all duration-200 hover:shadow-md ${
+                  snapshot.isDragging 
+                    ? 'shadow-xl ring-2 ring-blue-500' 
+                    : 'hover:shadow-lg'
+                } ${isOverdue ? 'border-red-300 bg-red-50 dark:bg-red-900/10' : ''}`}
+              >
               <CardContent className="p-4">
                 {/* ========== TASK HEADER ========== */}
                 <div className="flex items-start justify-between mb-3">
@@ -254,17 +266,56 @@ function TaskCard({ task, index, teamMembers, onClick }: TaskCardProps) {
                       )}
                     </div>
 
-                    {/* ========== TIME TRACKING ========== */}
-                    {task.estimatedHours && (
-                      <div className="flex items-center gap-1 text-xs text-gray-500">
-                        <Clock className="h-3 w-3" />
-                        <span>{task.estimatedHours}h</span>
-                      </div>
-                    )}
+                    {/* ========== TIME TRACKING & TIMER ========== */}
+                    <div className="flex items-center gap-2">
+                      {/* Timer Display */}
+                      {isTimerActive && (
+                        <div className="flex items-center gap-1 text-xs text-green-600 dark:text-green-400">
+                          <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+                          <span className="font-mono">
+                            {formatElapsedTime(activeTimer.elapsed)}
+                          </span>
+                        </div>
+                      )}
+                      
+                      {/* Time Spent */}
+                      {task.timeSpent && (
+                        <div className="flex items-center gap-1 text-xs text-gray-500">
+                          <Clock className="h-3 w-3" />
+                          <span>{Math.round(task.timeSpent / 60)}h</span>
+                        </div>
+                      )}
+
+                      {/* Estimated Hours */}
+                      {task.estimatedHours && (
+                        <div className="flex items-center gap-1 text-xs text-gray-400">
+                          <span>({task.estimatedHours}h est.)</span>
+                        </div>
+                      )}
+
+                      {/* Timer Button */}
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={handleTimerClick}
+                        className={`p-1 h-6 w-6 transition-all ${
+                          isTimerActive 
+                            ? 'text-red-600 hover:text-red-700 hover:bg-red-50' 
+                            : 'text-green-600 hover:text-green-700 hover:bg-green-50'
+                        } opacity-0 group-hover:opacity-100`}
+                      >
+                        {isTimerActive ? (
+                          <Pause className="h-3 w-3" />
+                        ) : (
+                          <Play className="h-3 w-3" />
+                        )}
+                      </Button>
+                    </div>
                   </div>
                 </div>
               </CardContent>
             </Card>
+            </div>
           </motion.div>
         </div>
       )}

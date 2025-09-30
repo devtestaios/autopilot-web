@@ -39,7 +39,7 @@ export const EXISTING_PLATFORMS: PlatformModule[] = [
     route: '/marketing',
     category: 'marketing',
     status: 'active',
-    description: 'Unified marketing hub combining campaigns, social media, email marketing, and content creation with AI optimization',
+    description: 'Unified marketing ecosystem combining campaigns, social media, email marketing, and content creation with AI optimization. Central hub for all marketing operations.',
     features: [
       'campaign-management', 
       'social-media-management', 
@@ -48,7 +48,9 @@ export const EXISTING_PLATFORMS: PlatformModule[] = [
       'ai-optimization', 
       'cross-channel-analytics',
       'marketing-automation',
-      'lead-management'
+      'lead-management',
+      'unified-kpi-dashboard',
+      'cross-platform-insights'
     ],
     widgets: [
       { type: 'unified-kpi-dashboard', size: 'large', title: 'Marketing KPI Overview' },

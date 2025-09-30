@@ -47,35 +47,40 @@ The `/dashboard` route has been successfully transformed into a **Master Termina
 ### **Navigation Hierarchy Structure**
 ```
 Master Terminal (Dashboard)
-├── Marketing Platforms
-│   ├── Campaign Management
-│   ├── Email Marketing
-│   ├── Social Media
-│   └── Content Suite
+├── Marketing Suite (Unified Command Center)
+│   ├── Marketing Command Center (/marketing) - UNIFIED HUB
+│   │   ├── Campaign Management (/marketing/campaigns)
+│   │   ├── Social Media Hub (/marketing/social)
+│   │   ├── Email Marketing (/marketing/email)
+│   │   └── Content Studio (/marketing/content)
+│   ├── Legacy Routes (Backward Compatibility)
+│   │   ├── Social Media Platform (/social-media) → redirects to /marketing/social
+│   │   ├── Email Marketing (/email-marketing) → redirects to /marketing/email
+│   │   └── Content Suite (/content-suite) → redirects to /marketing/content
 ├── Business Operations
-│   ├── Team Collaboration
-│   ├── Project Management
-│   ├── Lead Management
-│   └── Unified CRM
+│   ├── Business Suite (/business-suite)
+│   ├── Unified CRM (/unified-crm)
+│   ├── Team Collaboration (/collaboration)
+│   └── Lead Management (/leads)
 ├── Analytics & Insights
-│   ├── Analytics Overview
+│   ├── Analytics Overview (/analytics)
 │   ├── Performance Tracking
 │   ├── ROI Analysis
 │   └── Advanced Reports
 ├── AI & Automation
+│   ├── AI Project Automation (/ai-automation)
 │   ├── AI Control Center
-│   ├── AI Optimizer
-│   ├── Automation Hub
+│   ├── Smart Alerts (/alerts)
 │   └── AI Analytics
 ├── Integration & Tools
-│   ├── App Marketplace
+│   ├── Integrations Marketplace (/integrations)
 │   ├── Multi-Platform Sync
 │   ├── Smart Scheduler
-│   └── Platform Manager
+│   └── Platform Manager (/platforms)
 └── Enterprise & Settings
     ├── Enterprise Suite
     ├── Business Intelligence
-    ├── Platform Settings
+    ├── System Status (/status)
     └── Infrastructure
 ```
 
