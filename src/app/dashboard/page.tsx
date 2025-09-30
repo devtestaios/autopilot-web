@@ -16,6 +16,15 @@ const MasterTerminalCore = dynamic(() => import('@/components/dashboard/MasterTe
   )
 });
 
+const IntelligentDashboardCore = dynamic(() => import('@/components/dashboard/IntelligentDashboardCore'), {
+  ssr: false,
+  loading: () => (
+    <div className="flex items-center justify-center min-h-[200px]">
+      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
+    </div>
+  )
+});
+
 // Enterprise KPI Dashboard Component
 interface EnterpriseKPI {
   title: string;
@@ -157,6 +166,15 @@ export default function DashboardPage() {
               </motion.div>
             ))}
           </div>
+        </motion.div>
+
+        {/* Intelligent Business Engine */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.15 }}
+        >
+          <IntelligentDashboardCore />
         </motion.div>
 
         {/* Master Terminal Core */}
