@@ -1,6 +1,22 @@
 # PulseBridge.ai Copilot Instructions
 
-> **LATEST MAJOR MILESTONE** (September 29, 2025): 🛠️ **SSR ERROR RESOLUTION COMPLETE** - Applied coding dissertation SSR-safe patterns, 102/102 routes building successfully
+> **LATEST MAJOR MILESTONE** (September 30, 2025): 🎯 **INSTAGRAM API INTEGRATION COMPLETE** - Full Instagram OAuth implementation with modern Instagram API (post-Basic Display deprecation)
+
+## 🚀 **INSTAGRAM API INTEGRATION COMPLETE** (September 30, 2025)
+
+**Major Technical Achievement**: Complete Instagram OAuth integration using modern Instagram API with Facebook Login:
+- **✅ Instagram API Migration**: Migrated from deprecated Instagram Basic Display API to modern Instagram API with Facebook Login
+- **✅ Facebook SDK Integration**: Global Facebook SDK loaded in root layout with proper TypeScript types
+- **✅ OAuth Flow Complete**: Full end-to-end OAuth implementation with proper permissions
+- **✅ Business Account Support**: Configured for Instagram business/creator accounts with Facebook Page integration
+- **✅ Production Ready**: Deployed with correct App ID (1978667392867839) and environment configuration
+
+**Technical Implementation**:
+- **Modern API Compliance**: Instagram Basic Display API deprecated Dec 4, 2024 - migrated to supported Instagram API
+- **Enhanced Permissions**: `pages_show_list,pages_read_engagement,instagram_basic,instagram_content_publish`
+- **Facebook SDK Integration**: Component at `src/components/FacebookSDK.tsx` with global availability
+- **Dual OAuth Approach**: FB.login() method + fallback redirect for comprehensive compatibility
+- **Environment Configuration**: All credentials properly configured across Render backend and Vercel frontend
 
 ## 🎯 **CRITICAL SSR RESOLUTION ACHIEVEMENT** (September 29, 2025)
 
@@ -33,11 +49,24 @@
 - **Production**: https://pulsebridge.ai | **Backend**: https://autopilot-api-1.onrender.com
 - **Status**: 102/102 routes building, zero TypeScript errors, zero SSR errors, 60+ database APIs implemented
 
-## 🚀 **CURRENT PHASE: ENHANCED SOCIAL MEDIA PLATFORM COMPLETE** (September 29, 2025)
+## 🚀 **CURRENT PHASE: INSTAGRAM OAUTH INTEGRATION COMPLETE** (September 30, 2025)
 
-**Phase Complete**: ✅ Enhanced Social Media Management Platform with AI-powered features  
-**Achievement**: Full third-party API integration ready, AI content generation, real-time analytics  
-**Implementation**: `/social-media` - Primary route with comprehensive social media management
+**Phase Complete**: ✅ Instagram API Integration with Facebook Login (Modern API Post-Deprecation)  
+**Achievement**: Full Instagram OAuth flow with business account support and Facebook SDK integration  
+**Implementation**: `/social-media` - Enhanced with complete Instagram connectivity and modern API compliance
+
+### ✅ **INSTAGRAM API INTEGRATION COMPLETE** ✅ (September 30, 2025)
+```
+🎯 MODERN INSTAGRAM API INTEGRATION ACHIEVED
+- Complete Instagram OAuth using Instagram API with Facebook Login
+- Facebook SDK component integrated globally in root layout
+- Enhanced permissions for business/creator account access
+- Modern API compliance (Instagram Basic Display deprecated Dec 2024)
+- Dual OAuth implementation: FB.login() + redirect fallback
+- Production deployment with App ID 1978667392867839
+- Full environment configuration across Render + Vercel
+- Business account requirements and Facebook Page integration support
+```
 
 ### ✅ **SOCIAL MEDIA PLATFORM ENHANCEMENT COMPLETE** ✅ (September 29, 2025)
 ```
@@ -48,6 +77,9 @@
 - Multi-platform Account Management (6 platforms supported)
 - Cross-platform Publishing with optimal timing suggestions
 - Advanced Engagement Tracking with competitor analysis
+- SSR-safe implementation with coding dissertation patterns
+- 102/102 routes building successfully with zero errors
+```
 - SSR-safe implementation with coding dissertation patterns
 - 102/102 routes building successfully with zero errors
 ```
@@ -69,6 +101,8 @@
 **Critical Routes**:
 - **Main Social Media Platform**: `/social-media` - Enhanced AI-powered social media management **[PRIMARY ROUTE]**
 - **Social Redirect**: `/social` - Redirects to `/social-media` for backward compatibility
+- **Instagram OAuth Integration**: Complete with Facebook SDK at `src/components/FacebookSDK.tsx` **[OAUTH COMPLETE]**
+- **Instagram Callback**: `/auth/instagram/callback` - OAuth callback handler **[FULLY IMPLEMENTED]**
 - `src/app/dashboard/page.tsx` - 366 lines with mature AI agent integration **[MOST ADVANCED SYSTEM]**
 - `src/components/UnifiedSidebar.tsx` - Advanced navigation system **[PROVEN ARCHITECTURE]**
 - `src/components/AIControlChat.tsx` - Claude Sonnet 4 platform control **[AI AGENT FOUNDATION]**
@@ -94,6 +128,58 @@ npx tsc --noEmit --skipLibCheck  # Zero errors required
 # Backend API Development
 cd backend && uvicorn main:app --reload  # 60+ endpoints ready
 curl http://localhost:8000/docs          # FastAPI documentation
+```
+
+## 🎯 **INSTAGRAM OAUTH INTEGRATION STATUS** (September 30, 2025)
+
+### **Complete Implementation**: ✅ Instagram API with Facebook Login
+
+#### **Full OAuth Flow Implemented**:
+1. **Frontend Integration** → `/social-media` with Connect Account functionality
+2. **Facebook SDK Component** → `src/components/FacebookSDK.tsx` globally loaded
+3. **Backend OAuth Endpoints** → `/api/social-media/oauth/initiate` with modern permissions
+4. **Callback Handler** → `/auth/instagram/callback/page.tsx` with Suspense boundaries
+5. **Environment Configuration** → All credentials configured across Render + Vercel
+
+#### **Technical Implementation Stack**:
+```typescript
+// Frontend: src/app/social-media/page.tsx (600+ lines)
+// Enhanced handleConnectAccount with FB.login() method
+window.FB.login(function(response) {
+  // Handle Instagram OAuth response
+}, {
+  scope: 'pages_show_list,pages_read_engagement,instagram_basic,instagram_content_publish'
+});
+
+// Facebook SDK: src/components/FacebookSDK.tsx
+window.FB.init({
+  appId: '1978667392867839',
+  version: 'v19.0'
+});
+
+// Backend: backend/main.py OAuth endpoint
+scope = "pages_show_list,pages_read_engagement,instagram_basic,instagram_content_publish"
+auth_url = f"https://www.facebook.com/v19.0/dialog/oauth?client_id={app_id}&..."
+
+// Environment Variables (Render + Vercel)
+NEXT_PUBLIC_FACEBOOK_APP_ID=1978667392867839
+FACEBOOK_APP_SECRET=365381fb087baf8cb38c53ced46b08a4
+```
+
+#### **Modern API Compliance**:
+- **✅ Instagram Basic Display Migration**: Deprecated Dec 4, 2024 - fully migrated
+- **✅ Business Account Requirements**: Configured for Instagram business/creator accounts
+- **✅ Facebook Page Integration**: Required for modern Instagram API access
+- **✅ Enhanced Permissions**: Full business use case permission set
+- **✅ Production Ready**: All OAuth flows tested and deployed
+
+### **Meta Developer Console Configuration**:
+```bash
+App ID: 1978667392867839
+App Secret: 365381fb087baf8cb38c53ced46b08a4
+OAuth Redirect: https://pulsebridge.ai/auth/instagram/callback
+App Domains: pulsebridge.ai
+Products: Instagram API (not Basic Display)
 ```
 
 ## 🎯 **DATABASE API INTEGRATION STATUS** (September 29, 2025)
