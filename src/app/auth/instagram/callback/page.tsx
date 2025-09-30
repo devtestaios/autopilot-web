@@ -1,10 +1,13 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { socialMediaService } from '@/services/socialMediaService';
 
-export default function InstagramCallback() {
+// Force dynamic rendering to avoid build-time issues
+export const dynamic = 'force-dynamic';
+
+function InstagramCallbackContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
@@ -118,5 +121,28 @@ export default function InstagramCallback() {
         )}
       </div>
     </div>
+  );
+}
+
+function LoadingFallback() {
+  return (
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+      <div className="max-w-md mx-auto text-center p-8">
+        <div className="flex items-center justify-center mb-4">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-500"></div>
+        </div>
+        <p className="text-gray-600 dark:text-gray-400">
+          Loading Instagram authentication...
+        </p>
+      </div>
+    </div>
+  );
+}
+
+export default function InstagramCallback() {
+  return (
+    <Suspense fallback={<LoadingFallback />}>
+      <InstagramCallbackContent />
+    </Suspense>
   );
 }
