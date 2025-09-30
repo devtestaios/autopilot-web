@@ -598,6 +598,44 @@ async def health_check():
         "version": "1.0.0"
     }
 
+@app.get("/health/instagram")
+async def instagram_health_check():
+    """Instagram OAuth configuration health check"""
+    try:
+        app_id = os.getenv("NEXT_PUBLIC_INSTAGRAM_APP_ID")
+        app_secret = os.getenv("INSTAGRAM_APP_SECRET")
+        base_url = os.getenv("NEXT_PUBLIC_BASE_URL")
+        
+        status = {
+            "instagram_app_id_configured": bool(app_id),
+            "instagram_app_secret_configured": bool(app_secret),
+            "base_url_configured": bool(base_url),
+            "oauth_endpoints_available": True,
+            "timestamp": datetime.now(timezone.utc).isoformat()
+        }
+        
+        if app_id:
+            status["app_id_length"] = len(app_id)
+            status["app_id_preview"] = f"{app_id[:4]}...{app_id[-4:]}" if len(app_id) > 8 else "too_short"
+        
+        if base_url:
+            status["redirect_uri"] = f"{base_url}/auth/instagram/callback"
+        
+        overall_status = "healthy" if all([app_id, app_secret, base_url]) else "partial"
+        
+        return {
+            "status": overall_status,
+            "details": status,
+            "ready_for_oauth": all([app_id, app_secret, base_url])
+        }
+        
+    except Exception as e:
+        return {
+            "status": "error",
+            "error": str(e),
+            "timestamp": datetime.now(timezone.utc).isoformat()
+        }
+
 # Campaign Management (existing endpoints)
 @app.get("/api/v1/campaigns")
 async def get_campaigns():
@@ -1302,7 +1340,11 @@ async def initiate_social_media_oauth(request: dict):
         if platform == "instagram":
             # Instagram OAuth via Facebook Graph API
             app_id = config.get("appId") or os.getenv("NEXT_PUBLIC_INSTAGRAM_APP_ID")
-            redirect_uri = f"{os.getenv('NEXT_PUBLIC_BASE_URL', 'https://pulsebridge.ai')}/auth/instagram/callback"
+            if not app_id:
+                raise HTTPException(status_code=400, detail="Instagram App ID not configured")
+                
+            base_url = os.getenv('NEXT_PUBLIC_BASE_URL', 'https://pulsebridge.ai')
+            redirect_uri = f"{base_url}/auth/instagram/callback"
             
             # Instagram permissions
             scope = "instagram_basic,instagram_content_publish,pages_show_list,pages_read_engagement"
@@ -1321,7 +1363,11 @@ async def initiate_social_media_oauth(request: dict):
         elif platform == "facebook":
             # Facebook OAuth
             app_id = config.get("appId") or os.getenv("NEXT_PUBLIC_FACEBOOK_APP_ID")
-            redirect_uri = f"{os.getenv('NEXT_PUBLIC_BASE_URL', 'https://pulsebridge.ai')}/auth/facebook/callback"
+            if not app_id:
+                raise HTTPException(status_code=400, detail="Facebook App ID not configured")
+                
+            base_url = os.getenv('NEXT_PUBLIC_BASE_URL', 'https://pulsebridge.ai')
+            redirect_uri = f"{base_url}/auth/facebook/callback"
             
             scope = "pages_manage_posts,pages_read_engagement,pages_show_list"
             
@@ -1339,6 +1385,8 @@ async def initiate_social_media_oauth(request: dict):
         else:
             raise HTTPException(status_code=400, detail=f"Platform {platform} not supported yet")
     
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"Error initiating OAuth for {platform}: {e}")
         raise HTTPException(status_code=500, detail=f"OAuth initiation error: {str(e)}")
@@ -1358,7 +1406,12 @@ async def complete_social_media_oauth(request: dict):
             # Exchange code for access token
             app_id = os.getenv("NEXT_PUBLIC_INSTAGRAM_APP_ID")
             app_secret = os.getenv("INSTAGRAM_APP_SECRET")
-            redirect_uri = f"{os.getenv('NEXT_PUBLIC_BASE_URL', 'https://pulsebridge.ai')}/auth/instagram/callback"
+            
+            if not app_id or not app_secret:
+                raise HTTPException(status_code=500, detail="Instagram credentials not configured")
+                
+            base_url = os.getenv('NEXT_PUBLIC_BASE_URL', 'https://pulsebridge.ai')
+            redirect_uri = f"{base_url}/auth/instagram/callback"
             
             # Get access token from Facebook
             token_url = "https://graph.facebook.com/v18.0/oauth/access_token"
@@ -1370,11 +1423,12 @@ async def complete_social_media_oauth(request: dict):
             }
             
             # This is a mock response for now - in production you would make the actual API call
+            # For now, we'll create a mock account to avoid API integration complexity
             mock_account = {
                 "id": f"mock_instagram_{code[:10]}",
                 "platform": "instagram",
-                "username": "grayandairhome",
-                "display_name": "Gray & AI Home",
+                "username": "connected_account",
+                "display_name": "Connected Instagram Account",
                 "profile_picture": "https://via.placeholder.com/100",
                 "followers_count": 0,
                 "is_connected": True,
@@ -1399,6 +1453,8 @@ async def complete_social_media_oauth(request: dict):
         else:
             raise HTTPException(status_code=400, detail=f"Platform {platform} not supported yet")
     
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"Error completing OAuth for {platform}: {e}")
         raise HTTPException(status_code=500, detail=f"OAuth completion error: {str(e)}")
