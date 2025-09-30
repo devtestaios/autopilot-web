@@ -898,25 +898,10 @@ function DashboardPageContent() {
                 🚀 Platform Roadmap
               </h3>
               <p className="text-blue-700 dark:text-blue-200 mb-4">
-                Building toward 20 integrated platforms. Currently {EXISTING_PLATFORMS.length} platforms are active 
-                with {PLANNED_PLATFORMS.length} more in development.
+                Building toward 20 integrated platforms.
               </p>
-              <div className="flex flex-wrap gap-2">
-                {PLANNED_PLATFORMS.slice(0, 6).map(platform => (
-                  <span 
-                    key={platform.id}
-                    className="px-3 py-1 bg-blue-100 dark:bg-blue-800 text-blue-800 dark:text-blue-200 rounded-full text-sm"
-                  >
-                    {platform.name} - {platform.status}
-                  </span>
-                ))}
-                {PLANNED_PLATFORMS.length > 6 && (
-                  <span className="px-3 py-1 bg-blue-100 dark:bg-blue-800 text-blue-800 dark:text-blue-200 rounded-full text-sm">
-                    +{PLANNED_PLATFORMS.length - 6} more
-                  </span>
-                )}
-              </div>
             </div>
+          </div>
           </div>
         </main>
       </div>
