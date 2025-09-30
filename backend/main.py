@@ -1339,23 +1339,23 @@ async def initiate_social_media_oauth(request: dict):
         config = request.get("config", {})
         
         if platform == "instagram":
-            # Test with basic Facebook login only (no Instagram permissions)
-            app_id = config.get("appId") or os.getenv("NEXT_PUBLIC_INSTAGRAM_APP_ID")
+            # Instagram via Facebook Login - use Facebook App ID/Secret
+            app_id = config.get("appId") or os.getenv("NEXT_PUBLIC_FACEBOOK_APP_ID") or os.getenv("NEXT_PUBLIC_INSTAGRAM_APP_ID")
             # Handle empty string case
             if not app_id or app_id == "":
-                app_id = os.getenv("NEXT_PUBLIC_INSTAGRAM_APP_ID")
+                app_id = os.getenv("NEXT_PUBLIC_FACEBOOK_APP_ID") or os.getenv("NEXT_PUBLIC_INSTAGRAM_APP_ID")
             if not app_id:
-                raise HTTPException(status_code=400, detail="Instagram App ID not configured")
+                raise HTTPException(status_code=400, detail="Facebook App ID not configured")
             
-            logger.info(f"Testing basic Facebook OAuth: Using App ID {app_id[:4]}...{app_id[-4:]} (length: {len(app_id)})")
+            logger.info(f"Facebook OAuth for Instagram: Using App ID {app_id[:4]}...{app_id[-4:]} (length: {len(app_id)})")
                 
             base_url = os.getenv('NEXT_PUBLIC_BASE_URL', 'https://pulsebridge.ai')
             redirect_uri = f"{base_url}/auth/instagram/callback"
             
-            # TEST: Basic Facebook permissions only (no Instagram)
+            # Basic Facebook permissions that work in Development mode
             scope = "public_profile"
             
-            # Basic Facebook Login test
+            # Facebook Login endpoint
             auth_url = (
                 f"https://www.facebook.com/v19.0/dialog/oauth?"
                 f"client_id={app_id}&"
