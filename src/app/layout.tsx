@@ -4,6 +4,7 @@ import "./globals.css";
 import ClientProviders from "@/components/ClientProviders";
 import AIFloatingAssistant from "@/components/AIFloatingAssistant";
 import { ClientOnlyGlobalSearch } from '@/components/ClientOnlyGlobalSearch';
+import FacebookSDK from '@/components/FacebookSDK';
 
 export const metadata: Metadata = {
   title: "PulseBridge.ai - AI Marketing Intelligence",
@@ -53,13 +54,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${orbitron.variable} ${exo2.variable} antialiased`}
-        suppressHydrationWarning
-      >
+    <html lang="en">
+      <body className={`${orbitron.variable} ${exo2.variable}`}>
+        <FacebookSDK />
         <ClientProviders>
-          {children}
+          <main className="min-h-screen">
+            {children}
+          </main>
           <AIFloatingAssistant />
           <ClientOnlyGlobalSearch />
         </ClientProviders>
