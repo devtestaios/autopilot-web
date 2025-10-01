@@ -17,9 +17,35 @@ import {
   ChevronRight,
   Menu,
   X,
-  RefreshCw
+  RefreshCw,
+  Brain,
+  Zap,
+  Mail,
+  Share2,
+  PenTool,
+  ShoppingCart,
+  Briefcase,
+  FileText,
+  Globe,
+  Database,
+  Shield,
+  Monitor,
+  Smartphone,
+  MessageSquare,
+  Layers,
+  GitBranch,
+  Clock,
+  UserCheck,
+  Workflow,
+  PieChart,
+  LineChart,
+  Activity
 } from 'lucide-react';
 import { PulseWaveLogo } from './PulseWaveLogo';
+
+// ============================================================================
+// CONTEXTUAL SIDEBAR CONTENT BASED ON CURRENT PAGE
+// ============================================================================
 
 interface SidebarItem {
   id: string;
@@ -27,95 +53,423 @@ interface SidebarItem {
   icon: React.ComponentType<any>;
   path: string;
   badge?: string;
+  description?: string;
   subItems?: Array<{
     id: string;
     label: string;
     path: string;
+    description?: string;
   }>;
 }
 
-const sidebarItems: SidebarItem[] = [
-  {
-    id: 'master-terminal',
-    label: 'Master Terminal',
-    icon: LayoutDashboard,
-    path: '/dashboard',
-    badge: 'Command'
-  },
-  {
-    id: 'marketing-platforms',
-    label: 'Marketing Platforms',
-    icon: Megaphone,
-    path: '/marketing',
-    subItems: [
-      { id: 'campaigns', label: 'Campaign Management', path: '/campaigns' },
-      { id: 'email-marketing', label: 'Email Marketing', path: '/email-marketing' },
-      { id: 'social-media', label: 'Social Media', path: '/social' },
-      { id: 'content-suite', label: 'Content Suite', path: '/content-suite' }
-    ]
-  },
-  {
-    id: 'business-platforms',
-    label: 'Business Operations',
-    icon: Users,
-    path: '/business-suite',
-    subItems: [
-      { id: 'collaboration', label: 'Team Collaboration', path: '/collaboration' },
-      { id: 'project-management', label: 'Project Management', path: '/project-management' },
-      { id: 'leads', label: 'Lead Management', path: '/leads' },
-      { id: 'unified-crm', label: 'Unified CRM', path: '/unified-crm' }
-    ]
-  },
-  {
-    id: 'analytics-platforms',
-    label: 'Analytics & Insights',
-    icon: BarChart3,
-    path: '/analytics',
-    subItems: [
-      { id: 'overview', label: 'Analytics Overview', path: '/analytics' },
-      { id: 'performance', label: 'Performance Tracking', path: '/analytics/performance' },
-      { id: 'roi', label: 'ROI Analysis', path: '/analytics/roi' },
-      { id: 'reports', label: 'Advanced Reports', path: '/reports' }
-    ]
-  },
-  {
-    id: 'ai-platforms',
-    label: 'AI & Automation',
-    icon: Target,
-    path: '/ai-center',
-    badge: 'AI',
-    subItems: [
-      { id: 'ai-center', label: 'AI Control Center', path: '/ai-center' },
-      { id: 'optimization', label: 'AI Optimizer', path: '/optimization' },
-      { id: 'ai-automation', label: 'Automation Hub', path: '/ai-automation' },
-      { id: 'ai-analytics', label: 'AI Analytics', path: '/ai/analytics' }
-    ]
-  },
-  {
-    id: 'integration-platforms',
-    label: 'Integrations & Tools',
-    icon: RefreshCw,
-    path: '/integrations',
-    subItems: [
-      { id: 'integrations', label: 'App Marketplace', path: '/integrations' },
-      { id: 'sync', label: 'Multi-Platform Sync', path: '/sync' },
-      { id: 'scheduler', label: 'Smart Scheduler', path: '/scheduler' },
-      { id: 'platforms', label: 'Platform Manager', path: '/platforms' }
-    ]
-  },
-  {
-    id: 'enterprise-platforms',
-    label: 'Enterprise & Settings',
-    icon: Settings,
-    path: '/enterprise',
-    subItems: [
-      { id: 'enterprise', label: 'Enterprise Suite', path: '/enterprise' },
-      { id: 'business-intelligence', label: 'Business Intelligence', path: '/business-intelligence' },
-      { id: 'settings', label: 'Platform Settings', path: '/settings' },
-      { id: 'infrastructure', label: 'Infrastructure', path: '/infrastructure' }
-    ]
+// ============================================================================
+// CONTEXT DETECTION AND DYNAMIC SIDEBAR CONTENT
+// ============================================================================
+
+function getContextualSidebarItems(pathname: string): { contextName: string; items: SidebarItem[] } {
+  // Master Terminal / Dashboard Context
+  if (pathname === '/dashboard' || pathname.startsWith('/dashboard/')) {
+    return {
+      contextName: 'Master Terminal',
+      items: [
+        {
+          id: 'dashboard-overview',
+          label: 'Command Overview',
+          icon: LayoutDashboard,
+          path: '/dashboard',
+          badge: 'Live',
+          description: 'Master Terminal command center'
+        },
+        {
+          id: 'platform-registry',
+          label: 'Platform Registry',
+          icon: Layers,
+          path: '/platforms',
+          description: 'Manage all business platforms',
+          subItems: [
+            { id: 'marketing-hub', label: 'Marketing Hub', path: '/marketing-command-center' },
+            { id: 'business-ops', label: 'Business Operations', path: '/business-suite' },
+            { id: 'analytics-hub', label: 'Analytics Hub', path: '/analytics' },
+            { id: 'ai-center', label: 'AI Center', path: '/ai-center' }
+          ]
+        },
+        {
+          id: 'quick-actions',
+          label: 'Quick Actions',
+          icon: Zap,
+          path: '/dashboard/quick-actions',
+          description: 'Rapid platform control',
+          subItems: [
+            { id: 'new-campaign', label: 'New Campaign', path: '/campaigns/new' },
+            { id: 'optimize-all', label: 'Optimize All', path: '/optimization' },
+            { id: 'sync-platforms', label: 'Sync Platforms', path: '/sync' }
+          ]
+        },
+        {
+          id: 'system-status',
+          label: 'System Status',
+          icon: Activity,
+          path: '/status',
+          description: 'Platform health monitoring'
+        }
+      ]
+    };
   }
-];
+
+  // Marketing Context
+  if (pathname.startsWith('/marketing') || pathname.startsWith('/campaigns') || 
+      pathname.startsWith('/email-marketing') || pathname.startsWith('/social') ||
+      pathname === '/content-suite') {
+    return {
+      contextName: 'Marketing Command Center',
+      items: [
+        {
+          id: 'marketing-overview',
+          label: 'Marketing Hub',
+          icon: Megaphone,
+          path: '/marketing-command-center',
+          badge: 'Hub',
+          description: 'Unified marketing dashboard'
+        },
+        {
+          id: 'campaigns',
+          label: 'Campaign Management',
+          icon: Target,
+          path: '/campaigns',
+          description: 'Create and manage campaigns',
+          subItems: [
+            { id: 'active-campaigns', label: 'Active Campaigns', path: '/campaigns' },
+            { id: 'create-campaign', label: 'Create Campaign', path: '/campaigns/new' },
+            { id: 'templates', label: 'Templates', path: '/campaigns/templates' }
+          ]
+        },
+        {
+          id: 'social-media',
+          label: 'Social Media',
+          icon: Share2,
+          path: '/social-media',
+          description: 'Multi-platform social management',
+          subItems: [
+            { id: 'social-overview', label: 'Social Overview', path: '/social-media' },
+            { id: 'composer', label: 'Content Composer', path: '/social/composer' },
+            { id: 'calendar', label: 'Content Calendar', path: '/social/calendar' }
+          ]
+        },
+        {
+          id: 'email-marketing',
+          label: 'Email Marketing',
+          icon: Mail,
+          path: '/email-marketing',
+          description: 'Email automation and analytics'
+        },
+        {
+          id: 'content-creation',
+          label: 'Content Suite',
+          icon: PenTool,
+          path: '/content-suite',
+          description: 'AI-powered content creation'
+        }
+      ]
+    };
+  }
+
+  // Project Management Context
+  if (pathname.startsWith('/project-management')) {
+    return {
+      contextName: 'Project Management',
+      items: [
+        {
+          id: 'project-dashboard',
+          label: 'Project Dashboard',
+          icon: Briefcase,
+          path: '/project-management',
+          badge: 'Projects',
+          description: 'Project analytics and overview'
+        },
+        {
+          id: 'project-views',
+          label: 'Project Views',
+          icon: Layers,
+          path: '/project-management/views',
+          description: 'Multiple project visualization modes',
+          subItems: [
+            { id: 'kanban', label: 'Kanban Board', path: '/project-management?view=kanban' },
+            { id: 'list', label: 'Project List', path: '/project-management?view=list' },
+            { id: 'calendar', label: 'Calendar View', path: '/project-management?view=calendar' },
+            { id: 'timeline', label: 'Timeline View', path: '/project-management?view=timeline' }
+          ]
+        },
+        {
+          id: 'team-collaboration',
+          label: 'Team Management',
+          icon: Users,
+          path: '/collaboration',
+          description: 'Team collaboration tools'
+        },
+        {
+          id: 'project-analytics',
+          label: 'Project Analytics',
+          icon: BarChart3,
+          path: '/project-management/analytics',
+          description: 'Performance and productivity analytics'
+        }
+      ]
+    };
+  }
+
+  // Business Intelligence / Analytics Context
+  if (pathname.startsWith('/business-intelligence') || pathname.startsWith('/analytics') || 
+      pathname.startsWith('/reports')) {
+    return {
+      contextName: 'Business Intelligence',
+      items: [
+        {
+          id: 'bi-dashboard',
+          label: 'Intelligence Hub',
+          icon: BarChart3,
+          path: '/business-intelligence',
+          badge: 'BI',
+          description: 'Executive dashboard with insights'
+        },
+        {
+          id: 'performance-analytics',
+          label: 'Performance Analytics',
+          icon: TrendingUp,
+          path: '/analytics/performance',
+          description: 'Comprehensive performance tracking',
+          subItems: [
+            { id: 'real-time', label: 'Real-time Analytics', path: '/analytics/real-time' },
+            { id: 'historical', label: 'Historical Analysis', path: '/analytics/performance' },
+            { id: 'predictive', label: 'Predictive Insights', path: '/ai/predictive-analytics' }
+          ]
+        },
+        {
+          id: 'financial-analytics',
+          label: 'Financial Analytics',
+          icon: PieChart,
+          path: '/analytics/roi',
+          description: 'ROI analysis and financial tracking'
+        },
+        {
+          id: 'advanced-reports',
+          label: 'Advanced Reports',
+          icon: FileText,
+          path: '/reports',
+          description: 'Comprehensive reporting'
+        }
+      ]
+    };
+  }
+
+  // AI Center Context
+  if (pathname.startsWith('/ai') || pathname.startsWith('/optimization') || 
+      pathname === '/ai-center' || pathname === '/ai-automation') {
+    return {
+      contextName: 'AI Control Center',
+      items: [
+        {
+          id: 'ai-dashboard',
+          label: 'AI Dashboard',
+          icon: Brain,
+          path: '/ai-center',
+          badge: 'AI',
+          description: 'Central AI control and monitoring'
+        },
+        {
+          id: 'ai-automation',
+          label: 'AI Automation',
+          icon: Workflow,
+          path: '/ai-automation',
+          description: 'Automated workflows',
+          subItems: [
+            { id: 'automation-hub', label: 'Automation Hub', path: '/ai-automation' },
+            { id: 'workflow-builder', label: 'Workflow Builder', path: '/ai/automation' },
+            { id: 'optimization', label: 'Auto Optimization', path: '/optimization' }
+          ]
+        },
+        {
+          id: 'ai-analytics',
+          label: 'AI Analytics',
+          icon: LineChart,
+          path: '/ai/analytics',
+          description: 'Machine learning insights'
+        },
+        {
+          id: 'ai-settings',
+          label: 'AI Configuration',
+          icon: Settings,
+          path: '/ai/settings',
+          description: 'AI model configuration'
+        }
+      ]
+    };
+  }
+
+  // Collaboration Context
+  if (pathname.startsWith('/collaboration')) {
+    return {
+      contextName: 'Team Collaboration',
+      items: [
+        {
+          id: 'collaboration-hub',
+          label: 'Collaboration Hub',
+          icon: Users,
+          path: '/collaboration',
+          badge: 'Live',
+          description: 'Real-time team collaboration'
+        },
+        {
+          id: 'team-management',
+          label: 'Team Management',
+          icon: UserCheck,
+          path: '/collaboration/team',
+          description: 'Team member management',
+          subItems: [
+            { id: 'members', label: 'Team Members', path: '/collaboration' },
+            { id: 'roles', label: 'Roles & Permissions', path: '/collaboration/roles' },
+            { id: 'activities', label: 'Team Activities', path: '/collaboration/activities' }
+          ]
+        },
+        {
+          id: 'communication',
+          label: 'Communication',
+          icon: MessageSquare,
+          path: '/collaboration/communication',
+          description: 'Team chat and communication'
+        }
+      ]
+    };
+  }
+
+  // Integrations Context
+  if (pathname.startsWith('/integrations') || pathname.startsWith('/sync') ||
+      pathname === '/scheduler' || pathname === '/platforms') {
+    return {
+      contextName: 'Integrations Hub',
+      items: [
+        {
+          id: 'integrations-hub',
+          label: 'Marketplace Hub',
+          icon: RefreshCw,
+          path: '/integrations',
+          badge: 'Apps',
+          description: 'Universal app marketplace'
+        },
+        {
+          id: 'app-categories',
+          label: 'App Categories',
+          icon: Layers,
+          path: '/integrations/categories',
+          description: 'Browse apps by category',
+          subItems: [
+            { id: 'marketing-apps', label: 'Marketing Apps', path: '/integrations?category=marketing' },
+            { id: 'productivity-apps', label: 'Productivity Apps', path: '/integrations?category=productivity' },
+            { id: 'analytics-apps', label: 'Analytics Apps', path: '/integrations?category=analytics' }
+          ]
+        },
+        {
+          id: 'installed-integrations',
+          label: 'My Integrations',
+          icon: GitBranch,
+          path: '/integrations/installed',
+          description: 'Manage installed apps'
+        },
+        {
+          id: 'sync-scheduler',
+          label: 'Sync & Scheduler',
+          icon: Clock,
+          path: '/scheduler',
+          description: 'Platform synchronization'
+        }
+      ]
+    };
+  }
+
+  // Enterprise Settings Context
+  if (pathname.startsWith('/enterprise') || pathname.startsWith('/settings') || 
+      pathname.startsWith('/infrastructure') || pathname === '/whitelabel') {
+    return {
+      contextName: 'Enterprise Suite',
+      items: [
+        {
+          id: 'enterprise-dashboard',
+          label: 'Enterprise Dashboard',
+          icon: Shield,
+          path: '/enterprise',
+          badge: 'Admin',
+          description: 'Enterprise administration'
+        },
+        {
+          id: 'platform-settings',
+          label: 'Platform Settings',
+          icon: Settings,
+          path: '/settings',
+          description: 'Global platform configuration',
+          subItems: [
+            { id: 'general', label: 'General Settings', path: '/settings' },
+            { id: 'security', label: 'Security Settings', path: '/settings/security' },
+            { id: 'notifications', label: 'Notifications', path: '/settings/notifications' }
+          ]
+        },
+        {
+          id: 'infrastructure',
+          label: 'Infrastructure',
+          icon: Monitor,
+          path: '/infrastructure',
+          description: 'System infrastructure management'
+        },
+        {
+          id: 'white-label',
+          label: 'White-label Platform',
+          icon: Globe,
+          path: '/whitelabel',
+          description: 'Custom branding configuration'
+        }
+      ]
+    };
+  }
+
+  // Default fallback to Master Terminal items
+  return {
+    contextName: 'Master Terminal',
+    items: [
+      {
+        id: 'master-terminal',
+        label: 'Master Terminal',
+        icon: LayoutDashboard,
+        path: '/dashboard',
+        badge: 'Command'
+      },
+      {
+        id: 'marketing-platforms',
+        label: 'Marketing Platforms',
+        icon: Megaphone,
+        path: '/marketing',
+        subItems: [
+          { id: 'campaigns', label: 'Campaign Management', path: '/campaigns' },
+          { id: 'email-marketing', label: 'Email Marketing', path: '/email-marketing' },
+          { id: 'social-media', label: 'Social Media', path: '/social' }
+        ]
+      },
+      {
+        id: 'business-platforms',
+        label: 'Business Operations',
+        icon: Users,
+        path: '/business-suite',
+        subItems: [
+          { id: 'collaboration', label: 'Team Collaboration', path: '/collaboration' },
+          { id: 'project-management', label: 'Project Management', path: '/project-management' }
+        ]
+      },
+      {
+        id: 'analytics-platforms',
+        label: 'Analytics & Insights',
+        icon: BarChart3,
+        path: '/analytics'
+      }
+    ]
+  };
+}
 
 interface UnifiedSidebarProps {
   defaultCollapsed?: boolean;
@@ -135,6 +489,9 @@ export default function UnifiedSidebar({
   const [expandedItem, setExpandedItem] = useState<string | null>(null);
   const [isMobile, setIsMobile] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+
+  // Get contextual sidebar content based on current page
+  const { contextName, items: sidebarItems } = getContextualSidebarItems(pathname);
 
   // Check for mobile screen
   useEffect(() => {
@@ -163,7 +520,7 @@ export default function UnifiedSidebar({
     if (currentItem && currentItem.subItems) {
       setExpandedItem(currentItem.id);
     }
-  }, [pathname]);
+  }, [pathname, sidebarItems]);
 
   // Notify parent of collapse state changes
   useEffect(() => {
@@ -254,6 +611,8 @@ export default function UnifiedSidebar({
                   isItemActive={isItemActive}
                   theme={theme}
                   pathname={pathname}
+                  sidebarItems={sidebarItems}
+                  contextName={contextName}
                   onClose={() => setIsMobileOpen(false)}
                 />
               </motion.div>
@@ -284,6 +643,8 @@ export default function UnifiedSidebar({
         isItemActive={isItemActive}
         theme={theme}
         pathname={pathname}
+        sidebarItems={sidebarItems}
+        contextName={contextName}
       />
 
       {/* Collapse Toggle */}
@@ -309,6 +670,8 @@ interface SidebarContentProps {
   isItemActive: (item: SidebarItem) => boolean;
   theme: string;
   pathname: string;
+  sidebarItems: SidebarItem[];
+  contextName: string;
   onClose?: () => void;
 }
 
@@ -320,6 +683,8 @@ function SidebarContent({
   isItemActive,
   theme,
   pathname,
+  sidebarItems,
+  contextName,
   onClose
 }: SidebarContentProps) {
   const contentVariants = {
