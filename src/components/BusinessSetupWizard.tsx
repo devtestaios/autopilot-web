@@ -170,8 +170,8 @@ export default function BusinessSetupWizard({ onComplete, onSkip }: BusinessSetu
   const isStepComplete = (stepIndex: number): boolean => {
     switch (stepIndex) {
       case 0: return formData.businessName.trim().length > 0;
-      case 1: return formData.businessType !== '';
-      case 2: return formData.businessSize !== '';
+      case 1: return Boolean(formData.businessType);
+      case 2: return Boolean(formData.businessSize);
       case 3: return formData.industry !== '' && formData.goals.length > 0;
       case 4: return formData.selectedTemplate !== null;
       case 5: return formData.selectedTemplate !== null;
@@ -416,7 +416,7 @@ export default function BusinessSetupWizard({ onComplete, onSkip }: BusinessSetu
                   </Button>
                   <Button 
                     onClick={nextStep}
-                    disabled={!formData.businessType}
+                    disabled={!Boolean(formData.businessType)}
                     size="lg"
                     className="px-8"
                   >
@@ -476,7 +476,7 @@ export default function BusinessSetupWizard({ onComplete, onSkip }: BusinessSetu
                   </Button>
                   <Button 
                     onClick={nextStep}
-                    disabled={!formData.businessSize}
+                    disabled={!Boolean(formData.businessSize)}
                     size="lg"
                     className="px-8"
                   >
