@@ -8,7 +8,7 @@ import React, { forwardRef, ButtonHTMLAttributes, InputHTMLAttributes, HTMLAttri
 import { motion, HTMLMotionProps } from 'framer-motion';
 import { cn } from '@/lib/visualEffects';
 import { designTokens } from '@/lib/designTokens';
-import { animations } from '@/lib/animations';
+import { animationVariants } from '@/lib/animations';
 import visualEffects from '@/lib/visualEffects';
 
 // Enhanced Button Component with Premium States
@@ -82,7 +82,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       <motion.button
         ref={ref}
         className={cn(baseClasses, className)}
-        variants={animations.variants.buttonPrimary}
+        variants={animationVariants.buttonPrimary}
         whileHover="hover"
         whileTap="tap"
         disabled={disabled || isLoading}
@@ -145,7 +145,7 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(
 
     const MotionCard = interactive ? motion.div : 'div';
     const motionProps = interactive ? {
-      variants: animations.variants.cardHover,
+      variants: animationVariants.cardHover,
       whileHover: 'hover',
       whileTap: 'tap'
     } : {};

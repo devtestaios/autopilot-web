@@ -27,6 +27,11 @@ import {
 } from 'lucide-react';
 import NavigationTabs from '@/components/NavigationTabs';
 import UnifiedSidebar from '@/components/UnifiedSidebar';
+import { designTokens } from '@/lib/designTokens';
+import { animationVariants } from '@/lib/animations';
+import visualEffects from '@/lib/visualEffects';
+import { Container, Grid, Flex, Section, Stack, Header, ContentArea, CardGrid } from '@/components/ui/LayoutSystem';
+import { Button as EnhancedButton, Card as EnhancedCard, Badge, Spinner, Avatar, Progress } from '@/components/ui/EnhancedComponents';
 
 // Types for reports
 interface Report {

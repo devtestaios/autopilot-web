@@ -21,6 +21,11 @@ import {
 } from 'lucide-react';
 import { useAnalytics } from '@/contexts/AnalyticsContext';
 import { useABTest } from '@/contexts/ABTestContext';
+import { designTokens } from '@/lib/designTokens';
+import { animationVariants } from '@/lib/animations';
+import visualEffects from '@/lib/visualEffects';
+import { Container, Grid, Flex, Section, Stack, Header, ContentArea, CardGrid } from '@/components/ui/LayoutSystem';
+import { Button as EnhancedButton, Card as EnhancedCard, Badge, Spinner, Avatar, Progress } from '@/components/ui/EnhancedComponents';
 
 // Safe analytics hook that handles missing provider
 function useSafeAnalytics() {

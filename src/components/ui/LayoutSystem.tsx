@@ -8,7 +8,7 @@ import React, { forwardRef, HTMLAttributes, ReactNode } from 'react';
 import { motion, HTMLMotionProps } from 'framer-motion';
 import { cn } from '@/lib/visualEffects';
 import visualEffects from '@/lib/visualEffects';
-import { animations } from '@/lib/animations';
+import { animationVariants } from '@/lib/animations';
 
 // Enhanced Container Component
 interface ContainerProps extends HTMLAttributes<HTMLDivElement> {
@@ -503,7 +503,7 @@ export const CardGrid = forwardRef<HTMLDivElement, CardGridProps>(
       <motion.div
         ref={ref}
         className={cn(baseClasses, className)}
-        variants={animations.variants.stagger}
+        variants={animationVariants.staggerContainer}
         initial="hidden"
         animate="visible"
         {...props}

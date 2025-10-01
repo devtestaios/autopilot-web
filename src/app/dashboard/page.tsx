@@ -14,7 +14,7 @@ import {
 
 // Enhanced Design System Imports - Phase 1 Visual Polish
 import { designTokens } from '@/lib/designTokens';
-import { animations } from '@/lib/animations';
+import { animationVariants } from '@/lib/animations';
 import visualEffects from '@/lib/visualEffects';
 import { Container, Grid, Flex, Section, Stack, Header, ContentArea, CardGrid } from '@/components/ui/LayoutSystem';
 import { Button, Card, Badge, Spinner, Avatar, Progress } from '@/components/ui/EnhancedComponents';
@@ -466,19 +466,6 @@ export default function Dashboard() {
               ))}
             </CardGrid>
           </Section>
-                </div>
-                <div className="flex items-center text-sm">
-                  <TrendingUp className={`w-4 h-4 mr-1 ${kpi.color}`} />
-                  <span className={`font-medium ${kpi.color}`}>
-                    {kpi.change}
-                  </span>
-                  <span className="text-gray-500 dark:text-gray-400 ml-1">
-                    vs last month
-                  </span>
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
 
           {/* Enhanced Platform Suites with Premium Design */}
           <Section size="lg">

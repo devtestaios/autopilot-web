@@ -13,6 +13,11 @@ import { usePerformance, usePerformanceAnalytics } from '@/contexts/PerformanceC
 import { useWebVitals } from '@/hooks/useWebVitals';
 import WebVitalsMonitor from '@/components/performance/WebVitalsMonitor';
 import NavigationTabs from '@/components/NavigationTabs';
+import { designTokens } from '@/lib/designTokens';
+import { animationVariants } from '@/lib/animations';
+import visualEffects from '@/lib/visualEffects';
+import { Container, Grid, Flex, Section, Stack, Header, ContentArea, CardGrid } from '@/components/ui/LayoutSystem';
+import { Button as EnhancedButton, Card as EnhancedCard, Badge, Spinner, Avatar, Progress } from '@/components/ui/EnhancedComponents';
 
 // Performance dashboard metrics display
 interface MetricCardProps {

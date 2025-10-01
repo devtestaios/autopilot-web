@@ -3,6 +3,11 @@
 import React, { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import dynamic from 'next/dynamic';
+import { designTokens } from '@/lib/designTokens';
+import { animationVariants } from '@/lib/animations';
+import visualEffects from '@/lib/visualEffects';
+import { Container, Grid, Flex, Section, Stack, Header, ContentArea, CardGrid } from '@/components/ui/LayoutSystem';
+import { Button as EnhancedButton, Card as EnhancedCard, Badge, Spinner, Avatar, Progress } from '@/components/ui/EnhancedComponents';
 
 // SSR-safe imports using social-media pattern
 const UnifiedSidebar = dynamic(() => import('@/components/UnifiedSidebar'), {

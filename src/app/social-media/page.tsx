@@ -55,7 +55,6 @@ import { Button as EnhancedButton, Card as EnhancedCard, Badge, Spinner, Avatar,
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Badge } from '@/components/ui/badge';
 
 // SSR-safe imports using coding dissertation patterns
 const UnifiedSidebar = dynamic(() => import('@/components/UnifiedSidebar'), {
