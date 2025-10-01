@@ -49,7 +49,6 @@ import {
   BarChart3, 
   Settings,
   Plus,
-  Search,
   Filter,
   Download,
   Upload,
@@ -170,12 +169,6 @@ const QuickActions: React.FC<QuickActionsProps> = ({
 
 const CampaignsList: React.FC = () => {
   const { campaigns, loading, sendCampaign, setActiveCampaign } = useEmailMarketing();
-  const [searchTerm, setSearchTerm] = useState('');
-
-  const filteredCampaigns = campaigns.filter(campaign =>
-    campaign.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    campaign.subject.toLowerCase().includes(searchTerm.toLowerCase())
-  );
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -201,16 +194,6 @@ const CampaignsList: React.FC = () => {
   return (
     <div className="space-y-4">
       <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
-        <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-          <Input
-            type="text"
-            placeholder="Search campaigns..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10"
-          />
-        </div>
         <div className="flex gap-2">
           <Button variant="outline" size="sm">
             <Filter className="h-4 w-4 mr-2" />
@@ -224,7 +207,7 @@ const CampaignsList: React.FC = () => {
       </div>
 
       <div className="space-y-3">
-        {filteredCampaigns.map((campaign) => (
+        {campaigns.map((campaign) => (
           <Card key={campaign.id} className="hover:shadow-md transition-shadow">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
@@ -299,7 +282,7 @@ const CampaignsList: React.FC = () => {
           </Card>
         ))}
         
-        {filteredCampaigns.length === 0 && (
+        {campaigns.length === 0 && (
           <div className="text-center py-12">
             <Mail className="h-12 w-12 text-gray-400 mx-auto mb-4" />
             <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
@@ -321,13 +304,6 @@ const CampaignsList: React.FC = () => {
 
 const ContactsOverview: React.FC = () => {
   const { contacts, segments, selectedContacts, selectContacts } = useEmailMarketing();
-  const [searchTerm, setSearchTerm] = useState('');
-
-  const filteredContacts = contacts.filter(contact =>
-    contact.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (contact.firstName && contact.firstName.toLowerCase().includes(searchTerm.toLowerCase())) ||
-    (contact.lastName && contact.lastName.toLowerCase().includes(searchTerm.toLowerCase()))
-  );
 
   const subscribedCount = contacts.filter(c => c.status === 'subscribed').length;
   const unsubscribedCount = contacts.filter(c => c.status === 'unsubscribed').length;
@@ -367,7 +343,7 @@ const ContactsOverview: React.FC = () => {
         </Card>
       </div>
 
-      {/* Contacts Search and List */}
+      {/* Contacts List */}
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
@@ -389,17 +365,7 @@ const ContactsOverview: React.FC = () => {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            <div className="flex gap-4">
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                <Input
-                  type="text"
-                  placeholder="Search contacts..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
-                />
-              </div>
+            <div className="flex gap-4 justify-end">
               <Button variant="outline">
                 <Filter className="h-4 w-4 mr-2" />
                 Filter
@@ -421,7 +387,7 @@ const ContactsOverview: React.FC = () => {
               </div>
               
               <div className="max-h-96 overflow-y-auto">
-                {filteredContacts.slice(0, 50).map((contact) => (
+                {contacts.slice(0, 50).map((contact) => (
                   <div key={contact.id} className="px-4 py-3 border-b last:border-b-0 hover:bg-gray-50 dark:hover:bg-gray-800/50">
                     <div className="grid grid-cols-12 gap-4 items-center text-sm">
                       <div className="col-span-1">

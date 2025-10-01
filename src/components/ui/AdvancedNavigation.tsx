@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+// React hooks removed - no longer needed after legacy feature cleanup
 // Phase 2C.1: Optimized Framer Motion imports for tree shaking
 import { motion } from 'framer-motion';
 import { AnimatePresence } from 'framer-motion';
@@ -8,12 +8,7 @@ import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { 
   ChevronRight, 
-  ChevronDown, 
-  Search, 
-  Command,
   Sparkles,
-  Zap,
-  Target,
   BarChart3,
   Settings,
   HelpCircle,
@@ -21,8 +16,8 @@ import {
   Home
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { PremiumButton } from './PremiumButton';
-import GlobalSearch from '@/components/GlobalSearch';
+// PremiumButton import removed - legacy "New Campaign" button removed
+// Removed GlobalSearch import - legacy marketing feature removed
 
 interface BreadcrumbItem {
   label: string;
@@ -30,44 +25,9 @@ interface BreadcrumbItem {
   icon?: React.ReactNode;
 }
 
-interface QuickAction {
-  label: string;
-  description: string;
-  icon: React.ReactNode;
-  href: string;
-  shortcut?: string;
-}
+// Legacy interfaces for marketing quick actions removed
 
-const quickActions: QuickAction[] = [
-  {
-    label: 'New Campaign',
-    description: 'Create a new marketing campaign',
-    icon: <Sparkles className="w-4 h-4" />,
-  href: '/campaigns/new',
-    shortcut: '⌘+N'
-  },
-  {
-  label: 'Analytics Dashboard',
-    description: 'View performance insights',
-    icon: <BarChart3 className="w-4 h-4" />,
-  href: '/analytics',
-    shortcut: '⌘+A'
-  },
-  {
-    label: 'AI Optimizer',
-    description: 'Enable automatic optimization',
-    icon: <Zap className="w-4 h-4" />,
-    href: '/optimizer',
-    shortcut: '⌘+O'
-  },
-  {
-    label: 'Campaign Goals',
-    description: 'Set and track objectives',
-    icon: <Target className="w-4 h-4" />,
-    href: '/goals',
-    shortcut: '⌘+G'
-  }
-];
+// Legacy marketing-specific quick actions removed - no longer needed in universal header
 
 export interface AdvancedNavigationProps {
   className?: string;
@@ -76,7 +36,7 @@ export interface AdvancedNavigationProps {
 
 export default function AdvancedNavigation({ className, sidebarCollapsed = false }: AdvancedNavigationProps) {
   const pathname = usePathname();
-  const [isQuickActionsOpen, setIsQuickActionsOpen] = useState(false);
+  // Legacy quick actions state removed
 
   // Generate breadcrumbs from current path
   const generateBreadcrumbs = (): BreadcrumbItem[] => {
@@ -121,17 +81,7 @@ export default function AdvancedNavigation({ className, sidebarCollapsed = false
 
   const breadcrumbs = generateBreadcrumbs();
 
-  // Handle keyboard shortcuts for quick actions
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        setIsQuickActionsOpen(false);
-      }
-    };
-
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, []);
+  // Legacy keyboard shortcuts for quick actions removed
 
   return (
     <nav 
@@ -181,25 +131,9 @@ export default function AdvancedNavigation({ className, sidebarCollapsed = false
             ))}
           </nav>
 
-          {/* Advanced Search & Quick Actions */}
+          {/* Universal Header - Clean Design */}
           <div className="flex items-center gap-4">
-            {/* Global Search */}
-            <GlobalSearch 
-              variant="modal"
-              placeholder="Search campaigns, leads, templates..."
-              className="w-64"
-            />
-
-            {/* Quick Action Button */}
-            <PremiumButton
-              variant="primary"
-              size="md"
-              icon={<Sparkles className="w-4 h-4" />}
-              onClick={() => setIsQuickActionsOpen(!isQuickActionsOpen)}
-              className="hidden md:flex"
-            >
-              New Campaign
-            </PremiumButton>
+            {/* Future: Platform-specific quick actions can be added here */}
           </div>
         </div>
       </div>

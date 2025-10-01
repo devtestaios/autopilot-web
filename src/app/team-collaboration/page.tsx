@@ -24,7 +24,6 @@ import {
   Star,
   Settings,
   Plus,
-  Search,
   Filter,
   MoreVertical,
   Send,
@@ -197,7 +196,6 @@ export default function TeamCollaboration() {
   const [selectedChannel, setSelectedChannel] = useState<Channel | null>(null);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [messageInput, setMessageInput] = useState('');
-  const [searchQuery, setSearchQuery] = useState('');
 
   // Mock data - will be replaced with real API calls in Phase 3
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([
@@ -739,17 +737,6 @@ export default function TeamCollaboration() {
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 h-[600px] flex">
         {/* Channels Sidebar */}
         <div className="w-80 border-r border-gray-200 dark:border-gray-700 p-4">
-          <div className="mb-4">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-              <input
-                type="text"
-                placeholder="Search channels..."
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm"
-              />
-            </div>
-          </div>
-          
           <div className="space-y-1">
             <div className="flex items-center justify-between mb-2">
               <h4 className="text-sm font-medium text-gray-900 dark:text-white">Channels</h4>

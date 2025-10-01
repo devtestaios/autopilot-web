@@ -135,7 +135,6 @@ import {
   CheckCircle2,
   Plus,
   Filter,
-  Search,
   MoreVertical,
   Grid3X3,
   List,
@@ -164,7 +163,6 @@ export default function ProjectManagementDashboard() {
 
   const { canAccess } = useUserTier();
 
-  const [searchQuery, setSearchQuery] = useState('');
   const [selectedFilter, setSelectedFilter] = useState('all');
   const [showCreateWizard, setShowCreateWizard] = useState(false);
 
@@ -293,18 +291,8 @@ export default function ProjectManagementDashboard() {
             })}
           </div>
 
-          {/* ========== SEARCH AND FILTERS ========== */}
-          <div className="flex flex-col sm:flex-row gap-3 mt-4">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-              <input
-                type="text"
-                placeholder="Search projects, tasks, or team members..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
-            </div>
+          {/* ========== FILTERS ========== */}
+          <div className="flex flex-col sm:flex-row gap-3 mt-4 justify-end">
             <Button variant="outline" className="flex items-center gap-2">
               <Filter className="h-4 w-4" />
               Filters
