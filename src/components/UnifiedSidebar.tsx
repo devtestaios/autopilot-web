@@ -81,29 +81,69 @@ function getContextualSidebarItems(pathname: string): { contextName: string; ite
           description: 'Master Terminal command center'
         },
         {
-          id: 'platform-registry',
-          label: 'Platform Registry',
-          icon: Layers,
-          path: '/platforms',
-          description: 'Manage all business platforms',
+          id: 'marketing-hub',
+          label: 'Marketing Hub',
+          icon: Megaphone,
+          path: '/marketing-command-center',
+          description: 'Marketing automation center',
           subItems: [
-            { id: 'marketing-hub', label: 'Marketing Hub', path: '/email-marketing' },
-            { id: 'business-ops', label: 'Business Operations', path: '/crm' },
-            { id: 'analytics-hub', label: 'Analytics Hub', path: '/analytics' },
-            { id: 'ai-center', label: 'AI Center', path: '/ai-automation' }
+            { id: 'email-marketing', label: 'Email Marketing', path: '/email-marketing' },
+            { id: 'social-media', label: 'Social Media', path: '/social-media' },
+            { id: 'campaigns', label: 'Campaigns', path: '/campaigns' },
+            { id: 'content-suite', label: 'Content Suite', path: '/content-suite' }
           ]
         },
         {
-          id: 'quick-actions',
-          label: 'Quick Actions',
-          icon: Zap,
-          path: '/dashboard',
-          description: 'Rapid platform control',
+          id: 'project-management',
+          label: 'Project Management',
+          icon: Briefcase,
+          path: '/project-management',
+          description: 'Enterprise project management'
+        },
+        {
+          id: 'team-collaboration',
+          label: 'Team Collaboration',
+          icon: Users,
+          path: '/collaboration',
+          description: 'Real-time team coordination'
+        },
+        {
+          id: 'business-intelligence',
+          label: 'Business Intelligence',
+          icon: BarChart3,
+          path: '/business-intelligence',
+          description: 'Advanced analytics and insights',
           subItems: [
-            { id: 'new-campaign', label: 'New Campaign', path: '/campaigns' },
-            { id: 'optimize-all', label: 'Optimize All', path: '/analytics' },
-            { id: 'sync-platforms', label: 'Sync Platforms', path: '/integrations' }
+            { id: 'analytics', label: 'Analytics', path: '/analytics' },
+            { id: 'reports', label: 'Reports', path: '/reports' },
+            { id: 'performance', label: 'Performance', path: '/performance' }
           ]
+        },
+        {
+          id: 'integrations',
+          label: 'Integrations',
+          icon: Globe,
+          path: '/integrations',
+          description: 'Universal app marketplace'
+        },
+        {
+          id: 'ai-center',
+          label: 'AI Center',
+          icon: Brain,
+          path: '/ai-center',
+          description: 'AI automation and insights',
+          subItems: [
+            { id: 'ai-automation', label: 'AI Automation', path: '/ai-automation' },
+            { id: 'ai-analytics', label: 'AI Analytics', path: '/ai/analytics' },
+            { id: 'ai-settings', label: 'AI Settings', path: '/ai/settings' }
+          ]
+        },
+        {
+          id: 'platform-setup',
+          label: 'Platform Setup',
+          icon: Settings,
+          path: '/platforms',
+          description: 'Configure all platforms'
         },
         {
           id: 'system-status',

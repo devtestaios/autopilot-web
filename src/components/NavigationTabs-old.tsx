@@ -7,6 +7,24 @@ import { Settings, User, Bell } from 'lucide-react';
 import { PulseWaveLogo } from './PulseWaveLogo';
 import { useTheme } from '@/contexts/ThemeContext';
 
+interface NavItem {
+  href: string;
+  label: string;
+  icon?: string;
+}
+
+const navigationItems: NavItem[] = [
+  { href: '/dashboard', label: '🎛️ Master Terminal' },
+  { href: '/marketing-command-center', label: '� Marketing Hub' },
+  { href: '/project-management', label: '📋 Project Management' },
+  { href: '/collaboration', label: '� Team Collaboration' },
+  { href: '/business-intelligence', label: '� Business Intelligence' },
+  { href: '/integrations', label: '🔗 Integrations' },
+  { href: '/ai-center', label: '🤖 AI Center' },
+  { href: '/platforms', label: '⚙️ Platform Setup' },
+  { href: '/status', label: '🔋 System Status' },
+];
+
 const NavigationTabs = memo(() => {
   const pathname = usePathname();
   const { theme, toggleTheme } = useTheme();
@@ -117,7 +135,7 @@ function getPageTitle(pathname: string): string {
     '/dashboard': 'Master Terminal',
     '/email-marketing': 'Email Marketing',
     '/social-media': 'Social Media',
-    '/project-management': 'Project Management', 
+    '/project-management': 'Project Management',
     '/collaboration': 'Team Collaboration',
     '/business-intelligence': 'Business Intelligence',
     '/integrations': 'Integrations',
@@ -131,14 +149,6 @@ function getPageTitle(pathname: string): string {
     '/reports': 'Reports',
     '/crm': 'CRM',
     '/onboarding': 'Setup Wizard',
-    '/whitelabel': 'White Label',
-    '/unified': 'Unified Platform',
-    '/workflow-automation': 'Workflow Automation',
-    '/scheduler': 'Scheduler',
-    '/performance': 'Performance',
-    '/optimization': 'Optimization',
-    '/leads': 'Lead Management',
-    '/campaigns': 'Campaigns',
   };
   
   return titleMap[pathname] || 'PulseBridge';

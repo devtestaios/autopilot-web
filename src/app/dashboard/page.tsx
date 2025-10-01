@@ -13,6 +13,12 @@ import {
 // Simple imports - no complex design system
 import NavigationTabs from '@/components/NavigationTabs';
 
+// Import UnifiedSidebar for collapsible navigation
+const UnifiedSidebar = dynamic(() => import('@/components/UnifiedSidebar'), {
+  ssr: false,
+  loading: () => <div className="fixed left-0 top-0 h-screen w-56 bg-gray-900 animate-pulse" />
+});
+
 const AIControlChat = dynamic(() => import('@/components/AIControlChat'), {
   ssr: false,
   loading: () => null
@@ -199,6 +205,7 @@ export default function Dashboard() {
   
   // Simple state management
   const [showWelcomeBanner, setShowWelcomeBanner] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   
   // Check for onboarding completion
   useEffect(() => {
@@ -429,16 +436,25 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      {/* Simple Navigation */}
+      {/* Navigation Header */}
       <NavigationTabs />
       
-      {/* Welcome Banner */}
-      {showWelcomeBanner && (
-        <OnboardingWelcomeBanner onDismiss={handleWelcomeBannerDismiss} />
-      )}
+      {/* Unified Sidebar for navigation */}
+      <UnifiedSidebar onCollapseChange={setSidebarCollapsed} />
       
-      {/* Main Content */}
-      <div className="container mx-auto px-4 py-8">
+      {/* Main Content with responsive margin based on sidebar state */}
+      <div className={`transition-all duration-300 ease-in-out ${
+        sidebarCollapsed 
+          ? 'lg:ml-14' // Collapsed sidebar width
+          : 'lg:ml-64' // Expanded sidebar width  
+      }`}>
+        {/* Welcome Banner */}
+        {showWelcomeBanner && (
+          <OnboardingWelcomeBanner onDismiss={handleWelcomeBannerDismiss} />
+        )}
+        
+        {/* Content Container */}
+        <div className="container mx-auto px-4 py-8">
         {/* Simple Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
@@ -505,6 +521,7 @@ export default function Dashboard() {
             <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
               AI Assistant
             </h2>
+          </div>
           </div>
           <AIControlChat />
         </div>
