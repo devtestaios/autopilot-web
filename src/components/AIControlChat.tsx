@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import UnifiedAIChat from './UnifiedAIChat';
+import VSCodeAIChat from '@/components/VSCodeAIChat';
 
 interface AIControlChatProps {
   className?: string;
@@ -10,19 +10,15 @@ interface AIControlChatProps {
 }
 
 export default function AIControlChat({ 
-  className, 
-  defaultMinimized = false,
+  className,
+  defaultMinimized = true,
   onToggle
 }: AIControlChatProps) {
   return (
-    <UnifiedAIChat
-      mode="control"
-      position="bottom-right"
-      features={['actions', 'insights', 'suggestions', 'quickActions', 'autonomousMode', 'platformControl']}
+    <VSCodeAIChat
+      className={className}
       defaultMinimized={defaultMinimized}
       onToggle={onToggle}
-      className={className}
-      specializations={['platformControl', 'campaignManagement', 'navigation']}
     />
   );
 }
