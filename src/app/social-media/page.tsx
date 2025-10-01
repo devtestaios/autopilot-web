@@ -44,6 +44,13 @@ import {
   Link as LinkIcon
 } from 'lucide-react';
 
+// Enhanced Design System Imports - Phase 1 Visual Polish
+import { designTokens } from '@/lib/designTokens';
+import { animations } from '@/lib/animations';
+import visualEffects from '@/lib/visualEffects';
+import { Container, Grid, Flex, Section, Stack, Header, ContentArea, CardGrid } from '@/components/ui/LayoutSystem';
+import { Button as EnhancedButton, Card as EnhancedCard, Badge, Spinner, Avatar, Progress } from '@/components/ui/EnhancedComponents';
+
 // UI Components
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';

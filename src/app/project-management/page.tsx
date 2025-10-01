@@ -7,6 +7,13 @@ import { useProjectManagement } from '@/contexts/ProjectManagementContext';
 import { useUserTier } from '@/contexts/UserTierContext';
 import UpgradePrompt from '@/components/UpgradePrompt';
 
+// Enhanced Design System Imports - Phase 1 Visual Polish
+import { designTokens } from '@/lib/designTokens';
+import { animations } from '@/lib/animations';
+import visualEffects from '@/lib/visualEffects';
+import { Container, Grid, Flex, Section, Stack, Header, ContentArea, CardGrid } from '@/components/ui/LayoutSystem';
+import { Button as EnhancedButton, Card as EnhancedCard, Badge, Spinner, Avatar, Progress } from '@/components/ui/EnhancedComponents';
+
 // SSR-safe imports using social-media pattern
 const UnifiedSidebar = dynamic(() => import('@/components/UnifiedSidebar'), {
   ssr: false,

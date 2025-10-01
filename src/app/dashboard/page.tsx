@@ -1,14 +1,23 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence, useScroll, useTransform, useSpring } from 'framer-motion';
 import dynamic from 'next/dynamic';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { 
   Target, TrendingUp, DollarSign, BarChart3, Users, Zap, 
   Activity, Clock, AlertCircle, ChevronRight, ExternalLink,
-  Layers, Globe, Rocket, Shield, Brain, Lightbulb
+  Layers, Globe, Rocket, Shield, Brain, Lightbulb, Sparkles,
+  Crown, MousePointer, Eye, Heart, Star, ArrowUpRight,
+  Compass, Palette, Wand2, Gem, Flame, Zap as ZapIcon
 } from 'lucide-react';
+
+// Enhanced Design System Imports - Phase 1 Visual Polish
+import { designTokens } from '@/lib/designTokens';
+import { animations } from '@/lib/animations';
+import visualEffects from '@/lib/visualEffects';
+import { Container, Grid, Flex, Section, Stack, Header, ContentArea, CardGrid } from '@/components/ui/LayoutSystem';
+import { Button, Card, Badge, Spinner, Avatar, Progress } from '@/components/ui/EnhancedComponents';
 
 // Dynamic imports for SSR safety (following dissertation patterns)
 const UnifiedSidebar = dynamic(() => import('@/components/UnifiedSidebar'), {
@@ -81,11 +90,32 @@ interface QuickAction {
   impact: 'high' | 'medium' | 'low';
 }
 
-export default function DashboardPage() {
+export default function Dashboard() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  
+  // Core state
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const [showWelcomeBanner, setShowWelcomeBanner] = useState(false);
+  const [showWelcomeBanner, setShowWelcomeBanner] = useState(true);
+  
+  // Phase 1 Visual Polish state
+  const [hoveredKPI, setHoveredKPI] = useState<string | null>(null);
+  const [hoveredSuite, setHoveredSuite] = useState<string | null>(null);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [activeParticles, setActiveParticles] = useState(false);
+  
+  // Advanced scroll animations for Phase 1
+  const { scrollY } = useScroll();
+  const headerY = useTransform(scrollY, [0, 100], [0, -5]);
+  const headerOpacity = useTransform(scrollY, [0, 100], [1, 0.98]);
+  const springConfig = { damping: 25, stiffness: 300 };
+  const headerSpring = useSpring(headerY, springConfig);
+  
+  // Loading animation
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoaded(true), 300);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Check for onboarding completion
   useEffect(() => {
@@ -341,33 +371,101 @@ export default function DashboardPage() {
       }`}>
         <AdvancedNavigation sidebarCollapsed={sidebarCollapsed} />
         
-        <div className="max-w-7xl mx-auto p-6 space-y-8">
-          {/* Enterprise KPI Overview */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+        {/* Enhanced Header with Glassmorphism */}
+        <motion.div
+          style={{ y: headerSpring, opacity: headerOpacity }}
+          className={visualEffects.glassmorphism.card}
+        >
+          <Header 
+            sticky={true} 
+            background="blur" 
+            className="border-none"
           >
-            {enterpriseKPIs.map((kpi, index) => (
-              <motion.div
-                key={kpi.title}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: index * 0.1 }}
-                className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md transition-shadow"
-              >
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex-1">
-                    <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">
-                      {kpi.title}
-                    </p>
-                    <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                      {kpi.value}
-                    </p>
-                  </div>
-                  <div className={`p-3 rounded-xl ${kpi.bgColor}`}>
-                    <kpi.icon className={`w-6 h-6 ${kpi.color}`} />
-                  </div>
+            <Flex justify="between" align="center" className="w-full">
+              <div>
+                <h1 className={`${visualEffects.typography.display.title} ${visualEffects.gradients.text.primary}`}>
+                  Enterprise Command Center
+                </h1>
+                <p className={visualEffects.typography.enhanced.subtitle}>
+                  Unified business ecosystem management
+                </p>
+              </div>
+              <Badge variant="success" size="lg" dot>
+                All Systems Operational
+              </Badge>
+            </Flex>
+          </Header>
+        </motion.div>
+        
+        <Container size="xl" padding="lg" center className="space-y-8">
+          {/* Enhanced KPI Overview with Premium Design */}
+          <Section size="md">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-8"
+            >
+              <h2 className={visualEffects.typography.enhanced.title}>
+                Enterprise Performance Metrics
+              </h2>
+              <p className={visualEffects.typography.enhanced.body}>
+                Real-time business intelligence and key performance indicators
+              </p>
+            </motion.div>
+
+            <CardGrid minCardWidth={280} gap="lg">
+              {enterpriseKPIs.map((kpi, index) => (
+                <motion.div
+                  key={kpi.title}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: index * 0.1 }}
+                  onHoverStart={() => setHoveredKPI(kpi.title)}
+                  onHoverEnd={() => setHoveredKPI(null)}
+                >
+                  <Card
+                    variant="glassmorphism"
+                    interactive={true}
+                    className={`p-6 group ${hoveredKPI === kpi.title ? visualEffects.shadows.colored.blue : ''}`}
+                  >
+                    <Flex justify="between" align="start" className="mb-4">
+                      <Stack space="xs">
+                        <p className={`${visualEffects.typography.enhanced.caption} group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors`}>
+                          {kpi.title}
+                        </p>
+                        <motion.p 
+                          className={`${visualEffects.typography.display.subtitle} ${visualEffects.gradients.text.primary}`}
+                          animate={{ scale: hoveredKPI === kpi.title ? 1.05 : 1 }}
+                          transition={{ duration: 0.2 }}
+                        >
+                          {kpi.value}
+                        </motion.p>
+                      </Stack>
+                      
+                      <motion.div 
+                        className={`p-3 rounded-xl ${kpi.bgColor} group-hover:scale-110 transition-transform duration-200`}
+                        whileHover={{ rotate: 5 }}
+                      >
+                        <kpi.icon className={`w-6 h-6 ${kpi.color}`} />
+                      </motion.div>
+                    </Flex>
+                    
+                    <Flex align="center" gap="sm">
+                      <Badge 
+                        variant={kpi.changeType === 'positive' ? 'success' : kpi.changeType === 'negative' ? 'error' : 'default'}
+                        size="sm"
+                      >
+                        {kpi.change}
+                      </Badge>
+                      <span className={visualEffects.typography.enhanced.caption}>
+                        vs last month
+                      </span>
+                    </Flex>
+                  </Card>
+                </motion.div>
+              ))}
+            </CardGrid>
+          </Section>
                 </div>
                 <div className="flex items-center text-sm">
                   <TrendingUp className={`w-4 h-4 mr-1 ${kpi.color}`} />
@@ -382,75 +480,135 @@ export default function DashboardPage() {
             ))}
           </motion.div>
 
-          {/* Platform Suites */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="space-y-6"
-          >
-            <div className="flex items-center justify-between">
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-                Platform Suites
-              </h2>
-              <button className="text-sm text-teal-600 dark:text-teal-400 hover:underline">
-                View All Platforms →
-              </button>
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              {platformSuites.map((suite, index) => (
-                <motion.div
-                  key={suite.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                  className={`${suite.bgGradient} rounded-xl p-6 border border-gray-200 dark:border-gray-700`}
+          {/* Enhanced Platform Suites with Premium Design */}
+          <Section size="lg">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="space-y-8"
+            >
+              <Flex justify="between" align="center">
+                <Stack space="xs">
+                  <h2 className={visualEffects.typography.enhanced.title}>
+                    Enterprise Platform Suites
+                  </h2>
+                  <p className={visualEffects.typography.enhanced.body}>
+                    Integrated business ecosystems for complete operational control
+                  </p>
+                </Stack>
+                <Button 
+                  variant="ghost" 
+                  rightIcon={<ArrowUpRight className="w-4 h-4" />}
+                  className={visualEffects.typography.interactive.link}
                 >
-                  <div className="flex items-start justify-between mb-4">
-                    <div>
-                      <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                        {suite.name}
-                      </h3>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">
-                        {suite.description}
-                      </p>
-                    </div>
-                    <div className={`w-3 h-3 rounded-full bg-gradient-to-r ${suite.color}`}></div>
-                  </div>
+                  View All Platforms
+                </Button>
+              </Flex>
 
-                  <div className="space-y-3 mb-4">
-                    {suite.platforms.map((platform) => (
-                      <div key={platform.name} className="flex items-center justify-between p-3 bg-white/50 dark:bg-gray-800/50 rounded-lg">
-                        <div className="flex items-center gap-3">
-                          <platform.icon className="w-4 h-4 text-gray-600 dark:text-gray-400" />
-                          <span className="text-sm font-medium text-gray-900 dark:text-white">
-                            {platform.name}
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <span className={`w-2 h-2 rounded-full ${
-                            platform.status === 'active' ? 'bg-green-500' : 'bg-gray-400'
-                          }`}></span>
-                          <span className="text-xs text-gray-500 capitalize">
-                            {platform.status}
-                          </span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-
-                  <button 
-                    onClick={() => router.push(`/${suite.id}`)}
-                    className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+              <Grid cols={3} gap="lg" responsive>
+                {platformSuites.map((suite, index) => (
+                  <motion.div
+                    key={suite.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                    onHoverStart={() => setHoveredSuite(suite.id)}
+                    onHoverEnd={() => setHoveredSuite(null)}
                   >
-                    <span className="text-sm font-medium">Open Suite</span>
-                    <ExternalLink className="w-4 h-4" />
-                  </button>
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
+                    <Card
+                      variant="glassmorphism"
+                      interactive
+                      className={`p-6 h-full ${suite.bgGradient} group ${
+                        hoveredSuite === suite.id ? visualEffects.shadows.glow.lg : ''
+                      }`}
+                    >
+                      <Flex justify="between" align="start" className="mb-6">
+                        <Stack space="xs">
+                          <h3 className={`${visualEffects.typography.enhanced.title} group-hover:${visualEffects.gradients.text.primary} transition-all`}>
+                            {suite.name}
+                          </h3>
+                          <p className={visualEffects.typography.enhanced.body}>
+                            {suite.description}
+                          </p>
+                        </Stack>
+                        <motion.div 
+                          className={`w-4 h-4 rounded-full bg-gradient-to-r ${suite.color} ${visualEffects.shadows.glow.sm}`}
+                          animate={{ 
+                            scale: hoveredSuite === suite.id ? 1.2 : 1,
+                            rotate: hoveredSuite === suite.id ? 180 : 0
+                          }}
+                          transition={{ duration: 0.3 }}
+                        />
+                      </Flex>
+
+                      <Stack space="sm" className="mb-6">
+                        {suite.platforms.map((platform, platformIndex) => (
+                          <motion.div 
+                            key={platform.name}
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: index * 0.1 + platformIndex * 0.05 }}
+                            className={`${visualEffects.glassmorphism.light.background} ${visualEffects.glassmorphism.light.backdrop} rounded-lg p-3 border border-white/20`}
+                          >
+                            <Flex justify="between" align="center">
+                              <Flex align="center" gap="sm">
+                                <platform.icon className="w-4 h-4 text-gray-600 dark:text-gray-400" />
+                                <span className={visualEffects.typography.enhanced.subtitle}>
+                                  {platform.name}
+                                </span>
+                              </Flex>
+                              <Flex align="center" gap="sm">
+                                <Badge 
+                                  variant={platform.status === 'active' ? 'success' : 'default'}
+                                  size="sm"
+                                  dot
+                                >
+                                  {platform.status}
+                                </Badge>
+                              </Flex>
+                            </Flex>
+                            
+                            {platform.metrics && (
+                              <Flex gap="lg" className="mt-2">
+                                {platform.metrics.map((metric, metricIndex) => (
+                                  <div key={metricIndex} className="flex-1">
+                                    <p className={visualEffects.typography.enhanced.caption}>
+                                      {metric.label}
+                                    </p>
+                                    <Flex align="center" gap="xs">
+                                      <span className={`${visualEffects.typography.enhanced.subtitle} font-semibold`}>
+                                        {metric.value}
+                                      </span>
+                                      <TrendingUp className={`w-3 h-3 ${
+                                        metric.trend === 'up' ? 'text-green-500' : 
+                                        metric.trend === 'down' ? 'text-red-500' : 'text-gray-400'
+                                      }`} />
+                                    </Flex>
+                                  </div>
+                                ))}
+                              </Flex>
+                            )}
+                          </motion.div>
+                        ))}
+                      </Stack>
+
+                      <Button 
+                        variant="primary"
+                        size="md"
+                        gradient
+                        className="w-full group-hover:shadow-lg transition-all"
+                        rightIcon={<ExternalLink className="w-4 h-4" />}
+                        onClick={() => router.push(`/${suite.id}`)}
+                      >
+                        Open Suite
+                      </Button>
+                    </Card>
+                  </motion.div>
+                ))}
+              </Grid>
+            </motion.div>
+          </Section>
 
           {/* Intelligent Dashboard Core */}
           <motion.div
@@ -461,152 +619,196 @@ export default function DashboardPage() {
             <IntelligentDashboardCore />
           </motion.div>
 
-          {/* Quick Actions */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="space-y-6"
-          >
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-              Quick Actions
-            </h2>
+          {/* Enhanced Quick Actions with Premium Design */}
+          <Section size="md">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="space-y-8"
+            >
+              <Stack space="xs">
+                <h2 className={visualEffects.typography.enhanced.title}>
+                  AI-Powered Quick Actions
+                </h2>
+                <p className={visualEffects.typography.enhanced.body}>
+                  Intelligent automation and optimization tools for instant productivity
+                </p>
+              </Stack>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              {quickActions.map((action, index) => (
-                <motion.button
-                  key={action.id}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: index * 0.05 }}
-                  onClick={action.action}
-                  className={`p-4 rounded-xl border-2 text-left hover:shadow-md transition-all ${getCategoryColor(action.category)}`}
-                >
-                  <div className="flex items-start justify-between mb-3">
-                    <action.icon className="w-6 h-6" />
-                    <div className="flex items-center gap-2">
-                      <span className={`px-2 py-1 text-xs font-medium rounded-full ${getImpactBadge(action.impact)}`}>
-                        {action.impact.toUpperCase()}
-                      </span>
-                    </div>
-                  </div>
-                  <h3 className="font-semibold mb-1">{action.title}</h3>
-                  <p className="text-sm opacity-80 mb-2">{action.description}</p>
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs opacity-60">~{action.estimatedTime}</span>
-                    <ChevronRight className="w-4 h-4" />
-                  </div>
-                </motion.button>
-              ))}
-            </div>
-          </motion.div>
-
-          {/* System Status */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.25 }}
-            className="bg-gradient-to-r from-teal-50 via-blue-50 to-purple-50 dark:from-teal-900/20 dark:via-blue-900/20 dark:to-purple-900/20 rounded-xl p-6 border border-teal-200 dark:border-teal-800"
-          >
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center gap-3">
-                <Activity className="w-6 h-6 text-teal-600 dark:text-teal-400" />
-                <div>
-                  <h2 className="text-xl font-bold text-gray-900 dark:text-white">
-                    Enterprise System Status
-                  </h2>
-                  <p className="text-gray-600 dark:text-gray-400 text-sm">
-                    All systems operational • Last updated: {systemStatus.lastUpdated.toLocaleTimeString()}
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-                <span className="text-sm font-medium text-green-600 dark:text-green-400">Live</span>
-              </div>
-            </div>
-            
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-              {[
-                { label: 'Uptime', value: systemStatus.uptime, color: 'text-green-600 dark:text-green-400' },
-                { label: 'Response', value: systemStatus.response, color: 'text-blue-600 dark:text-blue-400' },
-                { label: 'Routes', value: systemStatus.routes, color: 'text-purple-600 dark:text-purple-400' },
-                { label: 'Status', value: systemStatus.status, color: 'text-orange-600 dark:text-orange-400' }
-              ].map((metric) => (
-                <div key={metric.label} className="text-center">
-                  <motion.div 
-                    className={`text-2xl font-bold ${metric.color}`}
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    transition={{ type: "spring", stiffness: 100 }}
+              <CardGrid minCardWidth={250} gap="md">
+                {quickActions.map((action, index) => (
+                  <motion.div
+                    key={action.id}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: index * 0.05 }}
+                    variants={animations.variants.cardHover}
+                    whileHover="hover"
+                    whileTap="tap"
                   >
-                    {metric.value}
+                    <Card
+                      variant="glassmorphism"
+                      interactive
+                      className={`p-5 text-left h-full group ${getCategoryColor(action.category)} cursor-pointer`}
+                      onClick={action.action}
+                    >
+                      <Flex justify="between" align="start" className="mb-4">
+                        <motion.div
+                          className="p-3 rounded-xl bg-white/20 dark:bg-gray-800/30"
+                          whileHover={{ rotate: 5, scale: 1.1 }}
+                          transition={{ duration: 0.2 }}
+                        >
+                          <action.icon className="w-6 h-6" />
+                        </motion.div>
+                        <Flex align="center" gap="xs">
+                          <Badge 
+                            variant={action.impact === 'high' ? 'error' : action.impact === 'medium' ? 'warning' : 'default'}
+                            size="sm"
+                          >
+                            {action.impact.toUpperCase()}
+                          </Badge>
+                        </Flex>
+                      </Flex>
+                      
+                      <Stack space="xs" className="mb-4">
+                        <h3 className={`${visualEffects.typography.enhanced.subtitle} font-semibold group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors`}>
+                          {action.title}
+                        </h3>
+                        <p className={`${visualEffects.typography.enhanced.caption} group-hover:text-gray-700 dark:group-hover:text-gray-300 transition-colors`}>
+                          {action.description}
+                        </p>
+                      </Stack>
+                      
+                      <Flex justify="between" align="center">
+                        <Badge variant="default" size="sm" outline>
+                          ~{action.estimatedTime}
+                        </Badge>
+                        <motion.div
+                          animate={{ x: 0 }}
+                          whileHover={{ x: 4 }}
+                          transition={{ duration: 0.2 }}
+                        >
+                          <ChevronRight className="w-4 h-4 opacity-60 group-hover:opacity-100 transition-opacity" />
+                        </motion.div>
+                      </Flex>
+                    </Card>
                   </motion.div>
-                  <div className="text-sm text-gray-600 dark:text-gray-400">{metric.label}</div>
-                </div>
-              ))}
-            </div>
-          </motion.div>
-        </div>
+                ))}
+              </CardGrid>
+            </motion.div>
+          </Section>
+
+          {/* Enhanced System Status with Premium Design */}
+          <Section size="md" background="gradient">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.25 }}
+            >
+              <Card
+                variant="glassmorphism"
+                className="p-8 border-teal-200 dark:border-teal-800"
+              >
+                <Flex justify="between" align="center" className="mb-8">
+                  <Flex align="center" gap="sm">
+                    <motion.div 
+                      className="p-3 rounded-xl bg-teal-100 dark:bg-teal-900/30"
+                      animate={{ 
+                        scale: [1, 1.1, 1],
+                        rotate: [0, 5, -5, 0]
+                      }}
+                      transition={{ 
+                        duration: 3,
+                        repeat: Infinity,
+                        ease: "easeInOut"
+                      }}
+                    >
+                      <Activity className="w-6 h-6 text-teal-600 dark:text-teal-400" />
+                    </motion.div>
+                    <Stack space="xs">
+                      <h2 className={visualEffects.typography.enhanced.title}>
+                        Enterprise System Status
+                      </h2>
+                      <p className={visualEffects.typography.enhanced.caption}>
+                        All systems operational • Last updated: {systemStatus.lastUpdated.toLocaleTimeString()}
+                      </p>
+                    </Stack>
+                  </Flex>
+                  <Flex align="center" gap="sm">
+                    <motion.div 
+                      className="w-3 h-3 bg-green-500 rounded-full"
+                      animate={{ opacity: [1, 0.5, 1] }}
+                      transition={{ duration: 2, repeat: Infinity }}
+                    />
+                    <Badge variant="success" size="sm">
+                      Live
+                    </Badge>
+                  </Flex>
+                </Flex>
+                
+                <Grid cols={4} gap="lg" responsive>
+                  {[
+                    { label: 'Uptime', value: systemStatus.uptime, color: 'text-green-600 dark:text-green-400' },
+                    { label: 'Response', value: systemStatus.response, color: 'text-blue-600 dark:text-blue-400' },
+                    { label: 'Routes', value: systemStatus.routes, color: 'text-purple-600 dark:text-purple-400' },
+                    { label: 'Status', value: systemStatus.status, color: 'text-orange-600 dark:text-orange-400' }
+                  ].map((metric, index) => (
+                    <motion.div 
+                      key={metric.label} 
+                      className="text-center"
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                    >
+                      <motion.div 
+                        className={`text-3xl font-bold ${metric.color} mb-2`}
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        transition={{ 
+                          type: "spring", 
+                          stiffness: 100,
+                          delay: index * 0.1 
+                        }}
+                      >
+                        {metric.value}
+                      </motion.div>
+                      <p className={visualEffects.typography.enhanced.caption}>
+                        {metric.label}
+                      </p>
+                    </motion.div>
+                  ))}
+                </Grid>
+              </Card>
+            </motion.div>
+          </Section>
+
+        </Container>
       </div>
 
-      {/* AI Control Chat - Bottom Right */}
-      <AIControlChat defaultMinimized={true} />
+      {/* Enhanced AI Control Chat */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ delay: 0.5 }}
+        className="fixed bottom-6 right-6 z-50"
+      >
+        <AIControlChat defaultMinimized={true} />
+      </motion.div>
 
-      {/* Onboarding Welcome Banner */}
-      {showWelcomeBanner && (
-        <OnboardingWelcomeBanner onDismiss={handleWelcomeBannerDismiss} />
-      )}
+      {/* Enhanced Onboarding Welcome Banner */}
+      <AnimatePresence>
+        {showWelcomeBanner && (
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -50 }}
+            transition={{ duration: 0.4, ease: "easeOut" }}
+          >
+            <OnboardingWelcomeBanner onDismiss={handleWelcomeBannerDismiss} />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
-}
-
-const CrossPlatformIntegrationDashboard = dynamic(() => import('@/components/dashboard/CrossPlatformIntegrationDashboard'), {
-  ssr: false,
-  loading: () => (
-    <div className="flex items-center justify-center min-h-[200px]">
-      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-    </div>
-  )
-});
-
-// Enterprise KPI Dashboard Component
-interface EnterpriseKPI {
-  title: string;
-  value: string;
-  change: string;
-  changeType: 'positive' | 'negative' | 'neutral';
-  icon: React.ComponentType<any>;
-  color: string;
-  bgColor: string;
-}
-
-interface PlatformSuite {
-  id: string;
-  name: string;
-  description: string;
-  platforms: Array<{
-    name: string;
-    status: 'active' | 'inactive' | 'maintenance';
-    route: string;
-    icon: React.ComponentType<any>;
-    metrics?: {
-      label: string;
-      value: string;
-      trend: 'up' | 'down' | 'stable';
-    }[];
-  }>;
-  color: string;
-  bgGradient: string;
-}
-
-interface QuickAction {
-  id: string;
-  title: string;
-  description: string;
-  icon: React.ComponentType<any>;
-  action: () => void;
-  category: 'create' | 'optimize' | 'analyze' | 'automate';
-  estimatedTime: string;
-  impact: 'high' | 'medium' | 'low';
 }

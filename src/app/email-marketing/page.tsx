@@ -12,6 +12,13 @@ import { useEmailMarketing } from '@/contexts/EmailMarketingContext';
 import { useEmailMarketingData } from '@/hooks/useEmailMarketingData';
 import { useToast } from '@/components/ui/Toast';
 
+// Enhanced Design System Imports - Phase 1 Visual Polish
+import { designTokens } from '@/lib/designTokens';
+import { animations } from '@/lib/animations';
+import visualEffects from '@/lib/visualEffects';
+import { Container, Grid, Flex, Section, Stack, Header, ContentArea, CardGrid } from '@/components/ui/LayoutSystem';
+import { Button as EnhancedButton, Card as EnhancedCard, Badge as EnhancedBadge, Spinner, Avatar, Progress } from '@/components/ui/EnhancedComponents';
+
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';

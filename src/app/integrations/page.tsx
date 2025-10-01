@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import dynamic from 'next/dynamic';
 import { useIntegrations } from '@/contexts/IntegrationsContext';
 import { 
   Search, 
@@ -26,6 +27,22 @@ import {
   Eye,
   MessageCircle
 } from 'lucide-react';
+
+// SSR-safe imports for universal sidebar system
+const UnifiedSidebar = dynamic(() => import('@/components/UnifiedSidebar'), {
+  ssr: false,
+  loading: () => <div className="fixed left-0 top-0 h-screen w-56 bg-gray-900 animate-pulse" />
+});
+
+const AdvancedNavigation = dynamic(() => import('@/components/ui/AdvancedNavigation'), {
+  ssr: false,
+  loading: () => <div className="h-16 bg-white dark:bg-gray-900 border-b animate-pulse" />
+});
+
+const NavigationTabs = dynamic(() => import('@/components/NavigationTabs'), {
+  ssr: false,
+  loading: () => <div className="h-12 bg-white dark:bg-gray-900 border-b animate-pulse" />
+});
 
 // ============================================================================
 // APP CARD COMPONENT
@@ -270,6 +287,8 @@ function IntegrationAppCard({ app, onInstall, onUninstall, onConfigure }) {
 // ============================================================================
 
 export default function IntegrationsMarketplace() {
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  
   const {
     availableApps,
     featuredApps,
@@ -310,24 +329,39 @@ export default function IntegrationsMarketplace() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-gray-900 dark:via-blue-950 dark:to-indigo-950">
-      {/* Header */}
-      <div className="border-b border-gray-200 dark:border-gray-700 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm">
-        <div className="max-w-7xl mx-auto px-6 py-6">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center space-x-4">
-              <div className="p-3 bg-gradient-to-r from-purple-500 to-blue-600 rounded-lg text-white">
-                <Zap className="w-8 h-8" />
-              </div>
-              <div>
-                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                  Integrations Marketplace
-                </h1>
-                <p className="text-gray-600 dark:text-gray-300 mt-1">
-                  Connect your workflow with 100+ powerful integrations
-                </p>
-              </div>
-            </div>
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      {/* Unified Sidebar */}
+      <UnifiedSidebar onCollapseChange={setSidebarCollapsed} />
+      
+      {/* Main Content Area */}
+      <div className={`transition-all duration-300 ${
+        sidebarCollapsed ? 'ml-14' : 'ml-56'
+      }`}>
+        {/* Advanced Navigation */}
+        <AdvancedNavigation sidebarCollapsed={sidebarCollapsed} />
+        
+        {/* Navigation Tabs */}
+        <NavigationTabs />
+        
+        {/* Integrations Content */}
+        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-gray-900 dark:via-blue-950 dark:to-indigo-950">
+          {/* Header */}
+          <div className="border-b border-gray-200 dark:border-gray-700 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm">
+            <div className="max-w-7xl mx-auto px-6 py-6">
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center space-x-4">
+                  <div className="p-3 bg-gradient-to-r from-purple-500 to-blue-600 rounded-lg text-white">
+                    <Zap className="w-8 h-8" />
+                  </div>
+                  <div>
+                    <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+                      Integrations Marketplace
+                    </h1>
+                    <p className="text-gray-600 dark:text-gray-300 mt-1">
+                      Connect your workflow with 100+ powerful integrations
+                    </p>
+                  </div>
+                </div>
             
             <div className="flex items-center space-x-4">
               <motion.button
@@ -648,6 +682,7 @@ export default function IntegrationsMarketplace() {
             </div>
           </div>
         )}
+        </div>
       </div>
     </div>
   );
