@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState, memo } from 'react';
 import { Settings, User, Bell } from 'lucide-react';
-import { PulseWaveLogo } from './PulseWaveLogo';
 import { useTheme } from '@/contexts/ThemeContext';
 
 const NavigationTabs = memo(() => {
@@ -15,25 +14,8 @@ const NavigationTabs = memo(() => {
   return (
     <header className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 transition-colors relative z-50" data-testid="main-navigation">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          {/* Left: PulseBridge Logo */}
-          <div className="flex items-center space-x-3">
-            <Link href="/dashboard" className="flex items-center space-x-3 hover:opacity-80 transition-opacity">
-              <PulseWaveLogo size="small" variant="dark" animated={true} showText={false} />
-              <span className="text-xl font-bold text-gray-900 dark:text-white">
-                PulseBridge
-              </span>
-            </Link>
-          </div>
-
-          {/* Center: Page Title (Dynamic based on current path) */}
-          <div className="hidden md:flex items-center">
-            <h1 className="text-lg font-semibold text-gray-700 dark:text-gray-300">
-              {getPageTitle(pathname)}
-            </h1>
-          </div>
-
-          {/* Right: User Menu & Settings */}
+        <div className="flex items-center justify-end h-16">
+          {/* Right: User Menu & Settings - Now taking full width and aligned right */}
           <div className="flex items-center space-x-3">
             {/* Theme Toggle */}
             <button
@@ -110,39 +92,6 @@ const NavigationTabs = memo(() => {
     </header>
   );
 });
-
-// Helper function to get page title based on pathname
-function getPageTitle(pathname: string): string {
-  const titleMap: Record<string, string> = {
-    '/dashboard': 'Master Terminal',
-    '/email-marketing': 'Email Marketing',
-    '/social-media': 'Social Media',
-    '/project-management': 'Project Management', 
-    '/collaboration': 'Team Collaboration',
-    '/business-intelligence': 'Business Intelligence',
-    '/integrations': 'Integrations',
-    '/ai-center': 'AI Center',
-    '/ai-automation': 'AI Automation',
-    '/marketing-command-center': 'Marketing Hub',
-    '/platforms': 'Platform Setup',
-    '/settings': 'Settings',
-    '/status': 'System Status',
-    '/analytics': 'Analytics',
-    '/reports': 'Reports',
-    '/crm': 'CRM',
-    '/onboarding': 'Setup Wizard',
-    '/whitelabel': 'White Label',
-    '/unified': 'Unified Platform',
-    '/workflow-automation': 'Workflow Automation',
-    '/scheduler': 'Scheduler',
-    '/performance': 'Performance',
-    '/optimization': 'Optimization',
-    '/leads': 'Lead Management',
-    '/campaigns': 'Campaigns',
-  };
-  
-  return titleMap[pathname] || 'PulseBridge';
-}
 
 NavigationTabs.displayName = 'NavigationTabs';
 
