@@ -39,7 +39,7 @@ except ImportError as e:
 
 # Import AI Services
 from ai_endpoints import ai_router
-from ai_chat_service import ai_service
+from ai_chat_service import ai_service, ChatRequest
 
 # Import Optimization Engine
 from optimization_endpoints import router as optimization_router
@@ -712,6 +712,37 @@ async def get_leads():
             "created_at": "2025-09-18T09:15:00Z"
         }
     ]
+
+# AI Chat Endpoints
+@app.post("/api/v1/ai/chat")
+async def ai_chat(request: ChatRequest):
+    """AI Chat endpoint for content generation and assistance"""
+    try:
+        logger.info(f"AI Chat Request: {request.message[:100]}...")
+        response = await ai_service.chat_with_ai(request)
+        logger.info(f"AI Chat Response generated successfully")
+        return response
+    except Exception as e:
+        logger.error(f"AI Chat error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"AI chat failed: {str(e)}")
+
+@app.get("/api/v1/ai/health")
+async def ai_health():
+    """Check AI service health"""
+    try:
+        return {
+            "status": "healthy",
+            "claude_available": bool(os.getenv('ANTHROPIC_API_KEY')),
+            "openai_available": bool(os.getenv('OPENAI_API_KEY')),
+            "timestamp": datetime.now(timezone.utc).isoformat()
+        }
+    except Exception as e:
+        logger.error(f"AI Health check error: {str(e)}")
+        return {
+            "status": "unhealthy",
+            "error": str(e),
+            "timestamp": datetime.now(timezone.utc).isoformat()
+        }
 
 # Error handlers
 @app.exception_handler(404)

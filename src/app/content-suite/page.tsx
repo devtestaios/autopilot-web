@@ -1,17 +1,18 @@
 'use client';
 
-import { useState } from 'react';
-import { motion } from 'framer-motion';
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import NavigationTabs from '@/components/NavigationTabs';
+import AdvancedNavigation from '@/components/ui/AdvancedNavigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Textarea } from '@/components/ui/textarea';
 import { 
   Sparkles, 
   Calendar, 
-  Mail, 
   FolderOpen, 
   PenTool, 
   Image, 
@@ -26,190 +27,378 @@ import {
   Play,
   Pause,
   Plus,
-  Search
+  Search,
+  Grid3X3,
+  Layers,
+  Palette,
+  Type,
+  Target,
+  Hash,
+  Clock,
+  Share2,
+  Eye,
+  Copy,
+  Trash2,
+  MoreVertical,
+  ChevronDown,
+  Filter,
+  Zap,
+  TrendingUp,
+  Globe,
+  Smartphone,
+  Monitor,
+  Tablet,
+  Mail
 } from 'lucide-react';
 
+// Import Claude AI integration
+import { chatWithAI } from '@/lib/ai-api';
+
+// Content Types Enum for extensibility
+export enum ContentType {
+  SOCIAL_POST = 'social-post',
+  STORY = 'story',
+  REEL = 'reel',
+  VIDEO = 'video',
+  EMAIL_TEMPLATE = 'email-template',
+  BLOG_GRAPHIC = 'blog-graphic',
+  PRINT_MATERIAL = 'print-material',
+  CAROUSEL = 'carousel',
+  ANIMATED_POST = 'animated-post'
+}
+
+// Platform Support Enum
+export enum Platform {
+  INSTAGRAM = 'instagram',
+  TIKTOK = 'tiktok',
+  LINKEDIN = 'linkedin',
+  TWITTER = 'twitter',
+  PINTEREST = 'pinterest',
+  FACEBOOK = 'facebook',
+  YOUTUBE = 'youtube',
+  EMAIL = 'email',
+  BLOG = 'blog'
+}
+
+// Advanced Features Enum
+export enum AdvancedFeature {
+  AUTO_RESIZE = 'auto-resize',
+  BRAND_COMPLIANCE = 'brand-compliance',
+  BULK_EDIT = 'bulk-edit',
+  VERSION_CONTROL = 'version-control',
+  COLLABORATION = 'collaboration',
+  A_B_TESTING = 'a-b-testing',
+  PERFORMANCE_TRACKING = 'performance-tracking'
+}
+
+// SEO Features Enum
+export enum SEOFeature {
+  SCHEMA_MARKUP = 'schema-markup',
+  ALT_TEXT_GENERATION = 'alt-text-generation',
+  META_OPTIMIZATION = 'meta-optimization',
+  KEYWORD_SUGGESTIONS = 'keyword-suggestions',
+  CONTENT_OPTIMIZATION = 'content-optimization',
+  LOCAL_SEO = 'local-seo'
+}
+
+interface ContentAsset {
+  id: string;
+  name: string;
+  type: ContentType;
+  platforms: Platform[];
+  url?: string;
+  thumbnail?: string;
+  dimensions?: { width: number; height: number };
+  createdAt: Date;
+  modifiedAt: Date;
+  tags: string[];
+  brandCompliant?: boolean;
+  seoOptimized?: boolean;
+}
+
+interface FeedPost {
+  id: string;
+  position: { row: number; col: number };
+  asset: ContentAsset;
+  scheduledDate?: Date;
+  caption?: string;
+  hashtags?: string[];
+  platform: Platform;
+  status: 'draft' | 'scheduled' | 'published';
+}
+
+interface SEOData {
+  title?: string;
+  description?: string;
+  keywords?: string[];
+  altText?: string;
+  schemaMarkup?: Record<string, any>;
+  optimizationScore?: number;
+  suggestions?: string[];
+}
+
 export default function ContentCreationSuite() {
-  const [activeTab, setActiveTab] = useState('generator');
+  const [activeTab, setActiveTab] = useState('feed-planner');
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [selectedContentType, setSelectedContentType] = useState<ContentType>(ContentType.SOCIAL_POST);
+  const [selectedPlatforms, setSelectedPlatforms] = useState<Platform[]>([Platform.INSTAGRAM]);
 
   const tabConfig = [
     {
-      id: 'generator',
+      id: 'feed-planner',
+      label: 'Feed Planner',
+      icon: <Grid3X3 className="w-4 h-4" />,
+      description: 'Visual feed planning and scheduling'
+    },
+    {
+      id: 'asset-manager',
+      label: 'Asset Manager',
+      icon: <FolderOpen className="w-4 h-4" />,
+      description: 'Content library and brand assets'
+    },
+    {
+      id: 'design-studio',
+      label: 'Design Studio',
+      icon: <PenTool className="w-4 h-4" />,
+      description: 'Visual content creation and editing'
+    },
+    {
+      id: 'ai-generator',
       label: 'AI Generator',
       icon: <Sparkles className="w-4 h-4" />,
-      component: AIContentGenerator
-    },
-    {
-      id: 'social',
-      label: 'Social Media',
-      icon: <Users className="w-4 h-4" />,
-      component: SocialMediaManager
-    },
-    {
-      id: 'email',
-      label: 'Email Marketing',
-      icon: <Mail className="w-4 h-4" />,
-      component: EmailMarketingManager
-    },
-    {
-      id: 'library',
-      label: 'Content Library',
-      icon: <FolderOpen className="w-4 h-4" />,
-      component: ContentLibraryManager
+      description: 'AI-powered content creation and SEO'
     }
   ];
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <NavigationTabs />
+      <AdvancedNavigation 
+        sidebarCollapsed={sidebarCollapsed}
+      />
       
-      <div className="container mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">
-            Content Creation Suite
-          </h1>
-          <p className="text-gray-600 dark:text-gray-400">
-            AI-powered content creation with Social Media Management, Email Marketing, and comprehensive content tools
-          </p>
-        </div>
+      <div className={`transition-all duration-300 ${sidebarCollapsed ? 'ml-16' : 'ml-64'} pt-16`}>
+        <div className="p-6">
+          {/* Header Section */}
+          <div className="mb-8">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="flex flex-col lg:flex-row lg:items-center justify-between gap-4"
+            >
+              <div>
+                <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+                  Content Creation Suite
+                </h1>
+                <p className="text-gray-600 dark:text-gray-400">
+                  Professional content creation with AI-powered design and SEO optimization
+                </p>
+              </div>
+              
+              {/* Content Type & Platform Selector */}
+              <div className="flex flex-col sm:flex-row gap-3">
+                <ContentTypeSelector 
+                  selected={selectedContentType}
+                  onChange={setSelectedContentType}
+                />
+                <PlatformSelector 
+                  selected={selectedPlatforms}
+                  onChange={setSelectedPlatforms}
+                />
+              </div>
+            </motion.div>
+          </div>
 
-        {/* Tab Navigation */}
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 mb-8">
-            {tabConfig.map((tab) => (
-              <TabsTrigger 
-                key={tab.id} 
-                value={tab.id}
-                className="flex items-center gap-2"
+          {/* Main Tabs */}
+          <div className="space-y-6">
+            <div className="flex border-b border-gray-200 dark:border-gray-700">
+              {tabConfig.map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`flex items-center gap-2 px-4 py-2 border-b-2 transition-colors ${
+                    activeTab === tab.id
+                      ? 'border-blue-500 text-blue-600 dark:text-blue-400'
+                      : 'border-transparent text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'
+                  }`}
+                >
+                  {tab.icon}
+                  <span className="hidden sm:inline">{tab.label}</span>
+                </button>
+              ))}
+            </div>
+
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeTab}
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                transition={{ duration: 0.2 }}
               >
-                {tab.icon}
-                <span className="hidden sm:inline">{tab.label}</span>
-              </TabsTrigger>
-            ))}
-          </TabsList>
+                {activeTab === 'feed-planner' && (
+                  <FeedPlannerWorkspace 
+                    contentType={selectedContentType}
+                    platforms={selectedPlatforms}
+                  />
+                )}
 
-          {/* Tab Content */}
-          {tabConfig.map((tab) => (
-            <TabsContent key={tab.id} value={tab.id} className="space-y-6">
-              <tab.component />
-            </TabsContent>
-          ))}
-        </Tabs>
+                {activeTab === 'asset-manager' && (
+                  <AssetManagerWorkspace 
+                    contentType={selectedContentType}
+                    platforms={selectedPlatforms}
+                  />
+                )}
+
+                {activeTab === 'design-studio' && (
+                  <DesignStudioWorkspace 
+                    contentType={selectedContentType}
+                    platforms={selectedPlatforms}
+                  />
+                )}
+
+                {activeTab === 'ai-generator' && (
+                  <AIGeneratorWorkspace 
+                    contentType={selectedContentType}
+                    platforms={selectedPlatforms}
+                  />
+                )}
+              </motion.div>
+            </AnimatePresence>
+          </div>
+        </div>
       </div>
     </div>
   );
 }
 
-// AI Content Generator Component
-function AIContentGenerator() {
-  const [contentType, setContentType] = useState('social-post');
-  const [prompt, setPrompt] = useState('');
-  const [generatedContent, setGeneratedContent] = useState('');
-  const [isGenerating, setIsGenerating] = useState(false);
-
+// Content Type Selector Component
+function ContentTypeSelector({ 
+  selected, 
+  onChange 
+}: { 
+  selected: ContentType; 
+  onChange: (type: ContentType) => void; 
+}) {
   const contentTypes = [
-    { id: 'social-post', label: 'Social Media Post', icon: Users },
-    { id: 'blog-post', label: 'Blog Post', icon: FileText },
-    { id: 'email', label: 'Email Content', icon: Mail },
-    { id: 'product-desc', label: 'Product Description', icon: Edit3 }
+    { type: ContentType.SOCIAL_POST, label: 'Social Post', icon: Image },
+    { type: ContentType.STORY, label: 'Story', icon: Smartphone },
+    { type: ContentType.REEL, label: 'Reel', icon: Video },
+    { type: ContentType.CAROUSEL, label: 'Carousel', icon: Layers },
+    { type: ContentType.EMAIL_TEMPLATE, label: 'Email', icon: FileText },
+    { type: ContentType.BLOG_GRAPHIC, label: 'Blog Graphic', icon: Monitor },
+    { type: ContentType.PRINT_MATERIAL, label: 'Print', icon: FileText },
+    { type: ContentType.ANIMATED_POST, label: 'Animated', icon: Play }
   ];
 
-  const handleGenerate = async () => {
-    setIsGenerating(true);
-    // Simulate AI generation
-    setTimeout(() => {
-      setGeneratedContent(`Generated ${contentType} content based on: "${prompt}"\n\nThis is a sample AI-generated content that would be created based on your prompt. In a real implementation, this would connect to AI services like GPT-4 or Claude to generate high-quality content tailored to your specifications.`);
-      setIsGenerating(false);
-    }, 2000);
-  };
+  const selectedType = contentTypes.find(ct => ct.type === selected);
+
+  return (
+    <div className="relative">
+      <Button variant="outline" className="flex items-center gap-2">
+        {selectedType && <selectedType.icon className="w-4 h-4" />}
+        {selectedType?.label}
+        <ChevronDown className="w-4 h-4" />
+      </Button>
+      {/* Dropdown implementation would go here */}
+    </div>
+  );
+}
+
+// Platform Selector Component
+function PlatformSelector({ 
+  selected, 
+  onChange 
+}: { 
+  selected: Platform[]; 
+  onChange: (platforms: Platform[]) => void; 
+}) {
+  const platforms = [
+    { platform: Platform.INSTAGRAM, label: 'Instagram', color: 'bg-pink-500' },
+    { platform: Platform.TIKTOK, label: 'TikTok', color: 'bg-black' },
+    { platform: Platform.LINKEDIN, label: 'LinkedIn', color: 'bg-blue-600' },
+    { platform: Platform.TWITTER, label: 'Twitter', color: 'bg-sky-500' },
+    { platform: Platform.PINTEREST, label: 'Pinterest', color: 'bg-red-600' },
+    { platform: Platform.FACEBOOK, label: 'Facebook', color: 'bg-blue-500' },
+    { platform: Platform.YOUTUBE, label: 'YouTube', color: 'bg-red-500' }
+  ];
+
+  return (
+    <div className="flex items-center gap-2">
+      <span className="text-sm text-gray-600 dark:text-gray-400">Platforms:</span>
+      <div className="flex gap-1">
+        {platforms.slice(0, 3).map((platform) => (
+          <Badge
+            key={platform.platform}
+            variant={selected.includes(platform.platform) ? "default" : "outline"}
+            className="cursor-pointer"
+            onClick={() => {
+              if (selected.includes(platform.platform)) {
+                onChange(selected.filter(p => p !== platform.platform));
+              } else {
+                onChange([...selected, platform.platform]);
+              }
+            }}
+          >
+            {platform.label}
+          </Badge>
+        ))}
+        {platforms.length > 3 && (
+          <Button variant="outline" size="sm">
+            +{platforms.length - 3}
+          </Button>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// Feed Planner Workspace Component
+function FeedPlannerWorkspace({ 
+  contentType, 
+  platforms 
+}: { 
+  contentType: ContentType; 
+  platforms: Platform[]; 
+}) {
+  const [feedPosts, setFeedPosts] = useState<FeedPost[]>([]);
+  const [viewMode, setViewMode] = useState<'grid' | 'calendar'>('grid');
 
   return (
     <div className="space-y-6">
-      {/* Content Type Selection */}
+      {/* Feed Planner Header */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Sparkles className="w-5 h-5" />
-            AI Content Generator
-          </CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle className="flex items-center gap-2">
+              <Grid3X3 className="w-5 h-5" />
+              Visual Feed Planner
+            </CardTitle>
+            <div className="flex items-center gap-2">
+              <Button
+                variant={viewMode === 'grid' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setViewMode('grid')}
+              >
+                <Grid3X3 className="w-4 h-4 mr-2" />
+                Grid View
+              </Button>
+              <Button
+                variant={viewMode === 'calendar' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setViewMode('calendar')}
+              >
+                <Calendar className="w-4 h-4 mr-2" />
+                Calendar View
+              </Button>
+            </div>
+          </div>
         </CardHeader>
-        <CardContent className="space-y-6">
-          <div>
-            <label className="block text-sm font-medium mb-3">Content Type</label>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-              {contentTypes.map((type) => (
-                <button
-                  key={type.id}
-                  onClick={() => setContentType(type.id)}
-                  className={`p-3 rounded-lg border text-left transition-colors ${
-                    contentType === type.id
-                      ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
-                      : 'border-gray-200 dark:border-gray-700 hover:border-gray-300'
-                  }`}
-                >
-                  <type.icon className="w-4 h-4 mb-2" />
-                  <div className="text-sm font-medium">{type.label}</div>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium mb-2">Content Prompt</label>
-            <textarea
-              value={prompt}
-              onChange={(e) => setPrompt(e.target.value)}
-              placeholder="Describe the content you want to generate..."
-              className="w-full h-24 p-3 border border-gray-300 dark:border-gray-600 rounded-lg resize-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            />
-          </div>
-
-          <Button 
-            onClick={handleGenerate}
-            disabled={!prompt || isGenerating}
-            className="w-full"
-          >
-            {isGenerating ? (
-              <>
-                <motion.div
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                  className="w-4 h-4 mr-2"
-                >
-                  <Sparkles className="w-4 h-4" />
-                </motion.div>
-                Generating...
-              </>
-            ) : (
-              <>
-                <Sparkles className="w-4 h-4 mr-2" />
-                Generate Content
-              </>
-            )}
-          </Button>
-
-          {generatedContent && (
-            <div className="mt-6">
-              <label className="block text-sm font-medium mb-2">Generated Content</label>
-              <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border">
-                <pre className="whitespace-pre-wrap text-sm">{generatedContent}</pre>
-              </div>
-              <div className="flex gap-2 mt-3">
-                <Button size="sm" variant="outline">
-                  <Edit3 className="w-4 h-4 mr-2" />
-                  Edit
-                </Button>
-                <Button size="sm" variant="outline">
-                  <Download className="w-4 h-4 mr-2" />
-                  Save
-                </Button>
-                <Button size="sm" variant="outline">
-                  <Users className="w-4 h-4 mr-2" />
-                  Share
-                </Button>
-              </div>
-            </div>
+        <CardContent>
+          {viewMode === 'grid' ? (
+            <FeedGridView posts={feedPosts} onPostsChange={setFeedPosts} />
+          ) : (
+            <FeedCalendarView posts={feedPosts} onPostsChange={setFeedPosts} />
           )}
         </CardContent>
       </Card>
@@ -217,198 +406,475 @@ function AIContentGenerator() {
   );
 }
 
-// Social Media Manager Component
-function SocialMediaManager() {
+// Asset Manager Workspace Component
+function AssetManagerWorkspace({ 
+  contentType, 
+  platforms 
+}: { 
+  contentType: ContentType; 
+  platforms: Platform[]; 
+}) {
+  const [assets, setAssets] = useState<ContentAsset[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Schedule Post */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Calendar className="w-5 h-5" />
-              Schedule Posts
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-gray-600 dark:text-gray-400 mb-4">
-              Schedule and manage your social media posts across platforms
-            </p>
-            <Button className="w-full">
-              <Plus className="w-4 h-4 mr-2" />
-              New Scheduled Post
-            </Button>
-          </CardContent>
-        </Card>
-
-        {/* Analytics */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <BarChart3 className="w-5 h-5" />
-              Social Analytics
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-gray-600 dark:text-gray-400 mb-4">
-              Track engagement and performance across platforms
-            </p>
-            <Button variant="outline" className="w-full">
-              View Analytics
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Recent Posts */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Recent Posts</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="text-center py-12 text-gray-500">
-            No posts yet. Create your first social media post!
-          </div>
-        </CardContent>
-      </Card>
-    </div>
-  );
-}
-
-// Email Marketing Manager Component
-function EmailMarketingManager() {
-  return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Create Campaign */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Mail className="w-5 h-5" />
-              Email Campaigns
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-gray-600 dark:text-gray-400 mb-4">
-              Create and manage email marketing campaigns
-            </p>
-            <Button className="w-full">
-              <Plus className="w-4 h-4 mr-2" />
-              New Campaign
-            </Button>
-          </CardContent>
-        </Card>
-
-        {/* Subscribers */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Users className="w-5 h-5" />
-              Subscribers
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-gray-600 dark:text-gray-400 mb-4">
-              Manage your email subscriber lists
-            </p>
-            <Button variant="outline" className="w-full">
-              Manage Lists
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Campaign Performance */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Campaign Performance</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="text-center py-12 text-gray-500">
-            No campaigns yet. Create your first email campaign!
-          </div>
-        </CardContent>
-      </Card>
-    </div>
-  );
-}
-
-// Content Library Manager Component
-function ContentLibraryManager() {
-  return (
-    <div className="space-y-6">
-      {/* Upload Section */}
+      {/* Asset Manager Header */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Upload className="w-5 h-5" />
-            Upload Content
+            <FolderOpen className="w-5 h-5" />
+            Content Library & Asset Manager
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-8 text-center">
-            <Upload className="w-12 h-12 mx-auto text-gray-400 mb-4" />
-            <p className="text-gray-600 dark:text-gray-400 mb-4">
-              Drag and drop files here, or click to browse
-            </p>
-            <Button>
-              Choose Files
-            </Button>
-          </div>
+          <AssetLibraryView 
+            assets={assets}
+            onAssetsChange={setAssets}
+            searchQuery={searchQuery}
+            onSearchChange={setSearchQuery}
+            selectedTags={selectedTags}
+            onTagsChange={setSelectedTags}
+          />
         </CardContent>
       </Card>
+    </div>
+  );
+}
 
-      {/* Content Types */}
+// Design Studio Workspace Component
+function DesignStudioWorkspace({ 
+  contentType, 
+  platforms 
+}: { 
+  contentType: ContentType; 
+  platforms: Platform[]; 
+}) {
+  return (
+    <div className="space-y-6">
+      {/* Design Studio Header */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <PenTool className="w-5 h-5" />
+            Design Studio
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <DesignCanvasView 
+            contentType={contentType}
+            platforms={platforms}
+          />
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
+// AI Generator Workspace Component
+function AIGeneratorWorkspace({ 
+  contentType, 
+  platforms 
+}: { 
+  contentType: ContentType; 
+  platforms: Platform[]; 
+}) {
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [prompt, setPrompt] = useState('');
+  const [generatedContent, setGeneratedContent] = useState('');
+  const [seoData, setSeoData] = useState<SEOData>({});
+
+  const handleGenerateContent = async () => {
+    if (!prompt.trim()) return;
+    
+    setIsGenerating(true);
+    try {
+      const response = await chatWithAI({
+        message: `Generate ${contentType} content for ${platforms.join(', ')} with this prompt: ${prompt}`,
+        context: {
+          contentType,
+          platforms,
+          includeSEO: true,
+          includeHashtags: true
+        },
+        page: 'content-suite'
+      });
+      
+      setGeneratedContent(response.response);
+      
+      // Extract SEO data from AI response
+      if (response.context_updates?.seo) {
+        setSeoData(response.context_updates.seo);
+      }
+    } catch (error) {
+      console.error('AI generation failed:', error);
+      setGeneratedContent('Failed to generate content. Please try again.');
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  return (
+    <div className="space-y-6">
+      {/* AI Generator Header */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Sparkles className="w-5 h-5" />
+            AI Content Generator & SEO Engine
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <AIContentGeneratorView 
+            prompt={prompt}
+            onPromptChange={setPrompt}
+            isGenerating={isGenerating}
+            onGenerate={handleGenerateContent}
+            generatedContent={generatedContent}
+            contentType={contentType}
+            platforms={platforms}
+          />
+          
+          <SEOEngineView 
+            seoData={seoData}
+            onSeoDataChange={setSeoData}
+            contentType={contentType}
+          />
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
+// Placeholder components for the detailed implementations
+function FeedGridView({ posts, onPostsChange }: { posts: FeedPost[]; onPostsChange: (posts: FeedPost[]) => void; }) {
+  return (
+    <div className="space-y-4">
+      <div className="grid grid-cols-3 gap-4 aspect-square max-w-md mx-auto">
+        {Array.from({ length: 9 }, (_, i) => (
+          <div
+            key={i}
+            className="aspect-square border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg flex items-center justify-center hover:border-blue-500 transition-colors cursor-pointer"
+          >
+            <Plus className="w-8 h-8 text-gray-400" />
+          </div>
+        ))}
+      </div>
+      <div className="text-center">
+        <p className="text-gray-600 dark:text-gray-400 mb-4">
+          Plan your visual feed by dragging and dropping content
+        </p>
+        <Button>
+          <Plus className="w-4 h-4 mr-2" />
+          Add Content
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+function FeedCalendarView({ posts, onPostsChange }: { posts: FeedPost[]; onPostsChange: (posts: FeedPost[]) => void; }) {
+  return (
+    <div className="text-center py-8 text-gray-500">
+      <Calendar className="w-16 h-16 mx-auto mb-4 text-gray-300" />
+      <h3 className="text-lg font-medium mb-2">Calendar View</h3>
+      <p className="text-gray-400">Schedule and organize your content by date</p>
+      <Button className="mt-4" variant="outline">
+        <Calendar className="w-4 h-4 mr-2" />
+        Coming Soon
+      </Button>
+    </div>
+  );
+}
+
+function AssetLibraryView({ 
+  assets, 
+  onAssetsChange, 
+  searchQuery, 
+  onSearchChange, 
+  selectedTags, 
+  onTagsChange 
+}: { 
+  assets: ContentAsset[]; 
+  onAssetsChange: (assets: ContentAsset[]) => void; 
+  searchQuery: string; 
+  onSearchChange: (query: string) => void; 
+  selectedTags: string[]; 
+  onTagsChange: (tags: string[]) => void; 
+}) {
+  return (
+    <div className="space-y-4">
+      <div className="flex gap-4">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+          <Input
+            placeholder="Search assets..."
+            value={searchQuery}
+            onChange={(e) => onSearchChange(e.target.value)}
+            className="pl-10"
+          />
+        </div>
+        <Button>
+          <Upload className="w-4 h-4 mr-2" />
+          Upload
+        </Button>
+        <Button variant="outline">
+          <Filter className="w-4 h-4 mr-2" />
+          Filter
+        </Button>
+      </div>
+      
+      {/* Asset Types */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <Card className="text-center p-4">
+        <Card className="text-center p-4 hover:shadow-md transition-shadow cursor-pointer">
           <Image className="w-8 h-8 mx-auto mb-2 text-blue-500" />
           <div className="text-sm font-medium">Images</div>
           <div className="text-xs text-gray-500">0 items</div>
         </Card>
         
-        <Card className="text-center p-4">
+        <Card className="text-center p-4 hover:shadow-md transition-shadow cursor-pointer">
           <Video className="w-8 h-8 mx-auto mb-2 text-green-500" />
           <div className="text-sm font-medium">Videos</div>
           <div className="text-xs text-gray-500">0 items</div>
         </Card>
         
-        <Card className="text-center p-4">
-          <FileText className="w-8 h-8 mx-auto mb-2 text-purple-500" />
-          <div className="text-sm font-medium">Documents</div>
+        <Card className="text-center p-4 hover:shadow-md transition-shadow cursor-pointer">
+          <Palette className="w-8 h-8 mx-auto mb-2 text-purple-500" />
+          <div className="text-sm font-medium">Brand Assets</div>
           <div className="text-xs text-gray-500">0 items</div>
         </Card>
         
-        <Card className="text-center p-4">
-          <PenTool className="w-8 h-8 mx-auto mb-2 text-orange-500" />
+        <Card className="text-center p-4 hover:shadow-md transition-shadow cursor-pointer">
+          <Layers className="w-8 h-8 mx-auto mb-2 text-orange-500" />
           <div className="text-sm font-medium">Templates</div>
           <div className="text-xs text-gray-500">0 items</div>
         </Card>
       </div>
+      
+      <div className="text-center py-8 text-gray-500">
+        <FolderOpen className="w-16 h-16 mx-auto mb-4 text-gray-300" />
+        <h3 className="text-lg font-medium mb-2">Asset Library</h3>
+        <p className="text-gray-400">Upload and organize your content assets</p>
+      </div>
+    </div>
+  );
+}
 
-      {/* Search and Filter */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Content Library</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex gap-4 mb-4">
-            <div className="flex-1 relative">
-              <Search className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
-              <Input 
-                placeholder="Search content..." 
-                className="pl-10"
-              />
-            </div>
-            <Button variant="outline">
-              <Settings className="w-4 h-4" />
+function DesignCanvasView({ 
+  contentType, 
+  platforms 
+}: { 
+  contentType: ContentType; 
+  platforms: Platform[]; 
+}) {
+  return (
+    <div className="space-y-4">
+      <div className="text-center py-8 text-gray-500">
+        <PenTool className="w-16 h-16 mx-auto mb-4 text-gray-300" />
+        <h3 className="text-lg font-medium mb-2">Design Studio</h3>
+        <p className="text-gray-400 mb-4">Create and edit visual content with professional tools</p>
+        
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-2xl mx-auto">
+          <Card className="p-4 text-center hover:shadow-md transition-shadow cursor-pointer">
+            <Type className="w-6 h-6 mx-auto mb-2 text-blue-500" />
+            <div className="text-sm font-medium">Text Editor</div>
+          </Card>
+          
+          <Card className="p-4 text-center hover:shadow-md transition-shadow cursor-pointer">
+            <Layers className="w-6 h-6 mx-auto mb-2 text-green-500" />
+            <div className="text-sm font-medium">Layers</div>
+          </Card>
+          
+          <Card className="p-4 text-center hover:shadow-md transition-shadow cursor-pointer">
+            <Palette className="w-6 h-6 mx-auto mb-2 text-purple-500" />
+            <div className="text-sm font-medium">Colors</div>
+          </Card>
+          
+          <Card className="p-4 text-center hover:shadow-md transition-shadow cursor-pointer">
+            <Settings className="w-6 h-6 mx-auto mb-2 text-orange-500" />
+            <div className="text-sm font-medium">Effects</div>
+          </Card>
+        </div>
+        
+        <Button className="mt-6" variant="outline">
+          <PenTool className="w-4 h-4 mr-2" />
+          Launch Design Studio
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+function AIContentGeneratorView({ 
+  prompt, 
+  onPromptChange, 
+  isGenerating, 
+  onGenerate, 
+  generatedContent, 
+  contentType, 
+  platforms 
+}: { 
+  prompt: string; 
+  onPromptChange: (prompt: string) => void; 
+  isGenerating: boolean; 
+  onGenerate: () => void; 
+  generatedContent: string; 
+  contentType: ContentType; 
+  platforms: Platform[]; 
+}) {
+  return (
+    <div className="space-y-4">
+      <div>
+        <label className="block text-sm font-medium mb-2">Content Prompt</label>
+        <Textarea
+          placeholder={`Describe the ${contentType} you want to create for ${platforms.join(', ')}...`}
+          value={prompt}
+          onChange={(e) => onPromptChange(e.target.value)}
+          rows={4}
+        />
+      </div>
+      
+      <Button 
+        onClick={onGenerate}
+        disabled={isGenerating || !prompt.trim()}
+        className="w-full"
+      >
+        {isGenerating ? (
+          <>
+            <Sparkles className="w-4 h-4 mr-2 animate-spin" />
+            Generating with Claude AI...
+          </>
+        ) : (
+          <>
+            <Sparkles className="w-4 h-4 mr-2" />
+            Generate Content with AI
+          </>
+        )}
+      </Button>
+      
+      {generatedContent && (
+        <div className="mt-4">
+          <label className="block text-sm font-medium mb-2">Generated Content</label>
+          <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg border">
+            <pre className="whitespace-pre-wrap text-sm">{generatedContent}</pre>
+          </div>
+          <div className="flex gap-2 mt-3">
+            <Button size="sm" variant="outline">
+              <Edit3 className="w-4 h-4 mr-2" />
+              Edit
+            </Button>
+            <Button size="sm" variant="outline">
+              <Copy className="w-4 h-4 mr-2" />
+              Copy
+            </Button>
+            <Button size="sm" variant="outline">
+              <Download className="w-4 h-4 mr-2" />
+              Save
             </Button>
           </div>
-          
-          <div className="text-center py-12 text-gray-500">
-            Your content library is empty. Upload some content to get started!
+        </div>
+      )}
+    </div>
+  );
+}
+
+function SEOEngineView({ 
+  seoData, 
+  onSeoDataChange, 
+  contentType 
+}: { 
+  seoData: SEOData; 
+  onSeoDataChange: (data: SEOData) => void; 
+  contentType: ContentType; 
+}) {
+  return (
+    <div className="space-y-4 border-t pt-4">
+      <h3 className="font-semibold flex items-center gap-2">
+        <Target className="w-4 h-4" />
+        AI-Powered SEO Engine
+      </h3>
+      
+      <div className="grid gap-4 md:grid-cols-2">
+        <div>
+          <label className="block text-sm font-medium mb-2">SEO Title</label>
+          <Input
+            placeholder="AI-generated SEO title..."
+            value={seoData.title || ''}
+            onChange={(e) => onSeoDataChange({ ...seoData, title: e.target.value })}
+          />
+        </div>
+        
+        <div>
+          <label className="block text-sm font-medium mb-2">Meta Description</label>
+          <Input
+            placeholder="AI-generated meta description..."
+            value={seoData.description || ''}
+            onChange={(e) => onSeoDataChange({ ...seoData, description: e.target.value })}
+          />
+        </div>
+        
+        <div>
+          <label className="block text-sm font-medium mb-2">Alt Text</label>
+          <Input
+            placeholder="AI-generated alt text..."
+            value={seoData.altText || ''}
+            onChange={(e) => onSeoDataChange({ ...seoData, altText: e.target.value })}
+          />
+        </div>
+        
+        <div>
+          <label className="block text-sm font-medium mb-2">Optimization Score</label>
+          <div className="flex items-center gap-2">
+            <div className="flex-1 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+              <div 
+                className="bg-green-500 h-2 rounded-full transition-all"
+                style={{ width: `${seoData.optimizationScore || 0}%` }}
+              />
+            </div>
+            <span className="text-sm text-gray-600 dark:text-gray-400">
+              {seoData.optimizationScore || 0}%
+            </span>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
+      
+      <div>
+        <label className="block text-sm font-medium mb-2">Keywords</label>
+        <Input
+          placeholder="AI-suggested keywords..."
+          value={seoData.keywords?.join(', ') || ''}
+          onChange={(e) => onSeoDataChange({ 
+            ...seoData, 
+            keywords: e.target.value.split(',').map(k => k.trim()).filter(k => k) 
+          })}
+        />
+      </div>
+      
+      {seoData.suggestions && seoData.suggestions.length > 0 && (
+        <div>
+          <label className="block text-sm font-medium mb-2">AI SEO Suggestions</label>
+          <ul className="space-y-1">
+            {seoData.suggestions.map((suggestion, index) => (
+              <li key={index} className="text-sm text-gray-600 dark:text-gray-400 flex items-start gap-2">
+                <TrendingUp className="w-3 h-3 mt-0.5 text-blue-500" />
+                {suggestion}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+      
+      <div className="flex gap-2">
+        <Button size="sm" variant="outline">
+          <Zap className="w-4 h-4 mr-2" />
+          Generate Schema
+        </Button>
+        <Button size="sm" variant="outline">
+          <Globe className="w-4 h-4 mr-2" />
+          Analyze SEO
+        </Button>
+      </div>
     </div>
   );
 }
