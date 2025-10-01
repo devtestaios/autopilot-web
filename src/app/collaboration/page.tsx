@@ -2,8 +2,35 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import dynamic from 'next/dynamic';
 import { useCollaboration } from '@/contexts/CollaborationContext';
 import { useAuth } from '@/contexts/AuthContext';
+
+// SSR-safe imports using social-media pattern
+const UnifiedSidebar = dynamic(() => import('@/components/UnifiedSidebar'), {
+  ssr: false,
+  loading: () => <div className="fixed left-0 top-0 h-screen w-56 bg-gray-900 animate-pulse" />
+});
+
+const AdvancedNavigation = dynamic(() => import('@/components/ui/AdvancedNavigation'), {
+  ssr: false,
+  loading: () => <div className="h-16 bg-white dark:bg-gray-900 border-b animate-pulse" />
+});
+
+const AIControlChat = dynamic(() => import('@/components/AIControlChat'), {
+  ssr: false,
+  loading: () => null
+});
+
+const MasterTerminalBreadcrumb = dynamic(() => import('@/components/MasterTerminalBreadcrumb'), {
+  ssr: false,
+  loading: () => <div className="h-8 bg-gray-100 dark:bg-gray-800 animate-pulse rounded" />
+});
+
+const NavigationTabs = dynamic(() => import('@/components/NavigationTabs'), {
+  ssr: false,
+  loading: () => <div className="h-12 bg-white dark:bg-gray-900 border-b animate-pulse" />
+});
 import { 
   Users, 
   MessageCircle, 
@@ -489,25 +516,50 @@ function CollaborationFloatingToolbar() {
 // ============================================================================
 
 export default function CollaborationHub() {
-  return (
-    <div className="relative min-h-screen">
-      {/* Main Content - This would typically wrap your app */}
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-gray-900 dark:via-blue-950 dark:to-indigo-950">
-        <div className="max-w-7xl mx-auto px-6 py-8">
-          <div className="text-center">
-            <div className="inline-flex items-center space-x-2 px-4 py-2 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full text-sm font-medium mb-8">
-              <Globe className="w-4 h-4" />
-              <span>Real-Time Collaboration Active</span>
-            </div>
-            
-            <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
-              Live Collaboration Hub
-            </h1>
-            <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto">
-              Experience seamless teamwork with live cursors, real-time activity feeds, instant notifications, and collaborative commenting.
-            </p>
+  // Sidebar state management for unified layout
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+  return (
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      {/* Unified Sidebar */}
+      <UnifiedSidebar onCollapseChange={setSidebarCollapsed} />
+      
+      {/* Advanced Navigation */}
+      <AdvancedNavigation sidebarCollapsed={sidebarCollapsed} />
+      
+      {/* Main Content with dynamic margins */}
+      <div className={`transition-all duration-300 ease-in-out ${
+        sidebarCollapsed ? 'ml-14' : 'ml-56'
+      } pt-16`}>
+        {/* Master Terminal Breadcrumb */}
+        <div className="border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
+          <div className="px-6 py-4">
+            <MasterTerminalBreadcrumb />
+          </div>
+        </div>
+        
+        {/* Navigation Tabs */}
+        <NavigationTabs />
+        
+        {/* Collaboration Content */}
+        <div className="relative min-h-screen">
+          {/* Main Content - This would typically wrap your app */}
+          <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-gray-900 dark:via-blue-950 dark:to-indigo-950">
+            <div className="max-w-7xl mx-auto px-6 py-8">
+              <div className="text-center">
+                <div className="inline-flex items-center space-x-2 px-4 py-2 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full text-sm font-medium mb-8">
+                  <Globe className="w-4 h-4" />
+                  <span>Real-Time Collaboration Active</span>
+                </div>
+                
+                <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+                  Live Collaboration Hub
+                </h1>
+                <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto">
+                  Experience seamless teamwork with live cursors, real-time activity feeds, instant notifications, and collaborative commenting.
+                </p>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {[
                 { 
                   icon: <Users className="w-8 h-8" />, 
@@ -555,10 +607,15 @@ export default function CollaborationHub() {
             </div>
           </div>
         </div>
-      </div>
+        </div>
 
-      {/* Floating Collaboration Toolbar */}
-      <CollaborationFloatingToolbar />
+        {/* Floating Collaboration Toolbar */}
+        <CollaborationFloatingToolbar />
+      </div>
+      </div>
+      
+      {/* AI Control Chat - Fixed positioning outside content flow */}
+      <AIControlChat />
     </div>
   );
 }

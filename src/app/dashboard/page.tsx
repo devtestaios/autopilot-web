@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import dynamic from 'next/dynamic';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { 
   Target, TrendingUp, DollarSign, BarChart3, Users, Zap, 
   Activity, Clock, AlertCircle, ChevronRight, ExternalLink,
@@ -31,6 +31,11 @@ const IntelligentDashboardCore = dynamic(() => import('@/components/dashboard/In
 });
 
 const AIControlChat = dynamic(() => import('@/components/AIControlChat'), {
+  ssr: false,
+  loading: () => null
+});
+
+const OnboardingWelcomeBanner = dynamic(() => import('@/components/onboarding/OnboardingWelcomeBanner'), {
   ssr: false,
   loading: () => null
 });
@@ -78,7 +83,26 @@ interface QuickAction {
 
 export default function DashboardPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [showWelcomeBanner, setShowWelcomeBanner] = useState(false);
+
+  // Check for onboarding completion
+  useEffect(() => {
+    const onboardingComplete = searchParams?.get('onboarding') === 'complete';
+    const welcomeParam = searchParams?.get('welcome') === 'true';
+    const onboardingCompleteFlag = localStorage.getItem('onboardingComplete') === 'true';
+    const welcomeDismissed = localStorage.getItem('onboardingWelcomeDismissed') === 'true';
+
+    // Show welcome banner if onboarding just completed and not previously dismissed
+    if ((onboardingComplete || welcomeParam || onboardingCompleteFlag) && !welcomeDismissed) {
+      setShowWelcomeBanner(true);
+    }
+  }, [searchParams]);
+
+  const handleWelcomeBannerDismiss = () => {
+    setShowWelcomeBanner(false);
+  };
   
   // Enterprise KPIs - Real-time business metrics
   const [enterpriseKPIs, setEnterpriseKPIs] = useState<EnterpriseKPI[]>([
@@ -528,6 +552,11 @@ export default function DashboardPage() {
 
       {/* AI Control Chat - Bottom Right */}
       <AIControlChat defaultMinimized={true} />
+
+      {/* Onboarding Welcome Banner */}
+      {showWelcomeBanner && (
+        <OnboardingWelcomeBanner onDismiss={handleWelcomeBannerDismiss} />
+      )}
     </div>
   );
 }
