@@ -55,32 +55,67 @@ function OnboardingContent() {
     }
   }, [step]);
 
-  const handleSetupComplete = () => {
-    // Use default business profile when setup is completed
-    const businessData: BusinessProfile = {
-      businessName: 'My Business',
-      businessType: 'startup',
-      businessSize: 'small',
-      industry: 'general',
-      goals: []
-    };
-    
-    setBusinessProfile(businessData);
-    setCompletedSteps(prev => [...prev, 'business-setup']);
-    setCurrentStep('command-suite');
+  const handleSetupComplete = (businessProfileData: {
+    businessName: string;
+    businessType: string;
+    businessSize: string;
+    industry: string;
+    goals: string[];
+    selectedPlatforms: string[];
+  }) => {
+    try {
+      // Use the actual business profile data from the wizard
+      const businessData: BusinessProfile = {
+        businessName: businessProfileData.businessName,
+        businessType: businessProfileData.businessType,
+        businessSize: businessProfileData.businessSize,
+        industry: businessProfileData.industry,
+        goals: businessProfileData.goals
+      };
+      
+      setBusinessProfile(businessData);
+      setCompletedSteps(prev => [...prev, 'business-setup']);
+      
+      // Store the business profile data immediately
+      localStorage.setItem('businessProfile', JSON.stringify(businessData));
+      localStorage.setItem('selectedPlatforms', JSON.stringify(businessProfileData.selectedPlatforms));
+      localStorage.setItem('businessSetupComplete', 'true');
+      localStorage.setItem('setupTimestamp', new Date().toISOString());
+      
+      // Show success and move to next step
+      setCurrentStep('command-suite');
+    } catch (error) {
+      console.error('Failed to save business profile:', error);
+      // You could add a toast notification here
+    }
   };
 
   const handleCommandSuiteComplete = (selectedPlatforms: string[]) => {
-    setCompletedSteps(prev => [...prev, 'command-suite']);
-    
-    // Store all onboarding data
-    localStorage.setItem('selectedPlatforms', JSON.stringify(selectedPlatforms));
-    localStorage.setItem('businessProfile', JSON.stringify(businessProfile));
-    localStorage.setItem('onboardingComplete', 'true');
-    localStorage.setItem('onboardingTimestamp', new Date().toISOString());
-    
-    // Navigate to dashboard with welcome flow
-    router.push('/dashboard?onboarding=complete&welcome=true');
+    try {
+      setCompletedSteps(prev => [...prev, 'command-suite']);
+      
+      // Store all onboarding data with validation
+      const onboardingData = {
+        selectedPlatforms,
+        businessProfile,
+        onboardingComplete: true,
+        timestamp: new Date().toISOString(),
+        version: '1.0'
+      };
+      
+      localStorage.setItem('selectedPlatforms', JSON.stringify(selectedPlatforms));
+      localStorage.setItem('businessProfile', JSON.stringify(businessProfile));
+      localStorage.setItem('onboardingComplete', 'true');
+      localStorage.setItem('onboardingTimestamp', new Date().toISOString());
+      localStorage.setItem('onboardingData', JSON.stringify(onboardingData));
+      
+      // Navigate to dashboard with welcome flow
+      router.push('/dashboard?onboarding=complete&welcome=true');
+    } catch (error) {
+      console.error('Failed to complete command suite setup:', error);
+      // Fallback: still navigate but with minimal data
+      router.push('/dashboard?onboarding=error');
+    }
   };
 
   const handleSetupSkip = () => {
@@ -265,7 +300,13 @@ function OnboardingContent() {
           </div>
 
           <CommandSuiteSelector
-            businessProfile={businessProfile}
+            businessProfile={businessProfile || {
+              businessName: 'My Business',
+              businessType: 'startup',
+              businessSize: 'small',
+              industry: 'general',
+              goals: []
+            }}
             onSelectionComplete={handleCommandSuiteComplete}
             onBack={handleBackToBusinessSetup}
           />

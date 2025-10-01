@@ -31,7 +31,14 @@ import {
 } from 'lucide-react';
 
 interface BusinessSetupWizardProps {
-  onComplete?: () => void;
+  onComplete?: (businessProfile: {
+    businessName: string;
+    businessType: string;
+    businessSize: string;
+    industry: string;
+    goals: string[];
+    selectedPlatforms: string[];
+  }) => void;
   onSkip?: () => void;
 }
 
@@ -159,6 +166,19 @@ export default function BusinessSetupWizard({ onComplete, onSkip }: BusinessSetu
     }
   }, [formData.businessType, formData.businessSize, getTemplatesByType, getTemplatesBySize]);
 
+  // Calculate step completion status for better progress tracking
+  const isStepComplete = (stepIndex: number): boolean => {
+    switch (stepIndex) {
+      case 0: return formData.businessName.trim().length > 0;
+      case 1: return formData.businessType !== '';
+      case 2: return formData.businessSize !== '';
+      case 3: return formData.industry !== '' && formData.goals.length > 0;
+      case 4: return formData.selectedTemplate !== null;
+      case 5: return formData.selectedTemplate !== null;
+      default: return false;
+    }
+  };
+
   const updateFormData = (updates: Partial<typeof formData>) => {
     setFormData(prev => ({ ...prev, ...updates }));
   };
@@ -227,7 +247,22 @@ export default function BusinessSetupWizard({ onComplete, onSkip }: BusinessSetu
       });
 
       completeSetup();
-      onComplete?.();
+      
+      // Pass the collected business profile data to parent component
+      const businessProfileData = {
+        businessName: formData.businessName,
+        businessType: formData.businessType,
+        businessSize: formData.businessSize,
+        industry: formData.industry,
+        goals: formData.goals,
+        selectedPlatforms: [
+          ...formData.selectedTemplate.essentialPlatforms,
+          ...formData.selectedTemplate.recommendedPlatforms,
+          ...formData.customPlatforms
+        ]
+      };
+      
+      onComplete?.(businessProfileData);
     } catch (error) {
       console.error('Failed to complete setup:', error);
     } finally {
@@ -262,12 +297,19 @@ export default function BusinessSetupWizard({ onComplete, onSkip }: BusinessSetu
           <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mt-6">
             <div 
               className="bg-blue-600 h-2 rounded-full transition-all duration-500"
-              style={{ width: `${((step + 1) / steps.length) * 100}%` }}
+              style={{ width: `${((step + (isStepComplete(step) ? 1 : 0.5)) / steps.length) * 100}%` }}
             />
           </div>
           <div className="flex justify-between mt-2 text-sm text-gray-500">
             {steps.map((stepName, index) => (
-              <span key={index} className={index <= step ? 'text-blue-600 font-medium' : ''}>
+              <span 
+                key={index} 
+                className={`${
+                  index < step ? 'text-blue-600 font-medium' : 
+                  index === step ? (isStepComplete(step) ? 'text-blue-600 font-medium' : 'text-gray-700 dark:text-gray-300') :
+                  'text-gray-400'
+                }`}
+              >
                 {stepName}
               </span>
             ))}
