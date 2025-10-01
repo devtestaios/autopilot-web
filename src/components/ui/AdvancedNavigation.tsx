@@ -82,7 +82,7 @@ export default function AdvancedNavigation({ className, sidebarCollapsed = false
   const generateBreadcrumbs = (): BreadcrumbItem[] => {
     const pathSegments = pathname.split('/').filter(Boolean);
     const breadcrumbs: BreadcrumbItem[] = [
-      { label: 'Home', href: '/', icon: <Home className="w-4 h-4" /> }
+      { label: 'Home', href: '/dashboard', icon: <Home className="w-4 h-4" /> }
     ];
 
     let currentPath = '';

@@ -74,7 +74,7 @@ function getContextualSidebarItems(pathname: string): { contextName: string; ite
       items: [
         {
           id: 'dashboard-overview',
-          label: 'Command Overview',
+          label: 'Master Terminal',
           icon: LayoutDashboard,
           path: '/dashboard',
           badge: 'Live',
@@ -87,22 +87,22 @@ function getContextualSidebarItems(pathname: string): { contextName: string; ite
           path: '/platforms',
           description: 'Manage all business platforms',
           subItems: [
-            { id: 'marketing-hub', label: 'Marketing Hub', path: '/marketing-command-center' },
-            { id: 'business-ops', label: 'Business Operations', path: '/business-suite' },
+            { id: 'marketing-hub', label: 'Marketing Hub', path: '/email-marketing' },
+            { id: 'business-ops', label: 'Business Operations', path: '/crm' },
             { id: 'analytics-hub', label: 'Analytics Hub', path: '/analytics' },
-            { id: 'ai-center', label: 'AI Center', path: '/ai-center' }
+            { id: 'ai-center', label: 'AI Center', path: '/ai-automation' }
           ]
         },
         {
           id: 'quick-actions',
           label: 'Quick Actions',
           icon: Zap,
-          path: '/dashboard/quick-actions',
+          path: '/dashboard',
           description: 'Rapid platform control',
           subItems: [
-            { id: 'new-campaign', label: 'New Campaign', path: '/campaigns/new' },
-            { id: 'optimize-all', label: 'Optimize All', path: '/optimization' },
-            { id: 'sync-platforms', label: 'Sync Platforms', path: '/sync' }
+            { id: 'new-campaign', label: 'New Campaign', path: '/campaigns' },
+            { id: 'optimize-all', label: 'Optimize All', path: '/analytics' },
+            { id: 'sync-platforms', label: 'Sync Platforms', path: '/integrations' }
           ]
         },
         {
@@ -127,7 +127,7 @@ function getContextualSidebarItems(pathname: string): { contextName: string; ite
           id: 'marketing-overview',
           label: 'Marketing Hub',
           icon: Megaphone,
-          path: '/marketing-command-center',
+          path: '/email-marketing',
           badge: 'Hub',
           description: 'Unified marketing dashboard'
         },
@@ -139,8 +139,8 @@ function getContextualSidebarItems(pathname: string): { contextName: string; ite
           description: 'Create and manage campaigns',
           subItems: [
             { id: 'active-campaigns', label: 'Active Campaigns', path: '/campaigns' },
-            { id: 'create-campaign', label: 'Create Campaign', path: '/campaigns/new' },
-            { id: 'templates', label: 'Templates', path: '/campaigns/templates' }
+            { id: 'create-campaign', label: 'Create Campaign', path: '/campaigns' },
+            { id: 'templates', label: 'Templates', path: '/campaigns' }
           ]
         },
         {
@@ -151,8 +151,8 @@ function getContextualSidebarItems(pathname: string): { contextName: string; ite
           description: 'Multi-platform social management',
           subItems: [
             { id: 'social-overview', label: 'Social Overview', path: '/social-media' },
-            { id: 'composer', label: 'Content Composer', path: '/social/composer' },
-            { id: 'calendar', label: 'Content Calendar', path: '/social/calendar' }
+            { id: 'composer', label: 'Content Composer', path: '/social-media' },
+            { id: 'calendar', label: 'Content Calendar', path: '/social-media' }
           ]
         },
         {
@@ -166,7 +166,7 @@ function getContextualSidebarItems(pathname: string): { contextName: string; ite
           id: 'content-creation',
           label: 'Content Suite',
           icon: PenTool,
-          path: '/content-suite',
+          path: '/social-media',
           description: 'AI-powered content creation'
         }
       ]

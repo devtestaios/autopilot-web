@@ -12,9 +12,9 @@ interface NavItem {
 }
 
 const navigationItems: NavItem[] = [
-  { href: '/master-terminal', label: '🎛️ Master Terminal' },
-  { href: '/', label: '🏠 Single Platform Dashboard' },
-  { href: '/unified', label: '🌐 Unified Platform Command Center' },
+  { href: '/dashboard', label: '🎛️ Master Terminal' },
+  { href: '/dashboard', label: '🏠 Dashboard Home' },
+  { href: '/unified', label: '🌐 Advertising Command Center' },
   { href: '/campaigns', label: '📊 Campaigns' },
   { href: '/analytics', label: '📈 Analytics' },
   { href: '/platforms', label: '⚙️ Platform Setup' },

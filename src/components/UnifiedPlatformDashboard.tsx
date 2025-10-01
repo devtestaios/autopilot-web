@@ -202,10 +202,10 @@ export default function UnifiedPlatformDashboard({ className }: UnifiedPlatformD
         <div>
           <h1 className="text-3xl font-bold flex items-center gap-3">
             <Network className="h-8 w-8 text-blue-600" />
-            Unified Platform Command Center
+            Advertising Command Center
           </h1>
           <p className="text-muted-foreground mt-1">
-            Multi-platform campaign orchestration with real-time optimization
+            Multi-platform advertising orchestration with AI-powered optimization
           </p>
         </div>
         <div className="flex items-center gap-2">
