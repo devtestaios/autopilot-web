@@ -58,6 +58,12 @@ import { useEmailMarketing } from '@/contexts/EmailMarketingContext';
 
 import { MARKETING_PLATFORMS, MARKETING_WORKFLOWS } from '@/config/marketingRegistry';
 
+// Import Advertising Command Center component
+const UnifiedPlatformDashboard = dynamic(() => import('@/components/UnifiedPlatformDashboard'), {
+  ssr: false,
+  loading: () => <div className="p-8 text-center">Loading Advertising Command Center...</div>
+});
+
 // ==================== UNIFIED KPI COMPONENTS ====================
 
 interface KPICardProps {
@@ -369,9 +375,10 @@ export default function MarketingCommandCenter() {
 
         {/* Navigation Tabs */}
         <Tabs defaultValue={activeView} className="mb-8">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="campaigns">Campaigns</TabsTrigger>
+            <TabsTrigger value="advertising">Advertising</TabsTrigger>
             <TabsTrigger value="analytics">Analytics</TabsTrigger>
             <TabsTrigger value="automation">Automation</TabsTrigger>
           </TabsList>
@@ -397,6 +404,23 @@ export default function MarketingCommandCenter() {
               <Button>
                 <Link href="/campaigns">Go to Campaign Management</Link>
               </Button>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="advertising">
+            {/* 🎯 ADVERTISING COMMAND CENTER INTEGRATION */}
+            <div className="space-y-6">
+              <div className="border-b pb-4 mb-6">
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                  Advertising Command Center
+                </h2>
+                <p className="text-gray-600 dark:text-gray-400">
+                  Cross-platform advertising orchestration with AI-powered optimization
+                </p>
+              </div>
+              
+              {/* Embedded Unified Platform Dashboard */}
+              <UnifiedPlatformDashboard className="bg-transparent" />
             </div>
           </TabsContent>
 
