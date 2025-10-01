@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useState } from 'react';
+import { useState, memo } from 'react';
 import { Menu, X } from 'lucide-react';
 
 interface NavItem {
@@ -13,17 +13,17 @@ interface NavItem {
 
 const navigationItems: NavItem[] = [
   { href: '/dashboard', label: '🎛️ Master Terminal' },
-  { href: '/dashboard', label: '🏠 Dashboard Home' },
-  { href: '/unified', label: '🌐 Advertising Command Center' },
-  { href: '/campaigns', label: '📊 Campaigns' },
-  { href: '/analytics', label: '📈 Analytics' },
+  { href: '/marketing-command-center', label: '� Marketing Hub' },
+  { href: '/project-management', label: '📋 Project Management' },
+  { href: '/collaboration', label: '� Team Collaboration' },
+  { href: '/business-intelligence', label: '� Business Intelligence' },
+  { href: '/integrations', label: '🔗 Integrations' },
+  { href: '/ai-center', label: '🤖 AI Center' },
   { href: '/platforms', label: '⚙️ Platform Setup' },
-  { href: '/leads', label: '🎯 Lead Management' },
-  { href: '/alerts', label: '🚨 Smart Alerts' },
-  { href: '/status', label: '� System Status' },
+  { href: '/status', label: '🔋 System Status' },
 ];
 
-export default function NavigationTabs() {
+const NavigationTabs = memo(() => {
   const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -100,4 +100,8 @@ export default function NavigationTabs() {
       </div>
     </div>
   );
-}
+});
+
+NavigationTabs.displayName = 'NavigationTabs';
+
+export default NavigationTabs;
