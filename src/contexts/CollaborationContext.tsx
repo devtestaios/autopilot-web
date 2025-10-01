@@ -3,6 +3,11 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useWebSocket } from '@/contexts/WebSocketContext';
+import { 
+  fetchTeamMembers,
+  fetchTeamActivities,
+  fetchCollaborationOverview
+} from '@/lib/api';
 
 // ============================================================================
 // COLLABORATION TYPES
@@ -173,6 +178,49 @@ export function CollaborationProvider({ children }: { children: React.ReactNode 
 
   // ========== SYNC STATUS ==========
   const syncStatus = isConnected ? 'connected' : 'disconnected';
+
+  // ========== INITIAL DATA LOADING ==========
+  useEffect(() => {
+    const loadInitialData = async () => {
+      try {
+        // Load team members and activities from database
+        const [teamMembers, activities] = await Promise.all([
+          fetchTeamMembers(50).catch(error => {
+            console.warn('Failed to fetch team members:', error);
+            return [];
+          }),
+          fetchTeamActivities({ limit: 100 }).catch(error => {
+            console.warn('Failed to fetch team activities:', error);
+            return [];
+          }),
+        ]);
+
+        // Convert team members to collaboration users format
+        const collaborationUsers = teamMembers.map(member => ({
+          id: member.id,
+          name: member.name,
+          avatar: member.avatar || '/default-avatar.png',
+          email: member.email,
+          status: member.status === 'active' ? 'online' as const : 'offline' as const,
+          lastSeen: new Date(member.last_active),
+          currentPage: undefined,
+          role: member.role,
+          permissions: []
+        }));
+
+        setOnlineUsers(collaborationUsers);
+        setActivities(activities);
+        setLastSyncTime(new Date());
+        
+      } catch (error) {
+        console.error('Failed to load collaboration data:', error);
+        setOnlineUsers([]);
+        setActivities([]);
+      }
+    };
+
+    loadInitialData();
+  }, []); // Run once on mount
 
   // ========== WEBSOCKET EVENT HANDLERS ==========
   useEffect(() => {

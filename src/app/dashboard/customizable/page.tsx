@@ -133,7 +133,6 @@ export default function CustomizableDashboardPage() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <UnifiedSidebar 
-        currentPath="/dashboard/customizable"
         onCollapseChange={setSidebarCollapsed}
       />
       
@@ -142,7 +141,6 @@ export default function CustomizableDashboardPage() {
       }`}>
         <AdvancedNavigation 
           sidebarCollapsed={sidebarCollapsed}
-          currentPath="/dashboard/customizable"
         />
         
         <main className="p-6">

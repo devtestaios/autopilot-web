@@ -297,7 +297,7 @@ function TaskCard({ task, index, teamMembers, onClick }: TaskCardProps) {
                       <Button
                         variant="ghost"
                         size="sm"
-                        onClick={handleTimerClick}
+                        onClick={() => handleTimerClick({} as React.MouseEvent)}
                         className={`p-1 h-6 w-6 transition-all ${
                           isTimerActive 
                             ? 'text-red-600 hover:text-red-700 hover:bg-red-50' 

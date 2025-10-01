@@ -45,7 +45,7 @@ export default function TimerWidget({ taskId, taskTitle, showCompact = false }: 
           <div className="flex items-center gap-1 text-green-600 dark:text-green-400">
             <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
             <span className="font-mono text-xs">
-              {formatElapsedTime(activeTimer.elapsed)}
+              {formatElapsedTime(activeTimer?.elapsed ?? 0)}
             </span>
           </div>
         )}
@@ -82,7 +82,7 @@ export default function TimerWidget({ taskId, taskTitle, showCompact = false }: 
             {displayTitle}
           </div>
           <div className="text-2xl font-mono text-green-600 dark:text-green-400 mt-2">
-            {formatElapsedTime(activeTimer.elapsed)}
+            {formatElapsedTime(activeTimer?.elapsed ?? 0)}
           </div>
         </div>
       ) : taskId ? (

@@ -14,7 +14,7 @@ import { useToast } from '@/components/ui/Toast';
 
 // Enhanced Design System Imports - Phase 1 Visual Polish
 import { designTokens } from '@/lib/designTokens';
-import { animations } from '@/lib/animations';
+import { animationVariants } from '@/lib/animations';
 import visualEffects from '@/lib/visualEffects';
 import { Container, Grid, Flex, Section, Stack, Header, ContentArea, CardGrid } from '@/components/ui/LayoutSystem';
 import { Button as EnhancedButton, Card as EnhancedCard, Badge as EnhancedBadge, Spinner, Avatar, Progress } from '@/components/ui/EnhancedComponents';

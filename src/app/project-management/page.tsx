@@ -9,7 +9,7 @@ import UpgradePrompt from '@/components/UpgradePrompt';
 
 // Enhanced Design System Imports - Phase 1 Visual Polish
 import { designTokens } from '@/lib/designTokens';
-import { animations } from '@/lib/animations';
+import { animationVariants } from '@/lib/animations';
 import visualEffects from '@/lib/visualEffects';
 import { Container, Grid, Flex, Section, Stack, Header, ContentArea, CardGrid } from '@/components/ui/LayoutSystem';
 import { Button as EnhancedButton, Card as EnhancedCard, Badge, Spinner, Avatar, Progress } from '@/components/ui/EnhancedComponents';
@@ -567,7 +567,7 @@ export default function ProjectManagementDashboard() {
                     {currentProject.tags.length > 0 && (
                       <div className="mt-4 flex flex-wrap gap-2">
                         {currentProject.tags.map((tag, index) => (
-                          <Badge key={index} variant="secondary" className="text-xs">
+                          <Badge key={index} variant="default" className="text-xs">
                             {tag}
                           </Badge>
                         ))}

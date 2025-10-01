@@ -126,11 +126,11 @@ export default function BudgetTracking({ projectId, showDetailed = false }: Budg
             <Badge 
               className={`${
                 isOverBudget ? 'bg-red-100 text-red-800' :
-                percentUsed > 80 ? 'bg-yellow-100 text-yellow-800' :
+                (percentUsed ?? 0) > 80 ? 'bg-yellow-100 text-yellow-800' :
                 'bg-green-100 text-green-800'
               }`}
             >
-              {isOverBudget ? 'Over Budget' : percentUsed > 80 ? 'Warning' : 'On Track'}
+              {isOverBudget ? 'Over Budget' : (percentUsed ?? 0) > 80 ? 'Warning' : 'On Track'}
             </Badge>
           </div>
         </CardHeader>
@@ -139,7 +139,7 @@ export default function BudgetTracking({ projectId, showDetailed = false }: Budg
           <div className="grid grid-cols-2 gap-4">
             <div className="text-center">
               <div className="text-2xl font-bold text-gray-900 dark:text-white">
-                ${budget.toLocaleString()}
+                ${(budget ?? 0).toLocaleString()}
               </div>
               <div className="text-sm text-gray-500 dark:text-gray-400">
                 Total Budget
@@ -149,7 +149,7 @@ export default function BudgetTracking({ projectId, showDetailed = false }: Budg
               <div className={`text-2xl font-bold ${
                 isOverBudget ? 'text-red-600' : 'text-green-600'
               }`}>
-                ${actualSpent.toLocaleString()}
+                ${(actualSpent ?? 0).toLocaleString()}
               </div>
               <div className="text-sm text-gray-500 dark:text-gray-400">
                 Actual Spent
@@ -162,15 +162,15 @@ export default function BudgetTracking({ projectId, showDetailed = false }: Budg
             <div className="flex items-center justify-between text-sm">
               <span className="text-gray-600 dark:text-gray-400">Budget Used</span>
               <span className={`font-medium ${
-                isOverBudget ? 'text-red-600' : percentUsed > 80 ? 'text-yellow-600' : 'text-green-600'
+                isOverBudget ? 'text-red-600' : (percentUsed ?? 0) > 80 ? 'text-yellow-600' : 'text-green-600'
               }`}>
-                {percentUsed.toFixed(1)}%
+                {(percentUsed ?? 0).toFixed(1)}%
               </span>
             </div>
             <Progress 
-              value={Math.min(percentUsed, 100)} 
+              value={Math.min(percentUsed ?? 0, 100)} 
               className={`h-3 ${
-                isOverBudget ? 'bg-red-100' : percentUsed > 80 ? 'bg-yellow-100' : 'bg-green-100'
+                isOverBudget ? 'bg-red-100' : (percentUsed ?? 0) > 80 ? 'bg-yellow-100' : 'bg-green-100'
               }`}
             />
             {isOverBudget && (
@@ -189,7 +189,7 @@ export default function BudgetTracking({ projectId, showDetailed = false }: Budg
                   <Clock className="h-4 w-4 text-blue-600" />
                   <div>
                     <div className="text-sm font-medium text-gray-900 dark:text-white">
-                      ${laborCost.toLocaleString()}
+                      ${(laborCost ?? 0).toLocaleString()}
                     </div>
                     <div className="text-xs text-gray-500 dark:text-gray-400">
                       Labor Costs
@@ -200,7 +200,7 @@ export default function BudgetTracking({ projectId, showDetailed = false }: Budg
                   <Calculator className="h-4 w-4 text-purple-600" />
                   <div>
                     <div className="text-sm font-medium text-gray-900 dark:text-white">
-                      ${materialCost.toLocaleString()}
+                      ${(materialCost ?? 0).toLocaleString()}
                     </div>
                     <div className="text-xs text-gray-500 dark:text-gray-400">
                       Materials
@@ -218,15 +218,15 @@ export default function BudgetTracking({ projectId, showDetailed = false }: Budg
                   <div>
                     <span className="text-gray-600 dark:text-gray-400">Burn Rate:</span>
                     <span className="ml-2 font-medium">
-                      ${burnRate.toFixed(0)}/% complete
+                      ${(burnRate ?? 0).toFixed(0)}/% complete
                     </span>
                   </div>
                   <div>
                     <span className="text-gray-600 dark:text-gray-400">Remaining:</span>
                     <span className={`ml-2 font-medium ${
-                      remaining < 0 ? 'text-red-600' : 'text-green-600'
+                      (remaining ?? 0) < 0 ? 'text-red-600' : 'text-green-600'
                     }`}>
-                      ${remaining.toLocaleString()}
+                      ${(remaining ?? 0).toLocaleString()}
                     </span>
                   </div>
                 </div>
@@ -254,7 +254,7 @@ export default function BudgetTracking({ projectId, showDetailed = false }: Budg
           <div className="grid grid-cols-3 gap-4 mb-4">
             <div className="text-center">
               <div className="text-2xl font-bold text-gray-900 dark:text-white">
-                ${totalBudget.toLocaleString()}
+                ${(totalBudget ?? 0).toLocaleString()}
               </div>
               <div className="text-sm text-gray-500 dark:text-gray-400">
                 Total Budget
@@ -262,7 +262,7 @@ export default function BudgetTracking({ projectId, showDetailed = false }: Budg
             </div>
             <div className="text-center">
               <div className="text-2xl font-bold text-blue-600">
-                ${totalSpent.toLocaleString()}
+                ${(totalSpent ?? 0).toLocaleString()}
               </div>
               <div className="text-sm text-gray-500 dark:text-gray-400">
                 Total Spent
@@ -270,9 +270,9 @@ export default function BudgetTracking({ projectId, showDetailed = false }: Budg
             </div>
             <div className="text-center">
               <div className={`text-2xl font-bold ${
-                totalRemaining < 0 ? 'text-red-600' : 'text-green-600'
+                (totalRemaining ?? 0) < 0 ? 'text-red-600' : 'text-green-600'
               }`}>
-                ${totalRemaining.toLocaleString()}
+                ${(totalRemaining ?? 0).toLocaleString()}
               </div>
               <div className="text-sm text-gray-500 dark:text-gray-400">
                 Remaining
@@ -280,12 +280,12 @@ export default function BudgetTracking({ projectId, showDetailed = false }: Budg
             </div>
           </div>
 
-          <Progress value={Math.min(portfolioPercentUsed, 100)} className="mb-2" />
+          <Progress value={Math.min(portfolioPercentUsed ?? 0, 100)} className="mb-2" />
           
-          {projectsOverBudget > 0 && (
+          {(projectsOverBudget ?? 0) > 0 && (
             <div className="flex items-center gap-2 text-sm text-red-600 dark:text-red-400">
               <AlertTriangle className="h-4 w-4" />
-              {projectsOverBudget} project{projectsOverBudget > 1 ? 's' : ''} over budget
+              {projectsOverBudget} project{(projectsOverBudget ?? 0) > 1 ? 's' : ''} over budget
             </div>
           )}
         </CardContent>
@@ -294,7 +294,7 @@ export default function BudgetTracking({ projectId, showDetailed = false }: Budg
       {/* Project List */}
       {showDetailed && (
         <div className="grid gap-4">
-          {portfolioProjects.map(({ project, budget, actualSpent, percentUsed, isOverBudget }) => (
+          {(portfolioProjects ?? []).map(({ project, budget, actualSpent, percentUsed, isOverBudget }) => (
             <Card key={project.id} className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
               <CardContent className="p-4">
                 <div className="flex items-center justify-between mb-2">

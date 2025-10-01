@@ -1,6 +1,15 @@
 'use client';
 
-import React, { createContext, useContext, useState, useCallback } from 'react';
+import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
+import { 
+  fetchIntegrationApps,
+  fetchUserIntegrations,
+  fetchIntegrationsOverview
+} from '@/lib/api';
+import type { 
+  IntegrationApp as APIIntegrationApp,
+  UserIntegration
+} from '@/types';
 
 // ============================================================================
 // INTEGRATION TYPES
@@ -317,7 +326,7 @@ const generateCategories = (apps: IntegrationApp[]): IntegrationCategory[] => {
 
 export function IntegrationsProvider({ children }: { children: React.ReactNode }) {
   // ========== STATE ==========
-  const [availableApps, setAvailableApps] = useState<IntegrationApp[]>(() => generateMockApps());
+  const [availableApps, setAvailableApps] = useState<IntegrationApp[]>([]);
   const [installedApps, setInstalledApps] = useState<InstalledIntegration[]>([]);
   const [reviews, setReviews] = useState<IntegrationReview[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -325,6 +334,89 @@ export function IntegrationsProvider({ children }: { children: React.ReactNode }
   const [sortBy, setSortBy] = useState<'popular' | 'recent' | 'rating' | 'name'>('popular');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // ========== INITIAL DATA LOADING ==========
+  useEffect(() => {
+    const convertApiAppToContextApp = (apiApp: APIIntegrationApp): IntegrationApp => ({
+      id: apiApp.id,
+      name: apiApp.name,
+      description: apiApp.description,
+      category: apiApp.category.toLowerCase() as any,
+      subcategory: undefined,
+      icon: apiApp.icon || '🔧',
+      coverImage: undefined,
+      developer: {
+        name: apiApp.developer,
+        website: apiApp.documentation_url || '#',
+        email: 'support@' + apiApp.developer.toLowerCase().replace(/\s+/g, '') + '.com',
+        verified: apiApp.featured || false
+      },
+      pricing: {
+        model: apiApp.price > 0 ? 'paid' as const : 'free' as const,
+        price: apiApp.price,
+        currency: 'USD',
+        billingCycle: 'monthly' as const
+      },
+      features: [],
+      permissions: apiApp.permissions || [],
+      rating: {
+        average: apiApp.rating || 4.0,
+        count: apiApp.review_count || 0,
+        distribution: { 5: 60, 4: 25, 3: 10, 2: 3, 1: 2 }
+      },
+      compatibility: {
+        platforms: ['web'],
+        minVersion: '1.0.0'
+      },
+      status: apiApp.status as any,
+      version: apiApp.version,
+      releaseDate: new Date(apiApp.created_at),
+      lastUpdated: new Date(apiApp.updated_at),
+      downloadCount: apiApp.install_count || 0,
+      isInstalled: false,
+      isEnabled: false,
+      configurable: true,
+      webhookSupport: !!apiApp.webhook_url,
+      apiEndpoints: apiApp.api_endpoints,
+      documentation: apiApp.documentation_url,
+      supportUrl: apiApp.support_url,
+      tags: apiApp.tags || []
+    });
+
+    const loadInitialData = async () => {
+      setIsLoading(true);
+      try {
+        const [apps, userIntegrations] = await Promise.all([
+          fetchIntegrationApps({ limit: 100 }).catch(error => {
+            console.warn('Failed to fetch integration apps, using fallback data:', error);
+            return generateMockApps().slice(0, 10); // Return mock apps in API format
+          }),
+          fetchUserIntegrations({ limit: 50 }).catch(error => {
+            console.warn('Failed to fetch user integrations:', error);
+            return [];
+          }),
+        ]);
+
+        // Convert API apps to context format
+        const contextApps = Array.isArray(apps) && apps.length > 0 && apps[0].id 
+          ? apps.map(convertApiAppToContextApp)
+          : generateMockApps(); // Fallback to mock if API data is incomplete
+
+        setAvailableApps(contextApps);
+        // Convert user integrations to installed apps format if needed
+        // setInstalledApps(userIntegrations);
+        
+      } catch (error) {
+        console.error('Failed to load integrations data:', error);
+        setAvailableApps(generateMockApps()); // Fallback to mock data
+        setError('Failed to load integrations data');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadInitialData();
+  }, []); // Run once on mount
 
   // ========== COMPUTED VALUES ==========
   const categories = generateCategories(availableApps);
@@ -532,12 +624,71 @@ export function IntegrationsProvider({ children }: { children: React.ReactNode }
   }, [installedApps, availableApps]);
 
   const refreshApps = useCallback(async () => {
+    const convertApiAppToContextApp = (apiApp: APIIntegrationApp): IntegrationApp => ({
+      id: apiApp.id,
+      name: apiApp.name,
+      description: apiApp.description,
+      category: apiApp.category.toLowerCase() as any,
+      subcategory: undefined,
+      icon: apiApp.icon || '🔧',
+      coverImage: undefined,
+      developer: {
+        name: apiApp.developer,
+        website: apiApp.documentation_url || '#',
+        email: 'support@' + apiApp.developer.toLowerCase().replace(/\s+/g, '') + '.com',
+        verified: apiApp.featured || false
+      },
+      pricing: {
+        model: apiApp.price > 0 ? 'paid' as const : 'free' as const,
+        price: apiApp.price,
+        currency: 'USD',
+        billingCycle: 'monthly' as const
+      },
+      features: [],
+      permissions: apiApp.permissions || [],
+      rating: {
+        average: apiApp.rating || 4.0,
+        count: apiApp.review_count || 0,
+        distribution: { 5: 60, 4: 25, 3: 10, 2: 3, 1: 2 }
+      },
+      compatibility: {
+        platforms: ['web'],
+        minVersion: '1.0.0'
+      },
+      status: apiApp.status as any,
+      version: apiApp.version,
+      releaseDate: new Date(apiApp.created_at),
+      lastUpdated: new Date(apiApp.updated_at),
+      downloadCount: apiApp.install_count || 0,
+      isInstalled: false,
+      isEnabled: false,
+      configurable: true,
+      webhookSupport: !!apiApp.webhook_url,
+      apiEndpoints: apiApp.api_endpoints,
+      documentation: apiApp.documentation_url,
+      supportUrl: apiApp.support_url,
+      tags: apiApp.tags || []
+    });
+
     setIsLoading(true);
+    setError(null);
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      setAvailableApps(generateMockApps());
+      const [apps, userIntegrations] = await Promise.all([
+        fetchIntegrationApps({ limit: 100 }),
+        fetchUserIntegrations({ limit: 50 }).catch(() => [])
+      ]);
+      
+      // Convert API apps to context format
+      const contextApps = Array.isArray(apps) && apps.length > 0 && apps[0].id 
+        ? apps.map(convertApiAppToContextApp)
+        : generateMockApps(); // Fallback to mock if API data is incomplete
+      
+      setAvailableApps(contextApps);
+      // setInstalledApps(userIntegrations); // If needed
     } catch (err) {
+      console.error('Failed to refresh integration apps:', err);
       setError('Failed to refresh apps');
+      // Keep current data, don't fallback to mock on refresh
     } finally {
       setIsLoading(false);
     }

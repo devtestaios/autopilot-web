@@ -8,6 +8,12 @@
 
 import React, { createContext, useContext, useReducer, useEffect, useCallback, useMemo, useRef } from 'react';
 import { useWebSocket } from '@/contexts/WebSocketContext';
+import { 
+  fetchEmailCampaigns,
+  fetchEmailSubscribers,
+  fetchEmailTemplates,
+  fetchEmailMarketingOverview
+} from '@/lib/api';
 
 // ==================== TYPE DEFINITIONS ====================
 
@@ -652,33 +658,26 @@ export function EmailMarketingProvider({ children }: { children: React.ReactNode
       try {
         dispatch({ type: 'SET_LOADING', payload: { key: 'contacts', value: true } });
         
-        // ✅ ENHANCED: Fetch data individually with proper error handling
-        const fetchEndpoint = async (url: string, fallback: any[] = []) => {
-          try {
-            const response = await fetch(url);
-            if (response.ok) {
-              return await response.json();
-            } else {
-              console.warn(`API endpoint ${url} returned ${response.status}, using fallback data`);
-              return fallback;
-            }
-          } catch (error) {
-            console.warn(`Failed to fetch ${url}:`, error);
-            return fallback;
-          }
-        };
-
-        const [contacts, campaigns, templates, automations] = await Promise.all([
-          fetchEndpoint('/api/email-marketing/contacts', []),
-          fetchEndpoint('/api/email-marketing/campaigns', []),
-          fetchEndpoint('/api/email-marketing/templates', []),
-          fetchEndpoint('/api/email-marketing/automations', []),
+        // ✅ ENHANCED: Use comprehensive API functions with proper error handling
+        const [contacts, campaigns, templates] = await Promise.all([
+          fetchEmailSubscribers({ limit: 100 }).catch(error => {
+            console.warn('Failed to fetch email subscribers:', error);
+            return [];
+          }),
+          fetchEmailCampaigns(50).catch(error => {
+            console.warn('Failed to fetch email campaigns:', error);
+            return [];
+          }),
+          fetchEmailTemplates(50).catch(error => {
+            console.warn('Failed to fetch email templates:', error);
+            return [];
+          }),
         ]);
 
         dispatch({ type: 'SET_CONTACTS', payload: contacts });
         dispatch({ type: 'SET_CAMPAIGNS', payload: campaigns });
         dispatch({ type: 'SET_TEMPLATES', payload: templates });
-        dispatch({ type: 'SET_AUTOMATIONS', payload: automations });
+        dispatch({ type: 'SET_AUTOMATIONS', payload: [] }); // Automations will be added in next phase
         
       } catch (error) {
         console.error('Failed to load initial data:', error);

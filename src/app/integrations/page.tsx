@@ -685,5 +685,6 @@ export default function IntegrationsMarketplace() {
         </div>
       </div>
     </div>
+    </div>
   );
 }

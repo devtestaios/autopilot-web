@@ -3,7 +3,11 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Responsive, WidthProvider } from 'react-grid-layout';
-import { useDashboardCustomization, DashboardWidget, WIDGET_TEMPLATES } from '@/contexts/DashboardCustomizationContext';
+import { useDashboardCustomization, DashboardWidget, WIDGET_TEMPLATES } from '@/contex                            </div>
+                          </CardContent>
+                        </Card>
+                      </div>
+                    );ashboardCustomizationContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -241,13 +245,11 @@ function WidgetSelector({ onAddWidget, onClose }: WidgetSelectorProps) {
       className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
       onClick={onClose}
     >
-      <Card 
+      <div 
         className="w-full max-w-4xl max-h-[80vh] overflow-y-auto"
-        onClick={(e) => e.stopPropagation()}
+        onClick={(e: React.MouseEvent) => e.stopPropagation()}
       >
-        <CardHeader>
-          <CardTitle className="flex items-center justify-between">
-            <span>Add Widget</span>
+        <Card className="">\n          <CardHeader>\n            <CardTitle className="flex items-center justify-between">\n              <span>Add Widget</span>
             <Button variant="ghost" size="sm" onClick={onClose}>
               ✕
             </Button>
@@ -266,19 +268,20 @@ function WidgetSelector({ onAddWidget, onClose }: WidgetSelectorProps) {
                     const IconComponent = WIDGET_ICONS[template.type] || Activity;
                     
                     return (
-                      <Card 
+                      <div 
                         key={widgetId}
                         className="cursor-pointer hover:shadow-md transition-shadow"
                         onClick={() => {
                           onAddWidget({
                             ...template,
-                            position: { x: 0, y: 0, w: 4, h: 3 } // Default position
+                            // position will be added by the parent
                           });
                           onClose();
                         }}
                       >
-                        <CardContent className="p-4">
-                          <div className="flex items-center gap-3">
+                        <Card className="">
+                          <CardContent className="p-4">
+                            <div className="flex items-center gap-3">
                             <IconComponent className="h-6 w-6 text-blue-600" />
                             <div>
                               <h4 className="font-medium">{template.title}</h4>
@@ -297,6 +300,7 @@ function WidgetSelector({ onAddWidget, onClose }: WidgetSelectorProps) {
           </div>
         </CardContent>
       </Card>
+      </div>
     </motion.div>
   );
 }

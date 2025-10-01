@@ -55,14 +55,14 @@ function OnboardingContent() {
     }
   }, [step]);
 
-  const handleSetupComplete = (profile: any) => {
-    // Convert the business setup data to our BusinessProfile interface
+  const handleSetupComplete = () => {
+    // Use default business profile when setup is completed
     const businessData: BusinessProfile = {
-      businessName: profile.businessName || 'My Business',
-      businessType: profile.businessType || 'startup',
-      businessSize: profile.businessSize || 'small',
-      industry: profile.industry || 'general',
-      goals: profile.goals || []
+      businessName: 'My Business',
+      businessType: 'startup',
+      businessSize: 'small',
+      industry: 'general',
+      goals: []
     };
     
     setBusinessProfile(businessData);

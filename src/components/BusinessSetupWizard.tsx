@@ -338,15 +338,18 @@ export default function BusinessSetupWizard({ onComplete, onSkip }: BusinessSetu
                   {businessTypeOptions.map((option) => {
                     const IconComponent = option.icon;
                     return (
-                      <Card
+                      <div
                         key={option.value}
-                        className={`cursor-pointer border-2 transition-all hover:shadow-md ${
-                          formData.businessType === option.value
-                            ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
-                            : 'border-gray-200 dark:border-gray-700'
-                        }`}
+                        className="cursor-pointer transition-all hover:shadow-md"
                         onClick={() => updateFormData({ businessType: option.value })}
                       >
+                        <Card
+                          className={`border-2 ${
+                            formData.businessType === option.value
+                              ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
+                              : 'border-gray-200 dark:border-gray-700'
+                          }`}
+                        >
                         <CardContent className="p-6">
                           <div className="flex items-start gap-4">
                             <IconComponent className="w-6 h-6 text-blue-600 mt-1" />
@@ -360,6 +363,7 @@ export default function BusinessSetupWizard({ onComplete, onSkip }: BusinessSetu
                           </div>
                         </CardContent>
                       </Card>
+                      </div>
                     );
                   })}
                 </div>
@@ -397,15 +401,18 @@ export default function BusinessSetupWizard({ onComplete, onSkip }: BusinessSetu
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {businessSizeOptions.map((option) => (
-                    <Card
+                    <div
                       key={option.value}
-                      className={`cursor-pointer border-2 transition-all hover:shadow-md ${
-                        formData.businessSize === option.value
-                          ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
-                          : 'border-gray-200 dark:border-gray-700'
-                      }`}
+                      className="cursor-pointer transition-all hover:shadow-md"
                       onClick={() => updateFormData({ businessSize: option.value })}
                     >
+                      <Card
+                        className={`border-2 ${
+                          formData.businessSize === option.value
+                            ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
+                            : 'border-gray-200 dark:border-gray-700'
+                        }`}
+                      >
                       <CardContent className="p-6 text-center">
                         <div className="mb-4">
                           <Users className="w-8 h-8 text-blue-600 mx-auto" />
@@ -417,6 +424,7 @@ export default function BusinessSetupWizard({ onComplete, onSkip }: BusinessSetu
                         )}
                       </CardContent>
                     </Card>
+                    </div>
                   ))}
                 </div>
 
@@ -528,15 +536,18 @@ export default function BusinessSetupWizard({ onComplete, onSkip }: BusinessSetu
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {recommendedTemplates.slice(0, 4).map((template) => (
-                    <Card
+                    <div
                       key={template.id}
-                      className={`cursor-pointer border-2 transition-all hover:shadow-lg ${
-                        formData.selectedTemplate?.id === template.id
-                          ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
-                          : 'border-gray-200 dark:border-gray-700'
-                      }`}
+                      className="cursor-pointer transition-all hover:shadow-lg"
                       onClick={() => updateFormData({ selectedTemplate: template })}
                     >
+                      <Card
+                        className={`border-2 ${
+                          formData.selectedTemplate?.id === template.id
+                            ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
+                            : 'border-gray-200 dark:border-gray-700'
+                        }`}
+                      >
                       <CardContent className="p-6">
                         <div className="flex items-start justify-between mb-4">
                           <div className="flex items-center gap-3">
@@ -587,6 +598,7 @@ export default function BusinessSetupWizard({ onComplete, onSkip }: BusinessSetu
                         </div>
                       </CardContent>
                     </Card>
+                    </div>
                   ))}
                 </div>
 

@@ -563,7 +563,7 @@ export default function Dashboard() {
                                     <p className={visualEffects.typography.enhanced.caption}>
                                       {metric.label}
                                     </p>
-                                    <Flex align="center" gap="xs">
+                                    <Flex align="center" gap="sm">
                                       <span className={`${visualEffects.typography.enhanced.subtitle} font-semibold`}>
                                         {metric.value}
                                       </span>
@@ -630,7 +630,7 @@ export default function Dashboard() {
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: index * 0.05 }}
-                    variants={animations.variants.cardHover}
+                    variants={animationVariants.cardHover}
                     whileHover="hover"
                     whileTap="tap"
                   >
@@ -648,7 +648,7 @@ export default function Dashboard() {
                         >
                           <action.icon className="w-6 h-6" />
                         </motion.div>
-                        <Flex align="center" gap="xs">
+                        <Flex align="center" gap="sm">
                           <Badge 
                             variant={action.impact === 'high' ? 'error' : action.impact === 'medium' ? 'warning' : 'default'}
                             size="sm"
