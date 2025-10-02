@@ -237,7 +237,7 @@ function AIDesignAssistant({
   const [messages, setMessages] = useState<Array<{ role: 'user' | 'assistant'; content: string }>>([
     {
       role: 'assistant',
-      content: 'Hi! I\'m your AI Design Assistant. I can help you create professional designs with Adobe Illustrator-level tools and Canva\'s ease of use. What would you like to create today?'
+      content: 'Hi! I\'m your AI Design Assistant. What would you like to create today?'
     }
   ]);
   const [isLoading, setIsLoading] = useState(false);
