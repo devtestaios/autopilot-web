@@ -1271,6 +1271,10 @@ async def publish_to_platforms(post_data: dict, target_account_ids: list) -> dic
         logger.error(f"Error in publish_to_platforms: {e}")
         return {"error": str(e)}
 
+# Graph API Configuration
+GRAPH_API_VERSION = "v19.0"  # Use latest stable version
+GRAPH_API_BASE = f"https://graph.facebook.com/{GRAPH_API_VERSION}"
+
 async def publish_to_instagram(post_data: dict, account: dict) -> dict:
     """Publish post to Instagram using Graph API"""
     try:
@@ -1288,8 +1292,8 @@ async def publish_to_instagram(post_data: dict, account: dict) -> dict:
         
         # For now, handle text-only posts (media posts require additional steps)
         if not media_urls:
-            # Create Instagram post
-            url = f"https://graph.facebook.com/v18.0/{instagram_business_account_id}/media"
+            # Create Instagram post using proper Graph API structure
+            url = f"{GRAPH_API_BASE}/{instagram_business_account_id}/media"
             
             payload = {
                 "caption": content,
@@ -1304,7 +1308,7 @@ async def publish_to_instagram(post_data: dict, account: dict) -> dict:
                         creation_id = media_data.get("id")
                         
                         # Step 2: Publish media object
-                        publish_url = f"https://graph.facebook.com/v18.0/{instagram_business_account_id}/media_publish"
+                        publish_url = f"{GRAPH_API_BASE}/{instagram_business_account_id}/media_publish"
                         publish_payload = {
                             "creation_id": creation_id,
                             "access_token": access_token
@@ -1331,18 +1335,329 @@ async def publish_to_instagram(post_data: dict, account: dict) -> dict:
                             "error": f"Media creation failed: {error_data}"
                         }
         else:
-            # Media posts require uploading images first - this is more complex
-            return {
-                "status": "skipped",
-                "message": "Media posts require additional implementation"
-            }
+            # Enhanced media posts implementation
+            return await publish_instagram_media_post(post_data, account)
             
     except Exception as e:
         logger.error(f"Instagram publishing error: {e}")
         return {"status": "failed", "error": str(e)}
 
+async def publish_instagram_media_post(post_data: dict, account: dict) -> dict:
+    """Publish Instagram post with media using Graph API best practices"""
+    try:
+        access_token = account.get("access_token")
+        instagram_business_account_id = account.get("instagram_business_account_id")
+        content = post_data.get("content", "")
+        media_urls = post_data.get("media_urls", [])
+        
+        if len(media_urls) == 1:
+            # Single media post
+            media_url = media_urls[0]
+            media_type = "IMAGE" if media_url.lower().endswith(('.jpg', '.jpeg', '.png', '.gif')) else "VIDEO"
+            
+            # Step 1: Create media container
+            url = f"{GRAPH_API_BASE}/{instagram_business_account_id}/media"
+            payload = {
+                "image_url" if media_type == "IMAGE" else "video_url": media_url,
+                "caption": content,
+                "access_token": access_token
+            }
+            
+            async with aiohttp.ClientSession() as session:
+                async with session.post(url, data=payload) as response:
+                    if response.status == 200:
+                        media_data = await response.json()
+                        creation_id = media_data.get("id")
+                        
+                        # Step 2: Publish the media
+                        publish_url = f"{GRAPH_API_BASE}/{instagram_business_account_id}/media_publish"
+                        publish_payload = {
+                            "creation_id": creation_id,
+                            "access_token": access_token
+                        }
+                        
+                        async with session.post(publish_url, data=publish_payload) as publish_response:
+                            if publish_response.status == 200:
+                                publish_data = await publish_response.json()
+                                return {
+                                    "status": "published",
+                                    "instagram_post_id": publish_data.get("id"),
+                                    "media_type": media_type,
+                                    "message": f"Successfully published {media_type.lower()} to Instagram"
+                                }
+                            else:
+                                error_data = await publish_response.json()
+                                return {"status": "failed", "error": f"Publish failed: {error_data}"}
+                    else:
+                        error_data = await response.json()
+                        return {"status": "failed", "error": f"Media creation failed: {error_data}"}
+                        
+        elif len(media_urls) > 1:
+            # Carousel post (multiple media)
+            return await publish_instagram_carousel(post_data, account)
+        else:
+            return {"status": "failed", "error": "No media URLs provided"}
+            
+    except Exception as e:
+        logger.error(f"Instagram media publishing error: {e}")
+        return {"status": "failed", "error": str(e)}
+
+async def publish_instagram_carousel(post_data: dict, account: dict) -> dict:
+    """Publish Instagram carousel post with multiple media"""
+    try:
+        access_token = account.get("access_token")
+        instagram_business_account_id = account.get("instagram_business_account_id")
+        content = post_data.get("content", "")
+        media_urls = post_data.get("media_urls", [])
+        
+        if len(media_urls) > 10:  # Instagram limit
+            return {"status": "failed", "error": "Maximum 10 media items allowed in carousel"}
+        
+        media_ids = []
+        
+        async with aiohttp.ClientSession() as session:
+            # Step 1: Create media containers for each item
+            for media_url in media_urls:
+                media_type = "IMAGE" if media_url.lower().endswith(('.jpg', '.jpeg', '.png', '.gif')) else "VIDEO"
+                url = f"{GRAPH_API_BASE}/{instagram_business_account_id}/media"
+                
+                payload = {
+                    "image_url" if media_type == "IMAGE" else "video_url": media_url,
+                    "is_carousel_item": "true",
+                    "access_token": access_token
+                }
+                
+                async with session.post(url, data=payload) as response:
+                    if response.status == 200:
+                        media_data = await response.json()
+                        media_ids.append(media_data.get("id"))
+                    else:
+                        error_data = await response.json()
+                        return {"status": "failed", "error": f"Failed to create carousel item: {error_data}"}
+            
+            # Step 2: Create carousel container
+            carousel_url = f"{GRAPH_API_BASE}/{instagram_business_account_id}/media"
+            carousel_payload = {
+                "media_type": "CAROUSEL",
+                "children": ",".join(media_ids),
+                "caption": content,
+                "access_token": access_token
+            }
+            
+            async with session.post(carousel_url, data=carousel_payload) as response:
+                if response.status == 200:
+                    carousel_data = await response.json()
+                    creation_id = carousel_data.get("id")
+                    
+                    # Step 3: Publish carousel
+                    publish_url = f"{GRAPH_API_BASE}/{instagram_business_account_id}/media_publish"
+                    publish_payload = {
+                        "creation_id": creation_id,
+                        "access_token": access_token
+                    }
+                    
+                    async with session.post(publish_url, data=publish_payload) as publish_response:
+                        if publish_response.status == 200:
+                            publish_data = await publish_response.json()
+                            return {
+                                "status": "published",
+                                "instagram_post_id": publish_data.get("id"),
+                                "media_type": "CAROUSEL",
+                                "media_count": len(media_ids),
+                                "message": f"Successfully published carousel with {len(media_ids)} items to Instagram"
+                            }
+                        else:
+                            error_data = await publish_response.json()
+                            return {"status": "failed", "error": f"Carousel publish failed: {error_data}"}
+                else:
+                    error_data = await response.json()
+                    return {"status": "failed", "error": f"Carousel creation failed: {error_data}"}
+                    
+    except Exception as e:
+        logger.error(f"Instagram carousel publishing error: {e}")
+        return {"status": "failed", "error": str(e)}
+
+# Graph API Utility Functions
+async def get_instagram_account_info(access_token: str, instagram_business_account_id: str) -> dict:
+    """Get Instagram account information using Graph API"""
+    try:
+        url = f"{GRAPH_API_BASE}/{instagram_business_account_id}"
+        params = {
+            "fields": "id,username,name,biography,followers_count,follows_count,media_count,profile_picture_url",
+            "access_token": access_token
+        }
+        
+        async with aiohttp.ClientSession() as session:
+            async with session.get(url, params=params) as response:
+                if response.status == 200:
+                    return await response.json()
+                else:
+                    error_data = await response.json()
+                    logger.error(f"Failed to get Instagram account info: {error_data}")
+                    return {}
+    except Exception as e:
+        logger.error(f"Error getting Instagram account info: {e}")
+        return {}
+
+async def get_instagram_media_insights(access_token: str, media_id: str) -> dict:
+    """Get insights for an Instagram media post"""
+    try:
+        url = f"{GRAPH_API_BASE}/{media_id}/insights"
+        params = {
+            "metric": "engagement,impressions,likes,comments,shares,saves,reach",
+            "access_token": access_token
+        }
+        
+        async with aiohttp.ClientSession() as session:
+            async with session.get(url, params=params) as response:
+                if response.status == 200:
+                    return await response.json()
+                else:
+                    error_data = await response.json()
+                    logger.error(f"Failed to get media insights: {error_data}")
+                    return {}
+    except Exception as e:
+        logger.error(f"Error getting media insights: {e}")
+        return {}
+
+async def validate_instagram_media_url(media_url: str) -> dict:
+    """Validate media URL before posting to Instagram"""
+    try:
+        async with aiohttp.ClientSession() as session:
+            async with session.head(media_url) as response:
+                if response.status == 200:
+                    content_type = response.headers.get('content-type', '')
+                    content_length = int(response.headers.get('content-length', 0))
+                    
+                    # Instagram requirements
+                    if content_type.startswith('image/'):
+                        max_size = 8 * 1024 * 1024  # 8MB for images
+                        media_type = "IMAGE"
+                    elif content_type.startswith('video/'):
+                        max_size = 100 * 1024 * 1024  # 100MB for videos
+                        media_type = "VIDEO"
+                    else:
+                        return {"valid": False, "error": "Unsupported media type"}
+                    
+                    if content_length > max_size:
+                        return {"valid": False, "error": f"File too large. Max size: {max_size/1024/1024}MB"}
+                    
+                    return {
+                        "valid": True,
+                        "media_type": media_type,
+                        "content_type": content_type,
+                        "size": content_length
+                    }
+                else:
+                    return {"valid": False, "error": f"Media URL not accessible: {response.status}"}
+    except Exception as e:
+        return {"valid": False, "error": str(e)}
+
+# Enhanced endpoint for Instagram account insights
+@app.get("/api/social-media/instagram/{account_id}/insights")
+async def get_instagram_insights(account_id: str):
+    """Get Instagram account insights and metrics"""
+    if not SUPABASE_AVAILABLE or not supabase:
+        raise HTTPException(status_code=503, detail="Database not available")
+    
+    try:
+        # Get account details
+        account_response = supabase.table("social_media_accounts")\
+            .select("*")\
+            .eq("id", account_id)\
+            .eq("platform", "instagram")\
+            .execute()
+        
+        if not account_response.data:
+            raise HTTPException(status_code=404, detail="Instagram account not found")
+        
+        account = account_response.data[0]
+        access_token = account.get("access_token")
+        instagram_business_account_id = account.get("instagram_business_account_id")
+        
+        if not access_token or not instagram_business_account_id:
+            raise HTTPException(status_code=400, detail="Account not properly configured for insights")
+        
+        # Get account info
+        account_info = await get_instagram_account_info(access_token, instagram_business_account_id)
+        
+        # Get recent posts for engagement metrics
+        recent_posts_response = supabase.table("social_media_posts")\
+            .select("*")\
+            .eq("target_accounts", f'["{account_id}"]')\
+            .eq("status", "published")\
+            .order("published_date", desc=True)\
+            .limit(10)\
+            .execute()
+        
+        posts_insights = []
+        for post in recent_posts_response.data or []:
+            if post.get("publish_results", {}).get(account_id, {}).get("instagram_post_id"):
+                media_id = post["publish_results"][account_id]["instagram_post_id"]
+                insights = await get_instagram_media_insights(access_token, media_id)
+                posts_insights.append({
+                    "post_id": post["id"],
+                    "instagram_media_id": media_id,
+                    "insights": insights
+                })
+        
+        return {
+            "account_info": account_info,
+            "recent_posts_insights": posts_insights,
+            "summary": {
+                "total_posts": len(posts_insights),
+                "account_metrics": account_info
+            }
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error getting Instagram insights: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to get insights: {str(e)}")
+
+# Media validation endpoint
+@app.post("/api/social-media/validate-media")
+async def validate_media_for_posting(request: dict):
+    """Validate media URLs before posting"""
+    try:
+        media_urls = request.get("media_urls", [])
+        platform = request.get("platform", "instagram")
+        
+        if not media_urls:
+            raise HTTPException(status_code=400, detail="No media URLs provided")
+        
+        validation_results = []
+        
+        for url in media_urls:
+            if platform == "instagram":
+                result = await validate_instagram_media_url(url)
+                validation_results.append({
+                    "url": url,
+                    "validation": result
+                })
+            else:
+                validation_results.append({
+                    "url": url,
+                    "validation": {"valid": True, "message": "Validation not implemented for this platform"}
+                })
+        
+        all_valid = all(result["validation"]["valid"] for result in validation_results)
+        
+        return {
+            "all_valid": all_valid,
+            "results": validation_results,
+            "platform": platform
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error validating media: {e}")
+        raise HTTPException(status_code=500, detail=f"Media validation failed: {str(e)}")
+
 async def publish_to_facebook(post_data: dict, account: dict) -> dict:
-    """Publish post to Facebook Page"""
+    """Publish post to Facebook Page using Graph API best practices"""
     try:
         access_token = account.get("access_token")
         facebook_page_id = account.get("facebook_page_id")
@@ -1351,12 +1666,24 @@ async def publish_to_facebook(post_data: dict, account: dict) -> dict:
             return {"status": "failed", "error": "Missing access token or page ID"}
         
         content = post_data.get("content", "")
+        media_urls = post_data.get("media_urls", [])
         
-        url = f"https://graph.facebook.com/v18.0/{facebook_page_id}/feed"
-        payload = {
-            "message": content,
-            "access_token": access_token
-        }
+        # Use proper Graph API versioning
+        if not media_urls:
+            # Text-only post
+            url = f"{GRAPH_API_BASE}/{facebook_page_id}/feed"
+            payload = {
+                "message": content,
+                "access_token": access_token
+            }
+        else:
+            # Post with media
+            url = f"{GRAPH_API_BASE}/{facebook_page_id}/photos"
+            payload = {
+                "message": content,
+                "url": media_urls[0],  # For now, just use first image
+                "access_token": access_token
+            }
         
         async with aiohttp.ClientSession() as session:
             async with session.post(url, data=payload) as response:
@@ -1365,6 +1692,7 @@ async def publish_to_facebook(post_data: dict, account: dict) -> dict:
                     return {
                         "status": "published",
                         "facebook_post_id": response_data.get("id"),
+                        "post_type": "media" if media_urls else "text",
                         "message": "Successfully published to Facebook"
                     }
                 else:
