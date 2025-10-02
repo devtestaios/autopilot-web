@@ -529,17 +529,6 @@ export const Progress = forwardRef<HTMLDivElement, ProgressProps>(
 
 Progress.displayName = 'Progress';
 
-// Export all components
-export {
-  Button,
-  Card,
-  Input,
-  Badge,
-  Spinner,
-  Avatar,
-  Progress
-};
-
 // Export component collection
 export default {
   Button,

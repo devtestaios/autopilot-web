@@ -104,7 +104,6 @@ const nextConfig: NextConfig = {
               '@babel/preset-typescript'
             ],
             plugins: [
-              ['import', { libraryName: 'lucide-react', libraryDirectory: 'dist/esm/icons', camel2DashComponentName: false }, 'lucide'],
               ['import', { libraryName: '@radix-ui/react-icons', libraryDirectory: 'dist', camel2DashComponentName: false }, 'radix-icons']
             ]
           }

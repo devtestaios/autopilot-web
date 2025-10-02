@@ -68,6 +68,11 @@ const AdvancedNavigation = dynamic(() => import('@/components/ui/AdvancedNavigat
   loading: () => <div className="h-16 bg-white dark:bg-gray-900 border-b animate-pulse" />
 });
 
+const UnifiedSidebar = dynamic(() => import('@/components/UnifiedSidebar'), {
+  ssr: false,
+  loading: () => <div className="w-64 h-screen bg-white dark:bg-gray-900 border-r animate-pulse" />
+});
+
 const AIControlChat = dynamic(() => import('@/components/AIControlChat'), {
   ssr: false,
   loading: () => null
@@ -495,6 +500,7 @@ export default function MarketingCommandCenter() {
   return (
     <div className={cn(themeClasses.appBackground)}>
       <NavigationTabs />
+      <UnifiedSidebar onCollapseChange={setSidebarCollapsed} />
       <AdvancedNavigation sidebarCollapsed={sidebarCollapsed} />
       
       <div className={`transition-all duration-300 ${sidebarCollapsed ? 'ml-16' : 'ml-64'} pt-16`}>

@@ -1,4 +1,5 @@
 import React from 'react';
+import { cn } from '@/lib/theme-utils';
 
 interface CardProps {
   children: React.ReactNode;
@@ -27,7 +28,7 @@ interface CardDescriptionProps {
 
 export function Card({ children, className = '' }: CardProps) {
   return (
-    <div className={`bg-white rounded-lg border border-gray-200 shadow-sm ${className}`}>
+    <div className={cn('theme-card rounded-lg border shadow-sm', className)}>
       {children}
     </div>
   );
@@ -35,7 +36,7 @@ export function Card({ children, className = '' }: CardProps) {
 
 export function CardContent({ children, className = '' }: CardContentProps) {
   return (
-    <div className={`p-6 ${className}`}>
+    <div className={cn('p-6', className)}>
       {children}
     </div>
   );
@@ -43,7 +44,7 @@ export function CardContent({ children, className = '' }: CardContentProps) {
 
 export function CardHeader({ children, className = '' }: CardHeaderProps) {
   return (
-    <div className={`p-6 pb-0 ${className}`}>
+    <div className={cn('p-6 pb-0', className)}>
       {children}
     </div>
   );
@@ -51,7 +52,7 @@ export function CardHeader({ children, className = '' }: CardHeaderProps) {
 
 export function CardTitle({ children, className = '' }: CardTitleProps) {
   return (
-    <h3 className={`text-lg font-semibold text-gray-900 ${className}`}>
+    <h3 className={cn('text-lg font-semibold text-theme-primary', className)}>
       {children}
     </h3>
   );
@@ -59,7 +60,7 @@ export function CardTitle({ children, className = '' }: CardTitleProps) {
 
 export function CardDescription({ children, className = '' }: CardDescriptionProps) {
   return (
-    <p className={`text-sm text-gray-600 mt-1 ${className}`}>
+    <p className={cn('text-sm text-theme-secondary mt-1', className)}>
       {children}
     </p>
   );

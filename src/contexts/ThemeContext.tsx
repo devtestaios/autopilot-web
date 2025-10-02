@@ -18,8 +18,8 @@ const ThemeContext = createContext<ThemeContextProps>({
 });
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
+  // Always start with 'dark' theme to ensure SSR/client consistency
   const [currentTheme, setCurrentTheme] = useState<Theme>('dark');
-  const [isReady, setIsReady] = useState(false);
 
   // Apply theme to document - stable with useCallback
   const updateDocumentTheme = useCallback((theme: Theme) => {
@@ -39,17 +39,14 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  // Initialize theme on mount
+  // Initialize theme on mount - only run on client side
   useEffect(() => {
-    const savedTheme = typeof window !== 'undefined' 
-      ? (localStorage.getItem('theme') as Theme) || 'dark'
-      : 'dark';
+    const savedTheme = (localStorage.getItem('theme') as Theme) || 'dark';
     
     if (savedTheme === 'light' || savedTheme === 'dark') {
       setCurrentTheme(savedTheme);
       updateDocumentTheme(savedTheme);
     }
-    setIsReady(true);
   }, [updateDocumentTheme]);
 
   // Toggle between themes - stable with useCallback
@@ -73,10 +70,10 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   // Create stable context value with useMemo and stable dependencies
   const themeContextValue: ThemeContextProps = useMemo(() => ({
-    theme: isReady ? currentTheme : 'dark',
+    theme: currentTheme,
     toggleTheme: handleToggleTheme,
     setTheme: handleSetTheme,
-  }), [isReady, currentTheme, handleToggleTheme, handleSetTheme]);
+  }), [currentTheme, handleToggleTheme, handleSetTheme]);
 
   return (
     <ThemeContext.Provider value={themeContextValue}>

@@ -9,8 +9,9 @@
   transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 
-/* ROOT VARIABLES - DARK MODE (DEFAULT) */
-:root {
+/* ROOT VARIABLES - DEFAULT DARK MODE */
+:root,
+.dark {
   /* Base Background Colors - Dark */
   --app-bg: #0a0f1a;                    /* Main app background */
   --card-bg: #1a2332;                   /* Card backgrounds */
@@ -81,15 +82,28 @@
 
 /* Card Components */
 .theme-card {
-  background-color: var(--card-bg);
-  color: var(--text-primary);
-  border: 1px solid var(--border-primary);
-  border-radius: 0.5rem;
+  background-color: var(--card-bg) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border-primary) !important;
+  border-radius: 0.5rem !important;
 }
 
 .theme-card:hover {
-  background-color: var(--card-hover);
-  border-color: var(--border-secondary);
+  background-color: var(--card-hover) !important;
+  border-color: var(--border-secondary) !important;
+}
+
+/* Ensure dark theme cards have borders */
+.dark .theme-card {
+  background-color: var(--card-bg) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border-primary) !important;
+}
+
+.light .theme-card {
+  background-color: var(--card-bg) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border-primary) !important;
 }
 
 /* Surface Elements */
@@ -209,35 +223,68 @@
 .border-theme-muted { border-color: var(--border-muted); }
 
 /* Override any problematic Tailwind classes */
-.light .bg-white {
+.light .bg-white,
+.light [data-theme="light"] .bg-white {
   background-color: var(--card-bg) !important;
 }
 
-.light .text-gray-900 {
+.light .text-gray-900,
+.light [data-theme="light"] .text-gray-900 {
   color: var(--text-primary) !important;
 }
 
-.light .text-gray-600 {
+.light .text-gray-600,
+.light [data-theme="light"] .text-gray-600 {
   color: var(--text-secondary) !important;
 }
 
-.light .text-gray-400 {
+.light .text-gray-400,
+.light [data-theme="light"] .text-gray-400 {
   color: var(--text-muted) !important;
 }
 
 /* Ensure dark mode cards aren't white */
-.dark .bg-white {
+.dark .bg-white,
+.dark [data-theme="dark"] .bg-white {
   background-color: var(--card-bg) !important;
   color: var(--text-primary) !important;
 }
 
 /* Fix common problematic combinations */
-.light .bg-gray-50 {
+.light .bg-gray-50,
+.light [data-theme="light"] .bg-gray-50 {
   background-color: var(--surface) !important;
 }
 
-.light .bg-gray-100 {
+.light .bg-gray-100,
+.light [data-theme="light"] .bg-gray-100 {
   background-color: var(--surface-elevated) !important;
+}
+
+/* Dark mode specific overrides */
+.dark .bg-gray-50,
+.dark [data-theme="dark"] .bg-gray-50 {
+  background-color: var(--surface) !important;
+}
+
+.dark .bg-gray-100,
+.dark [data-theme="dark"] .bg-gray-100 {
+  background-color: var(--surface-elevated) !important;
+}
+
+.dark .text-gray-900,
+.dark [data-theme="dark"] .text-gray-900 {
+  color: var(--text-primary) !important;
+}
+
+.dark .text-gray-600,
+.dark [data-theme="dark"] .text-gray-600 {
+  color: var(--text-secondary) !important;
+}
+
+.dark .text-gray-400,
+.dark [data-theme="dark"] .text-gray-400 {
+  color: var(--text-muted) !important;
 }
 
 /* Dashboard and marketing specific fixes */
@@ -253,14 +300,43 @@
 }
 
 /* Ensure all card text is readable */
-.theme-card .text-gray-900 {
+.theme-card .text-gray-900,
+.theme-card [class*="text-gray-9"] {
   color: var(--text-primary) !important;
 }
 
-.theme-card .text-gray-600 {
+.theme-card .text-gray-600,
+.theme-card [class*="text-gray-6"] {
   color: var(--text-secondary) !important;
 }
 
-.theme-card .text-gray-400 {
+.theme-card .text-gray-400,
+.theme-card [class*="text-gray-4"] {
   color: var(--text-muted) !important;
+}
+
+/* Comprehensive Card component overrides for shadcn/ui */
+[data-shadcn-card],
+.card,
+.Card {
+  background-color: var(--card-bg) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-primary) !important;
+}
+
+/* Force all Card components to use our theme */
+.dark [data-shadcn-card],
+.dark .card,
+.dark .Card {
+  background-color: var(--card-bg) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-primary) !important;
+}
+
+.light [data-shadcn-card],
+.light .card,
+.light .Card {
+  background-color: var(--card-bg) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-primary) !important;
 }
