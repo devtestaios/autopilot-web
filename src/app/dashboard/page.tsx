@@ -3,6 +3,7 @@
 import React, { useState, useEffect, memo } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import dynamic from 'next/dynamic';
+import { themeClasses, cn } from '@/lib/theme-utils';
 import { 
   Target, TrendingUp, DollarSign, BarChart3, Users, Zap, 
   Activity, Clock, AlertCircle, ChevronRight, ExternalLink,
@@ -435,7 +436,7 @@ export default function Dashboard() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className={cn(themeClasses.appBackground)}>
       {/* Navigation Header */}
       <NavigationTabs />
       

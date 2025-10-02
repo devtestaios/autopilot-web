@@ -9,6 +9,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
+import { themeClasses, marketingThemeClasses, cn } from '@/lib/theme-utils';
 import { 
   Target, 
   Share2, 
@@ -312,23 +313,26 @@ function PlatformNavigationGrid() {
 
         return (
           <Link key={platform.id} href={platform.route}>
-            <Card className={`group hover:shadow-lg transition-all duration-200 cursor-pointer ${
+            <Card className={cn(
+              marketingThemeClasses.platformCardHover,
               isContentSuite 
                 ? 'border-purple-200 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 hover:border-purple-300' 
-                : 'hover:border-blue-200'
-            }`}>
+                : ''
+            )}>
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
-                  <div className={`p-2 rounded-lg transition-colors ${
+                  <div className={cn(
+                    "p-2 rounded-lg transition-colors",
                     isContentSuite
                       ? 'bg-purple-100 dark:bg-purple-900/30 group-hover:bg-purple-200 dark:group-hover:bg-purple-900/50'
                       : 'bg-blue-100 dark:bg-blue-900/30 group-hover:bg-blue-200 dark:group-hover:bg-blue-900/50'
-                  }`}>
-                    <IconComponent className={`w-6 h-6 ${
+                  )}>
+                    <IconComponent className={cn(
+                      "w-6 h-6",
                       isContentSuite 
                         ? 'text-purple-600 dark:text-purple-400' 
                         : 'text-blue-600 dark:text-blue-400'
-                    }`} />
+                    )} />
                   </div>
                   <div className="flex items-center gap-2">
                     {platform.isNew && (
@@ -343,17 +347,17 @@ function PlatformNavigationGrid() {
                 </div>
               </CardHeader>
               <CardContent className="pt-0">
-                <h3 className="font-semibold text-lg mb-2 group-hover:text-blue-600 transition-colors">
+                <h3 className={cn(themeClasses.textPrimary, "font-semibold text-lg mb-2 group-hover:text-blue-600 transition-colors")}>
                   {platform.name}
                 </h3>
-                <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
+                <p className={cn(themeClasses.textMuted, "text-sm mb-3 line-clamp-2")}>
                   {platform.description}
                 </p>
                 <div className="flex items-center justify-between">
-                  <span className="text-xs text-muted-foreground">
+                  <span className={cn(themeClasses.textMuted, "text-xs")}>
                     {platform.features.length} features
                   </span>
-                  <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-blue-600 group-hover:translate-x-1 transition-all" />
+                  <ArrowRight className={cn(themeClasses.textMuted, "w-4 h-4 group-hover:text-blue-600 group-hover:translate-x-1 transition-all")} />
                 </div>
               </CardContent>
             </Card>
@@ -489,7 +493,7 @@ export default function MarketingCommandCenter() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className={cn(themeClasses.appBackground)}>
       <NavigationTabs />
       <AdvancedNavigation sidebarCollapsed={sidebarCollapsed} />
       

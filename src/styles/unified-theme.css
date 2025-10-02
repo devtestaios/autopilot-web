@@ -1,0 +1,266 @@
+/* 
+ * PulseBridge.ai Unified Theme System
+ * Single source of truth for all light/dark theming
+ * October 2, 2025
+ */
+
+/* Reset and ensure proper theme application */
+* {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* ROOT VARIABLES - DARK MODE (DEFAULT) */
+:root {
+  /* Base Background Colors - Dark */
+  --app-bg: #0a0f1a;                    /* Main app background */
+  --card-bg: #1a2332;                   /* Card backgrounds */
+  --card-hover: #1f2937;                /* Card hover state */
+  --surface: #111827;                   /* Surface elements */
+  --surface-elevated: #1f2937;          /* Elevated surfaces */
+  
+  /* Text Colors - Dark */
+  --text-primary: #f8fafc;              /* Primary headings/text */
+  --text-secondary: #e2e8f0;            /* Secondary text */
+  --text-muted: #94a3b8;                /* Muted/disabled text */
+  --text-inverse: #1e293b;              /* Text on light backgrounds */
+  
+  /* Border Colors - Dark */
+  --border-primary: #374151;            /* Main borders */
+  --border-secondary: #4b5563;          /* Secondary borders */
+  --border-muted: #374151;              /* Subtle borders */
+  
+  /* Brand Colors (consistent across themes) */
+  --brand-primary: #00c9a7;             /* Teal primary */
+  --brand-secondary: #e07856;           /* Coral secondary */
+  --brand-accent: #3b82f6;              /* Blue accent */
+  
+  /* Status Colors */
+  --success: #10b981;
+  --warning: #f59e0b;
+  --error: #ef4444;
+  --info: #3b82f6;
+  
+  /* Special Purpose */
+  --content-creator-bg: #ffffff;        /* Always white for content creation */
+  --content-creator-text: #1e293b;      /* Always dark text for content creation */
+}
+
+/* LIGHT MODE OVERRIDES */
+.light {
+  /* Base Background Colors - Light */
+  --app-bg: #f8fafc;                    /* Light gray background */
+  --card-bg: #ffffff;                   /* Pure white cards */
+  --card-hover: #f1f5f9;                /* Light gray hover */
+  --surface: #f1f5f9;                   /* Light surface */
+  --surface-elevated: #ffffff;          /* White elevated surfaces */
+  
+  /* Text Colors - Light */
+  --text-primary: #1e293b;              /* Dark text for readability */
+  --text-secondary: #475569;            /* Medium gray text */
+  --text-muted: #64748b;                /* Muted gray text */
+  --text-inverse: #f8fafc;              /* Light text on dark backgrounds */
+  
+  /* Border Colors - Light */
+  --border-primary: #e2e8f0;            /* Light borders */
+  --border-secondary: #cbd5e1;          /* Medium borders */
+  --border-muted: #f1f5f9;              /* Very light borders */
+  
+  /* Adjust brand colors for better light mode contrast */
+  --brand-primary: #00a388;             /* Slightly darker teal */
+  --brand-secondary: #d66a48;           /* Slightly darker coral */
+}
+
+/* BASE COMPONENT CLASSES */
+
+/* Application Background */
+.app-background {
+  background-color: var(--app-bg);
+  color: var(--text-primary);
+  min-height: 100vh;
+}
+
+/* Card Components */
+.theme-card {
+  background-color: var(--card-bg);
+  color: var(--text-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: 0.5rem;
+}
+
+.theme-card:hover {
+  background-color: var(--card-hover);
+  border-color: var(--border-secondary);
+}
+
+/* Surface Elements */
+.theme-surface {
+  background-color: var(--surface);
+  color: var(--text-primary);
+  border: 1px solid var(--border-muted);
+}
+
+.theme-surface-elevated {
+  background-color: var(--surface-elevated);
+  color: var(--text-primary);
+  border: 1px solid var(--border-primary);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* Text Classes */
+.theme-text-primary {
+  color: var(--text-primary);
+}
+
+.theme-text-secondary {
+  color: var(--text-secondary);
+}
+
+.theme-text-muted {
+  color: var(--text-muted);
+}
+
+/* Navigation & Sidebar */
+.theme-nav {
+  background-color: var(--surface-elevated);
+  border-color: var(--border-primary);
+  color: var(--text-primary);
+}
+
+.theme-nav-item {
+  color: var(--text-secondary);
+  transition: color 0.2s ease;
+}
+
+.theme-nav-item:hover {
+  color: var(--text-primary);
+  background-color: var(--card-hover);
+}
+
+.theme-nav-item.active {
+  color: var(--brand-primary);
+  background-color: var(--card-hover);
+}
+
+/* Button Variants */
+.theme-button-primary {
+  background-color: var(--brand-primary);
+  color: var(--text-inverse);
+  border: 1px solid var(--brand-primary);
+}
+
+.theme-button-secondary {
+  background-color: var(--surface-elevated);
+  color: var(--text-primary);
+  border: 1px solid var(--border-primary);
+}
+
+.theme-button-ghost {
+  background-color: transparent;
+  color: var(--text-secondary);
+  border: 1px solid transparent;
+}
+
+.theme-button-ghost:hover {
+  background-color: var(--card-hover);
+  color: var(--text-primary);
+}
+
+/* Form Elements */
+.theme-input {
+  background-color: var(--surface);
+  color: var(--text-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: 0.375rem;
+}
+
+.theme-input:focus {
+  border-color: var(--brand-primary);
+  box-shadow: 0 0 0 3px rgba(0, 201, 167, 0.1);
+}
+
+.theme-input::placeholder {
+  color: var(--text-muted);
+}
+
+/* Content Creator Exception */
+.content-creator-area {
+  background-color: var(--content-creator-bg) !important;
+  color: var(--content-creator-text) !important;
+}
+
+.content-creator-area .theme-card {
+  background-color: #f8fafc !important;
+  color: var(--content-creator-text) !important;
+  border-color: #e2e8f0 !important;
+}
+
+/* Utility Classes for Direct Application */
+.bg-theme-app { background-color: var(--app-bg); }
+.bg-theme-card { background-color: var(--card-bg); }
+.bg-theme-surface { background-color: var(--surface); }
+.bg-theme-surface-elevated { background-color: var(--surface-elevated); }
+
+.text-theme-primary { color: var(--text-primary); }
+.text-theme-secondary { color: var(--text-secondary); }
+.text-theme-muted { color: var(--text-muted); }
+
+.border-theme-primary { border-color: var(--border-primary); }
+.border-theme-secondary { border-color: var(--border-secondary); }
+.border-theme-muted { border-color: var(--border-muted); }
+
+/* Override any problematic Tailwind classes */
+.light .bg-white {
+  background-color: var(--card-bg) !important;
+}
+
+.light .text-gray-900 {
+  color: var(--text-primary) !important;
+}
+
+.light .text-gray-600 {
+  color: var(--text-secondary) !important;
+}
+
+.light .text-gray-400 {
+  color: var(--text-muted) !important;
+}
+
+/* Ensure dark mode cards aren't white */
+.dark .bg-white {
+  background-color: var(--card-bg) !important;
+  color: var(--text-primary) !important;
+}
+
+/* Fix common problematic combinations */
+.light .bg-gray-50 {
+  background-color: var(--surface) !important;
+}
+
+.light .bg-gray-100 {
+  background-color: var(--surface-elevated) !important;
+}
+
+/* Dashboard and marketing specific fixes */
+.marketing-platform-card {
+  background-color: var(--card-bg);
+  color: var(--text-primary);
+  border: 1px solid var(--border-primary);
+}
+
+.marketing-platform-card:hover {
+  background-color: var(--card-hover);
+  border-color: var(--border-secondary);
+}
+
+/* Ensure all card text is readable */
+.theme-card .text-gray-900 {
+  color: var(--text-primary) !important;
+}
+
+.theme-card .text-gray-600 {
+  color: var(--text-secondary) !important;
+}
+
+.theme-card .text-gray-400 {
+  color: var(--text-muted) !important;
+}

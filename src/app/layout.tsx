@@ -54,7 +54,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${orbitron.variable} ${exo2.variable}`}>
+      <body className={`${orbitron.variable} ${exo2.variable} app-background`}>
         <FacebookSDK />
         <ClientProviders>
           <main className="min-h-screen">

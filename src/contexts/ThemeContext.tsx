@@ -24,8 +24,18 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   // Apply theme to document - stable with useCallback
   const updateDocumentTheme = useCallback((theme: Theme) => {
     if (typeof window !== 'undefined' && document) {
+      // Remove all theme classes
       document.documentElement.classList.remove('light', 'dark');
+      document.body.classList.remove('light', 'dark', 'light-theme');
+      
+      // Add the new theme class to both html and body
       document.documentElement.classList.add(theme);
+      document.body.classList.add(theme);
+      
+      // Add legacy light-theme class for backwards compatibility
+      if (theme === 'light') {
+        document.body.classList.add('light-theme');
+      }
     }
   }, []);
 
