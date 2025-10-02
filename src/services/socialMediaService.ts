@@ -361,6 +361,88 @@ export class EnhancedSocialMediaService {
     return data.analyses || [];
   }
 
+  // Real Platform Publishing
+  async publishToPlatforms(postData: any, targetAccountIds: string[]): Promise<{
+    success: boolean;
+    results: Record<string, any>;
+    published_count: number;
+    total_targets: number;
+  }> {
+    try {
+      // First create the post in the database
+      const createResponse = await fetch(`${this.apiBase}/api/social-media/posts`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...postData,
+          target_accounts: targetAccountIds,
+          status: 'publishing'
+        })
+      });
+
+      if (!createResponse.ok) {
+        throw new Error(`Failed to create post: ${createResponse.status}`);
+      }
+
+      const createdPost = await createResponse.json();
+      const postId = createdPost.id;
+
+      // Then attempt to publish it
+      const publishResponse = await fetch(`${this.apiBase}/api/social-media/posts/${postId}/publish`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      });
+
+      if (!publishResponse.ok) {
+        throw new Error(`Failed to publish post: ${publishResponse.status}`);
+      }
+
+      const publishResult = await publishResponse.json();
+      
+      return {
+        success: publishResult.published_to > 0,
+        results: publishResult.results,
+        published_count: publishResult.published_to,
+        total_targets: publishResult.total_targets
+      };
+
+    } catch (error) {
+      console.error('Error publishing to platforms:', error);
+      throw error;
+    }
+  }
+
+  async publishExistingPost(postId: string): Promise<{
+    success: boolean;
+    results: Record<string, any>;
+    published_count: number;
+    total_targets: number;
+  }> {
+    try {
+      const response = await fetch(`${this.apiBase}/api/social-media/posts/${postId}/publish`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to publish post: ${response.status}`);
+      }
+
+      const result = await response.json();
+      
+      return {
+        success: result.published_to > 0,
+        results: result.results,
+        published_count: result.published_to,
+        total_targets: result.total_targets
+      };
+
+    } catch (error) {
+      console.error('Error publishing existing post:', error);
+      throw error;
+    }
+  }
+
   // Automated Engagement
   async setupAutoEngagement(accountId: string, settings: {
     auto_like: boolean;

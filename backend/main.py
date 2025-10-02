@@ -13,6 +13,7 @@ from typing import List, Dict, Any, Optional
 from datetime import datetime, timezone, timedelta
 import logging
 from pydantic import BaseModel
+import aiohttp
 
 # Configure logging first
 logging.basicConfig(level=logging.INFO)
@@ -1211,10 +1212,220 @@ async def create_social_post(post: SocialMediaPostIn):
         }
         
         response = supabase.table("social_media_posts").insert(post_data).execute()
-        return response.data[0] if response.data else {}
+        created_post = response.data[0] if response.data else {}
+        
+        # If not scheduled and has target accounts, attempt to publish immediately
+        if not post.scheduled_date and post.target_accounts:
+            try:
+                publish_result = await publish_to_platforms(created_post, post.target_accounts)
+                created_post["publish_status"] = publish_result
+            except Exception as publish_error:
+                logger.error(f"Error publishing post: {publish_error}")
+                # Update post status to failed but don't fail the creation
+                created_post["status"] = "failed"
+                created_post["error_message"] = str(publish_error)
+        
+        return created_post
     except Exception as e:
         logger.error(f"Error creating social media post: {e}")
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+
+# Instagram Publishing Functions
+async def publish_to_platforms(post_data: dict, target_account_ids: list) -> dict:
+    """Publish post to specified social media platforms"""
+    results = {}
+    
+    try:
+        # Get account details for each target account
+        account_response = supabase.table("social_media_accounts")\
+            .select("*")\
+            .in_("id", target_account_ids)\
+            .execute()
+        
+        accounts = account_response.data or []
+        
+        for account in accounts:
+            platform = account.get("platform")
+            account_id = account.get("id")
+            
+            try:
+                if platform == "instagram":
+                    result = await publish_to_instagram(post_data, account)
+                elif platform == "facebook":
+                    result = await publish_to_facebook(post_data, account)
+                else:
+                    result = {"status": "skipped", "message": f"Publishing to {platform} not implemented"}
+                
+                results[account_id] = result
+                
+            except Exception as account_error:
+                logger.error(f"Error publishing to {platform} account {account_id}: {account_error}")
+                results[account_id] = {
+                    "status": "failed",
+                    "error": str(account_error)
+                }
+        
+        return results
+        
+    except Exception as e:
+        logger.error(f"Error in publish_to_platforms: {e}")
+        return {"error": str(e)}
+
+async def publish_to_instagram(post_data: dict, account: dict) -> dict:
+    """Publish post to Instagram using Graph API"""
+    try:
+        access_token = account.get("access_token")
+        instagram_business_account_id = account.get("instagram_business_account_id")
+        
+        if not access_token:
+            return {"status": "failed", "error": "No access token available"}
+        
+        if not instagram_business_account_id:
+            return {"status": "failed", "error": "No Instagram Business Account ID"}
+        
+        content = post_data.get("content", "")
+        media_urls = post_data.get("media_urls", [])
+        
+        # For now, handle text-only posts (media posts require additional steps)
+        if not media_urls:
+            # Create Instagram post
+            url = f"https://graph.facebook.com/v18.0/{instagram_business_account_id}/media"
+            
+            payload = {
+                "caption": content,
+                "access_token": access_token
+            }
+            
+            async with aiohttp.ClientSession() as session:
+                # Step 1: Create media object
+                async with session.post(url, data=payload) as response:
+                    if response.status == 200:
+                        media_data = await response.json()
+                        creation_id = media_data.get("id")
+                        
+                        # Step 2: Publish media object
+                        publish_url = f"https://graph.facebook.com/v18.0/{instagram_business_account_id}/media_publish"
+                        publish_payload = {
+                            "creation_id": creation_id,
+                            "access_token": access_token
+                        }
+                        
+                        async with session.post(publish_url, data=publish_payload) as publish_response:
+                            if publish_response.status == 200:
+                                publish_data = await publish_response.json()
+                                return {
+                                    "status": "published",
+                                    "instagram_post_id": publish_data.get("id"),
+                                    "message": "Successfully published to Instagram"
+                                }
+                            else:
+                                error_data = await publish_response.json()
+                                return {
+                                    "status": "failed",
+                                    "error": f"Publish failed: {error_data}"
+                                }
+                    else:
+                        error_data = await response.json()
+                        return {
+                            "status": "failed", 
+                            "error": f"Media creation failed: {error_data}"
+                        }
+        else:
+            # Media posts require uploading images first - this is more complex
+            return {
+                "status": "skipped",
+                "message": "Media posts require additional implementation"
+            }
+            
+    except Exception as e:
+        logger.error(f"Instagram publishing error: {e}")
+        return {"status": "failed", "error": str(e)}
+
+async def publish_to_facebook(post_data: dict, account: dict) -> dict:
+    """Publish post to Facebook Page"""
+    try:
+        access_token = account.get("access_token")
+        facebook_page_id = account.get("facebook_page_id")
+        
+        if not access_token or not facebook_page_id:
+            return {"status": "failed", "error": "Missing access token or page ID"}
+        
+        content = post_data.get("content", "")
+        
+        url = f"https://graph.facebook.com/v18.0/{facebook_page_id}/feed"
+        payload = {
+            "message": content,
+            "access_token": access_token
+        }
+        
+        async with aiohttp.ClientSession() as session:
+            async with session.post(url, data=payload) as response:
+                if response.status == 200:
+                    response_data = await response.json()
+                    return {
+                        "status": "published",
+                        "facebook_post_id": response_data.get("id"),
+                        "message": "Successfully published to Facebook"
+                    }
+                else:
+                    error_data = await response.json()
+                    return {"status": "failed", "error": f"Facebook publish failed: {error_data}"}
+                    
+    except Exception as e:
+        logger.error(f"Facebook publishing error: {e}")
+        return {"status": "failed", "error": str(e)}
+
+# New endpoint for immediate publishing
+@app.post("/api/social-media/posts/{post_id}/publish")
+async def publish_existing_post(post_id: str):
+    """Publish an existing post to its target platforms"""
+    if not SUPABASE_AVAILABLE or not supabase:
+        raise HTTPException(status_code=503, detail="Database not available")
+    
+    try:
+        # Get the post
+        post_response = supabase.table("social_media_posts").select("*").eq("id", post_id).execute()
+        if not post_response.data:
+            raise HTTPException(status_code=404, detail="Post not found")
+        
+        post = post_response.data[0]
+        target_accounts = post.get("target_accounts", [])
+        
+        if not target_accounts:
+            raise HTTPException(status_code=400, detail="No target accounts specified")
+        
+        # Attempt to publish
+        publish_result = await publish_to_platforms(post, target_accounts)
+        
+        # Update post status based on results
+        success_count = sum(1 for result in publish_result.values() 
+                          if isinstance(result, dict) and result.get("status") == "published")
+        
+        if success_count > 0:
+            post_status = "published" if success_count == len(target_accounts) else "partially_published"
+        else:
+            post_status = "failed"
+        
+        # Update the post in database
+        supabase.table("social_media_posts").update({
+            "status": post_status,
+            "published_date": datetime.now(timezone.utc).isoformat() if success_count > 0 else None,
+            "publish_results": publish_result
+        }).eq("id", post_id).execute()
+        
+        return {
+            "post_id": post_id,
+            "status": post_status,
+            "results": publish_result,
+            "published_to": success_count,
+            "total_targets": len(target_accounts)
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error publishing post {post_id}: {e}")
+        raise HTTPException(status_code=500, detail=f"Publishing error: {str(e)}")
 
 @app.get("/api/social-media/posts/{post_id}")
 async def get_social_post(post_id: str):
