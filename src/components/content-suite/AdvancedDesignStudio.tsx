@@ -264,48 +264,108 @@ function AIDesignAssistant({
         colors: elements.map(el => el.color || el.fill).filter(Boolean)
       };
 
-      const contextPrompt = `
-You are an expert AI Design Assistant with Adobe Illustrator-level capabilities and Canva's user-friendly approach. Current design context:
-- Canvas: ${canvasSize.width}x${canvasSize.height}px
-- Elements: ${designContext.elementCount} total (${Object.entries(designContext.elementTypes).map(([type, count]) => `${count} ${type}`).join(', ')})
-- Colors: ${designContext.colors.join(', ') || 'None'}
+      // Try the API first, but have a fallback
+      let assistantMessage = '';
+      
+      try {
+        const chatRequest = {
+          message: userMessage,
+          context: {
+            designContext,
+            canvasSize,
+            elementCount: designContext.elementCount,
+            page: 'design-studio'
+          },
+          conversation_history: messages.slice(-5) // Keep last 5 messages for context
+        };
 
-User request: ${userMessage}
+        const response = await chatWithAI(chatRequest);
+        assistantMessage = response.response || response.toString();
+      } catch (apiError) {
+        console.warn('API unavailable, using fallback responses:', apiError);
+        // Fallback responses based on user input
+        assistantMessage = generateFallbackResponse(userMessage, designContext);
+      }
 
-Provide expert design advice with specific, actionable recommendations for:
-- Professional typography and layout
-- Color theory and brand consistency
-- Composition and visual hierarchy
-- Advanced effects and styling
-- Performance optimization
-- Industry best practices
+      setMessages(prev => [...prev, { role: 'assistant', content: assistantMessage }]);
 
-Be helpful, creative, and offer to perform specific actions.`;
-
-      const response = await chatWithAI(contextPrompt);
-      setMessages(prev => [...prev, { role: 'assistant', content: response }]);
-
-      if (response.toLowerCase().includes('would you like me to') || 
-          response.toLowerCase().includes('i can create') ||
-          response.toLowerCase().includes('shall i add')) {
-        onAutoSuggestion(response);
+      if (assistantMessage.toLowerCase().includes('would you like me to') || 
+          assistantMessage.toLowerCase().includes('i can create') ||
+          assistantMessage.toLowerCase().includes('shall i add')) {
+        onAutoSuggestion(assistantMessage);
       }
 
     } catch (error) {
+      console.error('AI Chat Error:', error);
       setMessages(prev => [...prev, { 
         role: 'assistant', 
-        content: 'Sorry, I encountered an error. Please try again or rephrase your request.' 
+        content: 'I\'m having trouble connecting right now. Let me help you with some design tips instead! Try asking about layout, colors, or typography.' 
       }]);
     } finally {
       setIsLoading(false);
     }
   };
 
+  // Fallback function for when API is unavailable
+  const generateFallbackResponse = (userMessage: string, context: any): string => {
+    const lowerMessage = userMessage.toLowerCase();
+    
+    if (lowerMessage.includes('color') || lowerMessage.includes('palette')) {
+      return `Great question about colors! For your ${context.canvasSize.width}x${context.canvasSize.height}px design, consider using a cohesive color palette. Try the 60-30-10 rule: 60% dominant color, 30% secondary color, and 10% accent color. Would you like me to suggest some specific color combinations?`;
+    }
+    
+    if (lowerMessage.includes('text') || lowerMessage.includes('typography') || lowerMessage.includes('font')) {
+      return `Typography is crucial for professional designs! For your current canvas, I recommend establishing a clear hierarchy with different font sizes. Try using a maximum of 2-3 font families, and ensure good contrast with your background. Consider line spacing of 1.2-1.5 for readability.`;
+    }
+    
+    if (lowerMessage.includes('layout') || lowerMessage.includes('composition')) {
+      return `Layout is key to professional design! For your ${context.elementCount}-element design, consider using the rule of thirds to create visual interest. Align elements to create clean lines, use consistent spacing, and ensure there's enough white space for the design to breathe.`;
+    }
+    
+    if (lowerMessage.includes('background') || lowerMessage.includes('backdrop')) {
+      return `A good background sets the foundation! For your design, consider a subtle gradient, solid color, or minimal pattern that doesn't compete with your main content. Keep contrast in mind - light backgrounds work well with dark text, and vice versa.`;
+    }
+    
+    if (lowerMessage.includes('professional') || lowerMessage.includes('improve')) {
+      return `To make your design more professional: 1) Ensure consistent alignment and spacing, 2) Use a limited color palette (3-5 colors max), 3) Choose readable typography with good hierarchy, 4) Add subtle shadows or effects sparingly, 5) Keep it simple and focused on your main message.`;
+    }
+    
+    if (lowerMessage.includes('export') || lowerMessage.includes('save') || lowerMessage.includes('download')) {
+      return `For exporting your design: Use PNG for web graphics with transparency, JPG for photographs, SVG for logos and scalable graphics, or PDF for print materials. Make sure your design is at least 300 DPI for print (your current canvas is perfect for digital use).`;
+    }
+    
+    // Default helpful response
+    return `I can help you with your design! Here are some things I can assist with:
+    
+• **Colors & Palettes** - Creating harmonious color schemes
+• **Typography** - Font selection and text hierarchy  
+• **Layout & Composition** - Professional arrangement principles
+• **Visual Effects** - Shadows, gradients, and styling
+• **Export & Quality** - Preparing for web or print
+
+What specific aspect would you like to improve?`;
+  };
+
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
+      e.stopPropagation();
       sendMessage();
     }
+  };
+
+  const handleSendClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    sendMessage();
+  };
+
+  const handleQuickAction = (e: React.MouseEvent, action: string) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setMessage(action);
+    // Use setTimeout to ensure state update happens before sending
+    setTimeout(() => sendMessage(), 100);
   };
 
   const quickActions = [
@@ -386,13 +446,12 @@ Be helpful, creative, and offer to perform specific actions.`;
                 {quickActions.slice(0, 4).map((action, index) => (
                   <Button
                     key={index}
+                    type="button"
                     size="sm"
                     variant="outline"
                     className="text-xs h-8"
-                    onClick={() => {
-                      setMessage(action.action);
-                      setTimeout(sendMessage, 100);
-                    }}
+                    onClick={(e) => handleQuickAction(e, action.action)}
+                    disabled={isLoading}
                   >
                     {action.label}
                   </Button>
@@ -402,24 +461,25 @@ Be helpful, creative, and offer to perform specific actions.`;
 
             {/* Input */}
             <div className="p-3 border-t border-gray-200 dark:border-gray-700">
-              <div className="flex gap-2">
+              <form onSubmit={(e) => { e.preventDefault(); sendMessage(); }} className="flex gap-2">
                 <Textarea
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
-                  onKeyPress={handleKeyPress}
+                  onKeyDown={handleKeyPress}
                   placeholder="Ask me about design, layout, colors, effects..."
                   className="flex-1 min-h-[40px] max-h-[80px] resize-none text-sm"
                   disabled={isLoading}
                 />
                 <Button
+                  type="button"
                   size="sm"
-                  onClick={sendMessage}
+                  onClick={handleSendClick}
                   disabled={!message.trim() || isLoading}
                   className="self-end"
                 >
                   <Sparkles className="w-4 h-4" />
                 </Button>
-              </div>
+              </form>
             </div>
           </motion.div>
         )}
