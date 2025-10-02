@@ -69,9 +69,14 @@ const AssetManager = dynamic(() => import('@/components/content-suite/AssetManag
   loading: () => <div className="h-96 bg-gray-100 dark:bg-gray-800 rounded-lg animate-pulse" />
 });
 
-const DesignStudio = dynamic(() => import('@/components/content-suite/DesignStudio'), {
+const AdvancedDesignStudio = dynamic(() => import('@/components/content-suite/AdvancedDesignStudio'), {
   ssr: false,
-  loading: () => <div className="h-96 bg-gray-100 dark:bg-gray-800 rounded-lg animate-pulse" />
+  loading: () => <div className="h-96 bg-gray-100 dark:bg-gray-800 rounded-lg animate-pulse flex items-center justify-center">
+    <div className="text-center">
+      <PenTool className="w-8 h-8 mx-auto mb-2 text-gray-400 animate-pulse" />
+      <p className="text-gray-500">Loading Professional Design Studio...</p>
+    </div>
+  </div>
 });
 
 const AIContentGenerator = dynamic(() => import('@/components/content-suite/AIContentGenerator'), {
@@ -558,22 +563,22 @@ function DesignStudioWorkspace({
   contentType: ContentType; 
   platforms: Platform[]; 
 }) {
-  // Import the correct types from DesignStudio
-  const [templates] = useState<import('@/components/content-suite/DesignStudio').CanvasTemplate[]>([]);
+  // Import the correct types from the new AdvancedDesignStudio
+  const [templates] = useState<import('@/components/content-suite/AdvancedDesignStudio').DesignTemplate[]>([]);
 
-  const handleSave = (design: { elements: any[]; template?: any }) => {
-    console.log('Saving design:', design);
-    // Handle design save logic here
+  const handleSave = (design: { elements: any[]; template?: any; metadata?: any }) => {
+    console.log('Saving professional design:', design);
+    // Handle design save logic with enhanced metadata
   };
 
-  const handleExport = (format: 'png' | 'jpg' | 'svg' | 'pdf') => {
-    console.log('Exporting as:', format);
-    // Handle export logic here
+  const handleExport = (format: 'png' | 'jpg' | 'svg' | 'pdf' | 'webp', quality?: number) => {
+    console.log('Exporting as:', format, 'with quality:', quality);
+    // Handle export logic with quality options
   };
 
   return (
-    <div className="h-[800px]">
-      <DesignStudio
+    <div className="h-[900px] bg-gray-50 dark:bg-gray-900">
+      <AdvancedDesignStudio
         templates={templates}
         onSave={handleSave}
         onExport={handleExport}
