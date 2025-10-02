@@ -2566,6 +2566,219 @@ def get_integrations_overview():
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to fetch integrations overview: {str(e)}")
 
+# AI Content Generation Endpoints
+@app.post("/api/social-media/ai/generate-content")
+async def generate_social_content(request: dict):
+    """Generate AI-powered social media content using Claude"""
+    try:
+        platform = request.get('platform', 'instagram')
+        prompt = request.get('prompt', '')
+        tone = request.get('tone', 'casual')
+        content_type = request.get('content_type', 'post')
+        target_audience = request.get('target_audience', 'general')
+        
+        if not prompt:
+            raise HTTPException(status_code=400, detail="Prompt is required")
+        
+        # Build specialized prompt for social media content
+        specialized_prompt = f"""Create a {tone} {content_type} for {platform} about: {prompt}
+
+Target audience: {target_audience}
+Platform: {platform}
+Content type: {content_type}
+Tone: {tone}
+
+Requirements for {platform}:
+{_get_platform_requirements(platform)}
+
+Please provide:
+1. Main content text
+2. 5-8 relevant hashtags
+3. Optimal posting time recommendation
+4. Engagement prediction (0-1 score)
+
+Format as JSON with keys: content, hashtags, optimal_time, engagement_prediction, suggestions"""
+
+        # Use the AI service
+        chat_request = ChatRequest(
+            message=specialized_prompt,
+            context={"platform": platform, "content_type": content_type},
+            page="social-media"
+        )
+        
+        ai_response = await ai_service.chat_with_ai(chat_request)
+        
+        # Try to parse JSON response, fallback to structured response
+        try:
+            import json
+            parsed_response = json.loads(ai_response.response)
+            return {
+                "content": parsed_response.get("content", ai_response.response),
+                "hashtags": parsed_response.get("hashtags", []),
+                "optimal_time": parsed_response.get("optimal_time"),
+                "engagement_prediction": parsed_response.get("engagement_prediction", 0.75),
+                "suggestions": parsed_response.get("suggestions", []),
+                "platform": platform,
+                "generated_at": datetime.now(timezone.utc).isoformat()
+            }
+        except json.JSONDecodeError:
+            # Fallback: extract content and generate hashtags
+            content = ai_response.response
+            hashtags = _extract_hashtags(content, platform)
+            
+            return {
+                "content": content,
+                "hashtags": hashtags,
+                "optimal_time": _get_optimal_time(platform),
+                "engagement_prediction": 0.75,
+                "suggestions": ["Consider adding emojis", "Include a call-to-action"],
+                "platform": platform,
+                "generated_at": datetime.now(timezone.utc).isoformat()
+            }
+            
+    except Exception as e:
+        logger.error(f"Content generation error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to generate content: {str(e)}")
+
+@app.post("/api/email-marketing/ai/generate-content")
+async def generate_email_content(request: dict):
+    """Generate AI-powered email marketing content using Claude"""
+    try:
+        subject = request.get('subject', '')
+        campaign_type = request.get('campaign_type', 'newsletter')
+        tone = request.get('tone', 'professional')
+        target_audience = request.get('target_audience', 'subscribers')
+        key_points = request.get('key_points', [])
+        
+        if not subject:
+            raise HTTPException(status_code=400, detail="Subject is required")
+        
+        specialized_prompt = f"""Create an email marketing campaign with:
+
+Subject: {subject}
+Campaign type: {campaign_type}
+Tone: {tone}
+Target audience: {target_audience}
+Key points to include: {', '.join(key_points) if key_points else 'None specified'}
+
+Please provide:
+1. Email subject line (optimized)
+2. Email body content (HTML format)
+3. Call-to-action text
+4. Personalization suggestions
+5. A/B testing recommendations
+
+Format as JSON with keys: subject_line, body_html, cta_text, personalization_tips, ab_test_suggestions"""
+
+        chat_request = ChatRequest(
+            message=specialized_prompt,
+            context={"campaign_type": campaign_type, "tone": tone},
+            page="email-marketing"
+        )
+        
+        ai_response = await ai_service.chat_with_ai(chat_request)
+        
+        try:
+            import json
+            parsed_response = json.loads(ai_response.response)
+            return {
+                "subject_line": parsed_response.get("subject_line", subject),
+                "body_html": parsed_response.get("body_html", ai_response.response),
+                "cta_text": parsed_response.get("cta_text", "Learn More"),
+                "personalization_tips": parsed_response.get("personalization_tips", []),
+                "ab_test_suggestions": parsed_response.get("ab_test_suggestions", []),
+                "generated_at": datetime.now(timezone.utc).isoformat()
+            }
+        except json.JSONDecodeError:
+            return {
+                "subject_line": subject,
+                "body_html": ai_response.response,
+                "cta_text": "Learn More",
+                "personalization_tips": ["Use recipient's first name", "Reference past purchases"],
+                "ab_test_suggestions": ["Test different subject lines", "Test CTA button colors"],
+                "generated_at": datetime.now(timezone.utc).isoformat()
+            }
+            
+    except Exception as e:
+        logger.error(f"Email content generation error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to generate email content: {str(e)}")
+
+# Media Upload Endpoint
+@app.post("/api/social-media/upload-media")
+async def upload_media(files: list):
+    """Upload media files for social media posts"""
+    try:
+        # This is a simplified implementation
+        # In production, you'd want to:
+        # 1. Validate file types and sizes
+        # 2. Upload to cloud storage (AWS S3, Cloudinary, etc.)
+        # 3. Generate thumbnails
+        # 4. Store metadata in database
+        
+        uploaded_files = []
+        
+        for file_data in files:
+            # Mock file processing
+            file_info = {
+                "id": f"media_{datetime.now().timestamp()}",
+                "url": f"https://storage.example.com/{file_data.get('name', 'upload.jpg')}",
+                "thumbnail_url": f"https://storage.example.com/thumbs/{file_data.get('name', 'upload.jpg')}",
+                "type": file_data.get('type', 'image/jpeg'),
+                "size": file_data.get('size', 0),
+                "uploaded_at": datetime.now(timezone.utc).isoformat()
+            }
+            uploaded_files.append(file_info)
+        
+        return {
+            "uploaded_files": uploaded_files,
+            "message": f"Successfully uploaded {len(uploaded_files)} files"
+        }
+        
+    except Exception as e:
+        logger.error(f"Media upload error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to upload media: {str(e)}")
+
+# Helper functions for AI content generation
+def _get_platform_requirements(platform: str) -> str:
+    """Get platform-specific content requirements"""
+    requirements = {
+        "instagram": "- Max 2,200 characters\n- Use 5-10 hashtags\n- Include emojis\n- Visual storytelling focus",
+        "twitter": "- Max 280 characters\n- Use 1-2 hashtags\n- Be concise and engaging\n- Include relevant mentions",
+        "facebook": "- Max 2,000 characters\n- Use 2-3 hashtags\n- Encourage comments\n- Friendly and conversational",
+        "linkedin": "- Max 3,000 characters\n- Professional tone\n- Include industry insights\n- End with thought-provoking question",
+        "tiktok": "- Max 300 characters\n- Trending hashtags\n- Call for engagement\n- Fun and energetic tone"
+    }
+    return requirements.get(platform, "- Follow platform best practices")
+
+def _extract_hashtags(content: str, platform: str) -> list:
+    """Extract or generate hashtags from content"""
+    import re
+    hashtags = re.findall(r'#\w+', content)
+    
+    # If no hashtags found, generate some based on platform
+    if not hashtags:
+        platform_hashtags = {
+            "instagram": ["#instagram", "#content", "#social"],
+            "twitter": ["#twitter", "#engagement"],
+            "facebook": ["#facebook", "#community"],
+            "linkedin": ["#linkedin", "#professional"],
+            "tiktok": ["#tiktok", "#trending", "#viral"]
+        }
+        hashtags = platform_hashtags.get(platform, ["#social", "#content"])
+    
+    return hashtags[:10]  # Limit to 10 hashtags
+
+def _get_optimal_time(platform: str) -> dict:
+    """Get optimal posting time for platform"""
+    optimal_times = {
+        "instagram": {"day": "Tuesday", "hour": 11, "timezone": "EST"},
+        "twitter": {"day": "Wednesday", "hour": 9, "timezone": "EST"},
+        "facebook": {"day": "Thursday", "hour": 15, "timezone": "EST"},
+        "linkedin": {"day": "Tuesday", "hour": 10, "timezone": "EST"},
+        "tiktok": {"day": "Thursday", "hour": 18, "timezone": "EST"}
+    }
+    return optimal_times.get(platform, {"day": "Tuesday", "hour": 11, "timezone": "EST"})
+
 # Development server
 if __name__ == "__main__":
     port = int(os.getenv("PORT", 8000))

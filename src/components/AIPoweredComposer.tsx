@@ -41,6 +41,7 @@ interface Platform {
   color: string;
   maxLength: number;
   selected: boolean;
+  disabled?: boolean;
 }
 
 interface AIPoweredComposerProps {
@@ -84,10 +85,29 @@ export const AIPoweredComposer: React.FC<AIPoweredComposerProps> = ({
   const [tone, setTone] = useState<'professional' | 'casual' | 'humorous' | 'inspirational'>('casual');
   const [targetAudience, setTargetAudience] = useState('');
 
+  // Update platform availability based on connected accounts
+  useEffect(() => {
+    setPlatforms(prev => prev.map(platform => {
+      const connectedAccount = accounts.find(acc => 
+        acc.platform.toLowerCase() === platform.id && acc.is_connected
+      );
+      return {
+        ...platform,
+        // Show availability status and account info
+        name: connectedAccount 
+          ? `${platform.name} (${connectedAccount.username || connectedAccount.display_name})`
+          : `${platform.name} (Not Connected)`,
+        // Only allow selection if connected
+        disabled: !connectedAccount,
+        selected: platform.selected && !!connectedAccount
+      };
+    }));
+  }, [accounts]);
+
   // Platform selection
   const togglePlatform = (platformId: string) => {
     setPlatforms(prev => prev.map(p => 
-      p.id === platformId ? { ...p, selected: !p.selected } : p
+      p.id === platformId && !p.disabled ? { ...p, selected: !p.selected } : p
     ));
   };
 
@@ -337,19 +357,21 @@ export const AIPoweredComposer: React.FC<AIPoweredComposerProps> = ({
               <div className="space-y-2">
                 <h4 className="font-medium">AI Suggestions:</h4>
                 {aiSuggestions.map((suggestion, index) => (
-                  <Card key={suggestion.id} className="p-3 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800" onClick={() => applySuggestion(suggestion)}>
-                    <p className="text-sm mb-2">{suggestion.content}</p>
-                    <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400">
-                      <Badge variant="outline" className="text-xs">
-                        <TrendingUp className="h-3 w-3 mr-1" />
-                        {Math.round(suggestion.engagement_prediction * 100)}% engagement
-                      </Badge>
-                      <Badge variant="outline" className="text-xs">
-                        <Hash className="h-3 w-3 mr-1" />
-                        {suggestion.hashtags.length} hashtags
-                      </Badge>
-                    </div>
-                  </Card>
+                  <div key={suggestion.id} className="cursor-pointer" onClick={() => applySuggestion(suggestion)}>
+                    <Card className="p-3 hover:bg-gray-50 dark:hover:bg-gray-800">
+                      <p className="text-sm mb-2">{suggestion.content}</p>
+                      <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400">
+                        <Badge variant="outline" className="text-xs">
+                          <TrendingUp className="h-3 w-3 mr-1" />
+                          {Math.round(suggestion.engagement_prediction * 100)}% engagement
+                        </Badge>
+                        <Badge variant="outline" className="text-xs">
+                          <Hash className="h-3 w-3 mr-1" />
+                          {suggestion.hashtags.length} hashtags
+                        </Badge>
+                      </div>
+                    </Card>
+                  </div>
                 ))}
               </div>
             )}
@@ -368,10 +390,17 @@ export const AIPoweredComposer: React.FC<AIPoweredComposerProps> = ({
                 key={platform.id}
                 variant={platform.selected ? "default" : "outline"}
                 onClick={() => togglePlatform(platform.id)}
-                className={`flex items-center gap-2 ${platform.selected ? platform.color : ''}`}
+                disabled={platform.disabled}
+                className={`flex items-center gap-2 ${
+                  platform.selected 
+                    ? platform.color 
+                    : platform.disabled 
+                      ? 'opacity-50 cursor-not-allowed' 
+                      : ''
+                }`}
               >
                 <span>{platform.icon}</span>
-                <span className="text-xs">{platform.name}</span>
+                <span className="text-xs truncate">{platform.name}</span>
               </Button>
             ))}
           </div>
@@ -416,6 +445,72 @@ export const AIPoweredComposer: React.FC<AIPoweredComposerProps> = ({
                 <TrendingUp className="h-4 w-4 inline mr-1" />
                 Predicted engagement: {Math.round(engagementPrediction * 100)}%
               </span>
+            </div>
+          )}
+        </div>
+
+        {/* Media Upload */}
+        <div>
+          <label className="font-medium mb-2 block flex items-center gap-2">
+            <Image className="h-4 w-4" />
+            Media Upload
+          </label>
+          <div className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 text-center">
+            <input
+              type="file"
+              accept="image/*,video/*"
+              multiple
+              onChange={(e) => {
+                const files = Array.from(e.target.files || []);
+                setMediaFiles(prev => [...prev, ...files]);
+              }}
+              className="hidden"
+              id="media-upload"
+            />
+            <label htmlFor="media-upload" className="cursor-pointer">
+              <div className="flex flex-col items-center gap-2">
+                <div className="w-12 h-12 bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-center">
+                  <Image className="h-6 w-6 text-gray-400" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium">Upload images or videos</p>
+                  <p className="text-xs text-gray-500">Drag & drop or click to browse</p>
+                </div>
+              </div>
+            </label>
+          </div>
+          
+          {/* Media Preview */}
+          {mediaFiles.length > 0 && (
+            <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4">
+              {mediaFiles.map((file, index) => (
+                <div key={index} className="relative group">
+                  <div className="aspect-square bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden">
+                    {file.type.startsWith('image/') ? (
+                      <img
+                        src={URL.createObjectURL(file)}
+                        alt={`Upload ${index + 1}`}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <div className="text-center">
+                          <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center mx-auto mb-1">
+                            📹
+                          </div>
+                          <p className="text-xs font-medium truncate">{file.name}</p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  <button
+                    onClick={() => setMediaFiles(prev => prev.filter((_, i) => i !== index))}
+                    className="absolute top-1 right-1 w-6 h-6 bg-red-500 text-white rounded-full text-xs opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
             </div>
           )}
         </div>
