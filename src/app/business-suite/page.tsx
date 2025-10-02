@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import NavigationTabs from '@/components/NavigationTabs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -9,6 +9,10 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import dynamic from 'next/dynamic';
+
+// AI Agent Integration for Business Suite
+import { useUnifiedAI } from '@/contexts/UnifiedAIContext';
 import { 
   Building2,
   Users,
@@ -102,6 +106,42 @@ const mockFinancials = {
 export default function BusinessSuite() {
   const [activeTab, setActiveTab] = useState('overview');
 
+  // AI Agent Integration for Business Intelligence
+  const { 
+    executeAIAction, 
+    autonomousMode, 
+    generatePageInsights,
+    addInsight,
+    showNotification 
+  } = useUnifiedAI();
+
+  // AI-powered business automation capabilities
+  useEffect(() => {
+    // Generate AI insights for business suite on load
+    generatePageInsights('business-suite', {
+      activeTab,
+      businessModule: 'comprehensive'
+    }).then(insights => {
+      insights.forEach(insight => addInsight(insight));
+    });
+  }, [activeTab, generatePageInsights, addInsight]);
+
+  // AI Agent Actions for Business Suite
+  const handleAIBusinessAutomation = async (action: string) => {
+    try {
+      await executeAIAction({
+        type: 'optimization',  // Use existing type for business optimization
+        function: action,
+        arguments: {
+          module: activeTab,
+          autoApprove: autonomousMode
+        }
+      });
+    } catch (error) {
+      showNotification('AI Action Failed', `Could not execute ${action}`, 'error');
+    }
+  };
+
   const tabConfig = [
     {
       id: 'overview',
@@ -151,7 +191,7 @@ export default function BusinessSuite() {
         </div>
 
         {/* Tab Navigation */}
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+        <Tabs defaultValue={activeTab} onValueChange={setActiveTab} className="space-y-6">
           <TabsList className="grid w-full grid-cols-5 mb-8">
             {tabConfig.map((tab) => (
               <TabsTrigger 

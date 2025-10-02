@@ -389,15 +389,24 @@ function AIPerformanceWidget() {
 }
 
 function AICampaignControlWidget() {
-  const { executeAIAction, autonomousMode } = useUnifiedAI();
+  const { executeAIAction, autonomousMode, showNotification } = useUnifiedAI();
+  const [isExecuting, setIsExecuting] = useState<string | null>(null);
   
-  const handleQuickAction = (action: string) => {
-    executeAIAction({
-      type: 'campaign_action',
-      function: action,
-      arguments: { source: 'dashboard_widget' },
-      human_approval_required: !autonomousMode
-    });
+  const handleQuickAction = async (action: string, label: string) => {
+    setIsExecuting(action);
+    try {
+      await executeAIAction({
+        type: 'campaign_action',
+        function: action,
+        arguments: { source: 'dashboard_widget' },
+        human_approval_required: !autonomousMode
+      });
+      showNotification('Action Executed', `Successfully executed ${label}`, 'success');
+    } catch (error) {
+      showNotification('Action Failed', `Failed to execute ${label}`, 'error');
+    } finally {
+      setIsExecuting(null);
+    }
   };
   
   return (
@@ -406,34 +415,54 @@ function AICampaignControlWidget() {
       
       <div className="grid grid-cols-2 gap-2">
         <button
-          onClick={() => handleQuickAction('optimize_all_campaigns')}
-          className="flex items-center justify-center space-x-2 p-3 bg-green-50 hover:bg-green-100 dark:bg-green-900/20 dark:hover:bg-green-900/30 text-green-700 dark:text-green-300 rounded-lg transition-colors"
+          onClick={() => handleQuickAction('optimize_all_campaigns', 'Optimize All')}
+          disabled={isExecuting === 'optimize_all_campaigns'}
+          className="flex items-center justify-center space-x-2 p-3 bg-green-50 hover:bg-green-100 dark:bg-green-900/20 dark:hover:bg-green-900/30 text-green-700 dark:text-green-300 rounded-lg transition-colors disabled:opacity-50"
         >
-          <Sparkles className="w-4 h-4" />
+          {isExecuting === 'optimize_all_campaigns' ? (
+            <Loader2 className="w-4 h-4 animate-spin" />
+          ) : (
+            <Sparkles className="w-4 h-4" />
+          )}
           <span className="text-sm font-medium">Optimize All</span>
         </button>
         
         <button
-          onClick={() => handleQuickAction('pause_underperforming')}
-          className="flex items-center justify-center space-x-2 p-3 bg-red-50 hover:bg-red-100 dark:bg-red-900/20 dark:hover:bg-red-900/30 text-red-700 dark:text-red-300 rounded-lg transition-colors"
+          onClick={() => handleQuickAction('pause_underperforming', 'Pause Poor')}
+          disabled={isExecuting === 'pause_underperforming'}
+          className="flex items-center justify-center space-x-2 p-3 bg-red-50 hover:bg-red-100 dark:bg-red-900/20 dark:hover:bg-red-900/30 text-red-700 dark:text-red-300 rounded-lg transition-colors disabled:opacity-50"
         >
-          <Pause className="w-4 h-4" />
+          {isExecuting === 'pause_underperforming' ? (
+            <Loader2 className="w-4 h-4 animate-spin" />
+          ) : (
+            <Pause className="w-4 h-4" />
+          )}
           <span className="text-sm font-medium">Pause Poor</span>
         </button>
         
         <button
-          onClick={() => handleQuickAction('increase_top_budgets')}
-          className="flex items-center justify-center space-x-2 p-3 bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/20 dark:hover:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-lg transition-colors"
+          onClick={() => handleQuickAction('increase_top_budgets', 'Boost Top')}
+          disabled={isExecuting === 'increase_top_budgets'}
+          className="flex items-center justify-center space-x-2 p-3 bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/20 dark:hover:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-lg transition-colors disabled:opacity-50"
         >
-          <TrendingUp className="w-4 h-4" />
+          {isExecuting === 'increase_top_budgets' ? (
+            <Loader2 className="w-4 h-4 animate-spin" />
+          ) : (
+            <TrendingUp className="w-4 h-4" />
+          )}
           <span className="text-sm font-medium">Boost Top</span>
         </button>
         
         <button
-          onClick={() => handleQuickAction('analyze_performance')}
-          className="flex items-center justify-center space-x-2 p-3 bg-purple-50 hover:bg-purple-100 dark:bg-purple-900/20 dark:hover:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-lg transition-colors"
+          onClick={() => handleQuickAction('analyze_performance', 'Analyze')}
+          disabled={isExecuting === 'analyze_performance'}
+          className="flex items-center justify-center space-x-2 p-3 bg-purple-50 hover:bg-purple-100 dark:bg-purple-900/20 dark:hover:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-lg transition-colors disabled:opacity-50"
         >
-          <BarChart3 className="w-4 h-4" />
+          {isExecuting === 'analyze_performance' ? (
+            <Loader2 className="w-4 h-4 animate-spin" />
+          ) : (
+            <BarChart3 className="w-4 h-4" />
+          )}
           <span className="text-sm font-medium">Analyze</span>
         </button>
       </div>
@@ -448,21 +477,38 @@ function AICampaignControlWidget() {
 function AIOptimizationWidget() {
   const [optimizationProgress, setOptimizationProgress] = useState(0);
   const [isOptimizing, setIsOptimizing] = useState(false);
+  const [optimizationResults, setOptimizationResults] = useState<any>(null);
+  const { executeAIAction, autonomousMode, showNotification } = useUnifiedAI();
   
-  const startOptimization = () => {
+  const startOptimization = async () => {
     setIsOptimizing(true);
     setOptimizationProgress(0);
     
-    const interval = setInterval(() => {
-      setOptimizationProgress(prev => {
-        if (prev >= 100) {
-          clearInterval(interval);
-          setIsOptimizing(false);
-          return 100;
-        }
-        return prev + 10;
+    try {
+      // Real AI optimization using backend
+      const result = await executeAIAction({
+        type: 'optimization',
+        function: 'optimize_all_campaigns',
+        arguments: { mode: 'balanced', auto_approve: autonomousMode }
       });
-    }, 500);
+      
+      // Simulate progress with real backend calls
+      const interval = setInterval(() => {
+        setOptimizationProgress(prev => {
+          if (prev >= 100) {
+            clearInterval(interval);
+            setIsOptimizing(false);
+            setOptimizationResults(result);
+            showNotification('Optimization Complete', 'All campaigns have been optimized', 'success');
+            return 100;
+          }
+          return prev + 12;
+        });
+      }, 400);
+    } catch (error) {
+      setIsOptimizing(false);
+      showNotification('Optimization Failed', 'Unable to optimize campaigns', 'error');
+    }
   };
   
   return (
@@ -496,13 +542,28 @@ function AIOptimizationWidget() {
       <div className="grid grid-cols-2 gap-4 text-sm">
         <div>
           <p className="text-gray-500 dark:text-gray-400">Campaigns Optimized</p>
-          <p className="font-bold text-gray-900 dark:text-white">12</p>
+          <p className="font-bold text-gray-900 dark:text-white">
+            {optimizationResults?.campaigns_optimized || 0}
+          </p>
         </div>
         <div>
           <p className="text-gray-500 dark:text-gray-400">Performance Boost</p>
-          <p className="font-bold text-green-600">+18.5%</p>
+          <p className="font-bold text-green-600">
+            +{optimizationResults?.performance_improvement || '0.0'}%
+          </p>
         </div>
       </div>
+      
+      {optimizationResults && (
+        <div className="mt-4 p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
+          <h5 className="font-medium text-green-800 dark:text-green-200 mb-2">Latest Optimizations:</h5>
+          <ul className="space-y-1 text-sm text-green-700 dark:text-green-300">
+            {optimizationResults.optimizations_applied?.slice(0, 3).map((opt: string, index: number) => (
+              <li key={index}>• {opt}</li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
 }

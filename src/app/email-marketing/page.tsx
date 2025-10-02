@@ -8,6 +8,9 @@
 import React, { useState, useEffect } from 'react';
 import { useEmailMarketing } from '@/contexts/EmailMarketingContext';
 
+// AI Agent Integration for Email Marketing Suite
+import { useUnifiedAI } from '@/contexts/UnifiedAIContext';
+
 // PHASE 2A: Real-time data integration
 import { useEmailMarketingData } from '@/hooks/useEmailMarketingData';
 import { useToast } from '@/components/ui/Toast';
@@ -901,9 +904,6 @@ export default function EmailMarketingPlatform() {
         </motion.div>
         </div>
       </div>
-      
-      {/* UPGRADED: AI Control Chat with email marketing-specific capabilities */}
-      <AIControlChat />
     </div>
   );
 }

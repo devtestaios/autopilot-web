@@ -11,6 +11,9 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
 import dynamic from 'next/dynamic';
+
+// AI Agent Integration for Content Suite
+import { useUnifiedAI } from '@/contexts/UnifiedAIContext';
 import { 
   Sparkles, 
   Calendar, 
@@ -74,6 +77,12 @@ const DesignStudio = dynamic(() => import('@/components/content-suite/DesignStud
 const AIContentGenerator = dynamic(() => import('@/components/content-suite/AIContentGenerator'), {
   ssr: false,
   loading: () => <div className="h-96 bg-gray-100 dark:bg-gray-800 rounded-lg animate-pulse" />
+});
+
+// AI Agent Control Integration
+const AIControlChat = dynamic(() => import('@/components/AIControlChat'), {
+  ssr: false,
+  loading: () => null
 });
 
 // Content Types Enum for extensibility
@@ -164,6 +173,44 @@ export default function ContentCreationSuite() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [selectedContentType, setSelectedContentType] = useState<ContentType>(ContentType.SOCIAL_POST);
   const [selectedPlatforms, setSelectedPlatforms] = useState<Platform[]>([Platform.INSTAGRAM]);
+
+  // AI Agent Integration for Content Suite
+  const { 
+    executeAIAction, 
+    autonomousMode, 
+    generatePageInsights,
+    addInsight,
+    showNotification 
+  } = useUnifiedAI();
+
+  // AI-powered content automation capabilities
+  useEffect(() => {
+    // Generate AI insights for content suite on load
+    generatePageInsights('content-suite', {
+      contentType: selectedContentType,
+      platforms: selectedPlatforms,
+      activeWorkspace: activeTab
+    }).then(insights => {
+      insights.forEach(insight => addInsight(insight));
+    });
+  }, [activeTab, selectedContentType, selectedPlatforms, generatePageInsights, addInsight]);
+
+  // AI Agent Actions for Content Suite
+  const handleAIContentAutomation = async (action: string) => {
+    try {
+      await executeAIAction({
+        type: 'content_automation',
+        function: action,
+        arguments: {
+          contentType: selectedContentType,
+          platforms: selectedPlatforms,
+          workspace: activeTab
+        }
+      });
+    } catch (error) {
+      showNotification('AI Action Failed', `Could not execute ${action}`, 'error');
+    }
+  };
 
   const tabConfig = [
     {
