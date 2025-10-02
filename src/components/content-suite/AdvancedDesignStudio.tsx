@@ -794,7 +794,12 @@ export default function AdvancedDesignStudio({
   const [showGrid, setShowGrid] = useState(true);
   const [showRuler, setShowRuler] = useState(false);
   const [aiSuggestion, setAiSuggestion] = useState<string>('');
+  const [isDrawing, setIsDrawing] = useState(false);
+  const [drawingPath, setDrawingPath] = useState<{x: number, y: number}[]>([]);
+  const [selectedColor, setSelectedColor] = useState('#3b82f6');
+  const [brushSize, setBrushSize] = useState(5);
   const canvasRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // History management
   const saveToHistory = useCallback((newElements: CanvasElement[]) => {
@@ -868,9 +873,59 @@ export default function AdvancedDesignStudio({
     }
   }, [elements, updateElements]);
 
-  // Professional canvas click handler
+  // Photo upload handler
+  const handlePhotoUpload = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file && file.type.startsWith('image/')) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          // Calculate proportional size that fits within reasonable bounds
+          const maxWidth = 400;
+          const maxHeight = 400;
+          let { width, height } = img;
+          
+          if (width > maxWidth || height > maxHeight) {
+            const ratio = Math.min(maxWidth / width, maxHeight / height);
+            width *= ratio;
+            height *= ratio;
+          }
+
+          const imageElement: CanvasElement = {
+            id: `element-${Date.now()}`,
+            type: 'image',
+            x: 100,
+            y: 100,
+            width: Math.round(width),
+            height: Math.round(height),
+            rotation: 0,
+            opacity: 1,
+            locked: false,
+            visible: true,
+            zIndex: elements.length,
+            scaleX: 1,
+            scaleY: 1,
+            src: e.target?.result as string
+          };
+          
+          updateElements([...elements, imageElement]);
+          setSelectedElementId(imageElement.id);
+        };
+        img.src = e.target?.result as string;
+      };
+      reader.readAsDataURL(file);
+    }
+    
+    // Reset input
+    if (event.target) {
+      event.target.value = '';
+    }
+  }, [elements, updateElements]);
+
+  // Professional canvas click handler with all tools
   const handleCanvasClick = useCallback((e: React.MouseEvent) => {
-    if (selectedTool === 'select') {
+    if (selectedTool === 'select' || selectedTool === 'hand') {
       setSelectedElementId(null);
       return;
     }
@@ -885,15 +940,13 @@ export default function AdvancedDesignStudio({
       case 'text':
         addElement('text', { x, y });
         break;
+        
       case 'rectangle':
-        addElement('shape', { x, y });
-        break;
-      case 'circle':
-        const circleElement: CanvasElement = {
+        const rectElement: CanvasElement = {
           id: `element-${Date.now()}`,
           type: 'shape',
           x, y,
-          width: 100,
+          width: 150,
           height: 100,
           rotation: 0,
           opacity: 1,
@@ -902,16 +955,182 @@ export default function AdvancedDesignStudio({
           zIndex: elements.length,
           scaleX: 1,
           scaleY: 1,
-          fill: '#3b82f6',
-          stroke: '#1e40af',
-          strokeWidth: 0,
+          fill: selectedColor,
+          stroke: '#000000',
+          strokeWidth: 2,
+          shapeType: 'rectangle'
+        };
+        updateElements([...elements, rectElement]);
+        setSelectedElementId(rectElement.id);
+        break;
+        
+      case 'circle':
+        const circleElement: CanvasElement = {
+          id: `element-${Date.now()}`,
+          type: 'shape',
+          x, y,
+          width: 120,
+          height: 120,
+          rotation: 0,
+          opacity: 1,
+          locked: false,
+          visible: true,
+          zIndex: elements.length,
+          scaleX: 1,
+          scaleY: 1,
+          fill: selectedColor,
+          stroke: '#000000',
+          strokeWidth: 2,
           shapeType: 'circle'
         };
         updateElements([...elements, circleElement]);
         setSelectedElementId(circleElement.id);
         break;
+        
+      case 'ellipse':
+        const ellipseElement: CanvasElement = {
+          id: `element-${Date.now()}`,
+          type: 'shape',
+          x, y,
+          width: 160,
+          height: 100,
+          rotation: 0,
+          opacity: 1,
+          locked: false,
+          visible: true,
+          zIndex: elements.length,
+          scaleX: 1,
+          scaleY: 1,
+          fill: selectedColor,
+          stroke: '#000000',
+          strokeWidth: 2,
+          shapeType: 'ellipse'
+        };
+        updateElements([...elements, ellipseElement]);
+        setSelectedElementId(ellipseElement.id);
+        break;
+        
+      case 'triangle':
+        const triangleElement: CanvasElement = {
+          id: `element-${Date.now()}`,
+          type: 'shape',
+          x, y,
+          width: 120,
+          height: 120,
+          rotation: 0,
+          opacity: 1,
+          locked: false,
+          visible: true,
+          zIndex: elements.length,
+          scaleX: 1,
+          scaleY: 1,
+          fill: selectedColor,
+          stroke: '#000000',
+          strokeWidth: 2,
+          shapeType: 'triangle'
+        };
+        updateElements([...elements, triangleElement]);
+        setSelectedElementId(triangleElement.id);
+        break;
+        
+      case 'polygon':
+        const polygonElement: CanvasElement = {
+          id: `element-${Date.now()}`,
+          type: 'shape',
+          x, y,
+          width: 120,
+          height: 120,
+          rotation: 0,
+          opacity: 1,
+          locked: false,
+          visible: true,
+          zIndex: elements.length,
+          scaleX: 1,
+          scaleY: 1,
+          fill: selectedColor,
+          stroke: '#000000',
+          strokeWidth: 2,
+          shapeType: 'hexagon'
+        };
+        updateElements([...elements, polygonElement]);
+        setSelectedElementId(polygonElement.id);
+        break;
+        
+      case 'star':
+        const starElement: CanvasElement = {
+          id: `element-${Date.now()}`,
+          type: 'shape',
+          x, y,
+          width: 120,
+          height: 120,
+          rotation: 0,
+          opacity: 1,
+          locked: false,
+          visible: true,
+          zIndex: elements.length,
+          scaleX: 1,
+          scaleY: 1,
+          fill: selectedColor,
+          stroke: '#000000',
+          strokeWidth: 2,
+          shapeType: 'star'
+        };
+        updateElements([...elements, starElement]);
+        setSelectedElementId(starElement.id);
+        break;
+        
+      case 'line':
+        const lineElement: CanvasElement = {
+          id: `element-${Date.now()}`,
+          type: 'shape',
+          x, y,
+          width: 150,
+          height: 2,
+          rotation: 0,
+          opacity: 1,
+          locked: false,
+          visible: true,
+          zIndex: elements.length,
+          scaleX: 1,
+          scaleY: 1,
+          fill: 'transparent',
+          stroke: selectedColor,
+          strokeWidth: 3,
+          shapeType: 'line'
+        };
+        updateElements([...elements, lineElement]);
+        setSelectedElementId(lineElement.id);
+        break;
+        
+      case 'arrow':
+        const arrowElement: CanvasElement = {
+          id: `element-${Date.now()}`,
+          type: 'shape',
+          x, y,
+          width: 150,
+          height: 20,
+          rotation: 0,
+          opacity: 1,
+          locked: false,
+          visible: true,
+          zIndex: elements.length,
+          scaleX: 1,
+          scaleY: 1,
+          fill: selectedColor,
+          stroke: selectedColor,
+          strokeWidth: 2,
+          shapeType: 'arrow'
+        };
+        updateElements([...elements, arrowElement]);
+        setSelectedElementId(arrowElement.id);
+        break;
+        
+      case 'image':
+        // Trigger file upload
+        fileInputRef.current?.click();
+        break;
     }
-  }, [selectedTool, zoom, addElement, elements, updateElements]);
+  }, [selectedTool, zoom, addElement, elements, updateElements, selectedColor]);
 
   // Update element
   const updateElement = useCallback((id: string, updates: Partial<CanvasElement>) => {
@@ -919,6 +1138,70 @@ export default function AdvancedDesignStudio({
       el.id === id ? { ...el, ...updates } : el
     );
     setElements(newElements);
+  }, [elements]);
+
+  // Delete selected element
+  const deleteSelectedElement = useCallback(() => {
+    if (selectedElementId) {
+      const newElements = elements.filter(el => el.id !== selectedElementId);
+      updateElements(newElements);
+      setSelectedElementId(null);
+    }
+  }, [selectedElementId, elements, updateElements]);
+
+  // Duplicate selected element
+  const duplicateSelectedElement = useCallback(() => {
+    if (selectedElementId) {
+      const element = elements.find(el => el.id === selectedElementId);
+      if (element) {
+        const duplicatedElement: CanvasElement = {
+          ...element,
+          id: `element-${Date.now()}`,
+          x: element.x + 20,
+          y: element.y + 20,
+          zIndex: elements.length
+        };
+        updateElements([...elements, duplicatedElement]);
+        setSelectedElementId(duplicatedElement.id);
+      }
+    }
+  }, [selectedElementId, elements, updateElements]);
+
+  // Group selected elements
+  const groupElements = useCallback(() => {
+    // Implementation for grouping multiple selected elements
+    console.log('Group elements functionality');
+  }, []);
+
+  // Ungroup selected group
+  const ungroupElements = useCallback(() => {
+    // Implementation for ungrouping
+    console.log('Ungroup elements functionality');
+  }, []);
+
+  // Bring to front
+  const bringToFront = useCallback(() => {
+    if (selectedElementId) {
+      const maxZ = Math.max(...elements.map(el => el.zIndex));
+      updateElement(selectedElementId, { zIndex: maxZ + 1 });
+    }
+  }, [selectedElementId, elements, updateElement]);
+
+  // Send to back
+  const sendToBack = useCallback(() => {
+    if (selectedElementId) {
+      const minZ = Math.min(...elements.map(el => el.zIndex));
+      updateElement(selectedElementId, { zIndex: minZ - 1 });
+    }
+  }, [selectedElementId, elements, updateElement]);
+
+  // Copy color from element (eyedropper tool)
+  const copyColor = useCallback((elementId: string) => {
+    const element = elements.find(el => el.id === elementId);
+    if (element && (element.fill || element.color)) {
+      setSelectedColor(element.fill || element.color || '#000000');
+      setSelectedTool('select'); // Switch back to select tool
+    }
   }, [elements]);
 
   // Undo/Redo
@@ -936,9 +1219,14 @@ export default function AdvancedDesignStudio({
     }
   }, [history, historyIndex]);
 
-  // Keyboard shortcuts
+  // Enhanced keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      // Prevent shortcuts when typing in inputs
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+        return;
+      }
+
       if (e.ctrlKey || e.metaKey) {
         switch (e.key) {
           case 'z':
@@ -953,13 +1241,87 @@ export default function AdvancedDesignStudio({
             e.preventDefault();
             redo();
             break;
+          case 'd':
+            e.preventDefault();
+            duplicateSelectedElement();
+            break;
+          case 'a':
+            e.preventDefault();
+            // Select all elements (could be implemented)
+            break;
+          case 's':
+            e.preventDefault();
+            onSave({ elements, metadata: { canvasSize } });
+            break;
+        }
+      } else {
+        // Tool shortcuts
+        switch (e.key.toLowerCase()) {
+          case 'v':
+            setSelectedTool('select');
+            break;
+          case 'a':
+            setSelectedTool('direct-select');
+            break;
+          case 'h':
+            setSelectedTool('hand');
+            break;
+          case 'z':
+            setSelectedTool('zoom');
+            break;
+          case 't':
+            setSelectedTool('text');
+            break;
+          case 'm':
+            setSelectedTool('rectangle');
+            break;
+          case 'l':
+            setSelectedTool('circle');
+            break;
+          case 'p':
+            setSelectedTool('pen');
+            break;
+          case 'b':
+            setSelectedTool('brush');
+            break;
+          case 'i':
+            setSelectedTool('eyedropper');
+            break;
+          case 'g':
+            setSelectedTool('gradient');
+            break;
+          case 'Delete':
+          case 'Backspace':
+            e.preventDefault();
+            deleteSelectedElement();
+            break;
+          case 'Escape':
+            setSelectedElementId(null);
+            setSelectedTool('select');
+            break;
         }
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [undo, redo]);
+  }, [undo, redo, duplicateSelectedElement, deleteSelectedElement, onSave, elements, canvasSize]);
+
+  // Get cursor style based on selected tool
+  const getCursorStyle = (tool: Tool): string => {
+    switch (tool) {
+      case 'select': return 'default';
+      case 'hand': return 'grab';
+      case 'text': return 'text';
+      case 'zoom': return 'zoom-in';
+      case 'eyedropper': return 'crosshair';
+      case 'brush': return 'crosshair';
+      case 'pen': return 'crosshair';
+      case 'eraser': return 'crosshair';
+      case 'crop': return 'crosshair';
+      default: return 'crosshair';
+    }
+  };
 
   const selectedElement = selectedElementId ? elements.find(el => el.id === selectedElementId) : null;
 
@@ -1025,6 +1387,14 @@ export default function AdvancedDesignStudio({
         showGrid={showGrid}
         onRulerToggle={() => setShowRuler(!showRuler)}
         showRuler={showRuler}
+        selectedColor={selectedColor}
+        onColorChange={setSelectedColor}
+        brushSize={brushSize}
+        onBrushSizeChange={setBrushSize}
+        onUploadPhoto={() => fileInputRef.current?.click()}
+        onDeleteElement={deleteSelectedElement}
+        onDuplicateElement={duplicateSelectedElement}
+        hasSelectedElement={!!selectedElementId}
       />
 
       {/* Main Canvas Area */}
@@ -1037,7 +1407,7 @@ export default function AdvancedDesignStudio({
             style={{
               width: canvasSize.width * zoom,
               height: canvasSize.height * zoom,
-              cursor: selectedTool === 'hand' ? 'grab' : 'default'
+              cursor: getCursorStyle(selectedTool)
             }}
             onClick={handleCanvasClick}
           >
@@ -1137,6 +1507,76 @@ export default function AdvancedDesignStudio({
                       border: element.strokeWidth ? 
                         `${element.strokeWidth}px solid ${element.stroke || '#000000'}` : 'none',
                       borderRadius: '50%'
+                    }}
+                  />
+                )}
+                
+                {element.type === 'shape' && element.shapeType === 'ellipse' && (
+                  <div
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      backgroundColor: element.fill || 'transparent',
+                      border: element.strokeWidth ? 
+                        `${element.strokeWidth}px solid ${element.stroke || '#000000'}` : 'none',
+                      borderRadius: '50%'
+                    }}
+                  />
+                )}
+                
+                {element.type === 'shape' && element.shapeType === 'triangle' && (
+                  <div
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      background: `linear-gradient(135deg, transparent 49%, ${element.fill || '#3b82f6'} 50%)`,
+                      clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)'
+                    }}
+                  />
+                )}
+                
+                {element.type === 'shape' && element.shapeType === 'star' && (
+                  <div
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      backgroundColor: element.fill || '#3b82f6',
+                      clipPath: 'polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)'
+                    }}
+                  />
+                )}
+                
+                {element.type === 'shape' && element.shapeType === 'hexagon' && (
+                  <div
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      backgroundColor: element.fill || '#3b82f6',
+                      clipPath: 'polygon(30% 0%, 70% 0%, 100% 50%, 70% 100%, 30% 100%, 0% 50%)'
+                    }}
+                  />
+                )}
+                
+                {element.type === 'shape' && element.shapeType === 'line' && (
+                  <div
+                    style={{
+                      width: '100%',
+                      height: element.strokeWidth || 2,
+                      backgroundColor: element.stroke || '#000000',
+                      top: '50%',
+                      transform: 'translateY(-50%)',
+                      position: 'relative'
+                    }}
+                  />
+                )}
+                
+                {element.type === 'shape' && element.shapeType === 'arrow' && (
+                  <div
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      backgroundColor: element.fill || '#3b82f6',
+                      clipPath: 'polygon(0% 40%, 60% 40%, 60% 20%, 100% 50%, 60% 80%, 60% 60%, 0% 60%)'
                     }}
                   />
                 )}
@@ -1439,6 +1879,15 @@ export default function AdvancedDesignStudio({
           )}
         </div>
       </div>
+
+      {/* Hidden file input for photo uploads */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        onChange={handlePhotoUpload}
+        style={{ display: 'none' }}
+      />
 
       {/* AI Design Assistant */}
       <AIDesignAssistant
