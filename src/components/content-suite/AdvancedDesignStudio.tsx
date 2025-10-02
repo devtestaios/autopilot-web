@@ -88,6 +88,55 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { Label } from '@/components/ui/label';
 import { chatWithAI } from '@/lib/ai-api';
+import { 
+  AIDesignCommand, 
+  parseDesignCommands, 
+  generateEnhancedFallbackResponse, 
+  executeAICommands 
+} from './ai-design-commands';
+
+// AI Design Command Interface
+export interface AIDesignCommand {
+  type: 'create_element' | 'modify_element' | 'create_layout' | 'apply_style' | 'create_palette' | 'create_vision_board';
+  element?: Partial<CanvasElement>;
+  elements?: Partial<CanvasElement>[];
+  layout?: 'grid' | 'centered' | 'asymmetric' | 'rule_of_thirds' | 'vision_board';
+  style?: 'retro' | 'modern' | 'natural' | 'moody' | 'professional' | 'restaurant';
+  colors?: string[];
+  theme?: string;
+  instructions?: string;
+  autoExecute?: boolean;
+}
+
+export interface AIDesignResponse {
+  message: string;
+  commands?: AIDesignCommand[];
+  preview?: string;
+}
+
+// Design Style Definitions
+export const DESIGN_STYLES = {
+  retro: {
+    colors: ['#8B4513', '#D2691E', '#F4A460', '#DEB887', '#CD853F'],
+    fonts: ['Georgia, serif', 'Times New Roman, serif'],
+    elements: ['vintage', 'warm', 'textured']
+  },
+  natural: {
+    colors: ['#8FBC8F', '#F5F5DC', '#D2B48C', '#A0522D', '#228B22'],
+    fonts: ['Inter, sans-serif', 'Helvetica, Arial, sans-serif'],
+    elements: ['organic', 'earth-tones', 'minimal']
+  },
+  moody: {
+    colors: ['#2F4F4F', '#696969', '#708090', '#A9A9A9', '#D3D3D3'],
+    fonts: ['Georgia, serif', 'Inter, sans-serif'],
+    elements: ['dark', 'sophisticated', 'shadowed']
+  },
+  restaurant: {
+    colors: ['#8B4513', '#8FBC8F', '#F5F5DC', '#D2691E', '#2F4F4F'],
+    fonts: ['Georgia, serif', 'Times New Roman, serif'],
+    elements: ['elegant', 'warm', 'inviting']
+  }
+};
 
 // Enhanced Types for Professional Design
 export type CanvasElement = {
@@ -237,7 +286,7 @@ function AIDesignAssistant({
   const [messages, setMessages] = useState<Array<{ role: 'user' | 'assistant'; content: string }>>([
     {
       role: 'assistant',
-      content: 'Hi! I\'m your AI Design Assistant. What would you like to create today?'
+      content: 'Hi! I\'m your AI Design Assistant. I can actually create designs for you! Try asking me to "create a vision board for a retro restaurant" or "generate a natural color palette" and I\'ll build it automatically.'
     }
   ]);
   const [isLoading, setIsLoading] = useState(false);
@@ -261,33 +310,73 @@ function AIDesignAssistant({
         hasText: elements.some(el => el.type === 'text'),
         hasImages: elements.some(el => el.type === 'image'),
         hasShapes: elements.some(el => el.type === 'shape'),
-        colors: elements.map(el => el.color || el.fill).filter(Boolean)
+        colors: elements.map(el => el.color || el.fill).filter(Boolean),
+        availableTools: ['text', 'shapes', 'images', 'backgrounds', 'colors'],
+        capabilities: {
+          canCreateElements: true,
+          canModifyLayout: true,
+          canApplyStyles: true,
+          canGeneratePalettes: true,
+          supportedElements: ['text', 'shapes', 'images', 'backgrounds'],
+          supportedStyles: ['retro', 'modern', 'natural', 'moody', 'professional', 'restaurant']
+        }
       };
 
-      // Try the API first, but have a fallback
+      // Enhanced AI context for design creation
+      const enhancedContext = {
+        designContext,
+        canvasSize,
+        elementCount: designContext.elementCount,
+        page: 'design-studio',
+        instructions: `You are an AI Design Assistant that can actually create designs programmatically. 
+        When users request designs, you can:
+        1. Create text elements with appropriate fonts and colors
+        2. Add shapes and backgrounds with proper styling
+        3. Apply color palettes based on requested themes
+        4. Create complete layouts like vision boards
+        5. Auto-execute design commands
+        
+        For style requests like 'retro restaurant' or 'natural moody', create appropriate design elements automatically.`
+      };
+
+      // Try the API first, but have enhanced fallback
       let assistantMessage = '';
+      let aiCommands: AIDesignCommand[] = [];
       
       try {
         const chatRequest = {
           message: userMessage,
-          context: {
-            designContext,
-            canvasSize,
-            elementCount: designContext.elementCount,
-            page: 'design-studio'
-          },
-          conversation_history: messages.slice(-5) // Keep last 5 messages for context
+          context: enhancedContext,
+          conversation_history: messages.slice(-5)
         };
 
         const response = await chatWithAI(chatRequest);
         assistantMessage = response.response || response.toString();
+        
+        // Parse response for design commands
+        const parsedCommands = parseDesignCommands(userMessage, assistantMessage);
+        if (parsedCommands.length > 0) {
+          aiCommands = parsedCommands;
+        }
       } catch (apiError) {
-        console.warn('API unavailable, using fallback responses:', apiError);
-        // Fallback responses based on user input
-        assistantMessage = generateFallbackResponse(userMessage, designContext);
+        console.warn('API unavailable, using enhanced fallback responses:', apiError);
+        // Enhanced fallback with design creation capabilities
+        const fallbackResult = generateEnhancedFallbackResponse(userMessage, designContext);
+        assistantMessage = fallbackResult.message;
+        aiCommands = fallbackResult.commands || [];
       }
 
       setMessages(prev => [...prev, { role: 'assistant', content: assistantMessage }]);
+
+      // Auto-execute AI design commands
+      if (aiCommands.length > 0) {
+        await executeAICommands(aiCommands, canvasSize, addElements);
+        // Add a follow-up message about what was created
+        setMessages(prev => [...prev, { 
+          role: 'assistant', 
+          content: '✨ Design elements have been added to your canvas! You can select and modify any element using the properties panel on the right.' 
+        }]);
+      }
 
       if (assistantMessage.toLowerCase().includes('would you like me to') || 
           assistantMessage.toLowerCase().includes('i can create') ||
@@ -369,12 +458,12 @@ What specific aspect would you like to improve?`;
   };
 
   const quickActions = [
-    { label: 'Professional Layout', action: 'Help me create a professional layout with proper hierarchy' },
-    { label: 'Brand Colors', action: 'Suggest a cohesive brand color palette for this design' },
-    { label: 'Typography', action: 'Improve the typography and text hierarchy' },
-    { label: 'Visual Effects', action: 'Add professional visual effects and shadows' },
-    { label: 'Composition', action: 'Optimize the composition using design principles' },
-    { label: 'Export Ready', action: 'Prepare this design for professional export and printing' }
+    { label: 'Vision Board', action: 'Create a professional vision board for a sleek, moody, retro style restaurant with natural elements' },
+    { label: 'Color Palette', action: 'Generate a natural, moody color palette with earthy tones and muted colors' },
+    { label: 'Professional Layout', action: 'Create a professional layout with proper hierarchy and spacing' },
+    { label: 'Retro Style', action: 'Apply a retro restaurant style with warm, natural colors and elegant typography' },
+    { label: 'Add Text Elements', action: 'Add professional text elements with proper typography hierarchy' },
+    { label: 'Style Guide', action: 'Create a complete style guide with colors, fonts, and design elements' }
   ];
 
   return (
@@ -768,6 +857,15 @@ export default function AdvancedDesignStudio({
     const newElements = [...elements, newElement];
     updateElements(newElements);
     setSelectedElementId(newElement.id);
+  }, [elements, updateElements]);
+
+  // Helper function for AI to add multiple elements
+  const addElements = useCallback((newElements: CanvasElement[]) => {
+    const updatedElements = [...elements, ...newElements];
+    updateElements(updatedElements);
+    if (newElements.length > 0) {
+      setSelectedElementId(newElements[newElements.length - 1].id);
+    }
   }, [elements, updateElements]);
 
   // Professional canvas click handler
