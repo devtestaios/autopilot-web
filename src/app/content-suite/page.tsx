@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
+import dynamic from 'next/dynamic';
 import { 
   Sparkles, 
   Calendar, 
@@ -53,6 +54,27 @@ import {
 
 // Import Claude AI integration
 import { chatWithAI } from '@/lib/ai-api';
+
+// Dynamic imports for Content Suite components
+const FeedGridPlanner = dynamic(() => import('@/components/content-suite/FeedGridPlanner'), {
+  ssr: false,
+  loading: () => <div className="h-96 bg-gray-100 dark:bg-gray-800 rounded-lg animate-pulse" />
+});
+
+const AssetManager = dynamic(() => import('@/components/content-suite/AssetManager'), {
+  ssr: false,
+  loading: () => <div className="h-96 bg-gray-100 dark:bg-gray-800 rounded-lg animate-pulse" />
+});
+
+const DesignStudio = dynamic(() => import('@/components/content-suite/DesignStudio'), {
+  ssr: false,
+  loading: () => <div className="h-96 bg-gray-100 dark:bg-gray-800 rounded-lg animate-pulse" />
+});
+
+const AIContentGenerator = dynamic(() => import('@/components/content-suite/AIContentGenerator'), {
+  ssr: false,
+  loading: () => <div className="h-96 bg-gray-100 dark:bg-gray-800 rounded-lg animate-pulse" />
+});
 
 // Content Types Enum for extensibility
 export enum ContentType {
@@ -361,47 +383,42 @@ function FeedPlannerWorkspace({
   contentType: ContentType; 
   platforms: Platform[]; 
 }) {
-  const [feedPosts, setFeedPosts] = useState<FeedPost[]>([]);
-  const [viewMode, setViewMode] = useState<'grid' | 'calendar'>('grid');
+  // Import the correct FeedPost type from FeedGridPlanner
+  const [feedPosts, setFeedPosts] = useState<import('@/components/content-suite/FeedGridPlanner').FeedPost[]>([]);
+
+  // Mock data for initial state
+  const mockPosts: import('@/components/content-suite/FeedGridPlanner').FeedPost[] = [
+    {
+      id: 'post-1',
+      position: 0,
+      imageUrl: '/placeholder-image.jpg',
+      caption: 'Exciting product launch coming soon! 🚀',
+      hashtags: ['product', 'launch', 'new', 'exciting'],
+      scheduledDate: new Date(Date.now() + 24 * 60 * 60 * 1000),
+      platform: 'instagram',
+      status: 'scheduled',
+      type: 'image'
+    },
+    {
+      id: 'post-2',
+      position: 1,
+      imageUrl: '/placeholder-image.jpg',
+      caption: 'Behind the scenes content 📸',
+      hashtags: ['behindthescenes', 'content', 'creative'],
+      scheduledDate: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
+      platform: 'instagram',
+      status: 'draft',
+      type: 'image'
+    }
+  ];
 
   return (
     <div className="space-y-6">
-      {/* Feed Planner Header */}
-      <Card>
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <CardTitle className="flex items-center gap-2">
-              <Grid3X3 className="w-5 h-5" />
-              Visual Feed Planner
-            </CardTitle>
-            <div className="flex items-center gap-2">
-              <Button
-                variant={viewMode === 'grid' ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => setViewMode('grid')}
-              >
-                <Grid3X3 className="w-4 h-4 mr-2" />
-                Grid View
-              </Button>
-              <Button
-                variant={viewMode === 'calendar' ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => setViewMode('calendar')}
-              >
-                <Calendar className="w-4 h-4 mr-2" />
-                Calendar View
-              </Button>
-            </div>
-          </div>
-        </CardHeader>
-        <CardContent>
-          {viewMode === 'grid' ? (
-            <FeedGridView posts={feedPosts} onPostsChange={setFeedPosts} />
-          ) : (
-            <FeedCalendarView posts={feedPosts} onPostsChange={setFeedPosts} />
-          )}
-        </CardContent>
-      </Card>
+      <FeedGridPlanner
+        posts={feedPosts.length > 0 ? feedPosts : mockPosts}
+        onPostsChange={setFeedPosts}
+        className="w-full"
+      />
     </div>
   );
 }
@@ -414,31 +431,74 @@ function AssetManagerWorkspace({
   contentType: ContentType; 
   platforms: Platform[]; 
 }) {
-  const [assets, setAssets] = useState<ContentAsset[]>([]);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  // Import the correct types from AssetManager
+  const [assets, setAssets] = useState<import('@/components/content-suite/AssetManager').ContentAsset[]>([]);
+  const [folders, setFolders] = useState<import('@/components/content-suite/AssetManager').AssetFolder[]>([]);
+
+  // Mock data for initial state
+  const mockAssets: import('@/components/content-suite/AssetManager').ContentAsset[] = [
+    {
+      id: 'asset-1',
+      name: 'Product Launch Hero Image.jpg',
+      type: 'image',
+      url: '/placeholder-image.jpg',
+      thumbnail: '/placeholder-image.jpg',
+      size: 2048000, // 2MB
+      dimensions: { width: 1080, height: 1080 },
+      mimeType: 'image/jpeg',
+      createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000),
+      modifiedAt: new Date(),
+      tags: ['product', 'launch', 'hero', 'social'],
+      folder: 'campaign-assets',
+      isFavorite: true,
+      brandCompliant: true,
+      description: 'Main hero image for product launch campaign'
+    },
+    {
+      id: 'asset-2',
+      name: 'Behind The Scenes Video.mp4',
+      type: 'video',
+      url: '/placeholder-video.mp4',
+      thumbnail: '/placeholder-video-thumb.jpg',
+      size: 15728640, // 15MB
+      dimensions: { width: 1920, height: 1080 },
+      mimeType: 'video/mp4',
+      createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
+      modifiedAt: new Date(),
+      tags: ['video', 'behind-scenes', 'content'],
+      folder: 'video-content',
+      isFavorite: false,
+      brandCompliant: true,
+      description: 'Behind the scenes video content'
+    }
+  ];
+
+  const mockFolders: import('@/components/content-suite/AssetManager').AssetFolder[] = [
+    {
+      id: 'folder-1',
+      name: 'Campaign Assets',
+      createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
+      assetCount: 12,
+      color: '#3b82f6'
+    },
+    {
+      id: 'folder-2',
+      name: 'Video Content',
+      createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
+      assetCount: 8,
+      color: '#10b981'
+    }
+  ];
 
   return (
     <div className="space-y-6">
-      {/* Asset Manager Header */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <FolderOpen className="w-5 h-5" />
-            Content Library & Asset Manager
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <AssetLibraryView 
-            assets={assets}
-            onAssetsChange={setAssets}
-            searchQuery={searchQuery}
-            onSearchChange={setSearchQuery}
-            selectedTags={selectedTags}
-            onTagsChange={setSelectedTags}
-          />
-        </CardContent>
-      </Card>
+      <AssetManager
+        assets={assets.length > 0 ? assets : mockAssets}
+        folders={folders.length > 0 ? folders : mockFolders}
+        onAssetsChange={setAssets}
+        onFoldersChange={setFolders}
+        className="w-full"
+      />
     </div>
   );
 }
@@ -451,23 +511,27 @@ function DesignStudioWorkspace({
   contentType: ContentType; 
   platforms: Platform[]; 
 }) {
+  // Import the correct types from DesignStudio
+  const [templates] = useState<import('@/components/content-suite/DesignStudio').CanvasTemplate[]>([]);
+
+  const handleSave = (design: { elements: any[]; template?: any }) => {
+    console.log('Saving design:', design);
+    // Handle design save logic here
+  };
+
+  const handleExport = (format: 'png' | 'jpg' | 'svg' | 'pdf') => {
+    console.log('Exporting as:', format);
+    // Handle export logic here
+  };
+
   return (
-    <div className="space-y-6">
-      {/* Design Studio Header */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <PenTool className="w-5 h-5" />
-            Design Studio
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <DesignCanvasView 
-            contentType={contentType}
-            platforms={platforms}
-          />
-        </CardContent>
-      </Card>
+    <div className="h-[800px]">
+      <DesignStudio
+        templates={templates}
+        onSave={handleSave}
+        onExport={handleExport}
+        className="w-full h-full"
+      />
     </div>
   );
 }
@@ -480,69 +544,23 @@ function AIGeneratorWorkspace({
   contentType: ContentType; 
   platforms: Platform[]; 
 }) {
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [prompt, setPrompt] = useState('');
-  const [generatedContent, setGeneratedContent] = useState('');
-  const [seoData, setSeoData] = useState<SEOData>({});
+  const handleContentGenerated = (content: import('@/components/content-suite/AIContentGenerator').GeneratedContent) => {
+    console.log('Content generated:', content);
+    // Handle generated content here
+  };
 
-  const handleGenerateContent = async () => {
-    if (!prompt.trim()) return;
-    
-    setIsGenerating(true);
-    try {
-      const response = await chatWithAI({
-        message: `Generate ${contentType} content for ${platforms.join(', ')} with this prompt: ${prompt}`,
-        context: {
-          contentType,
-          platforms,
-          includeSEO: true,
-          includeHashtags: true
-        },
-        page: 'content-suite'
-      });
-      
-      setGeneratedContent(response.response);
-      
-      // Extract SEO data from AI response
-      if (response.context_updates?.seo) {
-        setSeoData(response.context_updates.seo);
-      }
-    } catch (error) {
-      console.error('AI generation failed:', error);
-      setGeneratedContent('Failed to generate content. Please try again.');
-    } finally {
-      setIsGenerating(false);
-    }
+  const handleSaveContent = (content: import('@/components/content-suite/AIContentGenerator').GeneratedContent) => {
+    console.log('Saving content:', content);
+    // Handle save logic here
   };
 
   return (
     <div className="space-y-6">
-      {/* AI Generator Header */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Sparkles className="w-5 h-5" />
-            AI Content Generator & SEO Engine
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <AIContentGeneratorView 
-            prompt={prompt}
-            onPromptChange={setPrompt}
-            isGenerating={isGenerating}
-            onGenerate={handleGenerateContent}
-            generatedContent={generatedContent}
-            contentType={contentType}
-            platforms={platforms}
-          />
-          
-          <SEOEngineView 
-            seoData={seoData}
-            onSeoDataChange={setSeoData}
-            contentType={contentType}
-          />
-        </CardContent>
-      </Card>
+      <AIContentGenerator
+        onContentGenerated={handleContentGenerated}
+        onSaveContent={handleSaveContent}
+        className="w-full"
+      />
     </div>
   );
 }
