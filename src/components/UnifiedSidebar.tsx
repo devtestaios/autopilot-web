@@ -568,21 +568,16 @@ export default function UnifiedSidebar({
   }, [isCollapsed, onCollapseChange]);
 
   const handleItemClick = (item: SidebarItem) => {
-    // Always navigate to the item's path if it exists
-    if (item.path && pathname !== item.path) {
-      router.push(item.path);
-    }
-    
-    // Close mobile menu after navigation
-    if (isMobile) {
-      setIsMobileOpen(false);
-    }
-  };
-
-  const handleDropdownToggle = (item: SidebarItem) => {
-    // Only toggle dropdown, don't navigate
     if (item.subItems) {
       setExpandedItem(expandedItem === item.id ? null : item.id);
+    } else {
+      // Don't navigate if we're already on the same page
+      if (pathname !== item.path) {
+        router.push(item.path);
+      }
+      if (isMobile) {
+        setIsMobileOpen(false);
+      }
     }
   };
 
@@ -780,8 +775,9 @@ function SidebarContent({
           {sidebarItems.map((item) => (
             <div key={item.id}>
               {/* Main Item */}
-              <div
-                className={`w-full flex items-center rounded-lg transition-all duration-200 group ${
+              <button
+                onClick={() => onItemClick(item)}
+                className={`w-full flex items-center space-x-3 p-3 rounded-lg transition-all duration-200 group ${
                   isItemActive(item)
                     ? theme === 'dark'
                       ? 'bg-teal-600/20 text-teal-400 border border-teal-500/30'
@@ -791,30 +787,26 @@ function SidebarContent({
                       : 'text-gray-800 hover:bg-gray-100 hover:text-gray-900'
                 }`}
               >
-                {/* Main navigation area - clickable for navigation */}
-                <button
-                  onClick={() => onItemClick(item)}
-                  className="flex-1 flex items-center space-x-3 p-3 rounded-l-lg"
-                >
-                  <item.icon 
-                    size={20} 
-                    className={`flex-shrink-0 transition-colors ${
-                      isItemActive(item) ? 'text-current' : 'text-current opacity-75'
-                    }`} 
-                  />
-                  
-                  <AnimatePresence>
-                    {!isCollapsed && (
-                      <motion.div
-                        variants={contentVariants}
-                        initial="collapsed"
-                        animate="expanded"
-                        exit="collapsed"
-                        className="flex-1 flex items-center min-w-0"
-                      >
-                        <span className="font-medium truncate">{item.label}</span>
+                <item.icon 
+                  size={20} 
+                  className={`flex-shrink-0 transition-colors ${
+                    isItemActive(item) ? 'text-current' : 'text-current opacity-75'
+                  }`} 
+                />
+                
+                <AnimatePresence>
+                  {!isCollapsed && (
+                    <motion.div
+                      variants={contentVariants}
+                      initial="collapsed"
+                      animate="expanded"
+                      exit="collapsed"
+                      className="flex-1 flex items-center justify-between min-w-0"
+                    >
+                      <span className="font-medium truncate">{item.label}</span>
+                      <div className="flex items-center space-x-2">
                         {item.badge && (
-                          <span className={`ml-2 px-2 py-0.5 text-xs rounded-full font-medium ${
+                          <span className={`px-2 py-0.5 text-xs rounded-full font-medium ${
                             item.badge === 'Beta'
                               ? 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300'
                               : 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300'
@@ -822,26 +814,19 @@ function SidebarContent({
                             {item.badge}
                           </span>
                         )}
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </button>
-
-                {/* Dropdown toggle - only for items with subItems */}
-                {!isCollapsed && item.subItems && (
-                  <button
-                    onClick={() => handleDropdownToggle(item)}
-                    className="p-3 hover:bg-black/10 dark:hover:bg-white/10 rounded-r-lg"
-                  >
-                    <ChevronRight 
-                      size={16} 
-                      className={`transition-transform duration-200 ${
-                        expandedItem === item.id ? 'rotate-90' : ''
-                      }`} 
-                    />
-                  </button>
-                )}
-              </div>
+                        {item.subItems && (
+                          <ChevronRight 
+                            size={16} 
+                            className={`transition-transform duration-200 ${
+                              expandedItem === item.id ? 'rotate-90' : ''
+                            }`} 
+                          />
+                        )}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </button>
 
               {/* Sub Items */}
               <AnimatePresence>
