@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   MessageSquare, 
@@ -736,8 +737,10 @@ function generateActions(input: string, page: string): UnifiedChatAction[] {
       icon: <Target className="w-4 h-4" />,
       variant: 'primary',
       action: () => {
-        const router = typeof window !== 'undefined' ? require('next/navigation').useRouter() : null;
-        if (router) router.push('/campaigns');
+        if (typeof window !== 'undefined') {
+          const router = useRouter();
+          router.push('/campaigns');
+        }
       }
     });
   }
@@ -751,8 +754,10 @@ function generateActions(input: string, page: string): UnifiedChatAction[] {
       icon: <BarChart3 className="w-4 h-4" />,
       variant: 'primary',
       action: () => {
-        const router = typeof window !== 'undefined' ? require('next/navigation').useRouter() : null;
-        if (router) router.push('/analytics');
+        if (typeof window !== 'undefined') {
+          const router = useRouter();
+          router.push('/analytics');
+        }
       }
     });
   }

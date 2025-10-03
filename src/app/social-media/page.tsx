@@ -11,39 +11,31 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
-import { 
-  Calendar, 
-  Clock, 
-  TrendingUp, 
-  Users, 
-  Plus, 
-  Send, 
-  Image, 
-  Settings, 
-  BarChart3, 
-  ChevronRight,
-  RefreshCw,
-  LayoutDashboard,
-  Zap,
-  Share2,
-  Eye,
-  MessageCircle,
-  Heart,
-  Filter,
-  Search,
-  Target,
-  Sparkles,
-  Bot,
-  Activity,
-  Globe,
-  Hash,
-  AtSign,
-  CheckCircle,
-  AlertCircle,
+import {
+  Calendar,
+  Clock,
+  Plus,
+  Send,
+  Upload,
+  Image,
   Video,
-  Link as LinkIcon,
-  Layers
-} from 'lucide-react';
+  FileText,
+  Users,
+  TrendingUp,
+  Heart,
+  MessageCircle,
+  Share2,
+  BarChart3,
+  Eye,
+  ArrowUpRight,
+  ArrowDownRight,
+  Settings,
+  Filter,
+  Download,
+  MoreHorizontal,
+  CheckCircle,
+  Loader2
+} from "lucide-react"
 
 // Enhanced Design System Imports - Phase 1 Visual Polish
 import { designTokens } from '@/lib/designTokens';

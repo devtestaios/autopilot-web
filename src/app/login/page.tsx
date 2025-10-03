@@ -13,19 +13,14 @@ export default function LoginPage() {
   const router = useRouter();
   const { theme } = useTheme();
   
-  // Safely handle auth context
-  let authContext;
-  try {
-    authContext = useAuth();
-  } catch (error) {
-    console.error('Auth context error:', error);
-    authContext = {
-      login: async () => ({ success: false, error: 'Authentication service not available' }),
-      isLoading: false
-    };
-  }
+  // Always call hooks at the top level
+  const authContext = useAuth();
   
-  const { login, isLoading } = authContext;
+  // Handle potential auth context issues
+  const { login, isLoading } = authContext || {
+    login: async () => ({ success: false, error: 'Authentication service not available' }),
+    isLoading: false
+  };
   const [formData, setFormData] = useState({
     email: '',
     password: ''
