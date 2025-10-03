@@ -305,7 +305,7 @@ export default function CampaignsPage() {
               <Home className="w-5 h-5 text-teal-600" />
             </motion.button>
             <div>
-              <h1 className="text-4xl font-bold bg-gradient-to-r from-teal-600 to-cyan-600 bg-clip-text text-transparent">
+              <h1 className="text-4xl font-bold bg-gradient-to-r from-teal-600 to-cyan-600 bg-clip-text text-transparent" data-testid="campaigns-title">
                 Campaign Command Center
               </h1>
               <p className="text-lg text-gray-600 dark:text-gray-400 mt-2">

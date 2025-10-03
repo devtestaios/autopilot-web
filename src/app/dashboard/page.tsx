@@ -457,8 +457,8 @@ export default function Dashboard() {
         {/* Content Container */}
         <div className="container mx-auto px-4 py-8">
         {/* Simple Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+        <div className="mb-8" data-testid="dashboard-header">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2" data-testid="dashboard-title">
             Master Terminal
           </h1>
           <p className="text-gray-600 dark:text-gray-400">
@@ -467,7 +467,7 @@ export default function Dashboard() {
         </div>
 
         {/* KPI Cards - Performance Optimized Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8" data-testid="kpi-grid">
           {enterpriseKPIs.map((kpi) => (
             <KPICard key={kpi.title} kpi={kpi} />
           ))}

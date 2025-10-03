@@ -29,7 +29,7 @@ test.describe('PulseBridge.ai E2E Tests', () => {
   test('should navigate to campaigns page', async ({ page }) => {
     await page.goto('/campaigns');
     await expect(page).toHaveURL(/.*campaigns/);
-    await expect(page.locator('h1').first()).toContainText('Campaign Command Center');
+    await expect(page.locator('[data-testid="campaigns-title"]')).toContainText('Campaign Command Center', { timeout: 15000 });
   });
 
   test('should navigate to analytics page', async ({ page }) => {
@@ -42,10 +42,16 @@ test.describe('PulseBridge.ai E2E Tests', () => {
     await page.goto('/dashboard');
     
     // Wait for the dashboard title to appear (this indicates the page loaded successfully)
-    await expect(page.locator('h1:has-text("Dashboard")')).toBeVisible({ timeout: 15000 });
+    await expect(page.locator('[data-testid="dashboard-title"]')).toBeVisible({ timeout: 15000 });
     
-    // Ensure the main content area is present
-    await expect(page.locator('main').first()).toBeVisible({ timeout: 10000 });
+    // Ensure the container is present (dashboard uses container instead of main)
+    await expect(page.locator('.container')).toBeVisible({ timeout: 10000 });
+    
+    // Verify the page title content
+    await expect(page.locator('[data-testid="dashboard-title"]')).toContainText('Master Terminal');
+    
+    // Check that KPI cards are loaded
+    await expect(page.locator('[data-testid="kpi-grid"]')).toBeVisible({ timeout: 10000 });
     
     // On desktop, we might see the sidebar (it loads dynamically)
     const viewportWidth = page.viewportSize()?.width || 1200;
