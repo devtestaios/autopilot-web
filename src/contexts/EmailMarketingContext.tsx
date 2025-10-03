@@ -12,8 +12,25 @@ import {
   fetchEmailCampaigns,
   fetchEmailSubscribers,
   fetchEmailTemplates,
-  fetchEmailMarketingOverview
+  fetchEmailMarketingOverview,
+  createEmailCampaign,
+  updateEmailCampaign,
+  deleteEmailCampaign,
+  createEmailSubscriber,
+  updateEmailSubscriber,
+  deleteEmailSubscriber,
+  createEmailTemplate,
+  updateEmailTemplate,
+  deleteEmailTemplate,
+  fetchEmailCampaignAnalytics
 } from '@/lib/api';
+
+// Type mappers to convert between API types and context types
+import type {
+  EmailCampaign as ApiEmailCampaign,
+  EmailSubscriber as ApiEmailSubscriber,
+  EmailTemplate as ApiEmailTemplate
+} from '@/types';
 
 // ==================== TYPE DEFINITIONS ====================
 
@@ -204,6 +221,85 @@ export interface EmailAnalytics {
     conversionRate: number;
   }>;
 }
+
+// Type mapper functions to convert between API types and context types
+export const mapApiEmailCampaignToContext = (apiCampaign: ApiEmailCampaign): EmailCampaign => ({
+  id: apiCampaign.id,
+  name: apiCampaign.name,
+  subject: apiCampaign.subject,
+  templateId: apiCampaign.template_id,
+  htmlContent: apiCampaign.content || '',
+  textContent: apiCampaign.content || '',
+  preheader: apiCampaign.subject,
+  fromName: apiCampaign.sender_name || 'Default Sender',
+  fromEmail: apiCampaign.sender_email || 'sender@example.com',
+  replyTo: apiCampaign.reply_to,
+  segments: [],
+  tags: apiCampaign.tags || [],
+  excludeSegments: [],
+  scheduledDate: apiCampaign.scheduled_at ? new Date(apiCampaign.scheduled_at) : undefined,
+  status: apiCampaign.status === 'completed' ? 'sent' : 
+         apiCampaign.status === 'sending' ? 'sent' : apiCampaign.status,
+  sentDate: apiCampaign.sent_at ? new Date(apiCampaign.sent_at) : undefined,
+  stats: {
+    sent: apiCampaign.sent_count || 0,
+    delivered: apiCampaign.delivered_count || 0,
+    bounced: apiCampaign.bounced_count || 0,
+    opened: apiCampaign.opened_count || 0,
+    clicked: apiCampaign.clicked_count || 0,
+    unsubscribed: apiCampaign.unsubscribed_count || 0,
+    complained: 0,
+    openRate: (apiCampaign.open_rate || 0) * 100,
+    clickRate: (apiCampaign.click_rate || 0) * 100,
+    unsubscribeRate: (apiCampaign.unsubscribe_rate || 0) * 100,
+    bounceRate: (apiCampaign.bounce_rate || 0) * 100
+  },
+  createdAt: new Date(apiCampaign.created_at),
+  updatedAt: new Date(apiCampaign.updated_at)
+});
+
+export const mapApiEmailSubscriberToContext = (apiSubscriber: ApiEmailSubscriber): EmailContact => ({
+  id: apiSubscriber.id,
+  email: apiSubscriber.email,
+  firstName: apiSubscriber.first_name || '',
+  lastName: apiSubscriber.last_name || '',
+  status: apiSubscriber.status === 'active' ? 'subscribed' : 
+          apiSubscriber.status === 'unsubscribed' ? 'unsubscribed' :
+          apiSubscriber.status === 'bounced' ? 'bounced' : 'complained',
+  tags: apiSubscriber.tags || [],
+  customFields: Object.fromEntries(
+    Object.entries(apiSubscriber.custom_fields || {}).map(([k, v]) => [k, String(v)])
+  ),
+  source: (apiSubscriber.source as 'import' | 'form' | 'api' | 'manual') || 'manual',
+  subscribeDate: new Date(apiSubscriber.subscribed_at),
+  lastActivityAt: apiSubscriber.last_activity_at ? new Date(apiSubscriber.last_activity_at) : null,
+  segments: [],
+  engagement: {
+    totalOpens: 0,
+    totalClicks: 0,
+    lastOpenedAt: null,
+    lastClickedAt: null,
+    engagementScore: 0
+  }
+});
+
+export const mapApiEmailTemplateToContext = (apiTemplate: ApiEmailTemplate): EmailTemplate => ({
+  id: apiTemplate.id,
+  name: apiTemplate.name,
+  subject: apiTemplate.subject || '',
+  htmlContent: apiTemplate.content || '',
+  textContent: apiTemplate.content || '',
+  thumbnailUrl: apiTemplate.thumbnail,
+  category: (apiTemplate.category as any) || 'newsletter',
+  variables: apiTemplate.variables || [],
+  isResponsive: true,
+  preheader: apiTemplate.subject,
+  tags: apiTemplate.tags || [],
+  usage: 0,
+  lastUsed: undefined,
+  createdAt: new Date(apiTemplate.created_at),
+  updatedAt: new Date(apiTemplate.updated_at)
+});
 
 export interface EmailMarketingState {
   // Contacts & Segmentation
@@ -518,27 +614,34 @@ export function EmailMarketingProvider({ children }: { children: React.ReactNode
 
   // ==================== CAMPAIGN MANAGEMENT ====================
 
-  const createCampaign = useCallback(async (campaignData: Omit<EmailCampaign, 'id' | 'stats' | 'createdAt' | 'updatedAt'>) => {
+  // ✅ DATABASE CONNECTED: Enhanced createCampaign using real API with type mapping
+  const createCampaign = useCallback(async (campaignData: Omit<EmailCampaign, 'id' | 'stats' | 'createdAt' | 'updatedAt'>): Promise<void> => {
     dispatch({ type: 'SET_LOADING', payload: { key: 'campaigns', value: true } });
 
     try {
-      const response = await fetch('/api/email-marketing/campaigns', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(campaignData),
+      const apiCampaign = await createEmailCampaign({
+        name: campaignData.name,
+        subject: campaignData.subject,
+        content: campaignData.htmlContent || '',
+        status: campaignData.status === 'cancelled' ? 'paused' : (campaignData.status || 'draft'),
+        sender_name: campaignData.fromName,
+        sender_email: campaignData.fromEmail,
+        reply_to: campaignData.replyTo,
+        scheduled_at: campaignData.scheduledDate?.toISOString(),
+        template_id: campaignData.templateId,
+        tags: campaignData.tags
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to create campaign');
-      }
-
-      const newCampaign: EmailCampaign = await response.json();
+      // Map API response to context type
+      const newCampaign = mapApiEmailCampaignToContext(apiCampaign);
       dispatch({ type: 'ADD_CAMPAIGN', payload: newCampaign });
       
       // toast('Campaign created successfully', 'success');
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Failed to create campaign';
+      console.error('Failed to create campaign:', error);
       // toast(message, 'error');
+      throw error;
     } finally {
       dispatch({ type: 'SET_LOADING', payload: { key: 'campaigns', value: false } });
     }
@@ -658,8 +761,8 @@ export function EmailMarketingProvider({ children }: { children: React.ReactNode
       try {
         dispatch({ type: 'SET_LOADING', payload: { key: 'contacts', value: true } });
         
-        // ✅ ENHANCED: Use comprehensive API functions with proper error handling
-        const [contacts, campaigns, templates] = await Promise.all([
+        // ✅ DATABASE CONNECTED: Use real API functions with type mapping
+        const [apiContacts, apiCampaigns, apiTemplates, overview] = await Promise.all([
           fetchEmailSubscribers({ limit: 100 }).catch(error => {
             console.warn('Failed to fetch email subscribers:', error);
             return [];
@@ -672,12 +775,45 @@ export function EmailMarketingProvider({ children }: { children: React.ReactNode
             console.warn('Failed to fetch email templates:', error);
             return [];
           }),
+          fetchEmailMarketingOverview().catch(error => {
+            console.warn('Failed to fetch email marketing overview:', error);
+            return null;
+          }),
         ]);
+
+        // Map API types to context types
+        const contacts = apiContacts.map(mapApiEmailSubscriberToContext);
+        const campaigns = apiCampaigns.map(mapApiEmailCampaignToContext);
+        const templates = apiTemplates.map(mapApiEmailTemplateToContext);
 
         dispatch({ type: 'SET_CONTACTS', payload: contacts });
         dispatch({ type: 'SET_CAMPAIGNS', payload: campaigns });
         dispatch({ type: 'SET_TEMPLATES', payload: templates });
         dispatch({ type: 'SET_AUTOMATIONS', payload: [] }); // Automations will be added in next phase
+        
+        // Update analytics if overview data is available
+        if (overview) {
+          const analyticsData = {
+            timeframe: 'month' as const,
+            metrics: {
+              totalCampaigns: overview.total_campaigns,
+              totalSent: overview.total_emails_sent,
+              totalDelivered: Math.round(overview.total_emails_sent * 0.97), // Estimate 97% delivery
+              totalOpened: Math.round(overview.total_emails_sent * (overview.average_open_rate / 100)),
+              totalClicked: Math.round(overview.total_emails_sent * (overview.average_click_rate / 100)),
+              totalUnsubscribed: Math.round(overview.total_subscribers * 0.02), // Estimate 2% unsubscribe
+              avgOpenRate: overview.average_open_rate,
+              avgClickRate: overview.average_click_rate,
+              avgUnsubscribeRate: 2.0, // Estimate
+              revenue: 0, // Will be calculated from campaign data
+              roi: 0 // Will be calculated from campaign data
+            },
+            trends: { campaignPerformance: [], audienceGrowth: [] },
+            topPerformingCampaigns: campaigns.slice(0, 5),
+            segmentPerformance: []
+          };
+          dispatch({ type: 'SET_ANALYTICS', payload: analyticsData });
+        }
         
       } catch (error) {
         console.error('Failed to load initial data:', error);
@@ -707,11 +843,43 @@ export function EmailMarketingProvider({ children }: { children: React.ReactNode
   const contextValue = useMemo(() => ({
     ...state,
     importContacts,
-    updateContact: async (contactId: string, updates: Partial<EmailContact>) => {
-      dispatch({ type: 'UPDATE_CONTACT', payload: { id: contactId, updates } });
+    updateContact: async (contactId: string, updates: Partial<EmailContact>): Promise<void> => {
+      try {
+        const apiStatusMap = {
+          'subscribed': 'active' as const,
+          'unsubscribed': 'unsubscribed' as const,
+          'bounced': 'bounced' as const,
+          'complained': 'pending' as const
+        };
+        
+        const updateData: any = {
+          first_name: updates.firstName,
+          last_name: updates.lastName,
+          status: updates.status ? apiStatusMap[updates.status] : undefined,
+          tags: updates.tags,
+          custom_fields: updates.customFields
+        };
+        
+        if (updates.email) {
+          updateData.email = updates.email;
+        }
+        
+        await updateEmailSubscriber(contactId, updateData);
+        
+        dispatch({ type: 'UPDATE_CONTACT', payload: { id: contactId, updates } });
+      } catch (error) {
+        console.error('Failed to update contact:', error);
+        throw error;
+      }
     },
     deleteContact: async (contactId: string) => {
-      dispatch({ type: 'DELETE_CONTACT', payload: contactId });
+      try {
+        await deleteEmailSubscriber(contactId);
+        dispatch({ type: 'DELETE_CONTACT', payload: contactId });
+      } catch (error) {
+        console.error('Failed to delete contact:', error);
+        throw error;
+      }
     },
     selectContacts,
     createSegment: async (segmentData: Omit<EmailSegment, 'id' | 'contactCount' | 'lastUpdated' | 'createdAt'>) => {
@@ -724,8 +892,31 @@ export function EmailMarketingProvider({ children }: { children: React.ReactNode
       // Implementation would refresh segment contact count
     },
     createCampaign,
-    updateCampaign: async (campaignId: string, updates: Partial<EmailCampaign>) => {
-      dispatch({ type: 'UPDATE_CAMPAIGN', payload: { id: campaignId, updates } });
+    updateCampaign: async (campaignId: string, updates: Partial<EmailCampaign>): Promise<void> => {
+      try {
+        const apiStatusMap = {
+          'cancelled': 'paused' as const,
+          'draft': 'draft' as const,
+          'scheduled': 'scheduled' as const,
+          'sending': 'sending' as const,
+          'sent': 'sent' as const,
+          'paused': 'paused' as const
+        };
+        
+        await updateEmailCampaign(campaignId, {
+          ...(updates.name && { name: updates.name }),
+          ...(updates.subject && { subject: updates.subject }),
+          ...(updates.htmlContent && { content: updates.htmlContent }),
+          ...(updates.status && { status: apiStatusMap[updates.status] || 'draft' }),
+          ...(updates.scheduledDate && { scheduled_at: updates.scheduledDate.toISOString() }),
+          ...(updates.templateId && { template_id: updates.templateId })
+        });
+        
+        dispatch({ type: 'UPDATE_CAMPAIGN', payload: { id: campaignId, updates } });
+      } catch (error) {
+        console.error('Failed to update campaign:', error);
+        throw error;
+      }
     },
     sendCampaign,
     pauseCampaign: async (campaignId: string) => {
@@ -736,10 +927,44 @@ export function EmailMarketingProvider({ children }: { children: React.ReactNode
     },
     setActiveCampaign,
     createTemplate: async (templateData: Omit<EmailTemplate, 'id' | 'usage' | 'lastUsed' | 'createdAt' | 'updatedAt'>) => {
-      // Implementation would go here
+      try {
+        const newTemplate = await createEmailTemplate({
+          name: templateData.name,
+          subject: templateData.subject,
+          html_content: templateData.htmlContent,
+          text_content: templateData.textContent,
+          category: templateData.category,
+          variables: templateData.variables,
+          is_responsive: templateData.isResponsive,
+          preheader: templateData.preheader,
+          tags: templateData.tags
+        });
+        dispatch({ type: 'ADD_TEMPLATE', payload: newTemplate });
+        return newTemplate;
+      } catch (error) {
+        console.error('Failed to create template:', error);
+        throw error;
+      }
     },
     updateTemplate: async (templateId: string, updates: Partial<EmailTemplate>) => {
-      // Implementation would go here
+      try {
+        const updatedTemplate = await updateEmailTemplate(templateId, {
+          name: updates.name,
+          subject: updates.subject,
+          html_content: updates.htmlContent,
+          text_content: updates.textContent,
+          category: updates.category,
+          variables: updates.variables,
+          is_responsive: updates.isResponsive,
+          preheader: updates.preheader,
+          tags: updates.tags
+        });
+        dispatch({ type: 'UPDATE_TEMPLATE', payload: { id: templateId, updates: updatedTemplate } });
+        return updatedTemplate;
+      } catch (error) {
+        console.error('Failed to update template:', error);
+        throw error;
+      }
     },
     duplicateTemplate: async (templateId: string, newName: string) => {
       // Implementation would go here
