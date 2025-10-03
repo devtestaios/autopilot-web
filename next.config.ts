@@ -20,7 +20,10 @@ const nextConfig: NextConfig = {
       '@radix-ui/react-dialog',
       '@radix-ui/react-dropdown-menu',
       '@radix-ui/react-tooltip',
-      'recharts'
+      'recharts',
+      '@dnd-kit/core',
+      '@dnd-kit/sortable',
+      'react-virtualized'
     ],
     // Enable turbo mode for faster builds
     turbo: {
@@ -31,6 +34,16 @@ const nextConfig: NextConfig = {
         },
       },
     },
+  },
+  
+  // Production optimizations
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production' ? {
+      exclude: ['error', 'warn'],
+    } : false,
+    reactRemoveProperties: process.env.NODE_ENV === 'production' ? {
+      properties: ['^data-testid$'],
+    } : false,
   },
   
   // Advanced bundle optimization

@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import dynamic from 'next/dynamic';
 import { motion } from 'framer-motion';
 import { 
   BarChart3, 
@@ -27,11 +28,24 @@ import { PremiumCard } from '@/components/ui/PremiumCard';
 import { PremiumButton } from '@/components/ui/PremiumButton';
 import AdvancedNavigation from '@/components/ui/AdvancedNavigation';
 import UnifiedSidebar from '@/components/UnifiedSidebar';
-import EnhancedAIInsights from '@/components/EnhancedAIInsights';
-import PredictiveAnalyticsDashboard from '@/components/PredictiveAnalyticsDashboard';
-import dynamic from 'next/dynamic';
 
-// Dynamic imports for Recharts components
+// Dynamic imports for performance optimization
+const EnhancedAIInsights = dynamic(
+  () => import('@/components/EnhancedAIInsights'),
+  { 
+    ssr: false,
+    loading: () => (
+      <div className="space-y-4">
+        <div className="h-64 bg-gray-100 dark:bg-gray-800 animate-pulse rounded-lg"></div>
+        <div className="h-32 bg-gray-100 dark:bg-gray-800 animate-pulse rounded-lg"></div>
+      </div>
+    )
+  }
+);
+
+import PredictiveAnalyticsDashboard from '@/components/PredictiveAnalyticsDashboard';
+
+// Dynamic imports for Recharts components  
 const LineChart = dynamic(() => import('recharts').then(mod => ({ default: mod.LineChart })), { 
   ssr: false,
   loading: () => <div className="h-64 bg-gray-100 dark:bg-gray-700 rounded animate-pulse flex items-center justify-center"><span className="text-gray-500">Loading chart...</span></div>
