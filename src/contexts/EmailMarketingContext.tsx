@@ -238,11 +238,12 @@ export const mapApiEmailCampaignToContext = (apiCampaign: ApiEmailCampaign): Ema
   tags: apiCampaign.tags || [],
   excludeSegments: [],
   scheduledDate: apiCampaign.scheduled_at ? new Date(apiCampaign.scheduled_at) : undefined,
+  timezone: apiCampaign.timezone || 'UTC',
   status: apiCampaign.status === 'completed' ? 'sent' : 
          apiCampaign.status === 'sending' ? 'sent' : apiCampaign.status,
   sentDate: apiCampaign.sent_at ? new Date(apiCampaign.sent_at) : undefined,
   stats: {
-    sent: apiCampaign.sent_count || 0,
+    totalSent: apiCampaign.sent_count || 0,
     delivered: apiCampaign.delivered_count || 0,
     bounced: apiCampaign.bounced_count || 0,
     opened: apiCampaign.opened_count || 0,
@@ -272,15 +273,8 @@ export const mapApiEmailSubscriberToContext = (apiSubscriber: ApiEmailSubscriber
   ),
   source: (apiSubscriber.source as 'import' | 'form' | 'api' | 'manual') || 'manual',
   subscribeDate: new Date(apiSubscriber.subscribed_at),
-  lastActivityAt: apiSubscriber.last_activity_at ? new Date(apiSubscriber.last_activity_at) : null,
   segments: [],
-  engagement: {
-    totalOpens: 0,
-    totalClicks: 0,
-    lastOpenedAt: null,
-    lastClickedAt: null,
-    engagementScore: 0
-  }
+  engagementScore: 50 // Default value since API doesn't provide this
 });
 
 export const mapApiEmailTemplateToContext = (apiTemplate: ApiEmailTemplate): EmailTemplate => ({
@@ -931,16 +925,16 @@ export function EmailMarketingProvider({ children }: { children: React.ReactNode
         const newTemplate = await createEmailTemplate({
           name: templateData.name,
           subject: templateData.subject,
-          html_content: templateData.htmlContent,
-          text_content: templateData.textContent,
+          content: templateData.htmlContent,
           category: templateData.category,
           variables: templateData.variables,
-          is_responsive: templateData.isResponsive,
-          preheader: templateData.preheader,
           tags: templateData.tags
         });
-        dispatch({ type: 'ADD_TEMPLATE', payload: newTemplate });
-        return newTemplate;
+        
+        // Map API response to context format
+        const mappedTemplate = mapApiEmailTemplateToContext(newTemplate);
+        dispatch({ type: 'ADD_TEMPLATE', payload: mappedTemplate });
+        return;
       } catch (error) {
         console.error('Failed to create template:', error);
         throw error;
@@ -948,19 +942,22 @@ export function EmailMarketingProvider({ children }: { children: React.ReactNode
     },
     updateTemplate: async (templateId: string, updates: Partial<EmailTemplate>) => {
       try {
+        const currentTemplate = state.templates.find(t => t.id === templateId);
+        if (!currentTemplate) throw new Error('Template not found');
+        
         const updatedTemplate = await updateEmailTemplate(templateId, {
-          name: updates.name,
+          name: updates.name || currentTemplate.name,
           subject: updates.subject,
-          html_content: updates.htmlContent,
-          text_content: updates.textContent,
+          content: updates.htmlContent || currentTemplate.htmlContent,
           category: updates.category,
           variables: updates.variables,
-          is_responsive: updates.isResponsive,
-          preheader: updates.preheader,
           tags: updates.tags
         });
-        dispatch({ type: 'UPDATE_TEMPLATE', payload: { id: templateId, updates: updatedTemplate } });
-        return updatedTemplate;
+        
+        // Map API response to context format
+        const mappedTemplate = mapApiEmailTemplateToContext(updatedTemplate);
+        dispatch({ type: 'SET_TEMPLATES', payload: state.templates.map(t => t.id === templateId ? mappedTemplate : t) });
+        return;
       } catch (error) {
         console.error('Failed to update template:', error);
         throw error;

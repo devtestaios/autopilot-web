@@ -8,6 +8,24 @@
 
 import React, { createContext, useContext, useReducer, useEffect, useCallback, useMemo, useRef } from 'react';
 import { useWebSocket } from '@/contexts/WebSocketContext';
+import {
+  fetchSocialMediaAccounts,
+  fetchSocialMediaPosts,
+  fetchSocialMediaOverview,
+  createSocialMediaPost,
+  updateSocialMediaPost,
+  deleteSocialMediaPost,
+  createSocialMediaAccount,
+  updateSocialMediaAccount,
+  deleteSocialMediaAccount,
+  fetchSocialMediaAnalytics
+} from '@/lib/api';
+
+// Type mappers to convert between API types and context types
+import type {
+  SocialMediaAccount as ApiSocialMediaAccount,
+  SocialMediaPost as ApiSocialMediaPost
+} from '@/types';
 
 // ==================== TYPE DEFINITIONS ====================
 
@@ -183,6 +201,49 @@ const initialState: SocialMediaState = {
   },
 };
 
+// ==================== TYPE MAPPERS ====================
+
+export const mapApiSocialMediaAccountToContext = (apiAccount: ApiSocialMediaAccount): SocialMediaAccount => ({
+  id: apiAccount.id,
+  platform: apiAccount.platform as 'facebook' | 'instagram' | 'twitter' | 'linkedin' | 'tiktok',
+  username: apiAccount.username,
+  displayName: apiAccount.display_name || apiAccount.username,
+  avatar: apiAccount.avatar_url,
+  isConnected: apiAccount.is_connected,
+  followers: apiAccount.followers || 0,
+  lastSync: apiAccount.last_sync ? new Date(apiAccount.last_sync) : new Date(),
+  accessToken: apiAccount.access_token,
+  refreshToken: apiAccount.refresh_token,
+  permissions: apiAccount.permissions || [],
+  status: apiAccount.status as 'active' | 'expired' | 'limited' | 'suspended'
+});
+
+export const mapApiSocialMediaPostToContext = (apiPost: ApiSocialMediaPost): SocialMediaPost => ({
+  id: apiPost.id,
+  content: apiPost.content,
+  mediaUrls: apiPost.media_urls || [],
+  platforms: apiPost.target_accounts || [],
+  scheduledDate: apiPost.scheduled_date ? new Date(apiPost.scheduled_date) : undefined,
+  publishedDate: apiPost.published_date ? new Date(apiPost.published_date) : undefined,
+  status: apiPost.status as 'draft' | 'scheduled' | 'published' | 'failed' | 'deleted',
+  engagement: {
+    likes: apiPost.engagement?.likes || 0,
+    shares: apiPost.engagement?.shares || 0,
+    comments: apiPost.engagement?.comments || 0,
+    reach: apiPost.engagement?.reach || 0,
+    impressions: apiPost.engagement?.impressions || 0
+  },
+  hashtags: apiPost.hashtags || [],
+  mentions: apiPost.mentions || [],
+  location: apiPost.location ? {
+    name: apiPost.location.name,
+    lat: apiPost.location.lat,
+    lng: apiPost.location.lng
+  } : undefined,
+  createdAt: new Date(apiPost.created_at),
+  updatedAt: new Date(apiPost.updated_at)
+});
+
 function socialMediaReducer(state: SocialMediaState, action: SocialMediaAction): SocialMediaState {
   switch (action.type) {
     case 'SET_LOADING':
@@ -339,25 +400,24 @@ export function SocialMediaProvider({ children }: { children: React.ReactNode })
     dispatch({ type: 'SET_ERROR', payload: { key: 'accounts', value: undefined } });
 
     try {
-      const response = await fetch('/api/social-media/accounts/connect', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ platform, credentials }),
-      });
+      const accountData = {
+        platform,
+        username: credentials.username || '',
+        access_token: credentials.accessToken,
+        refresh_token: credentials.refreshToken,
+        permissions: credentials.permissions || [],
+        status: 'active' as const
+      };
 
-      if (!response.ok) {
-        throw new Error(`Failed to connect ${platform} account`);
-      }
-
-      const newAccount: SocialMediaAccount = await response.json();
-      dispatch({ type: 'ADD_ACCOUNT', payload: newAccount });
+      const apiAccount = await createSocialMediaAccount(accountData);
+      const newAccount = mapApiSocialMediaAccountToContext(apiAccount);
       
-// TODO: Fix toast integration
-      // // toast(`${platform} account connected successfully`, 'success');
+      dispatch({ type: 'ADD_ACCOUNT', payload: newAccount });
+      console.log('✅ Social Media Account Connected:', platform);
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Failed to connect account';
       dispatch({ type: 'SET_ERROR', payload: { key: 'accounts', value: message } });
-      // toast(message, 'error');
+      console.error('Failed to connect social media account:', error);
     } finally {
       dispatch({ type: 'SET_LOADING', payload: { key: 'accounts', value: false } });
     }
@@ -365,19 +425,13 @@ export function SocialMediaProvider({ children }: { children: React.ReactNode })
 
   const disconnectAccount = useCallback(async (accountId: string) => {
     try {
-      const response = await fetch(`/api/social-media/accounts/${accountId}/disconnect`, {
-        method: 'DELETE',
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to disconnect account');
-      }
-
+      await deleteSocialMediaAccount(accountId);
       dispatch({ type: 'REMOVE_ACCOUNT', payload: accountId });
-      // toast('Account disconnected successfully', 'success');
+      console.log('✅ Social Media Account Disconnected:', accountId);
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Failed to disconnect account';
-      // toast(message, 'error');
+      dispatch({ type: 'SET_ERROR', payload: { key: 'accounts', value: message } });
+      console.error('Failed to disconnect social media account:', error);
     }
   }, []);
 
@@ -411,23 +465,28 @@ export function SocialMediaProvider({ children }: { children: React.ReactNode })
     dispatch({ type: 'SET_LOADING', payload: { key: 'posts', value: true } });
 
     try {
-      const response = await fetch('/api/social-media/posts', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(postData),
-      });
+      // Convert context format to API format
+      const apiPostData = {
+        content: postData.content,
+        media_urls: postData.mediaUrls,
+        target_accounts: postData.platforms,
+        scheduled_date: postData.scheduledDate?.toISOString(),
+        status: postData.status,
+        hashtags: postData.hashtags,
+        mentions: postData.mentions,
+        location: postData.location
+      };
 
-      if (!response.ok) {
-        throw new Error('Failed to create post');
-      }
-
-      const newPost: SocialMediaPost = await response.json();
+      const apiPost = await createSocialMediaPost(apiPostData);
+      const newPost = mapApiSocialMediaPostToContext(apiPost);
+      
       dispatch({ type: 'ADD_POST', payload: newPost });
       
-      // toast('Post created successfully', 'success');
+      console.log('✅ Social Media Post Created:', newPost.id);
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Failed to create post';
-      // toast(message, 'error');
+      dispatch({ type: 'SET_ERROR', payload: { key: 'posts', value: message } });
+      console.error('Failed to create social media post:', error);
     } finally {
       dispatch({ type: 'SET_LOADING', payload: { key: 'posts', value: false } });
     }
@@ -518,42 +577,54 @@ export function SocialMediaProvider({ children }: { children: React.ReactNode })
   // ==================== EFFECTS ====================
 
   useEffect(() => {
-    // Load initial data
+    // Load initial data from database
     const loadInitialData = async () => {
       try {
         dispatch({ type: 'SET_LOADING', payload: { key: 'accounts', value: true } });
+        dispatch({ type: 'SET_LOADING', payload: { key: 'posts', value: true } });
         
-        // ✅ ENHANCED: Fetch data individually with proper error handling
-        const fetchEndpoint = async (url: string, fallback: any[] = []) => {
-          try {
-            const response = await fetch(url);
-            if (response.ok) {
-              return await response.json();
-            } else {
-              console.warn(`API endpoint ${url} returned ${response.status}, using fallback data`);
-              return fallback;
-            }
-          } catch (error) {
-            console.warn(`Failed to fetch ${url}:`, error);
-            return fallback;
-          }
-        };
-
-        const [accounts, templates] = await Promise.all([
-          fetchEndpoint('/api/social-media/accounts', []),
-          fetchEndpoint('/api/social-media/templates', []),
+        // Fetch data from database APIs
+        const [apiAccounts, apiPosts] = await Promise.all([
+          fetchSocialMediaAccounts().catch((err: any) => {
+            console.warn('Failed to fetch social media accounts:', err);
+            return [];
+          }),
+          fetchSocialMediaPosts({ limit: 50 }).catch((err: any) => {
+            console.warn('Failed to fetch social media posts:', err);
+            return [];
+          })
         ]);
 
+        // Map API responses to context format
+        const accounts = apiAccounts.map(mapApiSocialMediaAccountToContext);
+        const posts = apiPosts.map(mapApiSocialMediaPostToContext);
+
         dispatch({ type: 'SET_ACCOUNTS', payload: accounts });
-        dispatch({ type: 'SET_TEMPLATES', payload: templates });
+        dispatch({ type: 'SET_POSTS', payload: posts });
+        dispatch({ type: 'SET_TEMPLATES', payload: [] }); // Templates will be loaded separately if needed
+        
+        // Separate drafts and scheduled posts
+        const drafts = posts.filter((post: SocialMediaPost) => post.status === 'draft');
+        const scheduledPosts = posts.filter((post: SocialMediaPost) => post.status === 'scheduled');
+        
+        console.log('✅ Social Media Data Loaded:', { 
+          accounts: accounts.length, 
+          posts: posts.length, 
+          drafts: drafts.length,
+          scheduledPosts: scheduledPosts.length
+        });
         
       } catch (error) {
-        console.error('Failed to load initial data:', error);
+        console.error('Failed to load social media data:', error);
+        dispatch({ type: 'SET_ERROR', payload: { key: 'accounts', value: 'Failed to load data' } });
+        
         // Set fallback data to prevent undefined state
         dispatch({ type: 'SET_ACCOUNTS', payload: [] });
+        dispatch({ type: 'SET_POSTS', payload: [] });
         dispatch({ type: 'SET_TEMPLATES', payload: [] });
       } finally {
         dispatch({ type: 'SET_LOADING', payload: { key: 'accounts', value: false } });
+        dispatch({ type: 'SET_LOADING', payload: { key: 'posts', value: false } });
       }
     };
 
@@ -578,10 +649,46 @@ export function SocialMediaProvider({ children }: { children: React.ReactNode })
     selectAccount,
     createPost,
     updatePost: async (postId: string, updates: Partial<SocialMediaPost>) => {
-      dispatch({ type: 'UPDATE_POST', payload: { id: postId, updates } });
+      try {
+        dispatch({ type: 'SET_LOADING', payload: { key: 'posts', value: true } });
+        
+        // Get current post to provide fallback values for required fields
+        const currentPost = state.posts.find(p => p.id === postId);
+        if (!currentPost) throw new Error('Post not found');
+        
+        // Convert context format to API format with fallbacks for required fields
+        const apiUpdates = {
+          content: updates.content || currentPost.content,
+          ...(updates.mediaUrls && { media_urls: updates.mediaUrls }),
+          ...(updates.platforms && { target_accounts: updates.platforms }),
+          ...(updates.scheduledDate && { scheduled_date: updates.scheduledDate.toISOString() }),
+          ...(updates.status && { status: updates.status }),
+          ...(updates.hashtags && { hashtags: updates.hashtags }),
+          ...(updates.mentions && { mentions: updates.mentions }),
+          ...(updates.location && { location: updates.location })
+        };
+
+        const apiPost = await updateSocialMediaPost(postId, apiUpdates);
+        const updatedPost = mapApiSocialMediaPostToContext(apiPost);
+        
+        dispatch({ type: 'UPDATE_POST', payload: { id: postId, updates: updatedPost } });
+        console.log('✅ Social Media Post Updated:', postId);
+      } catch (error) {
+        console.error('Failed to update social media post:', error);
+        dispatch({ type: 'SET_ERROR', payload: { key: 'posts', value: 'Failed to update post' } });
+      } finally {
+        dispatch({ type: 'SET_LOADING', payload: { key: 'posts', value: false } });
+      }
     },
     deletePost: async (postId: string) => {
-      dispatch({ type: 'DELETE_POST', payload: postId });
+      try {
+        await deleteSocialMediaPost(postId);
+        dispatch({ type: 'DELETE_POST', payload: postId });
+        console.log('✅ Social Media Post Deleted:', postId);
+      } catch (error) {
+        console.error('Failed to delete social media post:', error);
+        dispatch({ type: 'SET_ERROR', payload: { key: 'posts', value: 'Failed to delete post' } });
+      }
     },
     publishPost,
     schedulePost: async (postId: string, scheduledDate: Date) => {
