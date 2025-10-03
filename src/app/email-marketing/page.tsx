@@ -27,6 +27,12 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 
+// Enhanced Email Marketing Components
+import EmailContentImporter from '@/components/email-marketing/EmailContentImporter';
+import VisualEmailBuilder from '@/components/email-marketing/VisualEmailBuilder';
+import ABTestingFramework from '@/components/email-marketing/ABTestingFramework';
+import AdvancedAutomationWorkflows from '@/components/email-marketing/AdvancedAutomationWorkflows';
+
 // UPGRADED: Using mature dashboard components
 import dynamic from 'next/dynamic';
 const UnifiedSidebar = dynamic(() => import('@/components/UnifiedSidebar'), {
@@ -66,7 +72,30 @@ import {
   Eye,
   Clock,
   UserMinus,
-  AlertTriangle
+  AlertTriangle,
+  Sparkles,
+  Brain,
+  FileText,
+  Layers,
+  FlaskConical,
+  Workflow,
+  PaintBucket,
+  Wand2,
+  BarChart,
+  PieChart,
+  LineChart,
+  Activity,
+  Globe,
+  Smartphone,
+  Monitor,
+  MessageSquare,
+  Heart,
+  Star,
+  Flag,
+  MousePointer,
+  ShoppingCart,
+  DollarSign,
+  Percent
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -608,6 +637,14 @@ export default function EmailMarketingPlatform() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
+  // Enhanced Email Marketing Modal States
+  const [isContentImporterOpen, setIsContentImporterOpen] = useState(false);
+  const [isEmailBuilderOpen, setIsEmailBuilderOpen] = useState(false);
+  const [isABTestingOpen, setIsABTestingOpen] = useState(false);
+  const [isAutomationWorkflowsOpen, setIsAutomationWorkflowsOpen] = useState(false);
+  const [importedContent, setImportedContent] = useState<any>(null);
+  const [selectedCampaignForBuilder, setSelectedCampaignForBuilder] = useState<any>(null);
+
   const { 
     campaigns, 
     contacts, 
@@ -661,22 +698,52 @@ export default function EmailMarketingPlatform() {
   const handleQuickAction = (action: string) => {
     switch (action) {
       case 'createCampaign':
-        // Open campaign creation modal/page
-        console.log('Create campaign');
+        setIsContentImporterOpen(true);
         break;
       case 'importContacts':
         // Open contact import modal
         console.log('Import contacts');
         break;
       case 'createTemplate':
-        // Open template creation
-        console.log('Create template');
+        setIsEmailBuilderOpen(true);
         break;
       case 'createAutomation':
-        // Open automation creation
-        console.log('Create automation');
+        setIsAutomationWorkflowsOpen(true);
         break;
+      default:
+        console.log('Unknown action:', action);
     }
+  };
+
+  // Enhanced Email Marketing Handlers
+  const handleContentImport = (content: any) => {
+    setImportedContent(content);
+    setIsContentImporterOpen(false);
+    
+    // Automatically open email builder with imported content
+    if (content.type === 'email_campaign') {
+      setIsEmailBuilderOpen(true);
+    }
+  };
+
+  const handleEmailSave = (emailData: any) => {
+    console.log('Email saved:', emailData);
+    // Here you would save to the database via the EmailMarketingContext
+    // createCampaign(emailData);
+    setIsEmailBuilderOpen(false);
+    setImportedContent(null);
+  };
+
+  const handleABTestCreate = (testData: any) => {
+    console.log('A/B Test created:', testData);
+    // Here you would save to the database via the EmailMarketingContext
+    setIsABTestingOpen(false);
+  };
+
+  const handleWorkflowSave = (workflowData: any) => {
+    console.log('Workflow saved:', workflowData);
+    // Here you would save to the database via the EmailMarketingContext
+    setIsAutomationWorkflowsOpen(false);
   };
 
   const renderTabContent = () => {
@@ -761,6 +828,49 @@ export default function EmailMarketingPlatform() {
                   onCreateTemplate={() => handleQuickAction('createTemplate')}
                   onCreateAutomation={() => handleQuickAction('createAutomation')}
                 />
+
+                {/* Enhanced Quick Actions */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                  <Card className="hover:shadow-lg transition-all cursor-pointer group" onClick={() => setIsContentImporterOpen(true)}>
+                    <CardContent className="p-6 text-center">
+                      <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                        <Layers className="w-6 h-6 text-white" />
+                      </div>
+                      <h3 className="font-semibold text-gray-900 dark:text-white mb-2">Content Suite</h3>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">Import from Feed Planner & Content Creation Suite</p>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="hover:shadow-lg transition-all cursor-pointer group" onClick={() => setIsEmailBuilderOpen(true)}>
+                    <CardContent className="p-6 text-center">
+                      <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-teal-600 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                        <PaintBucket className="w-6 h-6 text-white" />
+                      </div>
+                      <h3 className="font-semibold text-gray-900 dark:text-white mb-2">Visual Builder</h3>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">Drag & drop email builder with AI optimization</p>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="hover:shadow-lg transition-all cursor-pointer group" onClick={() => setIsABTestingOpen(true)}>
+                    <CardContent className="p-6 text-center">
+                      <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-red-600 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                        <FlaskConical className="w-6 h-6 text-white" />
+                      </div>
+                      <h3 className="font-semibold text-gray-900 dark:text-white mb-2">A/B Testing</h3>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">Sophisticated split testing framework</p>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="hover:shadow-lg transition-all cursor-pointer group" onClick={() => setIsAutomationWorkflowsOpen(true)}>
+                    <CardContent className="p-6 text-center">
+                      <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                        <Workflow className="w-6 h-6 text-white" />
+                      </div>
+                      <h3 className="font-semibold text-gray-900 dark:text-white mb-2">Automation</h3>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">Advanced workflow automation with AI</p>
+                    </CardContent>
+                  </Card>
+                </div>
               </CardContent>
             </Card>
 
@@ -904,6 +1014,47 @@ export default function EmailMarketingPlatform() {
         </motion.div>
         </div>
       </div>
+
+      {/* Enhanced Email Marketing Modals */}
+      <EmailContentImporter
+        isOpen={isContentImporterOpen}
+        onClose={() => setIsContentImporterOpen(false)}
+        onImport={handleContentImport}
+        campaignType="newsletter"
+      />
+
+      <VisualEmailBuilder
+        isOpen={isEmailBuilderOpen}
+        onClose={() => setIsEmailBuilderOpen(false)}
+        onSave={handleEmailSave}
+        importedContent={importedContent}
+        campaignType="newsletter"
+      />
+
+      <ABTestingFramework
+        isOpen={isABTestingOpen}
+        onClose={() => setIsABTestingOpen(false)}
+        onCreateTest={handleABTestCreate}
+        existingCampaigns={campaigns.map(c => ({
+          id: c.id,
+          name: c.name,
+          subject: c.subject,
+          content: '', // EmailCampaign doesn't have content property
+          status: c.status === 'scheduled' || c.status === 'sending' ? 'active' as const : 
+                 c.status === 'sent' ? 'completed' as const : 'draft' as const,
+          createdAt: c.createdAt || new Date().toISOString()
+        }))}
+      />
+
+      <AdvancedAutomationWorkflows
+        isOpen={isAutomationWorkflowsOpen}
+        onClose={() => setIsAutomationWorkflowsOpen(false)}
+        onSaveWorkflow={handleWorkflowSave}
+        existingWorkflows={[]}
+      />
+
+      {/* AI Control Chat - Positioned at bottom right */}
+      <AIControlChat />
     </div>
   );
 }
