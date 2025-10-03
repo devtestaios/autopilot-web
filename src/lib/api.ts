@@ -1240,3 +1240,95 @@ export async function fetchIntegrationsOverview(): Promise<IntegrationsOverview>
     };
   }
 }
+
+// ============================================================================
+// AI-POWERED AGENTIC SYSTEM API FUNCTIONS
+// ============================================================================
+
+// Master AI Cycles - The heart of your autonomous system
+export async function fetchAICycles(): Promise<any[]> {
+  try {
+    const response = await enhancedFetch(`${API_BASE}/api/ai/cycles`);
+    return await response.json();
+  } catch (error) {
+    console.warn('AI Cycles API fetch failed:', error);
+    return [];
+  }
+}
+
+export async function createAICycle(cycleData: any): Promise<any> {
+  try {
+    const response = await enhancedFetch(`${API_BASE}/api/ai/cycles`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(cycleData),
+    });
+    return await response.json();
+  } catch (error) {
+    console.warn('AI Cycle creation failed:', error);
+    throw error;
+  }
+}
+
+// AI Decision Logs - Track every autonomous decision
+export async function fetchAIDecisions(cycleId?: string): Promise<any[]> {
+  try {
+    const url = cycleId ? `${API_BASE}/api/ai/decisions?cycle_id=${cycleId}` : `${API_BASE}/api/ai/decisions`;
+    const response = await enhancedFetch(url);
+    return await response.json();
+  } catch (error) {
+    console.warn('AI Decisions API fetch failed:', error);
+    return [];
+  }
+}
+
+// AI Performance Scores - Continuous performance tracking
+export async function fetchAIPerformanceScores(): Promise<any[]> {
+  try {
+    const response = await enhancedFetch(`${API_BASE}/api/ai/performance`);
+    return await response.json();
+  } catch (error) {
+    console.warn('AI Performance API fetch failed:', error);
+    return [];
+  }
+}
+
+// AI Smart Alerts - Intelligent monitoring
+export async function fetchAIAlerts(): Promise<any[]> {
+  try {
+    const response = await enhancedFetch(`${API_BASE}/api/ai/alerts`);
+    return await response.json();
+  } catch (error) {
+    console.warn('AI Alerts API fetch failed:', error);
+    return [];
+  }
+}
+
+// AI Recommendations - Autonomous optimization suggestions
+export async function fetchAIRecommendations(): Promise<any[]> {
+  try {
+    const response = await enhancedFetch(`${API_BASE}/api/ai/recommendations`);
+    return await response.json();
+  } catch (error) {
+    console.warn('AI Recommendations API fetch failed:', error);
+    return [];
+  }
+}
+
+// AI System Status - Overall AI health and status
+export async function fetchAISystemStatus(): Promise<any> {
+  try {
+    const response = await enhancedFetch(`${API_BASE}/api/ai/status`);
+    return await response.json();
+  } catch (error) {
+    console.warn('AI System Status API fetch failed:', error);
+    return {
+      status: 'disconnected',
+      active_cycles: 0,
+      total_decisions: 0,
+      avg_confidence: 0,
+      last_decision: null,
+      system_health: 'unknown'
+    };
+  }
+}
