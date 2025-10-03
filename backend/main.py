@@ -591,13 +591,39 @@ async def health_check():
         "service_healthy": True
     }
     
+    # Test actual Supabase connection
+    db_status = "disconnected"
+    if SUPABASE_AVAILABLE and supabase:
+        try:
+            # Test with a simple query
+            result = supabase.table("email_campaigns").select("id").limit(1).execute()
+            db_status = "connected"
+        except Exception as e:
+            logger.error(f"Database health check failed: {e}")
+            db_status = f"error: {str(e)}"
+    
     return {
         "status": "healthy",
         "timestamp": datetime.now(timezone.utc).isoformat(),
         "uptime": "operational",
         "ai_services": ai_status,
-        "database": "connected",  # Add actual DB check
+        "database": db_status,
+        "supabase_available": SUPABASE_AVAILABLE,
         "version": "1.0.0"
+    }
+
+@app.get("/debug/supabase")
+async def debug_supabase():
+    """Debug Supabase connection"""
+    return {
+        "supabase_url_configured": bool(os.getenv('SUPABASE_URL')),
+        "supabase_key_configured": bool(os.getenv('SUPABASE_ANON_KEY')),
+        "supabase_available": SUPABASE_AVAILABLE,
+        "supabase_client_exists": supabase is not None,
+        "env_vars": {
+            "SUPABASE_URL": os.getenv('SUPABASE_URL', 'NOT_SET')[:50] + "..." if os.getenv('SUPABASE_URL') else None,
+            "SUPABASE_ANON_KEY": os.getenv('SUPABASE_ANON_KEY', 'NOT_SET')[:20] + "..." if os.getenv('SUPABASE_ANON_KEY') else None
+        }
     }
 
 @app.get("/health/instagram")
