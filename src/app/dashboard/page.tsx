@@ -8,7 +8,7 @@ import {
   Target, TrendingUp, DollarSign, BarChart3, Users, Zap, 
   Activity, Clock, AlertCircle, ChevronRight, ExternalLink,
   Globe, Rocket, Shield, Brain, Play, Settings, 
-  MessageSquare, Calendar, FileText, PieChart
+  MessageSquare, Calendar, FileText, PieChart, LayoutDashboard
 } from 'lucide-react';
 
 // Simple imports - no complex design system
@@ -457,13 +457,26 @@ export default function Dashboard() {
         {/* Content Container */}
         <div className="container mx-auto px-4 py-8">
         {/* Simple Header */}
-        <div className="mb-8" data-testid="dashboard-header">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2" data-testid="dashboard-title">
-            Master Terminal
-          </h1>
-          <p className="text-gray-600 dark:text-gray-400">
-            Unified command center for your enterprise business ecosystem
-          </p>
+        <div className="mb-8 flex items-center justify-between" data-testid="dashboard-header">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2" data-testid="dashboard-title">
+              Master Terminal
+            </h1>
+            <p className="text-gray-600 dark:text-gray-400">
+              Unified command center for your enterprise business ecosystem
+            </p>
+          </div>
+          
+          {/* Dashboard Actions */}
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => router.push('/dashboard/enhanced')}
+              className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              <LayoutDashboard className="w-4 h-4" />
+              <span className="hidden sm:inline">Customize Layout</span>
+            </button>
+          </div>
         </div>
 
         {/* KPI Cards - Performance Optimized Grid */}

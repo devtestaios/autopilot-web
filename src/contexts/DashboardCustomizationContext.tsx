@@ -8,10 +8,18 @@ import React, { createContext, useContext, useState, useCallback, useEffect, use
 
 export interface DashboardWidget {
   id: string;
-  type: 'metric' | 'chart' | 'list' | 'feed' | 'ai-insights' | 'quick-actions' | 'recent-activity';
+  type: 'kpi' | 'platform-suite' | 'sub-platform' | 'chart' | 'activity-feed' | 'quick-actions' | 'custom' | 'metric' | 'list' | 'feed' | 'ai-insights' | 'recent-activity';
   title: string;
-  size: 'small' | 'medium' | 'large' | 'full';
+  description?: string;
+  size: 'small' | 'medium' | 'large' | 'extra-large' | 'full';
   position: { x: number; y: number; w: number; h: number };
+  isLocked?: boolean;
+  isVisible?: boolean;
+  data?: any;
+  configurable?: boolean;
+  icon?: React.ComponentType<any>;
+  color?: string;
+  href?: string;
   dataSource?: string;
   config?: Record<string, any>;
   visible: boolean;
@@ -23,8 +31,12 @@ export interface DashboardLayout {
   name: string;
   description: string;
   widgets: DashboardWidget[];
+  gridCols: number;
+  gridRows: number;
+  responsive: boolean;
+  lastModified: Date;
   backgroundStyle?: string;
-  gridSize: { cols: number; rows: number };
+  gridSize?: { cols: number; rows: number };
   businessType?: string;
   businessSize?: string;
   isDefault?: boolean;
@@ -178,6 +190,10 @@ export const BUSINESS_LAYOUT_TEMPLATES: Record<string, DashboardLayout> = {
     id: 'solo_entrepreneur',
     name: 'Solo Entrepreneur',
     description: 'Focused on essential metrics and quick actions for individual creators',
+    gridCols: 12,
+    gridRows: 8,
+    responsive: true,
+    lastModified: new Date(),
     gridSize: { cols: 12, rows: 8 },
     businessType: 'solo_entrepreneur',
     isDefault: true,
@@ -196,6 +212,10 @@ export const BUSINESS_LAYOUT_TEMPLATES: Record<string, DashboardLayout> = {
     id: 'startup',
     name: 'Startup Growth',
     description: 'Growth metrics and team collaboration for early-stage companies',
+    gridCols: 12,
+    gridRows: 10,
+    responsive: true,
+    lastModified: new Date(),
     gridSize: { cols: 12, rows: 10 },
     businessType: 'startup',
     isDefault: true,
@@ -217,6 +237,10 @@ export const BUSINESS_LAYOUT_TEMPLATES: Record<string, DashboardLayout> = {
     id: 'agency',
     name: 'Agency Command Center',
     description: 'Client management and team collaboration for service agencies',
+    gridCols: 12,
+    gridRows: 12,
+    responsive: true,
+    lastModified: new Date(),
     gridSize: { cols: 12, rows: 12 },
     businessType: 'agency',
     isDefault: true,
@@ -241,6 +265,10 @@ export const BUSINESS_LAYOUT_TEMPLATES: Record<string, DashboardLayout> = {
     id: 'enterprise',
     name: 'Enterprise Overview',
     description: 'Comprehensive analytics and management for large organizations',
+    gridCols: 16,
+    gridRows: 12,
+    responsive: true,
+    lastModified: new Date(),
     gridSize: { cols: 16, rows: 12 },
     businessType: 'enterprise',
     isDefault: true,
@@ -422,7 +450,7 @@ export function DashboardCustomizationProvider({ children }: { children: React.R
         personalizedLayout.widgets.push({
           ...WIDGET_TEMPLATES.ai_alerts,
           id: `ai-alerts-${Date.now()}`,
-          position: { x: 0, y: personalizedLayout.gridSize.rows - 2, w: 6, h: 2 }
+          position: { x: 0, y: (personalizedLayout.gridSize?.rows || personalizedLayout.gridRows) - 2, w: 6, h: 2 }
         });
       }
     }
