@@ -4,8 +4,7 @@ import React, { useState, useEffect, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSearchParams, useRouter } from 'next/navigation';
 import NavigationTabs from '@/components/NavigationTabs';
-import BusinessSetupWizard from '@/components/BusinessSetupWizard';
-import CommandSuiteSelector from '@/components/onboarding/CommandSuiteSelector';
+import UnifiedSetupWizard from '@/components/UnifiedSetupWizard';
 import RoleBasedLanding from '@/components/onboarding/RoleBasedLanding';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -71,7 +70,7 @@ function OnboardingContent() {
     selectedPlatforms: string[];
   }) => {
     try {
-      // Use the actual business profile data from the wizard
+      // Use the actual business profile data from the unified wizard
       const businessData: BusinessProfile = {
         businessName: businessProfileData.businessName,
         businessType: businessProfileData.businessType,
@@ -81,19 +80,21 @@ function OnboardingContent() {
       };
       
       setBusinessProfile(businessData);
-      setCompletedSteps(prev => [...prev, 'business-setup']);
+      setCompletedSteps(prev => [...prev, 'business-setup', 'command-suite']);
       
-      // Store the business profile data immediately
+      // Store all the data immediately since platform selection is now complete
       localStorage.setItem('businessProfile', JSON.stringify(businessData));
       localStorage.setItem('selectedPlatforms', JSON.stringify(businessProfileData.selectedPlatforms));
       localStorage.setItem('businessSetupComplete', 'true');
+      localStorage.setItem('onboardingComplete', 'true');
       localStorage.setItem('setupTimestamp', new Date().toISOString());
       
-      // Show success and move to next step
-      setCurrentStep('command-suite');
+      // Navigate directly to dashboard since platform selection is done
+      router.push('/dashboard?onboarding=complete&welcome=true');
     } catch (error) {
       console.error('Failed to save business profile:', error);
-      // You could add a toast notification here
+      // Fallback: still navigate but with minimal data
+      router.push('/dashboard?onboarding=error');
     }
   };
 
@@ -357,94 +358,29 @@ function OnboardingContent() {
     );
   }
 
-  // Command Suite Selection Step
-  if (currentStep === 'command-suite' && businessProfile) {
+  // Command Suite Selection Step - Now integrated into UnifiedSetupWizard
+  if (currentStep === 'command-suite') {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-        <NavigationTabs />
-        
-        <div className="container mx-auto px-4 py-8">
-          {/* Progress Bar */}
-          <div className="max-w-4xl mx-auto mb-8">
-            <div className="flex justify-between items-center mb-4">
-              <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                Setup Progress
-              </span>
-              <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                {Math.round(((completedSteps.length + 1) / onboardingSteps.length) * 100)}% Complete
-              </span>
-            </div>
-            <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-              <motion.div
-                className="bg-gradient-to-r from-teal-500 to-cyan-500 h-2 rounded-full"
-                initial={{ width: `${(completedSteps.length / onboardingSteps.length) * 100}%` }}
-                animate={{ 
-                  width: `${((completedSteps.length + 1) / onboardingSteps.length) * 100}%` 
-                }}
-                transition={{ duration: 0.5 }}
-              />
-            </div>
-          </div>
-
-          <CommandSuiteSelector
-            businessProfile={businessProfile || {
-              businessName: 'My Business',
-              businessType: 'startup',
-              businessSize: 'small',
-              industry: 'general',
-              goals: []
-            }}
-            onSelectionComplete={handleCommandSuiteComplete}
-            onBack={handleBackToBusinessSetup}
-          />
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-600 mx-auto mb-4"></div>
+          <p className="text-gray-600 dark:text-gray-400">
+            Platform selection complete. Redirecting to your dashboard...
+          </p>
         </div>
       </div>
     );
   }
 
-  // Business Setup Step
+  // Business Setup Step - Now uses UnifiedSetupWizard 
   if (currentStep === 'business-setup') {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
         <NavigationTabs />
-        
-        <div className="container mx-auto px-4 py-8">
-          {/* Progress Bar */}
-          <div className="max-w-4xl mx-auto mb-8">
-            <div className="flex justify-between items-center mb-4">
-              <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                Step 3 of 5 • Business Setup
-              </span>
-              <button
-                onClick={() => setCurrentStep('role-discovery')}
-                className="text-sm text-blue-600 dark:text-blue-400 hover:underline"
-              >
-                Back to Role Discovery
-              </button>
-            </div>
-            <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-              <div className="bg-gradient-to-r from-teal-500 to-cyan-500 h-2 rounded-full w-3/5"></div>
-            </div>
-          </div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-center mb-8"
-          >
-            <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
-              Let's Set Up Your Business Profile
-            </h1>
-            <p className="text-xl text-gray-600 dark:text-gray-400 mb-8">
-              Tell us about your business so we can customize your experience
-            </p>
-          </motion.div>
-
-          <BusinessSetupWizard 
-            onComplete={handleSetupComplete}
-            onSkip={handleSetupSkip}
-          />
-        </div>
+        <UnifiedSetupWizard 
+          onComplete={handleSetupComplete}
+          onSkip={handleSetupSkip}
+        />
       </div>
     );
   }
