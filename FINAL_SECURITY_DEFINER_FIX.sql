@@ -20,7 +20,6 @@ SELECT
 FROM pg_tables 
 WHERE schemaname = 'public'
 ORDER BY tablename;
-
 -- Grant permissions without SECURITY DEFINER
 GRANT SELECT ON public.database_summary TO authenticated;
 GRANT SELECT ON public.database_summary TO anon;

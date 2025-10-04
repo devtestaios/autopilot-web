@@ -8,8 +8,27 @@
 
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { usePerformance, usePerformanceAnalytics } from '@/contexts/PerformanceContext';
+import { optimizedAPI, checkOptimizedAPIHealth, connectionManager } from '@/lib/performance/optimizedAPI';
+import { cacheUtils } from '@/lib/performance/apiCache';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { 
+  Activity,
+  BarChart3,
+  CheckCircle,
+  AlertTriangle,
+  Database,
+  Zap,
+  Server,
+  RefreshCw,
+  Download,
+  Settings,
+  TrendingUp,
+  TrendingDown
+} from 'lucide-react';
 
 // Dashboard configuration and types
 interface PerformanceDashboardProps {
@@ -25,6 +44,18 @@ interface MetricComparison {
   change: number;
   changePercent: number;
   trend: 'better' | 'worse' | 'stable';
+}
+
+// Helper function to get metric thresholds
+function getMetricThresholds(metric: string) {
+  const thresholds: Record<string, { good: number; poor: number }> = {
+    'CLS': { good: 0.1, poor: 0.25 },
+    'LCP': { good: 2500, poor: 4000 },
+    'INP': { good: 200, poor: 500 },
+    'FCP': { good: 1800, poor: 3000 },
+    'TTFB': { good: 800, poor: 1800 }
+  };
+  return thresholds[metric] || { good: 100, poor: 1000 };
 }
 
 /**
@@ -380,6 +411,51 @@ export default function PerformanceDashboard({
   const { current } = usePerformance();
   const { history, trends, hasData } = usePerformanceAnalytics();
   const [selectedTimeRange, setSelectedTimeRange] = useState(timeRange);
+  const [apiHealth, setApiHealth] = useState<any>(null);
+  const [isRefreshingHealth, setIsRefreshingHealth] = useState(false);
+
+  // Get real-time performance stats
+  const cacheStats = useMemo(() => cacheUtils.getStats(), []);
+  const connectionStats = useMemo(() => connectionManager.getStats(), []);
+
+  // Refresh API health
+  const refreshApiHealth = async () => {
+    setIsRefreshingHealth(true);
+    try {
+      const health = await checkOptimizedAPIHealth();
+      setApiHealth(health);
+    } catch (error) {
+      console.error('Failed to check API health:', error);
+    } finally {
+      setIsRefreshingHealth(false);
+    }
+  };
+
+  // Auto-refresh API health
+  useEffect(() => {
+    refreshApiHealth();
+    const interval = setInterval(refreshApiHealth, refreshInterval);
+    return () => clearInterval(interval);
+  }, [refreshInterval]);
+
+  // Export performance data
+  const exportPerformanceData = () => {
+    const data = {
+      history,
+      trends,
+      cacheStats,
+      connectionStats,
+      apiHealth,
+      timestamp: Date.now()
+    };
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `performance-data-${Date.now()}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
 
   // Generate metric comparisons
   const metricComparisons = useMemo(() => {
@@ -433,12 +509,178 @@ export default function PerformanceDashboard({
         <p className="text-gray-600 dark:text-gray-400">
           Start navigating the application to collect performance metrics
         </p>
+        
+        {/* Show basic optimization stats even without performance data */}
+        <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4 max-w-md mx-auto">
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center space-x-2">
+                <Database className="h-4 w-4 text-blue-500" />
+                <span className="text-sm">API Health</span>
+              </div>
+              <div className="mt-2">
+                {apiHealth?.status === 'healthy' ? (
+                  <CheckCircle className="h-5 w-5 text-green-500" />
+                ) : (
+                  <AlertTriangle className="h-5 w-5 text-red-500" />
+                )}
+              </div>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center space-x-2">
+                <Zap className="h-4 w-4 text-yellow-500" />
+                <span className="text-sm">Cache</span>
+              </div>
+              <div className="mt-2 text-lg font-bold">
+                {cacheStats.size}
+              </div>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center space-x-2">
+                <Server className="h-4 w-4 text-purple-500" />
+                <span className="text-sm">Connections</span>
+              </div>
+              <div className="mt-2 text-lg font-bold">
+                {connectionStats.activeRequests}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     );
   }
 
   return (
     <div className={`space-y-8 ${className}`}>
+      {/* Enhanced Header with Optimization Controls */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+            Performance Dashboard
+          </h2>
+          <p className="text-gray-600 dark:text-gray-300">
+            Real-time performance monitoring with optimization insights
+          </p>
+        </div>
+        
+        <div className="flex items-center space-x-3">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={refreshApiHealth}
+            disabled={isRefreshingHealth}
+          >
+            <RefreshCw className={`h-4 w-4 mr-2 ${isRefreshingHealth ? 'animate-spin' : ''}`} />
+            Refresh
+          </Button>
+          
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={exportPerformanceData}
+          >
+            <Download className="h-4 w-4 mr-2" />
+            Export
+          </Button>
+          
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => cacheUtils.invalidateAll()}
+          >
+            <Settings className="h-4 w-4 mr-2" />
+            Clear Cache
+          </Button>
+        </div>
+      </div>
+
+      {/* Optimization Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-medium flex items-center">
+              <Database className="h-4 w-4 mr-2 text-blue-500" />
+              API Health
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center space-x-2">
+              {apiHealth?.status === 'healthy' ? (
+                <CheckCircle className="h-5 w-5 text-green-500" />
+              ) : (
+                <AlertTriangle className="h-5 w-5 text-red-500" />
+              )}
+              <span className="font-medium capitalize">
+                {apiHealth?.status || 'Unknown'}
+              </span>
+            </div>
+            {apiHealth && (
+              <div className="text-sm text-gray-500 mt-1">
+                {apiHealth.responseTime}ms response
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-medium flex items-center">
+              <Zap className="h-4 w-4 mr-2 text-yellow-500" />
+              Cache Performance
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {cacheStats.size}
+              <span className="text-sm text-gray-400">/{cacheStats.maxSize}</span>
+            </div>
+            <div className="text-sm text-gray-500 mt-1">
+              {cacheStats.tags} tags
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-medium flex items-center">
+              <Server className="h-4 w-4 mr-2 text-purple-500" />
+              Connections
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {connectionStats.activeRequests}
+            </div>
+            <div className="text-sm text-gray-500 mt-1">
+              {connectionStats.queuedRequests} queued
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-medium flex items-center">
+              <Activity className="h-4 w-4 mr-2 text-green-500" />
+              Performance Score
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {Math.round(((trends?.improvements?.length || 0) / Math.max(history.length, 1)) * 100) || 'N/A'}
+              <span className="text-gray-400">/100</span>
+            </div>
+            <div className="text-sm text-gray-500 mt-1">
+              Based on {history.length} sessions
+            </div>
+          </CardContent>
+        </Card>
+      </div>
       {/* Time Range Selector */}
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
@@ -487,17 +729,3 @@ export default function PerformanceDashboard({
   );
 }
 
-/**
- * Helper function to get metric thresholds
- */
-function getMetricThresholds(metricName: string) {
-  const thresholds = {
-    CLS: { good: 0.1, poor: 0.25 },
-    LCP: { good: 2500, poor: 4000 },
-    INP: { good: 200, poor: 500 },
-    FCP: { good: 1800, poor: 3000 },
-    TTFB: { good: 800, poor: 1800 }
-  };
-  
-  return thresholds[metricName as keyof typeof thresholds] || { good: 100, poor: 1000 };
-}

@@ -3,6 +3,8 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useWebSocket } from '@/contexts/WebSocketContext';
+import { realAnalytics, trackingHelpers } from '@/lib/performance/realAnalytics';
+import { simpleAnalytics } from '@/lib/performance/simpleAnalytics';
 import { 
   fetchTeamMembers,
   fetchTeamActivities,
@@ -381,11 +383,17 @@ export function CollaborationProvider({ children }: { children: React.ReactNode 
   };
 
   // ========== PUBLIC METHODS ==========
-  const updateUserStatus = useCallback((status: CollaborationUser['status']) => {
+  const updateUserStatus = useCallback(async (status: CollaborationUser['status']) => {
+    // Track status change with real analytics
+    await trackingHelpers.trackTeamAction('status_change', user?.id || 'unknown', 1);
+    
     setCurrentUserStatus(status);
     if (socket) {
       socket.emit('status_update', { userId: user?.id, status });
     }
+    
+    // Track with simple analytics
+    simpleAnalytics.trackFeatureUsage('collaboration', 'status_update', { status });
   }, [socket, user?.id]);
 
   const updateCursorPosition = useCallback((x: number, y: number) => {
@@ -402,7 +410,10 @@ export function CollaborationProvider({ children }: { children: React.ReactNode 
     socket.emit('cursor_move', { ...cursor, timestamp: new Date() });
   }, [enableLiveCursors, user, socket]);
 
-  const addActivity = useCallback((activity: Omit<CollaborationActivity, 'id' | 'timestamp'>) => {
+  const addActivity = useCallback(async (activity: Omit<CollaborationActivity, 'id' | 'timestamp'>) => {
+    // Track activity creation with real analytics
+    await trackingHelpers.trackTeamAction('activity_created', activity.entityId || 'unknown', 1);
+    
     const newActivity: CollaborationActivity = {
       ...activity,
       id: `activity_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
@@ -414,6 +425,12 @@ export function CollaborationProvider({ children }: { children: React.ReactNode 
     if (socket) {
       socket.emit('activity_added', newActivity);
     }
+    
+    // Track with simple analytics
+    simpleAnalytics.trackFeatureUsage('collaboration', 'activity_added', { 
+      type: activity.type,
+      entity: activity.entityType 
+    });
   }, [socket]);
 
   const addComment = useCallback(async (comment: Omit<LiveComment, 'id' | 'timestamp' | 'updatedAt'>) => {

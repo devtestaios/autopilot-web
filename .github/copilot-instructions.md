@@ -1,70 +1,133 @@
-# PulseBridge.ai AI Agent Instructions
+# PulseBridge.ai - Comprehensive AI Coding Assistant Instructions
 
-> **🎯 QUICK START**: PulseBridge.ai is an **enterprise business ecosystem** with AI-powered marketing automation competing with Asana, Slack, Zapier. **Production**: https://pulsebridge.ai | **Backend**: https://autopilot-api-1.onrender.com
+> **🚀 Enterprise Marketing Automation Platform** with AI-autonomous decision making, multi-platform campaign optimization, and complete database-driven architecture
 
-## 🚀 **IMMEDIATE CONTEXT** (Read First)
+## 🎯 **PROJECT OVERVIEW**
 
-**What This Is**: AI-powered marketing automation platform with enterprise business ecosystem features
-**Current Status**: Production-ready, 102 routes building, complete Instagram OAuth, 60+ database APIs
-**Tech Stack**: Next.js 15.5.2 + TypeScript + Tailwind + FastAPI + Supabase + Claude AI
-**Current Date**: October 1, 2025
+**Platform**: AI-powered marketing automation with enterprise business ecosystem features  
+**Status**: Production-ready with 115+ routes, 60+ API endpoints, 100% E2E test coverage  
+**Live URLs**: https://pulsebridge.ai | Backend: https://autopilot-api-1.onrender.com  
+**Architecture**: Next.js 15.5.2 + FastAPI + Supabase + Claude AI + Multi-platform APIs
 
-### **🏗️ CRITICAL ARCHITECTURE**:
-- **Primary Interface**: `/dashboard` (253 lines) - Main command center with enterprise KPIs
-- **Social Media Hub**: `/social-media` (600+ lines) - AI content composer with Instagram OAuth  
-- **Marketing Command**: `/marketing-command-center` - Unified marketing ecosystem
-- **Project Management**: `/project-management` - Enterprise project suite with Kanban
-- **Backend**: `backend/main.py` (2,547 lines) - FastAPI with 60+ endpoints
-- **Frontend API**: `src/lib/api.ts` (1,242 lines) - Comprehensive API client
+## 🏗️ **CRITICAL ARCHITECTURE PATTERNS**
 
-### **🎯 LATEST ACHIEVEMENTS** (Sept 30, 2025):
-1. **✅ Instagram OAuth Complete**: Modern Instagram API with Facebook SDK integration
-2. **✅ Database APIs Ready**: 60+ endpoints across Social Media, Email, Collaboration, Integrations
-3. **✅ Enterprise UI**: Production-ready with clean dashboard architecture
-4. **✅ SSR Safety**: Zero build errors, proper hydration patterns implemented
-
-## ⚡ **ESSENTIAL COMMANDS** (Always Use)
-
-```bash
-# Development - MANDATORY --turbopack flag
-npm run dev --turbopack
-
-# Production build - Required before commits
-npm run build --turbopack
-
-# Testing
-npm run test:e2e    # Playwright E2E (95%+ success)
-npm test           # Jest unit tests (12.51% coverage)
-
-# Backend development
-cd backend && uvicorn main:app --reload
-curl http://localhost:8000/docs  # FastAPI documentation
-
-# Type checking
-npx tsc --noEmit --skipLibCheck  # Zero errors required
+### **Provider Hierarchy (MANDATORY)**
+All pages wrapped in comprehensive provider architecture:
+```typescript
+// src/components/ClientProviders.tsx - 141 lines
+<ErrorProvider>
+  <ThemeProvider>
+    <WebSocketProvider>
+      <AuthProvider>
+        <UnifiedAIProvider>          // Core AI chat system
+          <AnalyticsProvider>
+            <SocialMediaProvider>    // Connected to database
+            <EmailMarketingProvider> // Connected to database  
+            <CollaborationProvider>  // Connected to database
+            <IntegrationsProvider>   // Connected to database
+              {children}
 ```
 
-## 🎯 **CRITICAL PATTERNS** (Must Follow)
+### **Context-Based State Management**
+Each business domain has dedicated context with database connectivity:
+- `SocialMediaContext.tsx` (728 lines) - Multi-platform social management
+- `EmailMarketingContext.tsx` (1000+ lines) - Campaign automation
+- `CollaborationContext.tsx` - Real-time team features
+- `IntegrationsContext.tsx` - Marketplace & API management
 
-### **SSR Safety (MANDATORY)**
+### **SSR Safety (CRITICAL)**
 ```typescript
-// Use dynamic imports for client-only components
+// ALWAYS use dynamic imports for client components
 import dynamic from 'next/dynamic';
 
-const ClientComponent = dynamic(() => import('./ClientComponent'), {
+const ClientComponent = dynamic(() => import('./Component'), {
   ssr: false,
-  loading: () => <div className="loading-placeholder">Loading...</div>
+  loading: () => <div className="animate-pulse">Loading...</div>
 });
 
-// Protect browser APIs
+// Browser API protection
 if (typeof window !== 'undefined') {
   // Client-side only code
 }
 ```
 
-### **Navigation System (REQUIRED)**
-Every page must include:
+## 🔧 **API ARCHITECTURE**
+
+### **Frontend API Client**
+`src/lib/api.ts` (1,334 lines) - Comprehensive REST client:
 ```typescript
+const API_BASE = 'https://autopilot-api-1.onrender.com';
+
+// Error handling with custom APIError class
+export class APIError extends Error {
+  constructor(public status: number, message: string) {
+    super(message);
+  }
+}
+
+// Database API categories (60+ endpoints):
+// - Social Media: 20+ endpoints (Instagram, TikTok, LinkedIn, etc.)
+// - Email Marketing: 15+ endpoints (campaigns, subscribers, templates)
+// - Collaboration: 20+ endpoints (team management, real-time features)
+// - Integrations: 18+ endpoints (marketplace, API keys, analytics)
+```
+
+### **Backend Architecture**  
+`backend/main.py` (3,393 lines) - FastAPI with modular design:
+```python
+# Import specialized routers
+from ai_endpoints import ai_router
+from optimization_endpoints import router as optimization_router
+from sync_endpoints import router as sync_router
+from analytics_endpoints import router as analytics_router
+from autonomous_decision_endpoints import router as autonomous_router
+
+# Supabase integration with fallback patterns
+SUPABASE_AVAILABLE = True if SUPABASE_URL and SUPABASE_KEY else False
+```
+
+## ⚡ **DEVELOPMENT WORKFLOW**
+
+### **Essential Commands**
+```bash
+# Development (REQUIRED --turbopack flag)
+npm run dev --turbopack
+
+# Production build (validate before commits)
+npm run build --turbopack
+
+# Testing suite
+npm run test:e2e      # Playwright E2E (100% pass rate)
+npm test              # Jest unit tests (12.51% coverage)
+npm run test:all      # Full test suite
+
+# Backend development
+cd backend && uvicorn main:app --reload --port 8000
+
+# Type validation (zero errors required)
+npx tsc --noEmit --skipLibCheck
+```
+
+### **Build Requirements**
+1. **Zero TypeScript errors** - Builds fail with compilation issues
+2. **Turbopack mandatory** - Performance optimization requirement
+3. **E2E test data-testid** - Use `data-testid` attributes for reliable selectors
+4. **SSR compatibility** - All components must handle server-side rendering
+
+## 🎨 **UI/UX PATTERNS**
+
+### **Theme System (Universal)**
+```typescript
+// Component theme support (mandatory)
+className="bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
+
+// Theme context usage
+const { theme, toggleTheme } = useTheme();
+```
+
+### **Navigation Architecture**
+```typescript
+// Required on all major pages
 import NavigationTabs from '@/components/NavigationTabs';
 
 export default function Page() {
@@ -72,88 +135,102 @@ export default function Page() {
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <NavigationTabs />
       <div className="container mx-auto px-4 py-8">
-        {/* Content */}
+        {/* Page content */}
       </div>
     </div>
   );
 }
 ```
 
-## 🏗️ **PROVIDER ARCHITECTURE**
-
-All pages wrapped in comprehensive provider hierarchy:
-```typescript
-// src/components/ClientProviders.tsx
-<ErrorProvider>
-  <ThemeProvider>
-    <WebSocketProvider>
-      <AuthProvider>
-        <UnifiedAIProvider>          {/* Core AI system */}
-          <AnalyticsProvider>
-            <ProjectManagementProvider>
-              <CollaborationProvider>
-                <IntegrationsProvider>
-                  {children}
+### **Component Organization**
+```
+src/components/
+├── content-suite/        # Advanced design tools (AdvancedDesignStudio.tsx)
+├── social-media/         # Platform-specific components
+├── email-marketing/      # Campaign management UI
+├── project-management/   # Enterprise project tools
+├── ui/                   # Reusable UI components (Radix-based)
+└── providers/            # Error boundaries and context providers
 ```
 
-### **Instagram OAuth Integration**
-Complete implementation with Facebook SDK:
-- `src/components/FacebookSDK.tsx` - Global SDK loaded in layout
-- `src/app/auth/instagram/callback/page.tsx` - OAuth handler
-- Backend: `/api/social-media/oauth/initiate` endpoint
-- App ID: 1978667392867839 (production configured)
+## 🧪 **TESTING ARCHITECTURE**
 
-## 🔧 **API INTEGRATION PATTERNS**
-
-### **Database APIs (60+ endpoints ready)**
+### **E2E Testing (Playwright)**
 ```typescript
-// src/lib/api.ts - 1,242 lines with comprehensive client
-const API_BASE = 'https://autopilot-api-1.onrender.com';
+// playwright.config.ts - Multi-browser testing
+projects: [
+  { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
+  { name: 'firefox', use: { ...devices['Desktop Firefox'] } },
+  { name: 'webkit', use: { ...devices['Desktop Safari'] } },
+  { name: 'Mobile Chrome', use: { ...devices['Pixel 5'] } },
+  { name: 'Mobile Safari', use: { ...devices['iPhone 12'] } }
+]
 
-// Email Marketing APIs
-export async function fetchEmailCampaigns(): Promise<EmailCampaign[]>
-export async function createEmailCampaign(campaign: EmailCampaignInput)
-
-// Social Media APIs  
-export async function fetchSocialAccounts(): Promise<SocialMediaAccount[]>
-export async function createSocialPost(post: SocialMediaPostInput)
-
-// Collaboration APIs
-export async function fetchTeamMembers(): Promise<TeamMember[]>
-export async function updateUserPresence(presence: UserPresenceInput)
-
-// Integrations APIs
-export async function fetchIntegrationApps(): Promise<IntegrationApp[]>
-export async function installIntegration(appId: string, config: IntegrationConfig)
+// Test patterns
+await expect(page.locator('[data-testid="dashboard-title"]')).toBeVisible();
+await expect(page.locator('[data-testid="kpi-grid"]')).toBeVisible();
 ```
 
-### **Theme System (MANDATORY)**
-```typescript
-// All components support dark/light themes
-className="bg-white dark:bg-gray-900 text-gray-900 dark:text-white"
-
-// Use theme context
-const { theme, toggleTheme } = useTheme();
+### **Unit Testing (Jest)**
+```javascript
+// jest.config.js - React Testing Library integration
+testEnvironment: 'jsdom',
+setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
+testPathIgnorePatterns: ['<rootDir>/.next/', '<rootDir>/e2e/']
 ```
 
-## ⚠️ **DEVELOPMENT RULES** (Must Follow)
+## 🔐 **INTEGRATION PATTERNS**
 
-1. **Zero TypeScript Errors**: Builds fail with compilation errors
-2. **Turbopack Required**: Always use `--turbopack` flag for dev/build
-3. **SSR Safety**: Use dynamic imports for client-only components
-4. **Navigation Integration**: Include NavigationTabs on every major page
-5. **Theme Support**: All components must support dark/light themes
-6. **Testing**: Use `data-testid` attributes for reliable E2E selectors
-7. **Error Handling**: Implement comprehensive error boundaries
-8. **Provider Hierarchy**: Respect the established provider wrapping order
+### **AI Integration**
+- **Claude/Anthropic**: Primary AI provider (`@anthropic-ai/sdk`)
+- **AI Chat System**: `UnifiedAIProvider` with context-aware conversations
+- **AI Endpoints**: `/api/ai/chat` with platform control capabilities
 
-## 📁 **KEY FILE LOCATIONS**
+### **Social Media APIs**
+- **Instagram**: Modern Instagram API with Facebook SDK integration
+- **Facebook SDK**: Global component loaded in layout (`FacebookSDK.tsx`)
+- **OAuth Flow**: Complete implementation with business permissions
 
-- **Main Dashboard**: `src/app/dashboard/page.tsx` (253 lines)
-- **Social Media Hub**: `src/app/social-media/page.tsx` (600+ lines)
-- **API Client**: `src/lib/api.ts` (1,242 lines)
-- **Backend**: `backend/main.py` (2,547 lines)
-- **Navigation**: `src/components/NavigationTabs.tsx` (103 lines)
-- **Providers**: `src/components/ClientProviders.tsx` (141 lines)
-- **Facebook SDK**: `src/components/FacebookSDK.tsx` (38 lines)
-- **Types**: `src/types/index.ts` (comprehensive TypeScript definitions)
+### **Database Integration (Supabase)**
+- **Schema**: 64 tables with comprehensive relationships
+- **RLS Policies**: Row-level security enabled across all tables
+- **Real-time**: WebSocket connections for live collaboration features
+
+## 📁 **CRITICAL FILE LOCATIONS**
+
+**Core Architecture:**
+- `src/app/layout.tsx` - Root layout with provider hierarchy
+- `src/components/ClientProviders.tsx` - Context provider chain
+- `src/lib/api.ts` - Complete API client (1,334 lines)
+- `backend/main.py` - FastAPI server (3,393 lines)
+
+**Business Domains:**
+- `src/app/dashboard/page.tsx` - Main enterprise dashboard
+- `src/app/social-media/page.tsx` - Social media management hub
+- `src/app/email-marketing/page.tsx` - Campaign automation center
+- `src/app/project-management/page.tsx` - Enterprise project suite
+
+**Advanced Features:**
+- `src/components/content-suite/AdvancedDesignStudio.tsx` - Professional design tools
+- `src/contexts/UnifiedAIContext.tsx` - AI chat and automation
+- `src/components/FacebookSDK.tsx` - Global Facebook SDK integration
+
+## ⚠️ **CRITICAL REQUIREMENTS**
+
+1. **Always use `--turbopack`** for dev and build commands
+2. **Zero TypeScript errors** required for production builds  
+3. **SSR compatibility** for all components using dynamic imports
+4. **Theme support** mandatory for all UI components
+5. **data-testid attributes** required for all interactive elements
+6. **Provider hierarchy** must be respected when adding new contexts
+7. **API error handling** using custom APIError class patterns
+8. **Database connectivity** through established context patterns
+
+## 🎯 **DEVELOPMENT PRIORITIES**
+
+When working on this codebase, prioritize:
+1. **Database connectivity** - Connect contexts to live API endpoints
+2. **E2E test coverage** - Maintain 100% test pass rate
+3. **Performance optimization** - Leverage Turbopack and dynamic imports
+4. **Type safety** - Maintain zero TypeScript compilation errors
+5. **Cross-platform compatibility** - Support all major browsers and devices

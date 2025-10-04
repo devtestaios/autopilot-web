@@ -6,8 +6,10 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import NavigationTabs from '@/components/NavigationTabs';
 import BusinessSetupWizard from '@/components/BusinessSetupWizard';
 import CommandSuiteSelector from '@/components/onboarding/CommandSuiteSelector';
+import RoleBasedLanding from '@/components/onboarding/RoleBasedLanding';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import { 
   CheckCircle,
   ArrowRight,
@@ -17,7 +19,11 @@ import {
   Zap,
   Clock,
   TrendingUp,
-  Shield
+  Shield,
+  User,
+  Building,
+  Users,
+  Briefcase
 } from 'lucide-react';
 
 interface BusinessProfile {
@@ -44,6 +50,7 @@ function OnboardingContent() {
 
   const onboardingSteps: OnboardingStep[] = [
     { id: 'welcome', title: 'Welcome', description: 'Get started with PulseBridge.ai' },
+    { id: 'role-discovery', title: 'Role Discovery', description: 'Find your perfect path' },
     { id: 'business-setup', title: 'Business Setup', description: 'Tell us about your business' },
     { id: 'command-suite', title: 'Command Suite', description: 'Choose your platforms' },
     { id: 'complete', title: 'Complete', description: 'All set up!' }
@@ -126,8 +133,13 @@ function OnboardingContent() {
   };
 
   const handleStartSetup = () => {
-    setCurrentStep('business-setup');
+    setCurrentStep('role-discovery');
     setCompletedSteps(prev => [...prev, 'welcome']);
+  };
+
+  const handleRoleDiscoveryComplete = () => {
+    setCurrentStep('business-setup');
+    setCompletedSteps(prev => [...prev, 'role-discovery']);
   };
 
   const handleBackToBusinessSetup = () => {
@@ -270,6 +282,81 @@ function OnboardingContent() {
     );
   }
 
+  // Role Discovery Step
+  if (currentStep === 'role-discovery') {
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+        <NavigationTabs />
+        
+        <div className="container mx-auto px-4 py-8">
+          {/* Progress Bar */}
+          <div className="max-w-4xl mx-auto mb-8">
+            <div className="flex justify-between items-center mb-4">
+              <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                Step 2 of 4 • Role Discovery
+              </span>
+              <button
+                onClick={() => setCurrentStep('business-setup')}
+                className="text-sm text-blue-600 dark:text-blue-400 hover:underline"
+              >
+                Skip this step
+              </button>
+            </div>
+            <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+              <div className="bg-gradient-to-r from-teal-500 to-cyan-500 h-2 rounded-full w-2/4"></div>
+            </div>
+          </div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center mb-8"
+          >
+            <div className="flex items-center justify-center space-x-2 mb-4">
+              <User className="h-6 w-6 text-teal-600" />
+              <h1 className="text-4xl font-bold text-gray-900 dark:text-white">
+                Find Your Perfect Path
+              </h1>
+            </div>
+            <p className="text-xl text-gray-600 dark:text-gray-400 mb-8 max-w-3xl mx-auto">
+              Choose the path that best describes your business to get personalized recommendations and setup guides.
+            </p>
+          </motion.div>
+
+          <RoleBasedLanding
+            onRouteSelect={(route) => {
+              console.log('Selected route:', route.title);
+              // Store the selected route preference
+              localStorage.setItem('selectedRoute', JSON.stringify(route));
+              handleRoleDiscoveryComplete();
+            }}
+            className="max-w-6xl mx-auto"
+          />
+
+          {/* Navigation */}
+          <div className="max-w-4xl mx-auto mt-12 flex justify-between">
+            <Button
+              variant="outline"
+              onClick={() => setCurrentStep('welcome')}
+              className="flex items-center space-x-2"
+            >
+              <ArrowRight className="h-4 w-4 rotate-180" />
+              <span>Back</span>
+            </Button>
+            
+            <Button
+              onClick={handleRoleDiscoveryComplete}
+              className="flex items-center space-x-2"
+            >
+              <span>Continue to Business Setup</span>
+              <ArrowRight className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   // Command Suite Selection Step
   if (currentStep === 'command-suite' && businessProfile) {
     return (
@@ -315,56 +402,69 @@ function OnboardingContent() {
     );
   }
 
-  // Main business setup wizard
-  return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <NavigationTabs />
-      
-      <div className="container mx-auto px-4 py-8">
-        {/* Progress Bar */}
-        <div className="max-w-4xl mx-auto mb-8">
-          <div className="flex justify-between items-center mb-4">
-            <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
-              Setup Progress
-            </span>
-            <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
-              {Math.round(((completedSteps.length + 1) / onboardingSteps.length) * 100)}% Complete
-            </span>
+  // Business Setup Step
+  if (currentStep === 'business-setup') {
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+        <NavigationTabs />
+        
+        <div className="container mx-auto px-4 py-8">
+          {/* Progress Bar */}
+          <div className="max-w-4xl mx-auto mb-8">
+            <div className="flex justify-between items-center mb-4">
+              <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                Step 3 of 5 • Business Setup
+              </span>
+              <button
+                onClick={() => setCurrentStep('role-discovery')}
+                className="text-sm text-blue-600 dark:text-blue-400 hover:underline"
+              >
+                Back to Role Discovery
+              </button>
+            </div>
+            <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+              <div className="bg-gradient-to-r from-teal-500 to-cyan-500 h-2 rounded-full w-3/5"></div>
+            </div>
           </div>
-          <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-            <motion.div
-              className="bg-gradient-to-r from-teal-500 to-cyan-500 h-2 rounded-full"
-              initial={{ width: `${(completedSteps.length / onboardingSteps.length) * 100}%` }}
-              animate={{ 
-                width: `${((completedSteps.length + 1) / onboardingSteps.length) * 100}%` 
-              }}
-              transition={{ duration: 0.5 }}
-            />
-          </div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center mb-8"
+          >
+            <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+              Let's Set Up Your Business Profile
+            </h1>
+            <p className="text-xl text-gray-600 dark:text-gray-400 mb-8">
+              Tell us about your business so we can customize your experience
+            </p>
+          </motion.div>
+
+          <BusinessSetupWizard 
+            onComplete={handleSetupComplete}
+            onSkip={handleSetupSkip}
+          />
         </div>
+      </div>
+    );
+  }
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-8"
+  // Default fallback
+  return (
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+      <div className="text-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-teal-600 mx-auto mb-4"></div>
+        <p className="text-gray-600 dark:text-gray-400">Loading...</p>
+        <Button 
+          onClick={() => setCurrentStep('welcome')}
+          className="mt-4"
         >
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
-            Let's Set Up Your Business Profile
-          </h1>
-          <p className="text-xl text-gray-600 dark:text-gray-400 mb-8">
-            Tell us about your business so we can customize your experience
-          </p>
-        </motion.div>
-
-        <BusinessSetupWizard 
-          onComplete={handleSetupComplete}
-          onSkip={handleSetupSkip}
-        />
+          Return to Welcome
+        </Button>
       </div>
     </div>
   );
 }
-
 export default function OnboardingPage() {
   return (
     <Suspense fallback={

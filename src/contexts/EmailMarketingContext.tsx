@@ -8,6 +8,9 @@
 
 import React, { createContext, useContext, useReducer, useEffect, useCallback, useMemo, useRef } from 'react';
 import { useWebSocket } from '@/contexts/WebSocketContext';
+import { optimizedAPI } from '@/lib/performance/optimizedAPI';
+import { simpleAnalytics } from '@/lib/performance/simpleAnalytics';
+import { realAnalytics, trackingHelpers } from '@/lib/performance/realAnalytics';
 import { 
   fetchEmailCampaigns,
   fetchEmailSubscribers,
@@ -238,7 +241,8 @@ export const mapApiEmailCampaignToContext = (apiCampaign: ApiEmailCampaign): Ema
   tags: apiCampaign.tags || [],
   excludeSegments: [],
   scheduledDate: apiCampaign.scheduled_at ? new Date(apiCampaign.scheduled_at) : undefined,
-  timezone: apiCampaign.timezone || 'UTC',
+  // timezone: 'UTC', // Removed - doesn't exist in type
+  timezone: 'UTC', // Default timezone
   status: apiCampaign.status === 'completed' ? 'sent' : 
          apiCampaign.status === 'sending' ? 'sent' : apiCampaign.status,
   sentDate: apiCampaign.sent_at ? new Date(apiCampaign.sent_at) : undefined,
@@ -562,7 +566,66 @@ const EmailMarketingContext = createContext<EmailMarketingContextType | undefine
 export function EmailMarketingProvider({ children }: { children: React.ReactNode }) {
   const [state, dispatch] = useReducer(emailMarketingReducer, initialState);
   const { subscribe } = useWebSocket();
+  // Real analytics integration
   const unsubscribeRef = useRef<(() => void) | null>(null);
+  const realtimeSubscriptionRef = useRef<string>('');
+
+  // ==================== OPTIMIZED DATA LOADING ====================
+
+  const loadCampaigns = useCallback(async () => {
+    dispatch({ type: 'SET_LOADING', payload: { key: 'campaigns', value: true } });
+    dispatch({ type: 'SET_ERROR', payload: { key: 'campaigns', value: undefined } });
+
+    try {
+      // Track loading attempt
+      await trackingHelpers.trackCampaignCreate('load_request', 0);
+      
+      // Use API client to fetch campaigns
+      const campaigns = await optimizedAPI.emailMarketing.getCampaigns();
+      dispatch({ type: 'SET_CAMPAIGNS', payload: campaigns });
+      
+      // Track successful load with real analytics
+      await trackingHelpers.trackCampaignCreate('campaigns_loaded', campaigns.length);
+      
+      // Also track with simple analytics
+      simpleAnalytics.trackPerformance('email_campaigns_loaded', campaigns.length);
+    } catch (error: any) {
+      dispatch({ type: 'SET_ERROR', payload: { 
+        key: 'campaigns', 
+        value: error.message || 'Failed to load campaigns' 
+      }});
+    } finally {
+      dispatch({ type: 'SET_LOADING', payload: { key: 'campaigns', value: false } });
+    }
+  }, []);
+
+  // Setup real-time subscriptions for email marketing data
+  useEffect(() => {
+    // Subscribe to email marketing updates via WebSocket
+    const unsubscribe = subscribe('email_marketing_updates', async (data: any) => {
+      await realAnalytics.trackEmailMarketingEvent('realtime_update', {
+        operation: data.type || 'unknown',
+        table: 'email_campaigns'
+      });
+      
+      // Refresh campaigns data when changes occur
+      if (data.type && ['campaign_created', 'campaign_updated', 'campaign_deleted'].includes(data.type)) {
+        loadCampaigns();
+      }
+    });
+    
+    unsubscribeRef.current = unsubscribe;
+
+    // Initial load
+    loadCampaigns();
+
+    // Cleanup subscription on unmount
+    return () => {
+      if (unsubscribeRef.current) {
+        unsubscribeRef.current();
+      }
+    };
+  }, [loadCampaigns, subscribe]);
 
   // ==================== CONTACT MANAGEMENT ====================
 

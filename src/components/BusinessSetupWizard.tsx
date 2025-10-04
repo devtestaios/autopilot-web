@@ -11,6 +11,8 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useBusinessConfiguration, BusinessType, BusinessSize, BusinessTemplate } from '@/contexts/BusinessConfigurationContext';
 import { useDashboardCustomization } from '@/contexts/DashboardCustomizationContext';
+import FeatureDiscoveryPanel from '@/components/onboarding/FeatureDiscoveryPanel';
+import RoleBasedLanding from '@/components/onboarding/RoleBasedLanding';
 import { 
   ArrowRight, 
   ArrowLeft, 
@@ -27,7 +29,9 @@ import {
   User,
   UserPlus,
   Building2,
-  Briefcase
+  Briefcase,
+  Lightbulb,
+  Map
 } from 'lucide-react';
 
 interface BusinessSetupWizardProps {
@@ -173,8 +177,9 @@ export default function BusinessSetupWizard({ onComplete, onSkip }: BusinessSetu
       case 1: return Boolean(formData.businessType);
       case 2: return Boolean(formData.businessSize);
       case 3: return formData.industry !== '' && formData.goals.length > 0;
-      case 4: return formData.selectedTemplate !== null;
+      case 4: return true; // Feature discovery is always complete (optional step)
       case 5: return formData.selectedTemplate !== null;
+      case 6: return formData.selectedTemplate !== null;
       default: return false;
     }
   };
@@ -275,6 +280,7 @@ export default function BusinessSetupWizard({ onComplete, onSkip }: BusinessSetu
     'Business Type', 
     'Team Size',
     'Industry & Goals',
+    'Discover Features',
     'Choose Your Setup',
     'Final Review'
   ];
@@ -561,8 +567,55 @@ export default function BusinessSetupWizard({ onComplete, onSkip }: BusinessSetu
               </motion.div>
             )}
 
-            {/* Step 4: Template Selection */}
+            {/* Step 4: Feature Discovery */}
             {step === 4 && (
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                className="space-y-6"
+              >
+                <div className="text-center mb-8">
+                  <div className="flex items-center justify-center space-x-2 mb-4">
+                    <Lightbulb className="h-6 w-6 text-yellow-500" />
+                    <h2 className="text-2xl font-bold">Discover What's Possible</h2>
+                  </div>
+                  <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+                    Explore features tailored specifically for your {formData.businessType?.replace('_', ' ')} business. 
+                    This will help you understand what PulseBridge.ai can do for you.
+                  </p>
+                </div>
+
+                <FeatureDiscoveryPanel
+                  businessType={formData.businessType}
+                  businessSize={formData.businessSize}
+                  selectedGoals={formData.goals}
+                  onFeatureSelect={(feature) => {
+                    // Optional: Track feature interest for later customization
+                    console.log('User is interested in:', feature.title);
+                  }}
+                  onStartQuickTour={() => {
+                    // Optional: Start guided tour
+                    console.log('Starting quick tour');
+                  }}
+                />
+
+                <div className="text-center bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
+                  <div className="flex items-center justify-center space-x-2 mb-2">
+                    <Map className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                    <span className="font-medium text-blue-900 dark:text-blue-100">
+                      Ready to see your personalized setup?
+                    </span>
+                  </div>
+                  <p className="text-sm text-blue-700 dark:text-blue-300">
+                    Click "Next" to see configuration templates designed specifically for your business profile.
+                  </p>
+                </div>
+              </motion.div>
+            )}
+
+            {/* Step 5: Template Selection */}
+            {step === 5 && (
               <motion.div
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -660,8 +713,8 @@ export default function BusinessSetupWizard({ onComplete, onSkip }: BusinessSetu
               </motion.div>
             )}
 
-            {/* Step 5: Final Review */}
-            {step === 5 && (
+            {/* Step 6: Final Review */}
+            {step === 6 && (
               <motion.div
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}

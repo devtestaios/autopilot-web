@@ -3,7 +3,6 @@
 import React, { createContext, useContext, useReducer, useCallback, useEffect, useRef } from 'react';
 import { optimizedAPI } from '@/lib/performance/optimizedAPI';
 import { simpleAnalytics } from '@/lib/performance/simpleAnalytics';
-import { realAnalytics, trackingHelpers } from '@/lib/performance/realAnalytics';
 import { SocialMediaAccount, SocialMediaPost } from '@/types';
 import { useWebSocket } from '@/contexts/WebSocketContext';
 
@@ -109,17 +108,14 @@ export function SocialMediaProvider({ children }: { children: React.ReactNode })
     dispatch({ type: 'SET_ERROR', payload: { key: 'accounts', value: undefined } });
 
     try {
-      // Track feature usage with real analytics
-      await trackingHelpers.trackAccountLoad(0); // Will update with actual count
+      // Track feature usage
+      simpleAnalytics.trackFeatureUsage('social_media', 'accounts_loaded');
       
       // Use the API client
       const accounts = await optimizedAPI.socialMedia.getAccounts();
       dispatch({ type: 'SET_ACCOUNTS', payload: accounts });
       
-      // Track successful load with real analytics
-      await trackingHelpers.trackAccountLoad(accounts.length);
-      
-      // Also track with simple analytics for local metrics
+      // Track performance
       simpleAnalytics.trackPerformance('accounts_load_count', accounts.length);
     } catch (error: any) {
       const errorMessage = error.message || 'Failed to load accounts';
@@ -127,9 +123,6 @@ export function SocialMediaProvider({ children }: { children: React.ReactNode })
         key: 'accounts', 
         value: errorMessage
       }});
-      
-      // Track error with both analytics systems
-      await realAnalytics.trackSocialMediaEvent('account_load_error', { error: errorMessage });
       simpleAnalytics.trackError(error, { context: 'load_accounts' });
     } finally {
       dispatch({ type: 'SET_LOADING', payload: { key: 'accounts', value: false } });
