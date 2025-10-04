@@ -6,6 +6,8 @@ import {
   fetchUserIntegrations,
   fetchIntegrationsOverview
 } from '@/lib/api';
+import { realAnalytics, trackingHelpers } from '@/lib/performance/realAnalytics';
+import { simpleAnalytics } from '@/lib/performance/simpleAnalytics';
 import type { 
   IntegrationApp as APIIntegrationApp,
   UserIntegration
@@ -472,9 +474,24 @@ export function IntegrationsProvider({ children }: { children: React.ReactNode }
     setIsLoading(true);
     setError(null);
 
+    // Track installation start
+    trackingHelpers.trackIntegrationInstall(appId, app?.category || 'unknown');
+
     try {
       const app = availableApps.find(a => a.id === appId);
       if (!app) throw new Error('App not found');
+
+      // Send analytics to backend
+      await realAnalytics.sendEvent({
+        eventType: 'integration_install',
+        properties: {
+          app_id: appId,
+          app_name: app.name,
+          app_category: app.category,
+          app_developer: app.developer.name,
+          installation_source: 'marketplace'
+        }
+      });
 
       // Simulate installation process
       await new Promise(resolve => setTimeout(resolve, 2000));
@@ -497,9 +514,25 @@ export function IntegrationsProvider({ children }: { children: React.ReactNode }
         a.id === appId ? { ...a, isInstalled: true, isEnabled: true } : a
       ));
 
+      // Track successful installation
+      trackingHelpers.trackIntegrationInstall(app.name, app.category);
+
+      // Track locally for immediate feedback
+      simpleAnalytics.track('feature_use', {
+        feature: 'integration_install',
+        appId,
+        appName: app.name,
+        category: app.category
+      });
+
       return true;
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Installation failed');
+      const errorMessage = err instanceof Error ? err.message : 'Installation failed';
+      setError(errorMessage);
+
+      // Track installation failure
+      trackingHelpers.trackIntegrationError(appId, 'install_failed');
+
       return false;
     } finally {
       setIsLoading(false);
@@ -508,17 +541,49 @@ export function IntegrationsProvider({ children }: { children: React.ReactNode }
 
   const uninstallApp = useCallback(async (appId: string): Promise<boolean> => {
     setIsLoading(true);
+    
+    // Track uninstallation start
+    const app = availableApps.find(a => a.id === appId);
+    trackingHelpers.trackIntegrationError(appId, 'uninstall_request');
+
     try {
+      const app = availableApps.find(a => a.id === appId);
+      
+      // Send analytics to backend
+      await realAnalytics.sendEvent({
+        eventType: 'integration_uninstall',
+        properties: {
+          app_id: appId,
+          app_name: app?.name || 'Unknown',
+          uninstall_reason: 'user_request'
+        }
+      });
+
       await new Promise(resolve => setTimeout(resolve, 1000));
       
       setInstalledApps(prev => prev.filter(a => a.appId !== appId));
       setAvailableApps(prev => prev.map(a => 
         a.id === appId ? { ...a, isInstalled: false, isEnabled: false } : a
       ));
+
+      // Track successful uninstallation
+      trackingHelpers.trackIntegrationError(appId, 'uninstall_success');
+
+      // Track locally
+      simpleAnalytics.track('feature_use', {
+        feature: 'integration_uninstall',
+        appId,
+        appName: app?.name || 'Unknown'
+      });
       
       return true;
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Uninstallation failed');
+      const errorMessage = err instanceof Error ? err.message : 'Uninstallation failed';
+      setError(errorMessage);
+
+      // Track uninstallation failure
+      trackingHelpers.trackIntegrationError(appId, 'uninstall_failed');
+
       return false;
     } finally {
       setIsLoading(false);
