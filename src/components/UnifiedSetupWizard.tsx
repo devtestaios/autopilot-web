@@ -368,10 +368,12 @@ export default function UnifiedSetupWizard({ onComplete, onSkip }: UnifiedSetupW
   };
 
   const handleSubmit = async () => {
+    console.log('handleSubmit called');
     setIsSubmitting(true);
     
     try {
       const selectedPlatforms = getSelectedPlatforms();
+      console.log('Selected platforms:', selectedPlatforms);
       
       // Update business configuration
       updateConfiguration({
@@ -405,18 +407,24 @@ export default function UnifiedSetupWizard({ onComplete, onSkip }: UnifiedSetupW
         selectedPlatforms
       };
       
+      console.log('Business profile data:', businessProfileData);
+      
       // Store in localStorage for persistence
       localStorage.setItem('businessProfile', JSON.stringify(businessProfileData));
       localStorage.setItem('onboardingComplete', 'true');
       localStorage.setItem('onboardingTimestamp', new Date().toISOString());
       
       // Call onComplete callback if provided
+      console.log('Calling onComplete callback...');
       onComplete?.(businessProfileData);
       
       // Navigate to dashboard
+      console.log('Navigating to dashboard...');
       router.push('/dashboard?onboarding=complete&welcome=true');
     } catch (error) {
       console.error('Failed to complete setup:', error);
+      // Show error to user
+      alert('Setup failed. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -426,8 +434,8 @@ export default function UnifiedSetupWizard({ onComplete, onSkip }: UnifiedSetupW
   const canProceed = () => {
     switch (currentStep) {
       case 0: return formData.businessName.trim().length > 0;
-      case 1: return formData.businessType !== '';
-      case 2: return formData.businessSize !== '';
+      case 1: return Boolean(formData.businessType);
+      case 2: return Boolean(formData.businessSize);
       case 3: return formData.industry !== '' && formData.goals.length > 0;
       case 4: return formData.selectedSuite !== '' && 
                      (formData.selectedSuite !== 'custom-suite' || formData.customPlatforms.length > 0);
@@ -859,19 +867,19 @@ export default function UnifiedSetupWizard({ onComplete, onSkip }: UnifiedSetupW
                 </div>
 
                 {/* Review Summary */}
-                <Card>
+                <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
                   <CardHeader>
-                    <CardTitle>Setup Summary</CardTitle>
+                    <CardTitle className="text-gray-900 dark:text-white">Setup Summary</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="grid md:grid-cols-2 gap-4">
                       <div>
                         <h4 className="font-medium text-gray-900 dark:text-white mb-2">Business Details</h4>
-                        <ul className="text-sm text-gray-600 dark:text-gray-400 space-y-1">
-                          <li><strong>Name:</strong> {formData.businessName}</li>
-                          <li><strong>Type:</strong> {businessTypeOptions.find(o => o.value === formData.businessType)?.label}</li>
-                          <li><strong>Size:</strong> {businessSizeOptions.find(o => o.value === formData.businessSize)?.label}</li>
-                          <li><strong>Industry:</strong> {formData.industry}</li>
+                        <ul className="text-sm text-gray-700 dark:text-gray-300 space-y-1">
+                          <li><strong className="text-gray-900 dark:text-white">Name:</strong> {formData.businessName}</li>
+                          <li><strong className="text-gray-900 dark:text-white">Type:</strong> {businessTypeOptions.find(o => o.value === formData.businessType)?.label}</li>
+                          <li><strong className="text-gray-900 dark:text-white">Size:</strong> {businessSizeOptions.find(o => o.value === formData.businessSize)?.label}</li>
+                          <li><strong className="text-gray-900 dark:text-white">Industry:</strong> {formData.industry}</li>
                         </ul>
                       </div>
                       <div>
@@ -880,7 +888,7 @@ export default function UnifiedSetupWizard({ onComplete, onSkip }: UnifiedSetupW
                           {getSelectedPlatforms().map(platformId => {
                             const platform = availablePlatforms.find(p => p.id === platformId);
                             return platform ? (
-                              <Badge key={platformId} variant="outline" className="text-sm">
+                              <Badge key={platformId} className="text-sm bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-200">
                                 {platform.name}
                               </Badge>
                             ) : null;
@@ -893,7 +901,7 @@ export default function UnifiedSetupWizard({ onComplete, onSkip }: UnifiedSetupW
                       <h4 className="font-medium text-gray-900 dark:text-white mb-2">Primary Goals</h4>
                       <div className="flex flex-wrap gap-2">
                         {formData.goals.map(goal => (
-                          <Badge key={goal} variant="secondary" className="text-sm">
+                          <Badge key={goal} className="text-sm bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-200">
                             {goal}
                           </Badge>
                         ))}
@@ -903,12 +911,12 @@ export default function UnifiedSetupWizard({ onComplete, onSkip }: UnifiedSetupW
                 </Card>
 
                 <div className="text-center">
-                  <div className="p-6 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-lg mb-6">
-                    <Rocket className="w-12 h-12 text-blue-600 mx-auto mb-4" />
+                  <div className="p-6 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-800/30 dark:to-indigo-800/30 border border-blue-200 dark:border-blue-700 rounded-lg mb-6">
+                    <Rocket className="w-12 h-12 text-blue-600 dark:text-blue-400 mx-auto mb-4" />
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
                       🎉 Your personalized business platform is ready!
                     </h3>
-                    <p className="text-gray-600 dark:text-gray-400">
+                    <p className="text-gray-700 dark:text-gray-200">
                       We've configured everything based on your preferences. You can always customize further from your dashboard.
                     </p>
                   </div>
@@ -918,10 +926,10 @@ export default function UnifiedSetupWizard({ onComplete, onSkip }: UnifiedSetupW
           </AnimatePresence>
 
           {/* Navigation */}
-          <div className="flex justify-between pt-6 border-t">
+          <div className="flex justify-between pt-6 border-t border-gray-200 dark:border-gray-700">
             <div>
               {currentStep > 0 && (
-                <Button variant="outline" onClick={handleBack}>
+                <Button variant="outline" onClick={handleBack} className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200">
                   <ArrowLeft className="w-4 h-4 mr-2" />
                   Back
                 </Button>
@@ -930,21 +938,26 @@ export default function UnifiedSetupWizard({ onComplete, onSkip }: UnifiedSetupW
             
             <div className="flex gap-3">
               {currentStep < steps.length - 1 && (
-                <Button variant="outline" onClick={onSkip}>
+                <Button variant="outline" onClick={onSkip} className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200">
                   Skip Setup
                 </Button>
               )}
               
               {currentStep < steps.length - 1 ? (
-                <Button onClick={handleNext} disabled={!canProceed()}>
+                <Button onClick={handleNext} disabled={!canProceed()} className="bg-blue-600 hover:bg-blue-700 text-white">
                   Continue
                   <ArrowRight className="w-4 h-4 ml-2" />
                 </Button>
               ) : (
                 <Button 
-                  onClick={handleSubmit} 
+                  type="button"
+                  onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+                    e.preventDefault();
+                    console.log('Launch button clicked, submitting...');
+                    handleSubmit();
+                  }}
                   disabled={isSubmitting || !canProceed()}
-                  className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
+                  className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium"
                 >
                   {isSubmitting ? (
                     <>
@@ -993,7 +1006,7 @@ function SuiteCard({ suite, isSelected, isRecommended, onSelect }: {
               <div>
                 <CardTitle className="text-lg">{suite.name}</CardTitle>
                 {isRecommended && (
-                  <Badge className="mt-1 bg-blue-100 text-blue-700">
+                  <Badge className="mt-1 bg-blue-100 text-blue-800 dark:bg-blue-800/60 dark:text-blue-200">
                     Recommended
                   </Badge>
                 )}
@@ -1066,11 +1079,11 @@ function PlatformCard({ platform, isSelected, isRecommended, onToggle }: {
               <div>
                 <CardTitle className="text-base">{platform.name}</CardTitle>
                 <div className="flex gap-2 mt-1">
-                  <Badge variant="secondary" className="text-xs">
+                  <Badge variant="secondary" className="text-xs bg-gray-200 text-gray-800 dark:bg-gray-700 dark:text-gray-200">
                     {platform.pricing}
                   </Badge>
                   {isRecommended && (
-                    <Badge className="text-xs bg-blue-100 text-blue-700">
+                    <Badge className="text-xs bg-blue-100 text-blue-800 dark:bg-blue-800/60 dark:text-blue-200">
                       Recommended
                     </Badge>
                   )}
