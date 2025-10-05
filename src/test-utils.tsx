@@ -1,7 +1,7 @@
 import React from 'react'
 import { render, RenderOptions } from '@testing-library/react'
 import { ThemeProvider } from '@/contexts/ThemeContext'
-import { AuthProvider } from '@/contexts/AuthContext'
+import { AuthProvider } from '@/contexts/EnhancedAuthContext'
 
 // Create a custom render function that includes providers
 const AllTheProviders = ({ children }: { children: React.ReactNode }) => {

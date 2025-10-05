@@ -1,7 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/contexts/EnhancedAuthContext';
 import { useWebSocket } from '@/contexts/WebSocketContext';
 import { realAnalytics, trackingHelpers } from '@/lib/performance/realAnalytics';
 import { simpleAnalytics } from '@/lib/performance/simpleAnalytics';
@@ -204,7 +204,7 @@ export function CollaborationProvider({ children }: { children: React.ReactNode 
           avatar: member.avatar || '/default-avatar.png',
           email: member.email,
           status: member.status === 'active' ? 'online' as const : 'offline' as const,
-          lastSeen: new Date(member.last_active),
+          lastSeen: new Date(member.lastActiveAt || member.created_at),
           currentPage: undefined,
           role: member.role,
           permissions: []
@@ -309,7 +309,7 @@ export function CollaborationProvider({ children }: { children: React.ReactNode 
       
       const presence: Omit<LivePresence, 'timestamp'> = {
         userId: user.id,
-        userName: user.name || user.email,
+        userName: user.displayName || user.email,
         userAvatar: user.avatar || '',
         pageId,
         pageName,
@@ -342,7 +342,7 @@ export function CollaborationProvider({ children }: { children: React.ReactNode 
     const handleMouseMove = (e: MouseEvent) => {
       const cursor: Omit<LiveCursor, 'timestamp'> = {
         userId: user.id,
-        userName: user.name || user.email,
+        userName: user.displayName || user.email,
         userColor: userColors[parseInt(user.id.slice(-2), 16) % userColors.length],
         x: e.clientX,
         y: e.clientY
@@ -401,7 +401,7 @@ export function CollaborationProvider({ children }: { children: React.ReactNode 
     
     const cursor: Omit<LiveCursor, 'timestamp'> = {
       userId: user.id,
-      userName: user.name || user.email,
+      userName: user.displayName || user.email,
       userColor: userColors[parseInt(user.id.slice(-2), 16) % userColors.length],
       x,
       y

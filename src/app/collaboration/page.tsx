@@ -4,7 +4,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import dynamic from 'next/dynamic';
 import { useCollaboration } from '@/contexts/CollaborationContext';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/contexts/EnhancedAuthContext';
 
 // SSR-safe imports using social-media pattern
 const UnifiedSidebar = dynamic(() => import('@/components/UnifiedSidebar'), {

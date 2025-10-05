@@ -16,7 +16,8 @@ const AdvancedNavigation = dynamic(() => import('@/components/ui/AdvancedNavigat
   loading: () => <div className="h-16 bg-white dark:bg-gray-900 border-b animate-pulse" />
 });
 
-import { useAuth } from '@/contexts/AuthContext';
+import { Button } from '@/components/ui/button';
+import { useAuth } from '@/contexts/EnhancedAuthContext';
 
 interface DashboardWidget {
   id: string;

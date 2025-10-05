@@ -1,7 +1,7 @@
 'use client';
 
 import { ThemeProvider } from "@/contexts/ThemeContext";
-import { AuthProvider } from "@/contexts/AuthContext";
+import { AuthProvider } from "@/contexts/EnhancedAuthContext";
 import { SearchProvider } from "@/contexts/SearchContext";
 import { UnifiedAIProvider } from "@/contexts/UnifiedAIContext";
 import { WebSocketProvider } from "@/contexts/WebSocketContext";
