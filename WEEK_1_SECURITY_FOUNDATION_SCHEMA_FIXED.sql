@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS public.companies (
   website TEXT,
   
   -- Subscription & Billing
-  subscription_tier TEXT DEFAULT 'free' CHECK (subscription_tier IN ('free', 'starter', 'professional', 'enterprise')),
+  subscription_tier TEXT DEFAULT 'trial' CHECK (subscription_tier IN ('trial', 'solo_professional', 'growth_team', 'professional_agency', 'enterprise', 'enterprise_plus')),
   billing_email TEXT,
   tax_id TEXT,
   
@@ -49,53 +49,9 @@ CREATE TABLE IF NOT EXISTS public.companies (
   current_storage_gb NUMERIC(10,2) DEFAULT 0,
   
   -- Account Management
-  account_status TEXT DEFAULT 'active' CHECK (account_status IN ('active', 'suspended', 'trial', 'cancelled')),
-  trial_ends_at TIMESTAMP WITH TIME ZONE,
-  
-  -- Audit Trail
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  created_by UUID,
-  
-  CONSTRAINT fk_companies_created_by FOREIGN KEY (created_by) REFERENCES public.profiles(id)
-);
-
-  id UUID DEFAULT extensions.uuid_generate_v4() PRIMARY KEY,
-  name TEXT NOT NULL,
-  slug TEXT UNIQUE NOT NULL,
-  domain TEXT UNIQUE,
-  industry TEXT,
-  company_size TEXT CHECK (company_size IN ('1-10', '11-50', '51-200', '201-1000', '1000+')),
-  
-  -- Contact Information
-  address JSONB,
-  phone TEXT,
-  website TEXT,
-  
-  -- Subscription & Billing
-  subscription_tier TEXT DEFAULT 'free' CHECK (subscription_tier IN ('free', 'starter', 'professional', 'enterprise')),
-  billing_email TEXT,
-  tax_id TEXT,
-  
-  -- Settings & Preferences
-  settings JSONB DEFAULT '{
-    "brand_colors": [],
-    "logo_url": null,
-    "default_timezone": "UTC",
-    "business_hours": {},
-    "approval_workflow_enabled": false,
-    "sso_enabled": false
-  }'::jsonb,
-  
-  -- Usage & Analytics
-  user_limit INTEGER DEFAULT 5,
-  current_user_count INTEGER DEFAULT 0,
-  storage_limit_gb INTEGER DEFAULT 10,
-  current_storage_gb NUMERIC(10,2) DEFAULT 0,
-  
-  -- Account Management
-  account_status TEXT DEFAULT 'active' CHECK (account_status IN ('active', 'suspended', 'trial', 'cancelled')),
-  trial_ends_at TIMESTAMP WITH TIME ZONE,
+  account_status TEXT DEFAULT 'trial' CHECK (account_status IN ('trial', 'active', 'suspended', 'cancelled')),
+  trial_ends_at TIMESTAMP WITH TIME ZONE DEFAULT (NOW() + INTERVAL '15 days'),
+  trial_started_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   
   -- Audit Trail
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
@@ -123,7 +79,7 @@ CREATE TABLE IF NOT EXISTS public.profiles (
   -- Account Management
   role TEXT NOT NULL DEFAULT 'user' CHECK (role IN ('super_admin', 'agency_owner', 'account_manager', 'campaign_manager', 'content_creator', 'analyst', 'client_viewer')),
   account_status TEXT NOT NULL DEFAULT 'active' CHECK (account_status IN ('active', 'suspended', 'pending_verification', 'deactivated')),
-  subscription_tier TEXT DEFAULT 'free' CHECK (subscription_tier IN ('free', 'starter', 'professional', 'enterprise')),
+  subscription_tier TEXT DEFAULT 'trial' CHECK (subscription_tier IN ('trial', 'solo_professional', 'growth_team', 'professional_agency', 'enterprise', 'enterprise_plus')),
   
   -- Security & Session Management
   email_verified BOOLEAN DEFAULT FALSE,
