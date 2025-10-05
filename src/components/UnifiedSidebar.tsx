@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useAuth } from '@/contexts/EnhancedAuthContext';
 import { 
   LayoutDashboard, 
   Megaphone, 
@@ -39,7 +40,10 @@ import {
   Workflow,
   PieChart,
   LineChart,
-  Activity
+  Activity,
+  Lock,
+  Eye,
+  AlertTriangle
 } from 'lucide-react';
 import { PulseWaveLogo } from './PulseWaveLogo';
 
@@ -469,6 +473,82 @@ function getContextualSidebarItems(pathname: string): { contextName: string; ite
     };
   }
 
+  // Admin Context - Only for super_admin, admin, company_admin
+  if (pathname.startsWith('/admin')) {
+    return {
+      contextName: 'Administration Center',
+      items: [
+        {
+          id: 'admin-overview',
+          label: 'Admin Overview',
+          icon: Shield,
+          path: '/admin',
+          badge: 'Admin',
+          description: 'System administration dashboard'
+        },
+        {
+          id: 'user-management',
+          label: 'User Management',
+          icon: Users,
+          path: '/admin/users',
+          description: 'Manage users and permissions',
+          subItems: [
+            { id: 'user-list', label: 'All Users', path: '/admin' },
+            { id: 'user-roles', label: 'Roles & Permissions', path: '/admin' },
+            { id: 'user-invitations', label: 'User Invitations', path: '/admin' },
+            { id: 'user-audit', label: 'User Audit Log', path: '/admin' }
+          ]
+        },
+        {
+          id: 'security-monitoring',
+          label: 'Security Dashboard',
+          icon: Lock,
+          path: '/admin/security',
+          description: 'Security monitoring and events',
+          subItems: [
+            { id: 'security-events', label: 'Security Events', path: '/admin' },
+            { id: 'login-attempts', label: 'Login Attempts', path: '/admin' },
+            { id: 'threat-analysis', label: 'Threat Analysis', path: '/admin' },
+            { id: 'security-alerts', label: 'Security Alerts', path: '/admin' }
+          ]
+        },
+        {
+          id: 'system-settings',
+          label: 'System Settings',
+          icon: Settings,
+          path: '/admin/settings',
+          description: 'Platform configuration',
+          subItems: [
+            { id: 'general-settings', label: 'General Settings', path: '/admin' },
+            { id: 'company-settings', label: 'Company Settings', path: '/admin' },
+            { id: 'feature-flags', label: 'Feature Flags', path: '/admin' },
+            { id: 'api-settings', label: 'API Settings', path: '/admin' }
+          ]
+        },
+        {
+          id: 'system-monitoring',
+          label: 'System Health',
+          icon: Activity,
+          path: '/admin/monitoring',
+          description: 'System performance monitoring',
+          subItems: [
+            { id: 'system-metrics', label: 'System Metrics', path: '/admin' },
+            { id: 'database-health', label: 'Database Health', path: '/admin' },
+            { id: 'api-performance', label: 'API Performance', path: '/admin' },
+            { id: 'error-logs', label: 'Error Logs', path: '/admin' }
+          ]
+        },
+        {
+          id: 'audit-logs',
+          label: 'Audit Logs',
+          icon: Eye,
+          path: '/admin/audit',
+          description: 'Comprehensive audit trail'
+        }
+      ]
+    };
+  }
+
   // Default fallback to Master Terminal items
   return {
     contextName: 'Master Terminal',
@@ -533,6 +613,19 @@ export default function UnifiedSidebar({
   // Get contextual sidebar content based on current page
   const { contextName, items: sidebarItems } = getContextualSidebarItems(pathname);
 
+  // Add admin menu item to dashboard context (access control is handled at route level)
+  const enhancedSidebarItems = [...sidebarItems];
+  if (pathname.startsWith('/dashboard')) {
+    enhancedSidebarItems.splice(-1, 0, {
+      id: 'admin-center',
+      label: 'Admin Center',
+      icon: Shield,
+      path: '/admin',
+      badge: 'Admin',
+      description: 'System administration'
+    });
+  }
+
   // Check for mobile screen
   useEffect(() => {
     // Only run on client side to prevent SSR issues
@@ -552,7 +645,7 @@ export default function UnifiedSidebar({
 
   // Auto-expand current section
   useEffect(() => {
-    const currentItem = sidebarItems.find(item => 
+    const currentItem = enhancedSidebarItems.find(item => 
       pathname === item.path || 
       (item.subItems && item.subItems.some(sub => pathname === sub.path))
     );
@@ -560,7 +653,7 @@ export default function UnifiedSidebar({
     if (currentItem && currentItem.subItems) {
       setExpandedItem(currentItem.id);
     }
-  }, [pathname, sidebarItems]);
+  }, [pathname, enhancedSidebarItems]);
 
   // Notify parent of collapse state changes
   useEffect(() => {
@@ -651,7 +744,7 @@ export default function UnifiedSidebar({
                   isItemActive={isItemActive}
                   theme={theme}
                   pathname={pathname}
-                  sidebarItems={sidebarItems}
+                  sidebarItems={enhancedSidebarItems}
                   contextName={contextName}
                   onClose={() => setIsMobileOpen(false)}
                 />
@@ -683,7 +776,7 @@ export default function UnifiedSidebar({
         isItemActive={isItemActive}
         theme={theme}
         pathname={pathname}
-        sidebarItems={sidebarItems}
+        sidebarItems={enhancedSidebarItems}
         contextName={contextName}
       />
 
