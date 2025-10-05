@@ -1,13 +1,22 @@
 # PulseBridge.ai - Comprehensive AI Coding Assistant Instructions
 
-> **🚀 Enterprise Marketing Automation Platform** with AI-autonomous decision making, multi-platform campaign optimization, and complete database-driven architecture
+> **🚀 Enterprise Marketing Automation Platform** with AI-autonomous decision making, multi-platform campaign optimization, complete database-driven architecture, and premium pricing structure
 
 ## 🎯 **PROJECT OVERVIEW**
 
 **Platform**: AI-powered marketing automation with enterprise business ecosystem features  
-**Status**: Production-ready with 115+ routes, 60+ API endpoints, 100% E2E test coverage  
+**Status**: Production-ready with 115+ routes, 60+ API endpoints, 100% E2E test coverage, 6-tier premium pricing  
 **Live URLs**: https://pulsebridge.ai | Backend: https://autopilot-api-1.onrender.com  
 **Architecture**: Next.js 15.5.2 + FastAPI + Supabase + Claude AI + Multi-platform APIs
+
+## 💰 **LATEST UPDATE** (October 5, 2025)
+**PREMIUM PRICING STRUCTURE COMPLETE - ENTERPRISE SUBSCRIPTION SYSTEM LIVE**
+- ✅ **6-Tier Pricing**: Trial ($0) → Solo Professional ($50) → Growth Team ($150) → Professional Agency ($400) → Enterprise ($1,200) → Enterprise Plus ($2,500+)
+- ✅ **Universal Trial**: 15-day trial for all user group sizes (1-10+ users)
+- ✅ **Database Schema**: Enhanced with subscription tiers and trial management fields
+- ✅ **Safe Deployment**: SAFE_PRICING_UPDATE_SCRIPT.sql successfully executed in Supabase
+- ✅ **Enterprise API**: Complete subscription management with usage limits and feature gates
+- ✅ **Repository**: All pricing structure changes committed and deployed
 
 ## 🏗️ **CRITICAL ARCHITECTURE PATTERNS**
 
@@ -215,6 +224,11 @@ testPathIgnorePatterns: ['<rootDir>/.next/', '<rootDir>/e2e/']
 - `src/contexts/UnifiedAIContext.tsx` - AI chat and automation
 - `src/components/FacebookSDK.tsx` - Global Facebook SDK integration
 
+**Enterprise Pricing System:**
+- `src/lib/enterpriseAPI.ts` - Complete subscription management system
+- `SAFE_PRICING_UPDATE_SCRIPT.sql` - Production database deployment script
+- 6-tier pricing structure with trial management and feature gates
+
 ## ⚠️ **CRITICAL REQUIREMENTS**
 
 1. **Always use `--turbopack`** for dev and build commands
@@ -229,8 +243,10 @@ testPathIgnorePatterns: ['<rootDir>/.next/', '<rootDir>/e2e/']
 ## 🎯 **DEVELOPMENT PRIORITIES**
 
 When working on this codebase, prioritize:
-1. **Database connectivity** - Connect contexts to live API endpoints
-2. **E2E test coverage** - Maintain 100% test pass rate
-3. **Performance optimization** - Leverage Turbopack and dynamic imports
-4. **Type safety** - Maintain zero TypeScript compilation errors
-5. **Cross-platform compatibility** - Support all major browsers and devices
+1. **Frontend pricing page integration** - Implement new 6-tier pricing structure display
+2. **Payment processor integration** - Connect Stripe or similar for subscription management
+3. **Database connectivity** - Connect contexts to live API endpoints
+4. **E2E test coverage** - Maintain 100% test pass rate
+5. **Performance optimization** - Leverage Turbopack and dynamic imports
+6. **Type safety** - Maintain zero TypeScript compilation errors
+7. **Cross-platform compatibility** - Support all major browsers and devices
