@@ -162,8 +162,8 @@ describe('AuthContext', () => {
 
       expect(screen.getByTestId('is-authenticated')).toHaveTextContent('false');
       expect(screen.getByTestId('user-email')).toHaveTextContent('null');
-      expect(mockLocalStorage.removeItem).toHaveBeenCalledWith('autopilot_user');
-      expect(mockLocalStorage.removeItem).toHaveBeenCalledWith('autopilot_token');
+      expect(mockLocalStorage.removeItem).toHaveBeenCalledWith('demo_user');
+      expect(mockLocalStorage.removeItem).toHaveBeenCalledWith('demo_token');
       expect(consoleSpy).toHaveBeenCalledWith('Error parsing saved user:', expect.any(SyntaxError));
 
       consoleSpy.mockRestore();
@@ -514,8 +514,8 @@ describe('AuthContext', () => {
       });
 
       await waitFor(() => {
-        expect(mockLocalStorage.setItem).toHaveBeenCalledWith('autopilot_user', expect.any(String));
-        expect(mockLocalStorage.setItem).toHaveBeenCalledWith('autopilot_token', expect.any(String));
+        expect(mockLocalStorage.setItem).toHaveBeenCalledWith('demo_user', expect.any(String));
+        expect(mockLocalStorage.setItem).toHaveBeenCalledWith('demo_token', expect.any(String));
       });
 
       // Verify the saved user data structure

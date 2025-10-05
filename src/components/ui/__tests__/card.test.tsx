@@ -12,7 +12,7 @@ describe('Card Components', () => {
     it('should apply base card styles', () => {
       const { container } = render(<Card>Card content</Card>);
       
-      expect(container.firstChild).toHaveClass('bg-white', 'rounded-lg', 'border', 'border-gray-200', 'shadow-sm');
+      expect(container.firstChild).toHaveClass('theme-card', 'rounded-lg', 'border', 'shadow-sm');
     });
 
     it('should accept custom className', () => {
@@ -62,7 +62,7 @@ describe('Card Components', () => {
       
       const title = screen.getByRole('heading', { level: 3 });
       expect(title).toBeInTheDocument();
-      expect(title).toHaveClass('text-lg', 'font-semibold', 'text-gray-900');
+      expect(title).toHaveClass('text-lg', 'font-semibold', 'text-theme-primary');
     });
   });
 
@@ -76,7 +76,7 @@ describe('Card Components', () => {
     it('should apply description styles', () => {
       const { container } = render(<CardDescription>Description</CardDescription>);
       
-      expect(container.firstChild).toHaveClass('text-sm', 'text-gray-600', 'mt-1');
+      expect(container.firstChild).toHaveClass('text-sm', 'text-theme-secondary', 'mt-1');
     });
   });
 

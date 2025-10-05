@@ -46,6 +46,13 @@ export const useGlobalSearch = (searchData?: SearchData) => {
         url: '/campaigns',
       },
       {
+        id: 'page-campaign-management',
+        type: 'page',
+        title: 'Campaign Management',
+        description: 'Advanced campaign management and optimization',
+        url: '/campaigns/management',
+      },
+      {
         id: 'page-analytics',
         type: 'page',
         title: 'Analytics',
@@ -142,13 +149,20 @@ export const useGlobalSearch = (searchData?: SearchData) => {
     return content
   }, [searchData])
 
-  // Update search content only when data changes
+  // Update search content when data changes or on mount
   useEffect(() => {
     if (searchData !== lastSearchDataRef.current) {
       searchContentRef.current = buildSearchContent()
       lastSearchDataRef.current = searchData
     }
   }, [searchData, buildSearchContent])
+
+  // Initial build on mount to ensure static pages are always available
+  useEffect(() => {
+    if (searchContentRef.current.length === 0) {
+      searchContentRef.current = buildSearchContent()
+    }
+  }, [buildSearchContent])
 
   // Handle keyboard shortcuts
   useEffect(() => {

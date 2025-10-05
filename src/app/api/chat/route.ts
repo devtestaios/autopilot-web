@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { checkAIRateLimit, recordAIUsage } from '@/lib/aiRateLimiter';
 
 // Define the structure for chat messages
 interface ChatMessage {
@@ -11,6 +12,8 @@ interface ChatRequest {
   message: string;
   history?: ChatMessage[];
   userId?: string;
+  subscriptionTier?: string;
+  tenantId?: string;
 }
 
 // Simple AI response simulation
@@ -43,7 +46,7 @@ const generateAIResponse = (message: string): string => {
 export async function POST(request: NextRequest) {
   try {
     const body: ChatRequest = await request.json();
-    const { message, history = [], userId } = body;
+    const { message, history = [], userId, subscriptionTier = 'trial', tenantId } = body;
 
     // Validate request
     if (!message || typeof message !== 'string') {
@@ -53,8 +56,43 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    if (!userId) {
+      return NextResponse.json(
+        { error: 'User ID is required for rate limiting' },
+        { status: 400 }
+      );
+    }
+
+    // Check rate limiting BEFORE processing request
+    const rateLimitResult = await checkAIRateLimit(userId, subscriptionTier, 0.01);
+    
+    if (!rateLimitResult.allowed) {
+      return NextResponse.json(
+        { 
+          error: 'Rate limit exceeded',
+          reason: rateLimitResult.reason,
+          remaining: rateLimitResult.remaining,
+          resetTime: rateLimitResult.resetTime,
+          costRemaining: rateLimitResult.costRemaining
+        },
+        { status: 429 }
+      );
+    }
+
     // Generate AI response
     const aiResponse = generateAIResponse(message);
+
+    // Record usage for billing and monitoring
+    await recordAIUsage(
+      userId,
+      tenantId,
+      'claude', // Model type (simplified for now)
+      message.length, // Approximate input tokens
+      aiResponse.length, // Approximate output tokens  
+      0.01, // Estimated cost (to be calculated properly)
+      '/api/chat',
+      subscriptionTier
+    );
 
     // Create response object
     const response = {
@@ -66,7 +104,12 @@ export async function POST(request: NextRequest) {
         'Analyze performance',
         'Optimize budget',
         'View analytics'
-      ]
+      ],
+      rateLimit: {
+        remaining: rateLimitResult.remaining,
+        resetTime: rateLimitResult.resetTime,
+        costRemaining: rateLimitResult.costRemaining
+      }
     };
 
     return NextResponse.json(response);

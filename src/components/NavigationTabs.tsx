@@ -12,8 +12,15 @@ const NavigationTabs = memo(() => {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
 
   return (
-    <header className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 transition-colors relative z-50" data-testid="main-navigation">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <header 
+      className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 transition-colors relative z-50" 
+      data-testid="main-navigation"
+    >
+      <nav 
+        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+        role="navigation"
+        aria-label="Tabs"
+      >
         <div className="flex items-center justify-end h-16">
           {/* Right: User Menu & Settings - Now taking full width and aligned right */}
           <div className="flex items-center space-x-3">
@@ -22,12 +29,16 @@ const NavigationTabs = memo(() => {
               onClick={toggleTheme}
               className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
               title="Toggle theme"
+              aria-label="Toggle theme"
             >
               {theme === 'dark' ? '☀️' : '🌙'}
             </button>
             
             {/* Notifications */}
-            <button className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors relative">
+            <button 
+              className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors relative"
+              aria-label="Notifications"
+            >
               <Bell className="w-5 h-5 text-gray-600 dark:text-gray-300" />
               <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full" />
             </button>
@@ -50,6 +61,7 @@ const NavigationTabs = memo(() => {
               <button
                 onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
                 className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                aria-label="User menu"
               >
                 <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
                   <User className="w-4 h-4 text-white" />
@@ -88,7 +100,7 @@ const NavigationTabs = memo(() => {
             </div>
           </div>
         </div>
-      </div>
+      </nav>
     </header>
   );
 });

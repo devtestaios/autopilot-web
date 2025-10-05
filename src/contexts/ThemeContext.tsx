@@ -10,16 +10,12 @@ interface ThemeContextProps {
   setTheme: (theme: Theme) => void;
 }
 
-// Create context with default values
-const ThemeContext = createContext<ThemeContextProps>({
-  theme: 'dark',
-  toggleTheme: () => {},
-  setTheme: () => {},
-});
+// Create context without default values to enable error checking
+const ThemeContext = createContext<ThemeContextProps | null>(null);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  // Always start with 'dark' theme to ensure SSR/client consistency
-  const [currentTheme, setCurrentTheme] = useState<Theme>('dark');
+  // Always start with 'light' theme to ensure SSR/client consistency
+  const [currentTheme, setCurrentTheme] = useState<Theme>('light');
 
   // Apply theme to document - stable with useCallback
   const updateDocumentTheme = useCallback((theme: Theme) => {
@@ -41,11 +37,25 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   // Initialize theme on mount - only run on client side
   useEffect(() => {
-    const savedTheme = (localStorage.getItem('theme') as Theme) || 'dark';
-    
-    if (savedTheme === 'light' || savedTheme === 'dark') {
-      setCurrentTheme(savedTheme);
-      updateDocumentTheme(savedTheme);
+    try {
+      const savedTheme = localStorage.getItem('theme') as Theme;
+      
+      if (savedTheme === 'light' || savedTheme === 'dark') {
+        // Use saved theme preference
+        setCurrentTheme(savedTheme);
+        updateDocumentTheme(savedTheme);
+      } else {
+        // No saved theme - check system preference
+        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const systemTheme: Theme = prefersDark ? 'dark' : 'light';
+        setCurrentTheme(systemTheme);
+        updateDocumentTheme(systemTheme);
+      }
+    } catch (error) {
+      // Fallback to light theme if localStorage access fails
+      console.warn('Failed to load theme preference:', error);
+      setCurrentTheme('light');
+      updateDocumentTheme('light');
     }
   }, [updateDocumentTheme]);
 
@@ -55,7 +65,11 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     setCurrentTheme(newTheme);
     updateDocumentTheme(newTheme);
     if (typeof window !== 'undefined') {
-      localStorage.setItem('theme', newTheme);
+      try {
+        localStorage.setItem('theme', newTheme);
+      } catch (error) {
+        console.warn('Failed to save theme preference:', error);
+      }
     }
   }, [currentTheme, updateDocumentTheme]);
 
@@ -64,7 +78,11 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     setCurrentTheme(theme);
     updateDocumentTheme(theme);
     if (typeof window !== 'undefined') {
-      localStorage.setItem('theme', theme);
+      try {
+        localStorage.setItem('theme', theme);
+      } catch (error) {
+        console.warn('Failed to save theme preference:', error);
+      }
     }
   }, [updateDocumentTheme]);
 

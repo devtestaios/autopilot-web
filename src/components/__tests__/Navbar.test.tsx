@@ -92,7 +92,7 @@ describe('Navbar', () => {
       
       expect(screen.getByText('John Doe')).toBeInTheDocument();
       expect(screen.getByText('Marketing Director')).toBeInTheDocument();
-      expect(screen.getByAltText('User')).toBeInTheDocument();
+      expect(screen.getByAltText('User profile image')).toBeInTheDocument();
     });
 
     it('renders search functionality', () => {
@@ -218,7 +218,7 @@ describe('Navbar', () => {
     it('shows user menu when profile is clicked', async () => {
       render(<Navbar />);
       
-      const profileButton = screen.getByAltText('User').closest('button');
+      const profileButton = screen.getByAltText('User profile image').closest('button');
       await user.click(profileButton!);
       
       expect(screen.getByText('john.doe@company.com')).toBeInTheDocument();
@@ -231,7 +231,7 @@ describe('Navbar', () => {
     it('hides user menu when profile is clicked again', async () => {
       render(<Navbar />);
       
-      const profileButton = screen.getByAltText('User').closest('button');
+      const profileButton = screen.getByAltText('User profile image').closest('button');
       
       // Open menu
       await user.click(profileButton!);
@@ -245,7 +245,7 @@ describe('Navbar', () => {
     it('shows online status indicator', async () => {
       render(<Navbar />);
       
-      const profileButton = screen.getByAltText('User').closest('button');
+      const profileButton = screen.getByAltText('User profile image').closest('button');
       await user.click(profileButton!);
       
       expect(screen.getByText('Online')).toBeInTheDocument();
@@ -254,7 +254,7 @@ describe('Navbar', () => {
     it('renders all menu items with icons', async () => {
       render(<Navbar />);
       
-      const profileButton = screen.getByAltText('User').closest('button');
+      const profileButton = screen.getByAltText('User profile image').closest('button');
       await user.click(profileButton!);
       
       expect(screen.getByTestId('user-icon')).toBeInTheDocument();
@@ -331,7 +331,7 @@ describe('Navbar', () => {
     it('provides alt text for user avatar', () => {
       render(<Navbar />);
       
-      const avatar = screen.getByAltText('User');
+      const avatar = screen.getByAltText('User profile image');
       expect(avatar).toBeInTheDocument();
     });
 
@@ -363,7 +363,7 @@ describe('Navbar', () => {
       render(<Navbar />);
       
       // This tests the structure that would handle outside clicks
-      const profileButton = screen.getByAltText('User').closest('button');
+      const profileButton = screen.getByAltText('User profile image').closest('button');
       
       expect(profileButton).toBeInTheDocument();
     });
@@ -371,7 +371,7 @@ describe('Navbar', () => {
     it('manages multiple dropdown states independently', async () => {
       render(<Navbar />);
       
-      const profileButton = screen.getByAltText('User').closest('button');
+      const profileButton = screen.getByAltText('User profile image').closest('button');
       await user.click(profileButton!);
       
       // Check that menu state is managed separately from other dropdowns

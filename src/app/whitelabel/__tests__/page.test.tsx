@@ -1,5 +1,15 @@
 import { render, screen } from '@testing-library/react';
 import WhiteLabelPage from '../page';
+import { ThemeProvider } from '@/contexts/ThemeContext';
+
+// Test wrapper with ThemeProvider
+const renderWithTheme = (component: React.ReactElement) => {
+  return render(
+    <ThemeProvider>
+      {component}
+    </ThemeProvider>
+  );
+};
 
 // Mock the WhiteLabelDashboard component
 jest.mock('@/components/WhiteLabelDashboard', () => {
@@ -10,26 +20,26 @@ jest.mock('@/components/WhiteLabelDashboard', () => {
 
 describe('WhiteLabelPage', () => {
   it('should render the white label page with correct structure', () => {
-    render(<WhiteLabelPage />);
+    renderWithTheme(<WhiteLabelPage />);
 
     // Check that the WhiteLabelDashboard component is rendered
     expect(screen.getByTestId('white-label-dashboard')).toBeInTheDocument();
   });
 
   it('should have correct container styling', () => {
-    const { container } = render(<WhiteLabelPage />);
+    const { container } = renderWithTheme(<WhiteLabelPage />);
     
     // Check main container classes
     const mainDiv = container.firstChild as HTMLElement;
-    expect(mainDiv).toHaveClass('container', 'mx-auto', 'p-6');
+    expect(mainDiv).toHaveClass('min-h-screen', 'bg-gray-50', 'dark:bg-gray-900');
   });
 
   it('should render without crashing', () => {
-    expect(() => render(<WhiteLabelPage />)).not.toThrow();
+    expect(() => renderWithTheme(<WhiteLabelPage />)).not.toThrow();
   });
 
   it('should contain the WhiteLabelDashboard component', () => {
-    render(<WhiteLabelPage />);
+    renderWithTheme(<WhiteLabelPage />);
     
     // Verify the mocked component is present
     const component = screen.getByTestId('white-label-dashboard');

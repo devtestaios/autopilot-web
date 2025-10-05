@@ -2,13 +2,15 @@ import { renderHook, act } from '@testing-library/react';
 import { useLeadFilters } from '../useLeadFilters';
 import type { Lead } from '@/types';
 
-// Mock leads for testing
-const mockLeads: Lead[] = [
+// Mock leads for testing with extended properties for filtering
+const mockLeads: (Lead & { status?: string; score?: number })[] = [
   {
     id: '1',
     name: 'John Doe',
     email: 'john@example.com',
     source: 'website',
+    status: 'new',
+    score: 9,
     created_at: new Date('2024-01-15').toISOString(),
     updated_at: new Date('2024-01-15').toISOString()
   },
@@ -17,6 +19,8 @@ const mockLeads: Lead[] = [
     name: 'Jane Smith',
     email: 'jane@example.com',
     source: 'social_media',
+    status: 'contacted',
+    score: 6,
     created_at: new Date('2024-01-10').toISOString(),
     updated_at: new Date('2024-01-10').toISOString()
   },
@@ -25,6 +29,8 @@ const mockLeads: Lead[] = [
     name: 'Bob Johnson',
     email: 'bob@example.com',
     source: 'referral',
+    status: 'contacted',
+    score: 3,
     created_at: new Date('2024-01-05').toISOString(),
     updated_at: new Date('2024-01-05').toISOString()
   },
@@ -33,6 +39,8 @@ const mockLeads: Lead[] = [
     name: 'Alice Brown',
     email: 'alice@example.com',
     source: 'website',
+    status: 'lost',
+    score: 0,
     created_at: new Date('2024-01-20').toISOString(),
     updated_at: new Date('2024-01-20').toISOString()
   },
@@ -41,6 +49,8 @@ const mockLeads: Lead[] = [
     name: 'Charlie Wilson',
     email: 'charlie@example.com',
     source: null, // Test null/undefined source
+    status: 'new',
+    score: 7,
     created_at: new Date('2024-01-12').toISOString(),
     updated_at: new Date('2024-01-12').toISOString()
   }

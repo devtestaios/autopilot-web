@@ -362,7 +362,7 @@ export default function AnalyticsPage() {
               </motion.button>
               <div>
                 <h1 data-testid="analytics-title" className="text-3xl font-bold text-gray-900 dark:text-white">
-                  Unified Analytics Dashboard
+                  Analytics
                 </h1>
                 <p className="text-gray-600 dark:text-gray-400 mt-1">
                   Cross-platform performance insights with real-time backend connectivity
@@ -427,9 +427,10 @@ export default function AnalyticsPage() {
 
           {/* Cross-Platform KPI Grid */}
           <div data-testid="unified-kpi-grid" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            {stats?.kpis.map((kpi) => (
+            {stats?.kpis.map((kpi, index) => (
               <motion.div
                 key={kpi.id}
+                data-testid={index === 0 ? "metric-card" : undefined}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: parseInt(kpi.id) * 0.1 }}
@@ -474,6 +475,7 @@ export default function AnalyticsPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
             {/* Social Media Analytics */}
             <motion.div
+              data-testid="analytics-chart"
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700"

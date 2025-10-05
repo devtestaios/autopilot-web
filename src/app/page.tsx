@@ -7,8 +7,14 @@ export default function HomePage() {
   const router = useRouter();
 
   useEffect(() => {
-    // Redirect to dashboard as main entry point
-    router.replace('/dashboard');
+    // Use a timeout to prevent navigation interruption issues
+    const timer = setTimeout(() => {
+      if (typeof window !== 'undefined') {
+        router.replace('/dashboard');
+      }
+    }, 100);
+
+    return () => clearTimeout(timer);
   }, [router]);
 
   return (

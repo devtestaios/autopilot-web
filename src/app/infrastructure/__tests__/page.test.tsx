@@ -1,5 +1,15 @@
 import { render, screen } from '@testing-library/react';
 import InfrastructurePage from '../page';
+import { ThemeProvider } from '@/contexts/ThemeContext';
+
+// Test wrapper with ThemeProvider
+const renderWithTheme = (component: React.ReactElement) => {
+  return render(
+    <ThemeProvider>
+      {component}
+    </ThemeProvider>
+  );
+};
 
 // Mock the ProductionInfrastructure component
 jest.mock('@/components/ProductionInfrastructure', () => {
@@ -10,26 +20,26 @@ jest.mock('@/components/ProductionInfrastructure', () => {
 
 describe('InfrastructurePage', () => {
   it('should render the infrastructure page with correct structure', () => {
-    render(<InfrastructurePage />);
+    renderWithTheme(<InfrastructurePage />);
 
     // Check that the ProductionInfrastructure component is rendered
     expect(screen.getByTestId('production-infrastructure')).toBeInTheDocument();
   });
 
   it('should have correct container styling', () => {
-    const { container } = render(<InfrastructurePage />);
+    const { container } = renderWithTheme(<InfrastructurePage />);
     
     // Check main container classes
     const mainDiv = container.firstChild as HTMLElement;
-    expect(mainDiv).toHaveClass('container', 'mx-auto', 'p-6');
+    expect(mainDiv).toHaveClass('min-h-screen', 'bg-gray-50', 'dark:bg-gray-900');
   });
 
   it('should render without crashing', () => {
-    expect(() => render(<InfrastructurePage />)).not.toThrow();
+    expect(() => renderWithTheme(<InfrastructurePage />)).not.toThrow();
   });
 
   it('should contain the ProductionInfrastructure component', () => {
-    render(<InfrastructurePage />);
+    renderWithTheme(<InfrastructurePage />);
     
     // Verify the mocked component is present
     const component = screen.getByTestId('production-infrastructure');

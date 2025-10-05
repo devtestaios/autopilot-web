@@ -7,8 +7,11 @@ describe('Root Page', () => {
   it('should render root page', () => {
     renderWithWrapper(<RootPage />);
     
-    // Check for unique landing page elements - use getAllByTestId since there are multiple nav elements
-    expect(screen.getAllByTestId('main-navigation')).toHaveLength(2);
+    // Check for loading spinner and redirect message 
+    expect(screen.getByText('Redirecting to dashboard...')).toBeInTheDocument();
+    // Check for loading spinner element
+    const spinner = document.querySelector('.animate-spin');
+    expect(spinner).toBeInTheDocument();
   });
 
   it('should render without crashing', () => {

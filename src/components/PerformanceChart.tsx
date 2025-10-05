@@ -65,7 +65,7 @@ export default function PerformanceChart({ data, metric, title }: PerformanceCha
           No performance data available
         </div>
       ) : (
-        <ResponsiveContainer width="100%" height={300}>
+        <ResponsiveContainer width="100%" height={300} data-testid="responsive-container">
           <LineChart data={data}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis 
@@ -124,7 +124,7 @@ export function CampaignComparisonChart({ campaigns }: CampaignComparisonChartPr
           No campaign data available
         </div>
       ) : (
-        <ResponsiveContainer width="100%" height={300}>
+        <ResponsiveContainer width="100%" height={300} data-testid="responsive-container">
           <BarChart data={data}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis 
