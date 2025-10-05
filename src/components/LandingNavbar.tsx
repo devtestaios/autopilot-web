@@ -29,7 +29,7 @@ export default function LandingNavbar({ className = '' }: LandingNavbarProps) {
   const navigationItems = [
     { label: 'Features', href: '#features' },
     { label: 'Solutions', href: '#solutions' },
-    { label: 'Pricing', href: '#pricing' },
+    { label: 'Pricing', href: '/pricing' },
     { label: 'Dashboard', href: '/dashboard' },
     { label: 'About', href: '#about' },
     { label: 'Contact', href: '#contact' },
