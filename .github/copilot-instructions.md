@@ -1,4 +1,4 @@
-# PulseBridge.ai - Comprehensive AI Coding Assistant Instructions
+# PulseBridge.ai - AI Coding Assistant Instructions
 
 > **🚀 Enterprise Marketing Automation Platform** with AI-autonomous decision making, multi-platform campaign optimization, complete database-driven architecture, and premium pricing structure
 
@@ -8,6 +8,14 @@
 **Status**: Production-ready with 115+ routes, 60+ API endpoints, 100% E2E test coverage, 6-tier premium pricing  
 **Live URLs**: https://pulsebridge.ai | Backend: https://autopilot-api-1.onrender.com  
 **Architecture**: Next.js 15.5.2 + FastAPI + Supabase + Claude AI + Multi-platform APIs
+
+## 🗂️ **PROJECT STRUCTURE**
+
+This codebase has dual backend locations:
+- `/Users/grayadkins/Desktop/Autopilot_Repos/autopilot-web/backend/` - Primary FastAPI backend (3,393 lines)
+- `/Users/grayadkins/Desktop/Autopilot_Repos/autopilot-api/app/` - Secondary API backend
+
+Always work with the primary backend unless specifically directed to the autopilot-api folder.
 
 ## 💰 **LATEST UPDATE** (October 5, 2025)
 **PREMIUM PRICING STRUCTURE COMPLETE - ENTERPRISE SUBSCRIPTION SYSTEM LIVE**
@@ -110,7 +118,7 @@ npm run test:e2e      # Playwright E2E (100% pass rate)
 npm test              # Jest unit tests (12.51% coverage)
 npm run test:all      # Full test suite
 
-# Backend development
+# Backend development (Primary location)
 cd backend && uvicorn main:app --reload --port 8000
 
 # Type validation (zero errors required)
@@ -119,9 +127,10 @@ npx tsc --noEmit --skipLibCheck
 
 ### **Build Requirements**
 1. **Zero TypeScript errors** - Builds fail with compilation issues
-2. **Turbopack mandatory** - Performance optimization requirement
+2. **Turbopack mandatory** - Performance optimization requirement (--turbopack flag)
 3. **E2E test data-testid** - Use `data-testid` attributes for reliable selectors
 4. **SSR compatibility** - All components must handle server-side rendering
+5. **Dynamic imports** - Use `dynamic()` for client-only components
 
 ## 🎨 **UI/UX PATTERNS**
 
@@ -175,7 +184,7 @@ projects: [
   { name: 'Mobile Safari', use: { ...devices['iPhone 12'] } }
 ]
 
-// Test patterns
+// Test patterns - ALWAYS use data-testid
 await expect(page.locator('[data-testid="dashboard-title"]')).toBeVisible();
 await expect(page.locator('[data-testid="kpi-grid"]')).toBeVisible();
 ```
@@ -187,6 +196,12 @@ testEnvironment: 'jsdom',
 setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
 testPathIgnorePatterns: ['<rootDir>/.next/', '<rootDir>/e2e/']
 ```
+
+### **Critical Testing Patterns**
+- **E2E Success Rate**: Maintain 100% pass rate across all browsers
+- **Test Commands**: `npm run test:e2e`, `npm run test:e2e:ui`, `npm run test:all`
+- **Selector Strategy**: Always use `data-testid` attributes for reliable element targeting
+- **Coverage**: Current unit test coverage 12.51%, E2E coverage 100%
 
 ## 🔐 **INTEGRATION PATTERNS**
 
@@ -204,6 +219,40 @@ testPathIgnorePatterns: ['<rootDir>/.next/', '<rootDir>/e2e/']
 - **Schema**: 64 tables with comprehensive relationships
 - **RLS Policies**: Row-level security enabled across all tables
 - **Real-time**: WebSocket connections for live collaboration features
+- **Safe Deployment**: Use SAFE_PRICING_UPDATE_SCRIPT.sql patterns for production updates
+- **Security**: All deployment scripts include conflict resolution and rollback safety
+
+## 🔐 **DATABASE DEPLOYMENT PATTERNS**
+
+### **Safe Deployment Strategy**
+```sql
+-- Pattern from SAFE_PRICING_UPDATE_SCRIPT.sql
+DO $$ 
+BEGIN
+  -- Check if constraint exists before dropping
+  IF EXISTS (SELECT 1 FROM information_schema.table_constraints 
+             WHERE constraint_name = 'constraint_name' 
+             AND table_name = 'table_name') THEN
+    ALTER TABLE table_name DROP CONSTRAINT constraint_name;
+  END IF;
+  
+  -- Add new constraint
+  ALTER TABLE table_name ADD CONSTRAINT new_constraint_name CHECK (...);
+END $$;
+```
+
+### **Environment Variable Patterns**
+```bash
+# Backend (.env on Render)
+SUPABASE_URL=your_supabase_url
+SUPABASE_ANON_KEY=your_supabase_anon_key
+ANTHROPIC_API_KEY=your_claude_key
+
+# Frontend (.env.local)
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+NEXT_PUBLIC_API_URL=https://autopilot-api-1.onrender.com
+```
 
 ## 📁 **CRITICAL FILE LOCATIONS**
 
@@ -239,14 +288,38 @@ testPathIgnorePatterns: ['<rootDir>/.next/', '<rootDir>/e2e/']
 6. **Provider hierarchy** must be respected when adding new contexts
 7. **API error handling** using custom APIError class patterns
 8. **Database connectivity** through established context patterns
+9. **Safe deployments** using DO $$ blocks for schema changes
+10. **Dual backend awareness** - specify which backend when unclear
 
 ## 🎯 **DEVELOPMENT PRIORITIES**
 
 When working on this codebase, prioritize:
 1. **Frontend pricing page integration** - Implement new 6-tier pricing structure display
 2. **Payment processor integration** - Connect Stripe or similar for subscription management
-3. **Database connectivity** - Connect contexts to live API endpoints
+3. **Context-database connectivity** - Connect EmailMarketingContext, CollaborationContext, IntegrationsContext to live API endpoints
 4. **E2E test coverage** - Maintain 100% test pass rate
 5. **Performance optimization** - Leverage Turbopack and dynamic imports
 6. **Type safety** - Maintain zero TypeScript compilation errors
 7. **Cross-platform compatibility** - Support all major browsers and devices
+
+## 📝 **IMMEDIATE IMPLEMENTATION PRIORITIES**
+
+### **Ready for Immediate Connection** (Est. 1-2 hours):
+1. **EmailMarketingContext** → Email Marketing APIs (15+ endpoints)
+2. **CollaborationContext** → Collaboration APIs (20+ endpoints)  
+3. **IntegrationsContext** → Integrations APIs (18+ endpoints)
+
+### **Implementation Pattern**:
+```typescript
+// Replace mock data loading:
+useEffect(() => {
+  setEmailCampaigns(mockData);
+}, []);
+
+// With real API calls:
+useEffect(() => {
+  fetchEmailCampaigns()
+    .then(setEmailCampaigns)
+    .catch(console.error);
+}, []);
+```
