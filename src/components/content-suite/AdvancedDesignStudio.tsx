@@ -211,7 +211,7 @@ export type CanvasElement = {
   strokeDashArray?: string;
   strokeLineCap?: 'butt' | 'round' | 'square';
   strokeLineJoin?: 'miter' | 'round' | 'bevel';
-  shapeType?: 'rectangle' | 'circle' | 'ellipse' | 'triangle' | 'pentagon' | 'hexagon' | 'star' | 'heart' | 'arrow' | 'diamond' | 'polygon';
+  shapeType?: 'rectangle' | 'circle' | 'ellipse' | 'triangle' | 'pentagon' | 'hexagon' | 'star' | 'heart' | 'arrow' | 'diamond' | 'polygon' | 'line';
   pathData?: string;
   // Layer effects
   effects?: {
@@ -370,7 +370,9 @@ function AIDesignAssistant({
 
       // Auto-execute AI design commands
       if (aiCommands.length > 0) {
-        await executeAICommands(aiCommands, canvasSize, addElements);
+        await executeAICommands(aiCommands, canvasSize, (newElements: CanvasElement[]) => {
+          onElementsUpdate([...elements, ...newElements]);
+        });
         // Add a follow-up message about what was created
         setMessages(prev => [...prev, { 
           role: 'assistant', 
@@ -602,7 +604,15 @@ function AdvancedCanvasToolbar({
   onGridToggle,
   showGrid,
   onRulerToggle,
-  showRuler
+  showRuler,
+  selectedColor,
+  onColorChange,
+  brushSize,
+  onBrushSizeChange,
+  onUploadPhoto,
+  onDeleteElement,
+  onDuplicateElement,
+  hasSelectedElement
 }: {
   selectedTool: Tool;
   onToolChange: (tool: Tool) => void;
@@ -616,6 +626,14 @@ function AdvancedCanvasToolbar({
   showGrid: boolean;
   onRulerToggle: () => void;
   showRuler: boolean;
+  selectedColor?: string;
+  onColorChange?: (color: string) => void;
+  brushSize?: number;
+  onBrushSizeChange?: (size: number) => void;
+  onUploadPhoto?: () => void;
+  onDeleteElement?: () => void;
+  onDuplicateElement?: () => void;
+  hasSelectedElement?: boolean;
 }) {
   const toolGroups = [
     {

@@ -83,12 +83,12 @@ const NavigationTabs = dynamic(() => import('@/components/NavigationTabs'), {
 });
 
 // Enhanced Components
-const AIPoweredComposer = dynamic(() => import('@/components/AIPoweredComposer'), { 
+const AIPoweredComposer = dynamic(() => import('@/components/AIPoweredComposer').then(mod => ({ default: mod.AIPoweredComposer })), { 
   ssr: false,
   loading: () => <div className="w-full h-96 bg-gray-100 dark:bg-gray-800 animate-pulse rounded-lg" />
 });
 
-const EnhancedAnalytics = dynamic(() => import('@/components/EnhancedAnalytics'), { 
+const EnhancedAnalytics = dynamic(() => import('@/components/EnhancedAnalytics').then(mod => ({ default: mod.EnhancedAnalytics })), { 
   ssr: false,
   loading: () => <div className="w-full h-96 bg-gray-100 dark:bg-gray-800 animate-pulse rounded-lg" />
 });
@@ -247,8 +247,7 @@ export default function EnhancedSocialMediaPlatform() {
         media_urls: [], // Will be populated after media upload
         target_accounts: postData.platforms.map((p: any) => p.platform),
         scheduled_date: postData.scheduledDate ? postData.scheduledDate.toISOString() : undefined,
-        scheduled_date: postData.scheduledDate,
-        status: postData.scheduledDate ? 'scheduled' : 'published'
+        post_type: postData.scheduledDate ? 'scheduled' : 'published'
       };
 
       // Handle media file uploads if any
