@@ -14,7 +14,6 @@ const nextConfig: NextConfig = {
   
   // Optimize build performance for local development
   productionBrowserSourceMaps: false,
-  optimizeFonts: true,
   
   // Performance optimizations for slow filesystems
   onDemandEntries: {
@@ -24,23 +23,20 @@ const nextConfig: NextConfig = {
     pagesBufferLength: 2,
   },
   
-  // Enhanced performance optimizations
+    // Enhanced performance optimizations
   experimental: {
     optimizePackageImports: [
       'lucide-react', 
-      'framer-motion',
       '@radix-ui/react-dialog',
       '@radix-ui/react-dropdown-menu',
+      '@radix-ui/react-tabs',
       '@radix-ui/react-tooltip',
-      'recharts',
-      '@dnd-kit/core',
-      '@dnd-kit/sortable',
-      'react-virtualized'
+      'framer-motion'
     ],
   },
   
-  // Turbopack configuration (moved from experimental.turbo)
-  turbo: {
+  // Turbopack configuration (Next.js 15.5.2+)
+  turbopack: {
     rules: {
       '*.svg': {
         loaders: ['@svgr/webpack'],
@@ -65,6 +61,24 @@ const nextConfig: NextConfig = {
       config.resolve.alias = {
         ...config.resolve.alias,
         '@': require('path').resolve(__dirname, 'src'),
+      };
+      
+      // Filesystem performance optimizations
+      config.watchOptions = {
+        ignored: [
+          '**/node_modules/**',
+          '**/.git/**',
+          '**/backend/**',
+          '**/.next/**',
+          '**/dist/**',
+          '**/*.log',
+          '**/coverage/**',
+          '**/e2e/**',
+          '**/playwright-report/**',
+          '**/test-results/**'
+        ],
+        aggregateTimeout: 200,
+        poll: false, // Disable polling to reduce filesystem load
       };
       
       // Enhanced bundle optimization
