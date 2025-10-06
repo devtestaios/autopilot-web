@@ -73,7 +73,9 @@ import {
   Navigation,
   MessageSquare,
   Bot,
-  Wand2
+  Wand2,
+  PenTool,
+  Brush
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -163,6 +165,7 @@ export type CanvasElement = {
   strokeLineJoin?: 'miter' | 'round' | 'bevel';
   // Shape types
   shapeType?: 'rectangle' | 'circle' | 'ellipse' | 'triangle' | 'pentagon' | 'hexagon' | 'star' | 'heart' | 'arrow' | 'diamond' | 'polygon';
+  iconName?: string; // For icon elements
   // Path data for custom shapes
   pathData?: string;
   // Masking

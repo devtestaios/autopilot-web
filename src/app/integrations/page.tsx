@@ -48,7 +48,17 @@ const NavigationTabs = dynamic(() => import('@/components/NavigationTabs'), {
 // APP CARD COMPONENT
 // ============================================================================
 
-function IntegrationAppCard({ app, onInstall, onUninstall, onConfigure }) {
+function IntegrationAppCard({ 
+  app, 
+  onInstall, 
+  onUninstall, 
+  onConfigure 
+}: {
+  app: any;
+  onInstall: (appId: string) => void;
+  onUninstall: (appId: string) => void;
+  onConfigure: (appId: string) => void;
+}) {
   const [showDetails, setShowDetails] = useState(false);
 
   const getPricingBadge = () => {
@@ -154,7 +164,7 @@ function IntegrationAppCard({ app, onInstall, onUninstall, onConfigure }) {
         {/* Features Preview */}
         <div className="mb-4">
           <div className="flex flex-wrap gap-1">
-            {app.features.slice(0, 3).map((feature, index) => (
+            {app.features.slice(0, 3).map((feature: string, index: number) => (
               <span key={index} className="px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs rounded">
                 {feature}
               </span>
@@ -223,7 +233,7 @@ function IntegrationAppCard({ app, onInstall, onUninstall, onConfigure }) {
                 <div>
                   <h4 className="text-sm font-medium text-gray-900 dark:text-white mb-2">Features</h4>
                   <div className="flex flex-wrap gap-1">
-                    {app.features.map((feature, index) => (
+                    {app.features.map((feature: string, index: number) => (
                       <span key={index} className="px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-xs rounded">
                         {feature}
                       </span>
@@ -234,7 +244,7 @@ function IntegrationAppCard({ app, onInstall, onUninstall, onConfigure }) {
                 <div>
                   <h4 className="text-sm font-medium text-gray-900 dark:text-white mb-2">Tags</h4>
                   <div className="flex flex-wrap gap-1">
-                    {app.tags.map((tag, index) => (
+                    {app.tags.map((tag: string, index: number) => (
                       <span key={index} className="px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs rounded">
                         #{tag}
                       </span>

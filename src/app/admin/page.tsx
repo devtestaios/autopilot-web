@@ -33,10 +33,10 @@ const EnterpriseCompanyDashboard = dynamic(() => import('@/components/Enterprise
   loading: () => <div className="animate-pulse bg-gray-200 dark:bg-gray-700 h-64 rounded-lg" />
 });
 
-const RBACDashboard = dynamic(() => import('@/components/RBACDashboard'), {
-  ssr: false,
-  loading: () => <div className="animate-pulse bg-gray-200 dark:bg-gray-700 h-64 rounded-lg" />
-});
+// const RBACDashboard = dynamic(() => import('@/components/RBACDashboard'), {
+//   ssr: false,
+//   loading: () => <div className="animate-pulse bg-gray-200 dark:bg-gray-700 h-64 rounded-lg" />
+// });
 
 // Simple authentication check
 const useAdminAuth = () => {
@@ -174,7 +174,7 @@ export default function AdminPage() {
 
     try {
       setDataLoading(true);
-      const searchResults = await searchUsers(searchQuery, 20, 0);
+      const searchResults = await searchUsers(searchQuery);
       setUsers(searchResults);
     } catch (err) {
       console.error('Error searching users:', err);
@@ -330,7 +330,7 @@ export default function AdminPage() {
                         Total Users
                       </p>
                       <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                        {stats.total_users}
+                        {stats.totalUsers}
                       </p>
                     </div>
                     <div className="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-full">
@@ -338,7 +338,7 @@ export default function AdminPage() {
                     </div>
                   </div>
                   <p className="text-xs text-green-600 dark:text-green-400 mt-2">
-                    {stats.active_users} active
+                    {stats.activeUsers} active
                   </p>
                 </div>
 
@@ -349,7 +349,7 @@ export default function AdminPage() {
                         Companies
                       </p>
                       <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                        {stats.total_companies || 0}
+                                                {stats.totalCompanies}
                       </p>
                     </div>
                     <div className="p-3 bg-green-100 dark:bg-green-900/30 rounded-full">
@@ -368,7 +368,7 @@ export default function AdminPage() {
                         Security Events
                       </p>
                       <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                        {stats.security_events_today}
+                        {stats.securityEventsToday}
                       </p>
                     </div>
                     <div className="p-3 bg-orange-100 dark:bg-orange-900/30 rounded-full">
@@ -584,7 +584,7 @@ export default function AdminPage() {
                             </span>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                            {user.last_login ? formatDate(user.last_login) : 'Never'}
+                            {user.last_login_at ? formatDate(user.last_login_at) : 'Never'}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                             {formatDate(user.created_at)}
@@ -652,7 +652,11 @@ export default function AdminPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
           >
-            <RBACDashboard />
+            <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700 rounded-lg p-4">
+              <p className="text-yellow-800 dark:text-yellow-200">
+                🚧 RBAC Dashboard is temporarily disabled for optimization.
+              </p>
+            </div>
           </motion.div>
         )}
 
@@ -748,11 +752,11 @@ export default function AdminPage() {
                           <p className="text-sm text-gray-600 dark:text-gray-400">
                             Resource: {log.resource_type} {log.resource_id}
                           </p>
-                          {log.metadata && (
+                          {/* log.metadata && (
                             <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                               {JSON.stringify(log.metadata)}
                             </p>
-                          )}
+                          ) */}
                         </div>
                         <div className="text-right">
                           <p className="text-sm text-gray-500 dark:text-gray-400">

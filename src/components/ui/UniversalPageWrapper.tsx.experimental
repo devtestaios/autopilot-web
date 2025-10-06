@@ -1,142 +1,50 @@
-'use client';'use client';// Universal Page Wrapper - Ensures Design System Continuity
+// Universal Page Wrapper - Ensures Design System Continuity
+// This component enforces the Phase 1 design standards across all pages
+// All new pages should use this wrapper for automatic compliance
 
+'use client';
 
+import React, { ReactNode, useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import dynamic from 'next/dynamic';
 
-import React, { ReactNode } from 'react';// This component enforces the Phase 1 design standards across all pages
+// Enhanced Design System Imports - Phase 1 Visual Polish
+import { designTokens } from '@/lib/designTokens';
+import animations from '@/lib/animations';
+import visualEffects from '@/lib/visualEffects';
+// import { Container, Grid, Flex, Section, Stack, Header, ContentArea, CardGrid } from '@/components/ui/LayoutSystem';
+import { Button, Card, Badge, Spinner, Avatar, Progress } from '@/components/ui/EnhancedComponents';
 
+// Dynamic imports for SSR safety
+const UnifiedSidebar = dynamic(() => import('@/components/UnifiedSidebar'), {
+  ssr: false,
+  loading: () => <div className="fixed left-0 top-0 h-screen w-56 bg-gray-900 animate-pulse" />
+});
 
+const AdvancedNavigation = dynamic(() => import('@/components/ui/AdvancedNavigation'), {
+  ssr: false,
+  loading: () => <div className="h-16 bg-white dark:bg-gray-900 border-b animate-pulse" />
+});
 
-interface UniversalPageWrapperProps {import React, { ReactNode } from 'react';// All new pages should use this wrapper for automatic compliance
+const AIControlChat = dynamic(() => import('@/components/AIControlChat'), {
+  ssr: false,
+  loading: () => null
+});
 
+const MasterTerminalBreadcrumb = dynamic(() => import('@/components/MasterTerminalBreadcrumb'), {
+  ssr: false,
+  loading: () => <div className="h-8 bg-gray-100 dark:bg-gray-800 animate-pulse rounded" />
+});
+
+interface UniversalPageWrapperProps {
+  // Page Content
   children: ReactNode;
-
-  title?: string;
-
-  subtitle?: string;
-
-  showBreadcrumbs?: boolean;interface UniversalPageWrapperProps {'use client';
-
-  showSidebar?: boolean;
-
-  sidebarCollapsed?: boolean;  children: ReactNode;
-
-  containerSize?: 'sm' | 'md' | 'lg' | 'xl' | 'full';
-
-  headerBackground?: 'transparent' | 'solid' | 'blur';  title?: string;import React, { ReactNode, useState, useEffect } from 'react';
-
-  headerActions?: ReactNode;
-
-}  subtitle?: string;import { motion, AnimatePresence } from 'framer-motion';
-
-
-
-// Simple stub implementation for disabled UniversalPageWrapper  showBreadcrumbs?: boolean;import dynamic from 'next/dynamic';
-
-export function UniversalPageWrapper({ 
-
-  children,  showSidebar?: boolean;
-
-  title,
-
-  subtitle,  sidebarCollapsed?: boolean;// Enhanced Design System Imports - Phase 1 Visual Polish
-
-  showBreadcrumbs = false,
-
-  showSidebar = false,  containerSize?: 'sm' | 'md' | 'lg' | 'xl' | 'full';import { designTokens } from '@/lib/designTokens';
-
-  sidebarCollapsed = false,
-
-  containerSize = 'xl',  headerBackground?: 'transparent' | 'solid' | 'blur';import animations from '@/lib/animations';
-
-  headerBackground = 'blur',
-
-  headerActions,  headerActions?: ReactNode;import visualEffects from '@/lib/visualEffects';
-
-  ...props 
-
-}: UniversalPageWrapperProps) {}// import { Container, Grid, Flex, Section, Stack, Header, ContentArea, CardGrid } from '@/components/ui/LayoutSystem';
-
-  return (
-
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">import { Button, Card, Badge, Spinner, Avatar, Progress } from '@/components/ui/EnhancedComponents';
-
-      {title && (
-
-        <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-4 py-6">// Simple stub implementation for disabled UniversalPageWrapper
-
-          <div className="max-w-7xl mx-auto">
-
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{title}</h1>export function UniversalPageWrapper({ // Dynamic imports for SSR safety
-
-            {subtitle && <p className="text-gray-600 dark:text-gray-400 mt-1">{subtitle}</p>}
-
-          </div>  children,const UnifiedSidebar = dynamic(() => import('@/components/UnifiedSidebar'), {
-
-        </div>
-
-      )}  title,  ssr: false,
-
-      <div className="max-w-7xl mx-auto px-4 py-6">
-
-        {children}  subtitle,  loading: () => <div className="fixed left-0 top-0 h-screen w-56 bg-gray-900 animate-pulse" />
-
-      </div>
-
-    </div>  showBreadcrumbs = false,});
-
-  );
-
-}  showSidebar = false,
-
-
-
-export default UniversalPageWrapper;  sidebarCollapsed = false,const AdvancedNavigation = dynamic(() => import('@/components/ui/AdvancedNavigation'), {
-
-  containerSize = 'xl',  ssr: false,
-
-  headerBackground = 'blur',  loading: () => <div className="h-16 bg-white dark:bg-gray-900 border-b animate-pulse" />
-
-  headerActions,});
-
-  ...props 
-
-}: UniversalPageWrapperProps) {const AIControlChat = dynamic(() => import('@/components/AIControlChat'), {
-
-  return (  ssr: false,
-
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">  loading: () => null
-
-      {title && (});
-
-        <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-4 py-6">
-
-          <div className="max-w-7xl mx-auto">const MasterTerminalBreadcrumb = dynamic(() => import('@/components/MasterTerminalBreadcrumb'), {
-
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{title}</h1>  ssr: false,
-
-            {subtitle && <p className="text-gray-600 dark:text-gray-400 mt-1">{subtitle}</p>}  loading: () => <div className="h-8 bg-gray-100 dark:bg-gray-800 animate-pulse rounded" />
-
-          </div>});
-
-        </div>
-
-      )}interface UniversalPageWrapperProps {
-
-      <div className="max-w-7xl mx-auto px-4 py-6">  // Page Content
-
-        {children}  children: ReactNode;
-
-      </div>  
-
-    </div>  // Page Configuration
-
-  );  title: string;
-
-}  subtitle?: string;
-
   
-
-export default UniversalPageWrapper;  // Layout Options
+  // Page Configuration
+  title: string;
+  subtitle?: string;
+  
+  // Layout Options
   containerSize?: 'sm' | 'md' | 'lg' | 'xl' | 'full';
   headerBackground?: 'transparent' | 'solid' | 'blur';
   showBreadcrumb?: boolean;

@@ -1,7 +1,7 @@
 'use client';
 
 import { supabase } from '@/lib/supabase';
-import { optimizedAPI } from './optimizedAPI';
+// import { optimizedAPI } from './optimizedAPI'; // Disabled for optimization
 import { cacheUtils } from './simpleCacheUtils';
 
 /**
@@ -86,8 +86,7 @@ class DatabaseOptimizer {
       if (!error && data && options.useCache !== false) {
         cacheUtils.set(queryKey, data, {
           ttl: 300000, // 5 minutes default
-          tags: options.cacheTags || [this.extractTableName(query)],
-          staleWhileRevalidate: true
+          tags: options.cacheTags || [this.extractTableName(query)]
         });
       }
 
@@ -631,4 +630,4 @@ export const realtimeSubscriptions = {
   }
 };
 
-export { databaseOptimizer, type QueryOptions, type QueryPerformanceMetrics };
+export { type QueryOptions, type QueryPerformanceMetrics };

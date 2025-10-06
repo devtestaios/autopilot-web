@@ -94,7 +94,7 @@ export class CRMApiService {
     }
 
     const endpoint = `/leads${queryString.toString() ? `?${queryString}` : ''}`;
-    return apiRequest<Lead[]>(endpoint);
+    return apiRequest<Lead[]>(endpoint) as Promise<ListResponse<Lead>>;
   }
 
   static async getLead(id: string): Promise<ApiResponse<Lead>> {
@@ -139,7 +139,7 @@ export class CRMApiService {
     const endpoint = leadIds 
       ? `/scores?leadIds=${leadIds.join(',')}`
       : '/scores';
-    return apiRequest<LeadScore[]>(endpoint);
+    return apiRequest<LeadScore[]>(endpoint) as Promise<ListResponse<LeadScore>>;
   }
 
   static async updateScoringRules(rules: any): Promise<ApiResponse<void>> {
@@ -151,7 +151,7 @@ export class CRMApiService {
 
   // Activities and Notes
   static async getLeadActivities(leadId: string): Promise<ListResponse<Activity>> {
-    return apiRequest<Activity[]>(`/leads/${leadId}/activities`);
+    return apiRequest<Activity[]>(`/leads/${leadId}/activities`) as Promise<ListResponse<Activity>>;
   }
 
   static async addActivity(activity: Omit<Activity, 'id'>): Promise<ApiResponse<Activity>> {
@@ -162,7 +162,7 @@ export class CRMApiService {
   }
 
   static async getLeadNotes(leadId: string): Promise<ListResponse<Note>> {
-    return apiRequest<Note[]>(`/leads/${leadId}/notes`);
+    return apiRequest<Note[]>(`/leads/${leadId}/notes`) as Promise<ListResponse<Note>>;
   }
 
   static async addNote(note: Omit<Note, 'id' | 'createdAt'>): Promise<ApiResponse<Note>> {
@@ -200,7 +200,7 @@ export class CRMApiService {
 
   // Pipelines
   static async getPipelines(): Promise<ListResponse<Pipeline>> {
-    return apiRequest<Pipeline[]>('/pipelines');
+    return apiRequest<Pipeline[]>('/pipelines') as Promise<ListResponse<Pipeline>>;
   }
 
   static async getPipeline(id: string): Promise<ApiResponse<Pipeline>> {
@@ -229,7 +229,7 @@ export class CRMApiService {
 
   // CRM Integrations
   static async getIntegrations(): Promise<ListResponse<CRMIntegration>> {
-    return apiRequest<CRMIntegration[]>('/integrations');
+    return apiRequest<CRMIntegration[]>('/integrations') as Promise<ListResponse<CRMIntegration>>;
   }
 
   static async getIntegration(id: string): Promise<ApiResponse<CRMIntegration>> {
@@ -269,7 +269,7 @@ export class CRMApiService {
   }
 
   static async getIntegrationLogs(id: string): Promise<ListResponse<any>> {
-    return apiRequest<any[]>(`/integrations/${id}/logs`);
+    return apiRequest<any[]>(`/integrations/${id}/logs`) as Promise<ListResponse<any>>;
   }
 
   // Analytics and Metrics
@@ -296,7 +296,7 @@ export class CRMApiService {
   // AI Insights
   static async getAIInsights(leadId?: string): Promise<ListResponse<AIInsight>> {
     const endpoint = leadId ? `/insights?leadId=${leadId}` : '/insights';
-    return apiRequest<AIInsight[]>(endpoint);
+    return apiRequest<AIInsight[]>(endpoint) as Promise<ListResponse<AIInsight>>;
   }
 
   static async generateInsights(type?: string, targetId?: string): Promise<ApiResponse<AIInsight[]>> {
@@ -314,7 +314,7 @@ export class CRMApiService {
 
   // Automation Rules
   static async getAutomationRules(): Promise<ListResponse<AutomationRule>> {
-    return apiRequest<AutomationRule[]>('/automation/rules');
+    return apiRequest<AutomationRule[]>('/automation/rules') as Promise<ListResponse<AutomationRule>>;
   }
 
   static async getAutomationRule(id: string): Promise<ApiResponse<AutomationRule>> {
@@ -392,7 +392,7 @@ export class CRMApiService {
     return apiRequest<Lead[]>('/search/leads', {
       method: 'POST',
       body: JSON.stringify({ query, filters }),
-    });
+    }) as Promise<ListResponse<Lead>>;
   }
 
   static async getFilterOptions(): Promise<ApiResponse<any>> {
@@ -407,7 +407,7 @@ export class CRMApiService {
   }
 
   static async getSavedSearches(): Promise<ListResponse<any>> {
-    return apiRequest<any[]>('/search/saved');
+    return apiRequest<any[]>('/search/saved') as Promise<ListResponse<any>>;
   }
 
   // System Health

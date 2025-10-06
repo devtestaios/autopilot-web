@@ -28,7 +28,6 @@ import {
   Globe,
   Lightbulb,
   MessageSquare,
-  BarChart3,
   Send,
   Clock,
   CheckCircle,
@@ -65,6 +64,12 @@ export interface GeneratedContent {
     readingTime: string;
     sentiment: 'positive' | 'neutral' | 'negative';
     engagementScore: number;
+    readabilityScore?: number;
+    seoScore?: number;
+    engagementPrediction?: number;
+    generatedAt?: string;
+    aiProvider?: string;
+    optimalPostingTime?: string;
   };
   variations: string[];
   createdAt: Date;

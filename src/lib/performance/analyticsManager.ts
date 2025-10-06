@@ -1,6 +1,5 @@
 'use client';
 
-import { optimizedAPI } from './optimizedAPI';
 import { cacheUtils } from './simpleCacheUtils';
 import { databaseOptimizer } from './databaseOptimizer';
 
@@ -266,7 +265,7 @@ class AnalyticsManager {
         step: index + 1,
         event,
         timeFromStart: event.timestamp - startTime,
-        pageTransition
+        pageTransition: pageTransition || undefined
       };
     });
   }
@@ -362,17 +361,26 @@ class AnalyticsManager {
       Object.entries(features).map(([name, data]) => [
         name,
         {
-          totalUsage: data.events.length,
-          uniqueUsers: data.users.size,
+          totalUsage: data.events.length as number,
+          uniqueUsers: data.users.size as number,
           avgUsagePerUser: data.users.size > 0 ? data.events.length / data.users.size : 0,
           topActions: Array.from(data.actions.entries())
-            .map(([action, count]) => ({ action, count }))
-            .sort((a, b) => b.count - a.count)
+            .map((entry) => {
+              const [action, count] = entry as [string, number];
+              return { action, count };
+            })
+            .sort((a, b) => (b.count as number) - (a.count as number))
             .slice(0, 5),
           usageTrend: this.calculateUsageTrend(data.events)
         }
       ])
-    );
+    ) as Record<string, {
+      totalUsage: number;
+      uniqueUsers: number;
+      avgUsagePerUser: number;
+      topActions: Array<{ action: string; count: number }>;
+      usageTrend: Array<{ date: string; count: number }>;
+    }>;
   }
 
   /**

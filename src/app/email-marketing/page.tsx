@@ -101,7 +101,7 @@ const EmailAnalytics = dynamic(
 );
 
 // Enhanced Email Marketing Components
-import EmailContentImporter from '@/components/email-marketing/EmailContentImporter';
+// import EmailContentImporter from '@/components/email-marketing/EmailContentImporter';
 import VisualEmailBuilder from '@/components/email-marketing/VisualEmailBuilder';
 import ABTestingFramework from '@/components/email-marketing/ABTestingFramework';
 import AdvancedAutomationWorkflows from '@/components/email-marketing/AdvancedAutomationWorkflows';
@@ -1088,12 +1088,12 @@ export default function EmailMarketingPlatform() {
       </div>
 
       {/* Enhanced Email Marketing Modals */}
-      <EmailContentImporter
+      {/* <EmailContentImporter
         isOpen={isContentImporterOpen}
         onClose={() => setIsContentImporterOpen(false)}
         onImport={handleContentImport}
         campaignType="newsletter"
-      />
+      /> */}
 
       <VisualEmailBuilder
         isOpen={isEmailBuilderOpen}
