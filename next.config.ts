@@ -12,6 +12,18 @@ const nextConfig: NextConfig = {
   output: undefined,
   trailingSlash: false,
   
+  // Optimize build performance for local development
+  productionBrowserSourceMaps: false,
+  optimizeFonts: true,
+  
+  // Performance optimizations for slow filesystems
+  onDemandEntries: {
+    // Period (in ms) where the server will keep pages in the buffer
+    maxInactiveAge: 25 * 1000,
+    // Number of pages that should be kept simultaneously without being disposed
+    pagesBufferLength: 2,
+  },
+  
   // Enhanced performance optimizations
   experimental: {
     optimizePackageImports: [
@@ -25,13 +37,14 @@ const nextConfig: NextConfig = {
       '@dnd-kit/sortable',
       'react-virtualized'
     ],
-    // Enable turbo mode for faster builds
-    turbo: {
-      rules: {
-        '*.svg': {
-          loaders: ['@svgr/webpack'],
-          as: '*.js',
-        },
+  },
+  
+  // Turbopack configuration (moved from experimental.turbo)
+  turbo: {
+    rules: {
+      '*.svg': {
+        loaders: ['@svgr/webpack'],
+        as: '*.js',
       },
     },
   },

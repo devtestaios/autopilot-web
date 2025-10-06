@@ -42,7 +42,7 @@ interface PerformanceIntegrationExampleProps {
 }
 
 export default function PerformanceIntegrationExample({ className = "" }: PerformanceIntegrationExampleProps) {
-  const { state: socialState, createPost } = useSocialMedia();
+  const { accounts, posts, isLoading: socialLoading, createPost } = useSocialMedia();
   const { 
     track, 
     trackFeatureUsage, 
@@ -217,10 +217,10 @@ export default function PerformanceIntegrationExample({ className = "" }: Perfor
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {socialState.posts.length}
+              {posts.length}
             </div>
             <div className="text-sm text-gray-500 mt-1">
-              {socialState.accounts.length} accounts
+              {accounts.length} accounts
             </div>
           </CardContent>
         </Card>
@@ -270,4 +270,4 @@ export default function PerformanceIntegrationExample({ className = "" }: Perfor
       </Card>
     </div>
   );
-}"
+}

@@ -3,11 +3,7 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Responsive, WidthProvider } from 'react-grid-layout';
-import { useDashboardCustomization, DashboardWidget, WIDGET_TEMPLATES } from '@/contex                            </div>
-                          </CardContent>
-                        </Card>
-                      </div>
-                    );ashboardCustomizationContext';
+import { useDashboardCustomization, DashboardWidget, WIDGET_TEMPLATES } from '@/contexts/DashboardCustomizationContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -49,8 +45,13 @@ const WIDGET_ICONS = {
   feed: MessageSquare,
   'ai-insights': Sparkles,
   'quick-actions': Zap,
-  'recent-activity': Clock
-};
+  'recent-activity': Clock,
+  custom: Settings,
+  kpi: Target,
+  'platform-suite': Grid3X3,
+  'sub-platform': Maximize2,
+  'activity-feed': Activity
+} as const;
 
 // ============================================================================
 // DASHBOARD WIDGET COMPONENT
@@ -282,16 +283,17 @@ function WidgetSelector({ onAddWidget, onClose }: WidgetSelectorProps) {
                         <Card className="">
                           <CardContent className="p-4">
                             <div className="flex items-center gap-3">
-                            <IconComponent className="h-6 w-6 text-blue-600" />
-                            <div>
-                              <h4 className="font-medium">{template.title}</h4>
-                              <p className="text-sm text-gray-500">
-                                {template.type.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}
-                              </p>
+                              <IconComponent className="h-6 w-6 text-blue-600" />
+                              <div>
+                                <h4 className="font-medium">{template.title}</h4>
+                                <p className="text-sm text-gray-500">
+                                  {template.type.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                                </p>
+                              </div>
                             </div>
-                          </div>
-                        </CardContent>
-                      </Card>
+                          </CardContent>
+                        </Card>
+                      </div>
                     );
                   })}
                 </div>
@@ -459,14 +461,13 @@ export default function CustomizableDashboard() {
         className="layout"
         layouts={gridLayouts}
         breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
-        cols={{ lg: currentLayout.gridSize.cols, md: 8, sm: 6, xs: 4, xxs: 2 }}
+        cols={{ lg: currentLayout.gridSize?.cols || 12, md: 8, sm: 6, xs: 4, xxs: 2 }}
         rowHeight={60}
         onLayoutChange={handleLayoutChange}
         isDraggable={isEditMode}
         isResizable={isEditMode}
         margin={[16, 16]}
         containerPadding={[0, 0]}
-        dragHandle={isEditMode ? '.drag-handle' : undefined}
         compactType="vertical"
         preventCollision={false}
       >
@@ -486,7 +487,10 @@ export default function CustomizableDashboard() {
       <AnimatePresence>
         {showWidgetSelector && (
           <WidgetSelector
-            onAddWidget={addWidget}
+            onAddWidget={(widget) => addWidget({
+              ...widget,
+              position: { x: 0, y: 0, w: 6, h: 4 }
+            })}
             onClose={() => setShowWidgetSelector(false)}
           />
         )}
