@@ -427,7 +427,7 @@ function PlatformSelector({
   );
 }
 
-// Feed Planner Workspace Component
+// Feed Planner Workspace Component  
 function FeedPlannerWorkspace({ 
   contentType, 
   platforms 
@@ -438,7 +438,7 @@ function FeedPlannerWorkspace({
   // Import the correct FeedPost type from FeedGridPlanner
   const [feedPosts, setFeedPosts] = useState<any[]>([]);
 
-  // Mock data for initial state
+  // Mock data for initial state with proper FeedPost structure
   const mockPosts: any[] = [
     {
       id: 'post-1',
@@ -449,7 +449,9 @@ function FeedPlannerWorkspace({
       scheduledDate: new Date(Date.now() + 24 * 60 * 60 * 1000),
       platform: 'instagram',
       status: 'scheduled',
-      type: 'image'
+      type: 'image',
+      createdAt: new Date(),
+      updatedAt: new Date()
     },
     {
       id: 'post-2',
@@ -460,7 +462,9 @@ function FeedPlannerWorkspace({
       scheduledDate: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
       platform: 'instagram',
       status: 'draft',
-      type: 'image'
+      type: 'image',
+      createdAt: new Date(),
+      updatedAt: new Date()
     }
   ];
 

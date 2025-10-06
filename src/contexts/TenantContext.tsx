@@ -1,7 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { useEnhancedAuth } from '@/contexts/EnhancedAuthContext';
+import { useAuth } from '@/contexts/EnhancedAuthContext';
 import { supabase } from '@/lib/supabase';
 import type { EnterpriseCompany, EnterpriseUser } from '@/lib/enterpriseAPI';
 
@@ -88,7 +88,7 @@ const TenantContext = createContext<TenantContextType | undefined>(undefined);
 // ===============================================
 
 export function TenantProvider({ children }: { children: React.ReactNode }) {
-  const { user } = useEnhancedAuth();
+  const { user } = useAuth();
   
   // State management
   const [currentTenant, setCurrentTenant] = useState<EnterpriseCompany | null>(null);

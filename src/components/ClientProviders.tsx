@@ -2,6 +2,8 @@
 
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { AuthProvider } from "@/contexts/EnhancedAuthContext";
+import { TenantProvider } from "@/contexts/TenantContext";
+import { MonitoringProvider } from "@/contexts/MonitoringContext";
 import { SearchProvider } from "@/contexts/SearchContext";
 import { UnifiedAIProvider } from "@/contexts/UnifiedAIContext";
 import { WebSocketProvider } from "@/contexts/WebSocketContext";
@@ -95,9 +97,11 @@ export default function ClientProviders({ children }: ClientProvidersProps) {
         <CacheProvider>
           <WebSocketProvider>
             <AuthProvider>
-              <UserTierProvider>
-                <SearchProvider>
-                  <UnifiedAIProvider>
+              <TenantProvider>
+                <MonitoringProvider>
+                  <UserTierProvider>
+                  <SearchProvider>
+                    <UnifiedAIProvider>
                     <AnalyticsProvider>
                       <SocialMediaProvider>
                         <EmailMarketingProvider>
@@ -132,8 +136,10 @@ export default function ClientProviders({ children }: ClientProvidersProps) {
                   </UnifiedAIProvider>
                 </SearchProvider>
               </UserTierProvider>
-            </AuthProvider>
-          </WebSocketProvider>
+            </MonitoringProvider>
+          </TenantProvider>
+        </AuthProvider>
+        </WebSocketProvider>
         </CacheProvider>
       </ThemeProvider>
     </ErrorProvider>
