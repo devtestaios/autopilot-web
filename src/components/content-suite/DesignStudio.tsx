@@ -305,9 +305,9 @@ function GradientEditor({
     <div className="space-y-3">
       <div>
         <Label>Gradient Type</Label>
-        <Select value={gradientType} onValueChange={(value: 'linear' | 'radial' | 'conic') => {
-          setGradientType(value);
-          updateGradient({ type: value });
+        <Select value={gradientType} onValueChange={(value: string) => {
+          setGradientType(value as 'linear' | 'radial' | 'conic');
+          updateGradient({ type: value as 'linear' | 'radial' | 'conic' });
         }}>
           <SelectTrigger className="h-8">
             <SelectValue />
@@ -443,14 +443,14 @@ Provide helpful design advice, suggestions, or offer to perform actions like:
 
 Be specific and actionable in your responses.`;
 
-      const response = await chatWithAI(contextPrompt);
-      setMessages(prev => [...prev, { role: 'assistant', content: response }]);
+      const response = await chatWithAI({ message: contextPrompt });
+      setMessages(prev => [...prev, { role: 'assistant', content: response.response }]);
 
       // Check if the AI suggested specific actions
-      if (response.toLowerCase().includes('would you like me to') || 
-          response.toLowerCase().includes('i can create') ||
-          response.toLowerCase().includes('shall i add')) {
-        onAutoSuggestion(response);
+      if (response.response.toLowerCase().includes('would you like me to') || 
+          response.response.toLowerCase().includes('i can create') ||
+          response.response.toLowerCase().includes('shall i add')) {
+        onAutoSuggestion(response.response);
       }
 
     } catch (error) {

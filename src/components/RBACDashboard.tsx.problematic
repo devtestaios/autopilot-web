@@ -156,12 +156,14 @@ export default function RBACDashboard() {
   };
 
   const getPermissionIcon = (permissionId: string) => {
-    const permission = PERMISSION_REGISTRY.find(p => p.id === permissionId);
-    if (!permission) return <Key className="w-4 h-4" />;
+    const permissionExists = Object.keys(PERMISSION_REGISTRY).includes(permissionId);
+    if (!permissionExists) return <Key className="w-4 h-4" />;
     
-    switch (permission.category) {
-      case 'campaign_management': return <BarChart3 className="w-4 h-4" />;
-      case 'user_management': return <Users className="w-4 h-4" />;
+    // Determine category from permission ID prefix
+    const category = permissionId.split('.')[0];
+    switch (category) {
+      case 'campaigns': return <BarChart3 className="w-4 h-4" />;
+      case 'users': return <Users className="w-4 h-4" />;
       case 'analytics': return <Activity className="w-4 h-4" />;
       case 'billing': return <Briefcase className="w-4 h-4" />;
       case 'collaboration': return <MessageSquare className="w-4 h-4" />;
@@ -198,7 +200,7 @@ export default function RBACDashboard() {
   };
 
   const calculateOverviewStats = () => {
-    const totalPermissions = PERMISSION_REGISTRY.length;
+    const totalPermissions = Object.keys(PERMISSION_REGISTRY).length;
     const totalRoles = SYSTEM_ROLES.length;
     const activePermissions = userPermissions.length;
     const activeRoleAssignments = roleAssignments.length;
@@ -385,12 +387,12 @@ export default function RBACDashboard() {
             <div className="p-6">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {Object.entries(
-                  PERMISSION_REGISTRY.reduce((acc, permission) => {
-                    const category = permission.category;
+                  Object.entries(PERMISSION_REGISTRY).reduce((acc, [permissionId, description]) => {
+                    const category = permissionId.split('.')[0]; // Extract category from permission ID
                     if (!acc[category]) acc[category] = [];
-                    acc[category].push(permission);
+                    acc[category].push({ id: permissionId, description });
                     return acc;
-                  }, {} as Record<string, Permission[]>)
+                  }, {} as Record<string, Array<{id: string, description: string}>>)
                 ).map(([category, permissions]) => (
                   <div
                     key={category}
@@ -411,7 +413,7 @@ export default function RBACDashboard() {
                           key={permission.id}
                           className="text-xs text-gray-500 dark:text-gray-400"
                         >
-                          • {permission.name}
+                          • {permission.description}
                         </div>
                       ))}
                       {permissions.length > 3 && (
@@ -437,12 +439,12 @@ export default function RBACDashboard() {
               <div className="space-y-4">
                 {SYSTEM_ROLES.map((role) => (
                   <div
-                    key={role.id}
+                    key={role.name}
                     className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg"
                   >
                     <div className="flex items-center space-x-4">
-                      <div className={`p-2 rounded-lg ${getRoleColor(role.id)}`}>
-                        {getRoleIcon(role.id)}
+                      <div className={`p-2 rounded-lg ${getRoleColor(role.name)}`}>
+                        {getRoleIcon(role.name)}
                       </div>
                       <div>
                         <p className="font-medium text-gray-900 dark:text-white">
@@ -455,7 +457,7 @@ export default function RBACDashboard() {
                     </div>
                     <div className="text-right">
                       <p className="text-sm text-gray-900 dark:text-white">
-                        Level {role.hierarchy_level}
+                        Level {role.level}
                       </p>
                       <p className="text-xs text-gray-500 dark:text-gray-400">
                         {role.permissions.length} permissions
@@ -510,18 +512,18 @@ export default function RBACDashboard() {
 
           {/* Permissions Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {PERMISSION_REGISTRY
-              .filter(permission => 
-                categoryFilter === 'all' || permission.category === categoryFilter
+            {Object.entries(PERMISSION_REGISTRY)
+              .filter(([permissionId, description]) => 
+                categoryFilter === 'all' || permissionId.startsWith(categoryFilter)
               )
-              .filter(permission =>
+              .filter(([permissionId, description]) =>
                 searchQuery === '' || 
-                permission.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                permission.description.toLowerCase().includes(searchQuery.toLowerCase())
+                permissionId.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                description.toLowerCase().includes(searchQuery.toLowerCase())
               )
-              .map((permission) => (
+              .map(([permissionId, description]) => (
                 <div
-                  key={permission.id}
+                  key={permissionId}
                   className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6"
                 >
                   <div className="flex items-start justify-between mb-4">

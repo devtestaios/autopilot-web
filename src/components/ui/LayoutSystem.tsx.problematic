@@ -24,22 +24,18 @@ export const Container = forwardRef<HTMLDivElement, ContainerProps>(
       'w-full',
       
       // Size variants
-      {
-        'max-w-3xl': size === 'sm',
-        'max-w-4xl': size === 'md', 
-        'max-w-6xl': size === 'lg',
-        'max-w-7xl': size === 'xl',
-        'max-w-none': size === 'full'
-      },
+      size === 'sm' && 'max-w-3xl',
+      size === 'md' && 'max-w-4xl',
+      size === 'lg' && 'max-w-6xl',
+      size === 'xl' && 'max-w-7xl',
+      size === 'full' && 'max-w-none',
       
       // Padding variants
-      {
-        'px-0': padding === 'none',
-        'px-4': padding === 'sm',
-        'px-4 md:px-6': padding === 'md',
-        'px-4 md:px-6 lg:px-8': padding === 'lg',
-        'px-4 md:px-8 lg:px-12': padding === 'xl'
-      },
+      padding === 'none' && 'px-0',
+      padding === 'sm' && 'px-4',
+      padding === 'md' && 'px-4 md:px-6',
+      padding === 'lg' && 'px-4 md:px-6 lg:px-8',
+      padding === 'xl' && 'px-4 md:px-8 lg:px-12',
       
       // Center alignment
       center && 'mx-auto'
