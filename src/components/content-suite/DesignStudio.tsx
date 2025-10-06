@@ -1085,7 +1085,10 @@ function EnhancedPropertiesPanel({
             </Button>
           </div>
         </div>
-      </div>
+            </TabsContent>
+          </div>
+        </ScrollArea>
+      </Tabs>
     </div>
   );
 }
