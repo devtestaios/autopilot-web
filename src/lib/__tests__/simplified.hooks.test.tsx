@@ -106,19 +106,28 @@ describe('Simplified React Hooks and Context Testing', () => {
       expect(result.current[0]).toBe(false);
       
       act(() => {
-        result.current[1].toggle();
+        const [, actions] = result.current;
+        if (typeof actions === 'object' && 'toggle' in actions) {
+          actions.toggle();
+        }
       });
       
       expect(result.current[0]).toBe(true);
       
       act(() => {
-        result.current[1].setFalse();
+        const [, actions] = result.current;
+        if (typeof actions === 'object' && 'setFalse' in actions) {
+          actions.setFalse();
+        }
       });
       
       expect(result.current[0]).toBe(false);
       
       act(() => {
-        result.current[1].setTrue();
+        const [, actions] = result.current;
+        if (typeof actions === 'object' && 'setTrue' in actions) {
+          actions.setTrue();
+        }
       });
       
       expect(result.current[0]).toBe(true);

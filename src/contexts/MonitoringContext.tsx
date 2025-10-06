@@ -24,20 +24,20 @@ interface MonitoringProviderProps {
 }
 
 export function MonitoringProvider({ children }: MonitoringProviderProps) {
-  const { user, session } = useAuth();
+  const { user } = useAuth();
 
   // Set user context when user changes
   useEffect(() => {
-    if (user && session) {
+    if (user) {
       setUserContext(
         user.id,
-        user.current_tenant_id || undefined,
+        user?.id || undefined,
         user.email || undefined
       );
     } else {
       clearUserContext();
     }
-  }, [user, session]);
+  }, [user]);
 
   // Set up React error boundary reporting
   useEffect(() => {

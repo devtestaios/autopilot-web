@@ -79,33 +79,6 @@ const SUBSCRIPTION_PLANS = API_PLANS.map(plan => ({
   enterprise: plan.id === 'enterprise' || plan.id === 'enterprise_plus'
 }));
 
-// Legacy data structure (remove after verification)
-const LEGACY_SUBSCRIPTION_PLANS = [
-  {
-    id: 'trial',
-    name: 'Free Trial',
-    description: 'Perfect for testing the waters',
-    price: 0,
-    billingPeriod: 'month',
-    maxUsers: 10,
-    features: [
-      'Full platform access',
-      'All AI-powered features',
-      'Social media management',
-      'Email marketing campaigns',
-      'Team collaboration tools',
-      'Basic integrations',
-      'Standard support'
-    ],
-    limitations: '15-day trial period',
-    isPopular: false,
-    badge: 'Start Here',
-    color: 'gray',
-    ctaText: 'Start Free Trial',
-    enterprise: false
-  },
-]);
-
 export default function PricingPage() {
   const [isAnnual, setIsAnnual] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState('growth_team');

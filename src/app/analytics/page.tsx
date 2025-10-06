@@ -30,14 +30,15 @@ import {
   Download,
   Share
 } from 'lucide-react';
-import { useAnalytics } from '@/contexts/AnalyticsContext';
+import { useAnalytics as useAnalyticsContext } from '@/contexts/AnalyticsContext';
 import { useABTest } from '@/contexts/ABTestContext';
 import { designTokens } from '@/lib/designTokens';
 import { animationVariants } from '@/lib/animations';
 import visualEffects from '@/lib/visualEffects';
 import { Container, Grid, Flex, Section, Stack, Header, ContentArea, CardGrid } from '@/components/ui/LayoutSystem';
 import { Button as EnhancedButton, Card as EnhancedCard, Badge, Spinner, Avatar, Progress } from '@/components/ui/EnhancedComponents';
-import { realAnalytics, trackingHelpers } from '@/lib/performance/realAnalytics';
+import { trackingHelpers, realAnalytics } from '@/lib/performance/realAnalytics';
+import { analyticsManager } from '@/lib/performance/analyticsManager';
 import { simpleAnalytics } from '@/lib/performance/simpleAnalytics';
 import NavigationTabs from '@/components/NavigationTabs';
 
@@ -72,7 +73,7 @@ interface DomainAnalytics {
 // Safe analytics hook that handles missing provider
 function useSafeAnalytics() {
   try {
-    return useAnalytics();
+    return useAnalyticsContext();
   } catch (error) {
     // Return mock functions if AnalyticsProvider is not available
     return {
@@ -287,13 +288,12 @@ export default function AnalyticsPage() {
     setRefreshing(false);
   };
 
+  // Analytics hook
+  const analytics = useAnalyticsContext();
+  
   // Real-time tracking helper
   const trackAnalyticsView = () => {
-    trackingHelpers.trackPageView('analytics-dashboard', {
-      dateRange,
-      backendStatus,
-      timestamp: new Date().toISOString()
-    });
+    trackingHelpers.trackPageView('analytics-dashboard');
   };
 
   useEffect(() => {
@@ -462,7 +462,7 @@ export default function AnalyticsPage() {
                     {kpi.value.toLocaleString()}{kpi.unit}
                   </p>
                   {kpi.domain && (
-                    <Badge variant="secondary" className="text-xs">
+                    <Badge className="text-xs bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300">
                       {kpi.domain}
                     </Badge>
                   )}
@@ -566,7 +566,7 @@ export default function AnalyticsPage() {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600 dark:text-gray-400">Coming Soon</span>
-                  <Badge variant="outline">Phase B</Badge>
+                  <Badge className="border border-gray-300 bg-transparent text-gray-700 dark:border-gray-600 dark:text-gray-300">Phase B</Badge>
                 </div>
                 <span className="text-orange-600 text-sm">Enhanced in next phase →</span>
               </div>

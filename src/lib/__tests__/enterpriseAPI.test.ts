@@ -32,15 +32,24 @@ const validateSubscriptionAccess = jest.fn((tier: string, usage: any) => ({
 const calculateUpgradeRecommendation = jest.fn((tier: string, usage: any) => {
   if (tier === 'enterprise_plus') return null;
   const isHighUsage = usage.currentUsers / 5 > 0.8 || usage.currentApiCalls / 50000 > 0.8;
-  return isHighUsage ? { recommended: 'professional_agency', reason: 'Approaching limits' } : null;
+  return isHighUsage ? { 
+    shouldUpgrade: true,
+    recommendedTier: 'professional_agency', 
+    reason: 'Approaching limits' 
+  } : {
+    shouldUpgrade: false,
+    recommendedTier: tier,
+    reason: 'Usage within limits'
+  };
 });
 
 const getTrialStatus = jest.fn((start: Date | null, end: Date | null) => {
-  if (!start || !end) return { isActive: false, daysRemaining: 0 };
+  if (!start || !end) return { isActive: false, daysRemaining: 0, isExpired: true };
   const now = new Date();
   const isActive = now <= end;
   const daysRemaining = isActive ? Math.ceil((end.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)) : 0;
-  return { isActive, daysRemaining };
+  const isExpired = now > end;
+  return { isActive, daysRemaining, isExpired };
 });
 
 const formatSubscriptionPrice = jest.fn((price: number, period: 'monthly' | 'annual', showSavings?: boolean) => {
@@ -216,9 +225,10 @@ describe('Enterprise API', () => {
         currentStorage: 50
       });
 
-      expect(recommendation.shouldUpgrade).toBe(true);
-      expect(recommendation.reason).toContain('user limit');
-      expect(recommendation.recommendedTier).toBe('professional_agency');
+      expect(recommendation).toBeTruthy();
+      expect(recommendation!.shouldUpgrade).toBe(true);
+      expect(recommendation!.reason).toContain('user limit');
+      expect(recommendation!.recommendedTier).toBe('professional_agency');
     });
 
     it('should recommend upgrade when approaching API limit', () => {
@@ -228,9 +238,10 @@ describe('Enterprise API', () => {
         currentStorage: 20
       });
 
-      expect(recommendation.shouldUpgrade).toBe(true);
-      expect(recommendation.reason).toContain('API call limit');
-      expect(recommendation.recommendedTier).toBe('growth_team');
+      expect(recommendation).toBeTruthy();
+      expect(recommendation!.shouldUpgrade).toBe(true);
+      expect(recommendation!.reason).toContain('API call limit');
+      expect(recommendation!.recommendedTier).toBe('growth_team');
     });
 
     it('should not recommend upgrade when usage is low', () => {
@@ -240,8 +251,9 @@ describe('Enterprise API', () => {
         currentStorage: 30 // 30% of limit
       });
 
-      expect(recommendation.shouldUpgrade).toBe(false);
-      expect(recommendation.reason).toContain('within limits');
+      expect(recommendation).toBeTruthy();
+      expect(recommendation!.shouldUpgrade).toBe(false);
+      expect(recommendation!.reason).toContain('within limits');
     });
 
     it('should not recommend upgrade for highest tier', () => {
@@ -251,8 +263,9 @@ describe('Enterprise API', () => {
         currentStorage: 450
       });
 
-      expect(recommendation.shouldUpgrade).toBe(false);
-      expect(recommendation.reason).toContain('highest tier');
+      expect(recommendation).toBeTruthy();
+      expect(recommendation!.shouldUpgrade).toBe(false);
+      expect(recommendation!.reason).toContain('highest tier');
     });
   });
 

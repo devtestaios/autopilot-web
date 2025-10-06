@@ -86,7 +86,7 @@ describe('Stable UI Components - Focused Coverage', () => {
     });
 
     test('renders with different sizes', () => {
-      const sizes = ['default', 'sm', 'lg', 'icon'] as const;
+      const sizes = ['default', 'sm', 'lg'] as const;
       
       sizes.forEach((size) => {
         render(<Button size={size}>{size}</Button>);

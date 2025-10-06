@@ -194,7 +194,7 @@ export default function CostAlertsDashboard() {
       // Aggregate data by day
       const trendMap = new Map<string, { cost: number; requests: number; tokens: number }>();
       
-      data?.forEach(record => {
+      data?.forEach((record: any) => {
         const date = new Date(record.created_at).toISOString().split('T')[0];
         const existing = trendMap.get(date) || { cost: 0, requests: 0, tokens: 0 };
         
@@ -430,7 +430,7 @@ export default function CostAlertsDashboard() {
                 {metrics?.daily.requests.toLocaleString() || '0'}
               </div>
               <p className="text-xs text-muted-foreground mt-2">
-                Avg: ${metrics?.daily.requests > 0 ? (metrics.daily.cost / metrics.daily.requests).toFixed(4) : '0.0000'} per request
+                Avg: ${metrics?.daily && metrics.daily.requests && metrics.daily.requests > 0 ? (metrics.daily.cost / metrics.daily.requests).toFixed(4) : '0.0000'} per request
               </p>
             </CardContent>
           </Card>

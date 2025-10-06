@@ -4,6 +4,7 @@ import { ThemeProvider } from "@/contexts/ThemeContext";
 import { AuthProvider } from "@/contexts/EnhancedAuthContext";
 import { TenantProvider } from "@/contexts/TenantContext";
 import { MonitoringProvider } from "@/contexts/MonitoringContext";
+import { SessionProvider } from "@/contexts/SessionContext";
 import { SearchProvider } from "@/contexts/SearchContext";
 import { UnifiedAIProvider } from "@/contexts/UnifiedAIContext";
 import { WebSocketProvider } from "@/contexts/WebSocketContext";
@@ -99,43 +100,45 @@ export default function ClientProviders({ children }: ClientProvidersProps) {
             <AuthProvider>
               <TenantProvider>
                 <MonitoringProvider>
-                  <UserTierProvider>
-                  <SearchProvider>
-                    <UnifiedAIProvider>
-                    <AnalyticsProvider>
-                      <SocialMediaProvider>
-                        <EmailMarketingProvider>
-                          <MarketingOptimizationProvider>
-                            <BusinessConfigurationProvider>
-                              <DashboardCustomizationProvider>
-                                <ProjectManagementProvider>
-                                  <AIProjectAutomationProvider>
-                                    <CollaborationProvider>
-                                      <IntegrationsProvider>
-                                        <CrossPlatformProvider>
-                                          <PerformanceProvider>
-                                            <ABTestProvider tests={defaultTests}>
-                                              <ToastProvider>
-                                                <PageTransition>
-                                                  {children}
-                                                </PageTransition>
-                                              </ToastProvider>
-                                            </ABTestProvider>
-                                          </PerformanceProvider>
-                                        </CrossPlatformProvider>
-                                      </IntegrationsProvider>
-                                    </CollaborationProvider>
-                                  </AIProjectAutomationProvider>
-                                </ProjectManagementProvider>
-                              </DashboardCustomizationProvider>
-                            </BusinessConfigurationProvider>
-                          </MarketingOptimizationProvider>
-                        </EmailMarketingProvider>
-                      </SocialMediaProvider>
-                    </AnalyticsProvider>
-                  </UnifiedAIProvider>
-                </SearchProvider>
-              </UserTierProvider>
+                  <SessionProvider>
+                    <UserTierProvider>
+                    <SearchProvider>
+                      <UnifiedAIProvider>
+                      <AnalyticsProvider>
+                        <SocialMediaProvider>
+                          <EmailMarketingProvider>
+                            <MarketingOptimizationProvider>
+                              <BusinessConfigurationProvider>
+                                <DashboardCustomizationProvider>
+                                  <ProjectManagementProvider>
+                                    <AIProjectAutomationProvider>
+                                      <CollaborationProvider>
+                                        <IntegrationsProvider>
+                                          <CrossPlatformProvider>
+                                            <PerformanceProvider>
+                                              <ABTestProvider tests={defaultTests}>
+                                                <ToastProvider>
+                                                  <PageTransition>
+                                                    {children}
+                                                  </PageTransition>
+                                                </ToastProvider>
+                                              </ABTestProvider>
+                                            </PerformanceProvider>
+                                          </CrossPlatformProvider>
+                                        </IntegrationsProvider>
+                                      </CollaborationProvider>
+                                    </AIProjectAutomationProvider>
+                                  </ProjectManagementProvider>
+                                </DashboardCustomizationProvider>
+                              </BusinessConfigurationProvider>
+                            </MarketingOptimizationProvider>
+                          </EmailMarketingProvider>
+                        </SocialMediaProvider>
+                      </AnalyticsProvider>
+                    </UnifiedAIProvider>
+                  </SearchProvider>
+                </UserTierProvider>
+              </SessionProvider>
             </MonitoringProvider>
           </TenantProvider>
         </AuthProvider>

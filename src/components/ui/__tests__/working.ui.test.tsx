@@ -149,7 +149,7 @@ describe('Working UI Components - Stable Tests', () => {
         <div>
           <LoadingSpinner />
           <PremiumBadge />
-          <GlassButton />
+          <GlassButton>Glass Button</GlassButton>
         </div>
       );
       

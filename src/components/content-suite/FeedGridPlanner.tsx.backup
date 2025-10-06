@@ -1,3 +1,0 @@
-'use client';
-
-export { default, type FeedPost, type FeedAnalytics, type FeedGridPlannerProps } from './FeedGridPlannerEnhanced';

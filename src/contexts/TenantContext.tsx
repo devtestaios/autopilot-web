@@ -189,7 +189,7 @@ export function TenantProvider({ children }: { children: React.ReactNode }) {
           .gte('created_at', new Date().toISOString().split('T')[0])
       ]);
 
-      const aiTotalCost = aiUsageData.data?.reduce((sum, record) => sum + parseFloat(record.cost_usd), 0) || 0;
+      const aiTotalCost = aiUsageData.data?.reduce((sum: number, record: any) => sum + parseFloat(record.cost_usd), 0) || 0;
 
       setTenantUsage({
         currentUsers: usersCount.count || 0,
@@ -292,7 +292,7 @@ export function TenantProvider({ children }: { children: React.ReactNode }) {
   // TENANT-AWARE DATA OPERATIONS
   // ===============================================
 
-  const getTenantData = useCallback(async <T>(table: string, query?: any): Promise<T[]> => {
+  const getTenantData = useCallback(async (table: string, query?: any): Promise<any[]> => {
     if (!currentTenant) throw new Error('No current tenant');
 
     const queryBuilder = supabase
@@ -317,10 +317,10 @@ export function TenantProvider({ children }: { children: React.ReactNode }) {
     const { data, error } = await queryBuilder;
     
     if (error) throw error;
-    return data as T[];
+    return data || [];
   }, [currentTenant]);
 
-  const createTenantData = useCallback(async <T>(table: string, data: any): Promise<T> => {
+  const createTenantData = useCallback(async (table: string, data: any): Promise<any> => {
     if (!currentTenant) throw new Error('No current tenant');
 
     const { data: result, error } = await supabase
@@ -333,10 +333,10 @@ export function TenantProvider({ children }: { children: React.ReactNode }) {
       .single();
 
     if (error) throw error;
-    return result as T;
+    return result;
   }, [currentTenant]);
 
-  const updateTenantData = useCallback(async <T>(table: string, id: string, updates: any): Promise<T> => {
+  const updateTenantData = useCallback(async (table: string, id: string, updates: any): Promise<any> => {
     if (!currentTenant) throw new Error('No current tenant');
 
     const { data, error } = await supabase
@@ -348,7 +348,7 @@ export function TenantProvider({ children }: { children: React.ReactNode }) {
       .single();
 
     if (error) throw error;
-    return data as T;
+    return data;
   }, [currentTenant]);
 
   const deleteTenantData = useCallback(async (table: string, id: string): Promise<void> => {
@@ -418,8 +418,8 @@ export function TenantProvider({ children }: { children: React.ReactNode }) {
 
   // Load tenant data when user changes
   useEffect(() => {
-    if (user?.company_id && user.company_id !== currentTenant?.id) {
-      loadTenantData(user.company_id);
+    if (user?.companyId && user.companyId !== currentTenant?.id) {
+      loadTenantData(user.companyId);
     }
   }, [user, currentTenant?.id, loadTenantData]);
 

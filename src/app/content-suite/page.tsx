@@ -59,7 +59,7 @@ import {
 import { chatWithAI } from '@/lib/ai-api';
 
 // Dynamic imports for Content Suite components
-const FeedGridPlanner = dynamic(() => import('@/components/content-suite/FeedGridPlanner').then(mod => ({ default: mod.default })), {
+const FeedGridPlanner = dynamic(() => import('@/components/content-suite/FeedGridPlannerEnhanced'), {
   ssr: false,
   loading: () => <div className="h-96 bg-gray-100 dark:bg-gray-800 rounded-lg animate-pulse" />
 });

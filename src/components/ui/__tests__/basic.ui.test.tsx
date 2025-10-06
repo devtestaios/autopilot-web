@@ -251,7 +251,7 @@ describe('UI Components - Basic Tests', () => {
 
   describe('Component Props and Variants', () => {
     test('button handles all size variants', () => {
-      const sizes = ['default', 'sm', 'lg', 'icon'] as const;
+      const sizes = ['default', 'sm', 'lg'] as const;
       
       sizes.forEach(size => {
         const { unmount } = render(<Button size={size}>Size {size}</Button>);

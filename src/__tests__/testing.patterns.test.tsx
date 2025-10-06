@@ -174,7 +174,7 @@ describe('Testing Utilities and Patterns', () => {
 
   describe('Browser API mocking patterns', () => {
     test('localStorage mocking', () => {
-      const mockStorage = {
+      const mockStorage: { store: Record<string, string>; getItem: jest.Mock; setItem: jest.Mock; removeItem: jest.Mock; clear: jest.Mock } = {
         store: {} as Record<string, string>,
         getItem: jest.fn((key: string) => mockStorage.store[key] || null),
         setItem: jest.fn((key: string, value: string) => {

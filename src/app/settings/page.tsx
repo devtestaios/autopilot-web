@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { useAuth } from '@/contexts/EnhancedAuthContext';
+import { useAuth, NotificationSettings, PrivacySettings } from '@/contexts/EnhancedAuthContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useToast } from '@/components/ui/Toast';
 import { 
@@ -34,23 +34,6 @@ import {
   ExternalLink
 } from 'lucide-react';
 
-interface NotificationSettings {
-  email: boolean;
-  push: boolean;
-  sms: boolean;
-  campaignAlerts: boolean;
-  performanceUpdates: boolean;
-  budgetAlerts: boolean;
-  weeklyReports: boolean;
-}
-
-interface PrivacySettings {
-  dataSharing: boolean;
-  analytics: boolean;
-  marketingEmails: boolean;
-  profileVisibility: 'public' | 'private' | 'contacts';
-}
-
 interface PlatformIntegration {
   id: string;
   name: string;
@@ -65,7 +48,7 @@ interface PlatformIntegration {
 
 export default function SettingsPage() {
   const router = useRouter();
-  const { user, updateUserPreferences, logout, isLoading } = useAuth();
+  const { user, updatePreferences, logout, isLoading } = useAuth();
   const { theme, setTheme } = useTheme();
   const { showToast } = useToast();
   const [activeTab, setActiveTab] = useState('profile');
@@ -96,14 +79,17 @@ export default function SettingsPage() {
     campaignAlerts: true,
     performanceUpdates: true,
     budgetAlerts: true,
-    weeklyReports: false
+    weeklyReports: false,
+    digestFrequency: 'daily'
   });
 
   const [privacy, setPrivacy] = useState<PrivacySettings>({
     dataSharing: false,
     analytics: true,
     marketingEmails: false,
-    profileVisibility: 'private'
+    profileVisibility: 'private',
+    gdprConsent: true,
+    ccpaOptOut: false
   });
 
   const [integrations, setIntegrations] = useState<PlatformIntegration[]>([
@@ -135,11 +121,11 @@ export default function SettingsPage() {
       router.push('/login');
     } else if (user) {
       setProfileData({
-        name: user.name || '',
+        name: user.displayName || '',
         email: user.email || '',
-        company: user.preferences?.company || '',
-        timezone: user.preferences?.timezone || 'UTC-8',
-        language: user.preferences?.language || 'en'
+        company: user.company?.name || '',
+        timezone: user.preferences?.dashboard?.timezone || 'UTC-8',
+        language: user.preferences?.dashboard?.language || 'en'
       });
 
       if (user.preferences?.notifications) {
@@ -153,7 +139,8 @@ export default function SettingsPage() {
             campaignAlerts: user.preferences.notifications,
             performanceUpdates: user.preferences.notifications,
             budgetAlerts: user.preferences.notifications,
-            weeklyReports: false
+            weeklyReports: false,
+            digestFrequency: 'daily'
           });
         } else {
           // If it's already a NotificationSettings object
@@ -189,19 +176,15 @@ export default function SettingsPage() {
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      await updateUserPreferences({
-        ...profileData,
+      await updatePreferences({
+        dashboard: {
+          ...user.preferences?.dashboard,
+          theme,
+          language: profileData.language,
+          timezone: profileData.timezone
+        },
         notifications,
-        privacy,
-        integrations: integrations.reduce((acc, integration) => {
-          acc[integration.id] = {
-            connected: integration.connected,
-            status: integration.status,
-            lastSync: integration.lastSync
-          };
-          return acc;
-        }, {} as Record<string, any>),
-        theme
+        privacy
       });
       showToast({
         type: 'success',
@@ -404,7 +387,7 @@ export default function SettingsPage() {
                         }`}
                         style={user.avatar ? { backgroundImage: `url(${user.avatar})` } : {}}
                         >
-                          {!user.avatar && user.name.charAt(0).toUpperCase()}
+                          {!user.avatar && user.displayName.charAt(0).toUpperCase()}
                         </div>
                         <button
                           onClick={() => {
@@ -1128,7 +1111,7 @@ export default function SettingsPage() {
                           <span className={`text-sm ${
                             theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
                           }`}>
-                            {new Date(user.lastLogin).toLocaleString()}
+                            {user.lastLoginAt ? new Date(user.lastLoginAt).toLocaleString() : 'Never'}
                           </span>
                         </div>
                         <div className="flex justify-between">
@@ -1138,9 +1121,9 @@ export default function SettingsPage() {
                             Account Role
                           </span>
                           <span className={`text-sm px-2 py-1 rounded text-xs font-medium ${
-                            user.role === 'admin' 
+                            user.role === 'super_admin' 
                               ? 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200'
-                              : user.role === 'user'
+                              : user.role === 'client_viewer'
                               ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
                               : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200'
                           }`}>

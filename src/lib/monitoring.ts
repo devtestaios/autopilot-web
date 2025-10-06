@@ -4,6 +4,8 @@
  * Part of the Enterprise Infrastructure Phase
  */
 
+import React from 'react';
+
 'use client';
 
 // Sentry configuration for production error tracking

@@ -204,14 +204,31 @@ export function CollaborationProvider({ children }: { children: React.ReactNode 
           avatar: member.avatar || '/default-avatar.png',
           email: member.email,
           status: member.status === 'active' ? 'online' as const : 'offline' as const,
-          lastSeen: new Date(member.lastActiveAt || member.created_at),
+          lastSeen: new Date(member.last_login || member.created_at),
           currentPage: undefined,
           role: member.role,
           permissions: []
         }));
 
         setOnlineUsers(collaborationUsers);
-        setActivities(activities);
+        
+        // Convert team activities to collaboration activities format
+        const collaborationActivities = activities.map(activity => ({
+          id: activity.id,
+          userId: activity.user_id,
+          userName: activity.user_name || 'Unknown User',
+          type: activity.activity_type === 'create' ? 'task_created' as const :
+                activity.activity_type === 'update' ? 'task_updated' as const :
+                activity.activity_type === 'comment' ? 'comment_added' as const :
+                'page_visited' as const,
+          description: activity.description,
+          entityId: activity.resource_id,
+          entityType: activity.resource_type,
+          data: activity.metadata,
+          timestamp: new Date(activity.created_at)
+        }));
+        
+        setActivities(collaborationActivities);
         setLastSyncTime(new Date());
         
       } catch (error) {
@@ -478,19 +495,19 @@ export function CollaborationProvider({ children }: { children: React.ReactNode 
         authorId: comment.authorId,
         mentionsCount: comment.mentions.length
       });
+
+      // Add activity
+      addActivity({
+        userId: newComment.authorId,
+        userName: newComment.authorName,
+        type: 'comment_added',
+        description: `Added a comment on ${newComment.entityType}`,
+        entityId: newComment.entityId,
+        entityType: newComment.entityType
+      });
     } catch (error) {
       console.error('Failed to add comment:', error);
     }
-
-    // Add activity
-    addActivity({
-      userId: newComment.authorId,
-      userName: newComment.authorName,
-      type: 'comment_added',
-      description: `Added a comment on ${newComment.entityType}`,
-      entityId: newComment.entityId,
-      entityType: newComment.entityType
-    });
   }, [socket, addActivity]);
 
   const getUserPresence = useCallback((pageId: string) => {

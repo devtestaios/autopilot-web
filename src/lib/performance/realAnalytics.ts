@@ -278,5 +278,9 @@ export const trackingHelpers = {
     realAnalytics.trackIntegrationEvent('api_usage', { endpoint, response_time: responseTime }),
     
   trackIntegrationError: (integrationName: string, errorType: string) => 
-    realAnalytics.trackIntegrationEvent('integration_error', { integration_name: integrationName, error_type: errorType })
+    realAnalytics.trackIntegrationEvent('integration_error', { integration_name: integrationName, error_type: errorType }),
+    
+  // Page view tracking
+  trackPageView: (page: string, properties?: Record<string, any>) => 
+    (realAnalytics as any).trackEvent('page_view', { page, ...properties })
 };

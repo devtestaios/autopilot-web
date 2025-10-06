@@ -1,6 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
-import { AuthProvider, useAuth } from '../AuthContext';
+import '@testing-library/jest-dom';
+import { AuthProvider, useAuth } from '../EnhancedAuthContext';
 
 // Mock localStorage
 const mockLocalStorage = {
@@ -24,9 +25,9 @@ const TestComponent: React.FC = () => {
       <div data-testid="is-loading">{auth.isLoading.toString()}</div>
       <div data-testid="is-authenticated">{auth.isAuthenticated.toString()}</div>
       <div data-testid="user-email">{auth.user?.email || 'null'}</div>
-      <div data-testid="user-name">{auth.user?.name || 'null'}</div>
+      <div data-testid="user-name">{auth.user?.displayName || 'null'}</div>
       <div data-testid="user-role">{auth.user?.role || 'null'}</div>
-      <div data-testid="user-theme">{auth.user?.preferences?.theme || 'null'}</div>
+      <div data-testid="user-theme">{auth.user?.preferences?.dashboard?.theme || 'null'}</div>
       <button 
         data-testid="login-button" 
         onClick={() => auth.login('test@example.com', 'password123')}
@@ -44,13 +45,25 @@ const TestComponent: React.FC = () => {
       </button>
       <button 
         data-testid="update-user-button" 
-        onClick={() => auth.updateUser({ name: 'Updated Name' })}
+        onClick={() => auth.updateUser({ displayName: 'Updated Name' })}
       >
         Update User
       </button>
       <button 
         data-testid="update-preferences-button" 
-        onClick={() => auth.updatePreferences({ theme: 'dark' })}
+        onClick={() => auth.updatePreferences({ 
+          dashboard: { 
+            theme: 'dark',
+            language: 'en',
+            timezone: 'UTC',
+            dateFormat: 'MM/dd/yyyy',
+            numberFormat: 'en-US',
+            defaultLayout: 'default',
+            sidebarCollapsed: false,
+            denseMode: false,
+            defaultView: 'dashboard' as const
+          } 
+        })}
       >
         Update Preferences
       </button>
@@ -108,10 +121,35 @@ describe('AuthContext', () => {
         name: 'Saved User',
         role: 'admin',
         preferences: {
-          theme: 'dark',
-          notifications: true,
-          dashboardLayout: 'compact',
-          defaultView: 'campaigns'
+          dashboard: {
+            theme: 'dark',
+            language: 'en',
+            timezone: 'UTC',
+            dateFormat: 'MM/dd/yyyy',
+            numberFormat: 'en-US',
+            defaultLayout: 'compact',
+            sidebarCollapsed: false,
+            denseMode: false,
+            defaultView: 'campaigns'
+          },
+          notifications: {
+            email: true,
+            push: true,
+            sms: false,
+            campaignAlerts: true,
+            performanceUpdates: true,
+            budgetAlerts: true,
+            weeklyReports: false,
+            digestFrequency: 'daily'
+          },
+          privacy: {
+            dataSharing: false,
+            analytics: true,
+            marketingEmails: false,
+            profileVisibility: 'private',
+            gdprConsent: true,
+            ccpaOptOut: false
+          }
         },
         createdAt: '2025-01-01T00:00:00Z',
         lastLogin: '2025-01-02T00:00:00Z'
@@ -366,7 +404,7 @@ describe('AuthContext', () => {
             <div data-testid="has-logout">{(typeof auth.logout === 'function').toString()}</div>
             <div data-testid="has-updateUser">{(typeof auth.updateUser === 'function').toString()}</div>
             <div data-testid="has-updatePreferences">{(typeof auth.updatePreferences === 'function').toString()}</div>
-            <div data-testid="has-updateUserPreferences">{(typeof auth.updateUserPreferences === 'function').toString()}</div>
+            <div data-testid="has-updateUserPreferences">{(typeof auth.updatePreferences === 'function').toString()}</div>
           </div>
         );
       };
@@ -527,10 +565,35 @@ describe('AuthContext', () => {
         name: 'test',
         role: 'user',
         preferences: {
-          theme: 'light',
-          notifications: true,
-          dashboardLayout: 'detailed',
-          defaultView: 'dashboard'
+          dashboard: {
+            theme: 'light',
+            language: 'en',
+            timezone: 'UTC',
+            dateFormat: 'MM/dd/yyyy',
+            numberFormat: 'en-US',
+            defaultLayout: 'detailed',
+            sidebarCollapsed: false,
+            denseMode: false,
+            defaultView: 'dashboard'
+          },
+          notifications: {
+            email: true,
+            push: true,
+            sms: false,
+            campaignAlerts: true,
+            performanceUpdates: true,
+            budgetAlerts: true,
+            weeklyReports: false,
+            digestFrequency: 'daily'
+          },
+          privacy: {
+            dataSharing: false,
+            analytics: true,
+            marketingEmails: false,
+            profileVisibility: 'private',
+            gdprConsent: true,
+            ccpaOptOut: false
+          }
         }
       });
     });
@@ -566,24 +629,24 @@ describe('AuthContext', () => {
       
       const savedUser = JSON.parse(savedUserCall![1]);
       
-      expect(savedUser.preferences.theme).toBe('dark');
+      expect(savedUser.preferences.dashboard.theme).toBe('dark');
       expect(savedUser.preferences.notifications).toBe(true); // Should preserve other preferences
     });
   });
 
   describe('Edge Cases', () => {
-    it('should handle updateUserPreferences alias method', async () => {
+    it('should handle updatePreferences method', async () => {
       const ComponentWithAlias: React.FC = () => {
         const auth = useAuth();
 
         return (
           <div>
-            <div data-testid="current-theme">{auth.user?.preferences?.theme || 'null'}</div>
+            <div data-testid="current-theme">{auth.user?.preferences?.dashboard?.theme || 'null'}</div>
             <button 
               data-testid="alias-update-button" 
-              onClick={() => auth.updateUserPreferences({ theme: 'dark' })}
+              onClick={() => auth.updatePreferences({ dashboard: { theme: 'dark', language: 'en', timezone: 'UTC', dateFormat: 'MM/dd/yyyy', numberFormat: 'en-US', defaultLayout: 'default', sidebarCollapsed: false, denseMode: false, defaultView: 'dashboard' as const } })}
             >
-              Update via Alias
+              Update Preferences
             </button>
             <button 
               data-testid="login-button" 
@@ -653,9 +716,17 @@ describe('AuthContext', () => {
 
         const handleComplexUpdate = () => {
           auth.updatePreferences({
-            theme: 'dark',
-            dashboardLayout: 'compact',
-            defaultView: 'analytics',
+            dashboard: {
+              theme: 'dark',
+              language: 'en',
+              timezone: 'UTC',
+              dateFormat: 'MM/dd/yyyy',
+              numberFormat: 'en-US',
+              defaultLayout: 'compact',
+              sidebarCollapsed: false,
+              denseMode: false,
+              defaultView: 'analytics' as const
+            },
             notifications: {
               email: true,
               push: false,
@@ -663,15 +734,16 @@ describe('AuthContext', () => {
               campaignAlerts: true,
               performanceUpdates: false,
               budgetAlerts: true,
-              weeklyReports: false
+              weeklyReports: false,
+              digestFrequency: 'daily' as const
             }
           });
         };
 
         return (
           <div>
-            <div data-testid="complex-theme">{auth.user?.preferences?.theme || 'null'}</div>
-            <div data-testid="complex-layout">{auth.user?.preferences?.dashboardLayout || 'null'}</div>
+            <div data-testid="complex-theme">{auth.user?.preferences?.dashboard?.theme || 'null'}</div>
+            <div data-testid="complex-layout">{auth.user?.preferences?.dashboard?.defaultLayout || 'null'}</div>
             <button data-testid="complex-update-button" onClick={handleComplexUpdate}>
               Complex Update
             </button>

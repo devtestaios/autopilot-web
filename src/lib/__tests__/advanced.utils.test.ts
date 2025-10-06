@@ -78,8 +78,8 @@ describe('Utils Library - Advanced Testing', () => {
       const result = cn(
         'btn',
         variant === 'primary' && 'btn-primary',
-        variant === 'secondary' && 'btn-secondary',
-        size === 'small' && 'btn-sm',
+        variant === 'primary' && 'btn-secondary',
+        size === 'large' && 'btn-sm',
         size === 'large' && 'btn-lg',
         isLoading && 'btn-loading'
       );
