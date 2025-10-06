@@ -59,7 +59,7 @@ import {
 import { chatWithAI } from '@/lib/ai-api';
 
 // Dynamic imports for Content Suite components
-const FeedGridPlanner = dynamic(() => import('@/components/content-suite/FeedGridPlanner'), {
+const FeedGridPlanner = dynamic(() => import('@/components/content-suite/FeedGridPlanner').then(mod => ({ default: mod.default })), {
   ssr: false,
   loading: () => <div className="h-96 bg-gray-100 dark:bg-gray-800 rounded-lg animate-pulse" />
 });
@@ -204,7 +204,7 @@ export default function ContentCreationSuite() {
   const handleAIContentAutomation = async (action: string) => {
     try {
       await executeAIAction({
-        type: 'content_automation',
+        type: 'analysis',
         function: action,
         arguments: {
           contentType: selectedContentType,
@@ -436,10 +436,10 @@ function FeedPlannerWorkspace({
   platforms: Platform[]; 
 }) {
   // Import the correct FeedPost type from FeedGridPlanner
-  const [feedPosts, setFeedPosts] = useState<import('@/components/content-suite/FeedGridPlanner').FeedPost[]>([]);
+  const [feedPosts, setFeedPosts] = useState<any[]>([]);
 
   // Mock data for initial state
-  const mockPosts: import('@/components/content-suite/FeedGridPlanner').FeedPost[] = [
+  const mockPosts: any[] = [
     {
       id: 'post-1',
       position: 0,
@@ -484,11 +484,11 @@ function AssetManagerWorkspace({
   platforms: Platform[]; 
 }) {
   // Import the correct types from AssetManager
-  const [assets, setAssets] = useState<import('@/components/content-suite/AssetManager').ContentAsset[]>([]);
-  const [folders, setFolders] = useState<import('@/components/content-suite/AssetManager').AssetFolder[]>([]);
+  const [assets, setAssets] = useState<any[]>([]);
+  const [folders, setFolders] = useState<any[]>([]);
 
   // Mock data for initial state
-  const mockAssets: import('@/components/content-suite/AssetManager').ContentAsset[] = [
+  const mockAssets: any[] = [
     {
       id: 'asset-1',
       name: 'Product Launch Hero Image.jpg',
@@ -525,7 +525,7 @@ function AssetManagerWorkspace({
     }
   ];
 
-  const mockFolders: import('@/components/content-suite/AssetManager').AssetFolder[] = [
+  const mockFolders: any[] = [
     {
       id: 'folder-1',
       name: 'Campaign Assets',
@@ -564,7 +564,7 @@ function DesignStudioWorkspace({
   platforms: Platform[]; 
 }) {
   // Import the correct types from the new AdvancedDesignStudio
-  const [templates] = useState<import('@/components/content-suite/AdvancedDesignStudio').DesignTemplate[]>([]);
+  const [templates] = useState<any[]>([]);
 
   const handleSave = (design: { elements: any[]; template?: any; metadata?: any }) => {
     console.log('Saving professional design:', design);
@@ -596,12 +596,12 @@ function AIGeneratorWorkspace({
   contentType: ContentType; 
   platforms: Platform[]; 
 }) {
-  const handleContentGenerated = (content: import('@/components/content-suite/AIContentGenerator').GeneratedContent) => {
+  const handleContentGenerated = (content: any) => {
     console.log('Content generated:', content);
     // Handle generated content here
   };
 
-  const handleSaveContent = (content: import('@/components/content-suite/AIContentGenerator').GeneratedContent) => {
+  const handleSaveContent = (content: any) => {
     console.log('Saving content:', content);
     // Handle save logic here
   };

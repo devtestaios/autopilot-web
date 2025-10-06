@@ -15,6 +15,7 @@ interface TabsTriggerProps {
   value: string;
   children: React.ReactNode;
   className?: string;
+  onClick?: () => void; // Golden Compass Domain 4: Elegant interaction design
 }
 
 interface TabsContentProps {
@@ -57,13 +58,18 @@ export function TabsList({ children, className = '' }: TabsListProps) {
   );
 }
 
-export function TabsTrigger({ value, children, className = '' }: TabsTriggerProps) {
+export function TabsTrigger({ value, children, className = '', onClick }: TabsTriggerProps) {
   const { activeTab, setActiveTab } = React.useContext(TabsContext);
   const isActive = activeTab === value;
 
+  const handleClick = () => {
+    setActiveTab(value);
+    onClick?.(); // Golden Compass Domain 4: Elegant event composition
+  };
+
   return (
     <button
-      onClick={() => setActiveTab(value)}
+      onClick={handleClick}
       className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
         isActive
           ? 'bg-white text-gray-900 shadow-sm'

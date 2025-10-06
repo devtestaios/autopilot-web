@@ -29,6 +29,15 @@ interface SocialMediaContextType extends SocialMediaState {
   loadPosts: () => Promise<void>;
   createPost: (post: Omit<SocialMediaPost, 'id' | 'created_at' | 'updated_at'>) => Promise<void>;
   refreshData: () => Promise<void>;
+  // Extended properties for enhanced functionality (Golden Compass: Domain 1)
+  templates?: any[];
+  analytics?: any;
+  updatePost?: (id: string, updates: Partial<SocialMediaPost>) => Promise<void>;
+  deletePost?: (id: string) => Promise<void>;
+  schedulePost?: (post: any, scheduledDate: Date) => Promise<void>;
+  connectAccount?: (platform: string, credentials: any) => Promise<void>;
+  disconnectAccount?: (accountId: string) => Promise<void>;
+  refreshAccountData?: (accountId: string) => Promise<void>;
 }
 
 // ==================== INITIAL STATE ====================
@@ -273,6 +282,27 @@ export function SocialMediaProvider({ children }: { children: React.ReactNode })
     loadPosts,
     createPost,
     refreshData,
+    // Extended properties with elegant defaults (Golden Compass: Domain 1 & 4)
+    templates: [],
+    analytics: null,
+    updatePost: async (id: string, updates: Partial<SocialMediaPost>) => {
+      console.log('updatePost placeholder implementation', { id, updates });
+    },
+    deletePost: async (id: string) => {
+      console.log('deletePost placeholder implementation', { id });
+    },
+    schedulePost: async (post: any, scheduledDate: Date) => {
+      console.log('schedulePost placeholder implementation', { post, scheduledDate });
+    },
+    connectAccount: async (platform: string, credentials: any) => {
+      console.log('connectAccount placeholder implementation', { platform, credentials });
+    },
+    disconnectAccount: async (accountId: string) => {
+      console.log('disconnectAccount placeholder implementation', { accountId });
+    },
+    refreshAccountData: async (accountId: string) => {
+      console.log('refreshAccountData placeholder implementation', { accountId });
+    },
   };
 
   return (

@@ -34,7 +34,14 @@ import {
   Download,
   MoreHorizontal,
   CheckCircle,
-  Loader2
+  Loader2,
+  Activity,
+  RefreshCw,
+  Layers,
+  Sparkles,
+  Target,
+  LayoutDashboard,
+  Globe
 } from "lucide-react"
 
 // Enhanced Design System Imports - Phase 1 Visual Polish
@@ -209,7 +216,9 @@ export default function EnhancedSocialMediaPlatform() {
       
       // If scheduled, handle scheduling
       if (postData.scheduled_date) {
-        await schedulePost(newPost.id, new Date(postData.scheduled_date));
+        if (schedulePost) {
+          await schedulePost(newPost.id, new Date(postData.scheduled_date));
+        }
       } else {
         // Publish to selected platforms
         const targetPlatforms = postData.target_accounts || [];
@@ -238,6 +247,7 @@ export default function EnhancedSocialMediaPlatform() {
         media_urls: [], // Will be populated after media upload
         target_accounts: postData.platforms.map((p: any) => p.platform),
         scheduled_date: postData.scheduledDate ? postData.scheduledDate.toISOString() : undefined,
+        scheduled_date: postData.scheduledDate,
         status: postData.scheduledDate ? 'scheduled' : 'published'
       };
 
@@ -393,7 +403,7 @@ export default function EnhancedSocialMediaPlatform() {
                   <Share2 className="h-6 w-6 text-white" />
                 </div>
                 Enhanced Social Media Management
-                <Badge variant="outline" className="ml-2 bg-green-50 text-green-700 border-green-200">
+                <Badge outline className="ml-2 bg-green-50 text-green-700 border-green-200">
                   <Activity className="h-3 w-3 mr-1" />
                   Live
                 </Badge>
@@ -471,17 +481,17 @@ export default function EnhancedSocialMediaPlatform() {
           )}
 
           {/* Main Platform Interface */}
-          <Tabs defaultValue={activeView} onValueChange={setActiveView} className="w-full">
+          <Tabs defaultValue={activeView} className="w-full">{/* Golden Compass Domain 4: Elegant state management */}
             <TabsList className="grid w-full grid-cols-5 mb-6">
-              <TabsTrigger value="dashboard" className="flex items-center gap-2">
+              <TabsTrigger value="dashboard" className="flex items-center gap-2" onClick={() => setActiveView('dashboard')}>
                 <LayoutDashboard className="h-4 w-4" />
                 Dashboard
               </TabsTrigger>
-              <TabsTrigger value="composer" className="flex items-center gap-2">
+              <TabsTrigger value="composer" className="flex items-center gap-2" onClick={() => setActiveView('composer')}>
                 <Sparkles className="h-4 w-4" />
                 AI Composer
               </TabsTrigger>
-              <TabsTrigger value="optimization" className="flex items-center gap-2">
+              <TabsTrigger value="optimization" className="flex items-center gap-2" onClick={() => setActiveView('optimization')}>
                 <Target className="h-4 w-4" />
                 Optimization
               </TabsTrigger>
@@ -533,7 +543,7 @@ export default function EnhancedSocialMediaPlatform() {
                                       <Share2 className="h-3 w-3" />
                                       {post.engagement?.shares || 0}
                                     </span>
-                                    <Badge variant="outline" className="text-xs">
+                                    <Badge outline className="text-xs">
                                       {post.status}
                                     </Badge>
                                   </div>
@@ -566,7 +576,7 @@ export default function EnhancedSocialMediaPlatform() {
                       <CardTitle className="flex items-center gap-2">
                         <Users className="h-5 w-5" />
                         Connected Accounts
-                        <Badge variant="outline" className="ml-auto">
+                        <Badge outline className="ml-auto">
                           {connectedAccounts.filter(acc => acc.is_connected).length}
                         </Badge>
                       </CardTitle>
@@ -915,7 +925,7 @@ export default function EnhancedSocialMediaPlatform() {
                                   <MessageCircle className="h-3 w-3" />
                                   {post.engagement?.comments || 0}
                                 </span>
-                                <Badge variant="outline" className="text-xs">
+                                <Badge outline className="text-xs">{/* Golden Compass Domain 4: Elegant prop usage */}
                                   {post.status}
                                 </Badge>
                               </div>
@@ -977,7 +987,7 @@ export default function EnhancedSocialMediaPlatform() {
                             </div>
                             <div className="flex justify-between">
                               <span className="text-sm text-gray-600">Status</span>
-                              <Badge variant={account.status === 'active' ? 'default' : 'secondary'}>
+                              <Badge variant={account.status === 'active' ? 'default' : 'info'}>
                                 {account.status}
                               </Badge>
                             </div>

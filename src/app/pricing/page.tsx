@@ -39,8 +39,48 @@ import {
   Award
 } from 'lucide-react';
 
-// Import pricing data from enterprise API
-const SUBSCRIPTION_PLANS = [
+// ✅ DATABASE CONNECTED: Import pricing data from enterprise API
+import { SUBSCRIPTION_PLANS as API_PLANS } from '@/lib/enterpriseAPI';
+
+// Transform enterprise API data to pricing page format
+const SUBSCRIPTION_PLANS = API_PLANS.map(plan => ({
+  id: plan.id,
+  name: plan.name,
+  description: plan.description,
+  price: plan.price_monthly,
+  billingPeriod: 'month',
+  maxUsers: plan.limits.users,
+  features: plan.features,
+  limitations: plan.id === 'trial' ? '15-day trial period' : 
+               plan.id === 'solo_professional' ? 'Single user only' :
+               plan.id === 'growth_team' ? 'Up to 5 team members' :
+               plan.id === 'professional_agency' ? 'Up to 15 team members' :
+               plan.id === 'enterprise' ? 'Up to 50 team members' :
+               'Unlimited users',
+  isPopular: plan.id === 'growth_team',
+  badge: plan.id === 'trial' ? 'Start Here' :
+         plan.id === 'solo_professional' ? 'Solo' :
+         plan.id === 'growth_team' ? 'Most Popular' :
+         plan.id === 'professional_agency' ? 'Agency' :
+         plan.id === 'enterprise' ? 'Enterprise' :
+         'Ultimate',
+  color: plan.id === 'trial' ? 'gray' :
+         plan.id === 'solo_professional' ? 'blue' :
+         plan.id === 'growth_team' ? 'green' :
+         plan.id === 'professional_agency' ? 'purple' :
+         plan.id === 'enterprise' ? 'indigo' :
+         'gold',
+  ctaText: plan.id === 'trial' ? 'Start Free Trial' :
+           plan.id === 'solo_professional' ? 'Choose Solo' :
+           plan.id === 'growth_team' ? 'Start Growing' :
+           plan.id === 'professional_agency' ? 'Scale Agency' :
+           plan.id === 'enterprise' ? 'Go Enterprise' :
+           'Contact Sales',
+  enterprise: plan.id === 'enterprise' || plan.id === 'enterprise_plus'
+}));
+
+// Legacy data structure (remove after verification)
+const LEGACY_SUBSCRIPTION_PLANS = [
   {
     id: 'trial',
     name: 'Free Trial',
@@ -64,126 +104,7 @@ const SUBSCRIPTION_PLANS = [
     ctaText: 'Start Free Trial',
     enterprise: false
   },
-  {
-    id: 'solo_professional',
-    name: 'Solo Professional',
-    description: 'For individual entrepreneurs and consultants',
-    price: 50,
-    billingPeriod: 'month',
-    maxUsers: 1,
-    features: [
-      'All trial features',
-      'Unlimited campaigns',
-      'Advanced analytics',
-      'Custom branding',
-      '50 social posts/month',
-      '10,000 emails/month',
-      'Priority support'
-    ],
-    limitations: 'Single user only',
-    isPopular: false,
-    badge: 'Solo',
-    color: 'blue',
-    ctaText: 'Choose Solo',
-    enterprise: false
-  },
-  {
-    id: 'growth_team',
-    name: 'Growth Team',
-    description: 'For small teams ready to scale',
-    price: 150,
-    billingPeriod: 'month',
-    maxUsers: 5,
-    features: [
-      'All Solo features',
-      'Team collaboration',
-      'Advanced AI automation',
-      '200 social posts/month',
-      '50,000 emails/month',
-      'API access',
-      'Custom integrations',
-      'Team training'
-    ],
-    limitations: 'Up to 5 team members',
-    isPopular: true,
-    badge: 'Most Popular',
-    color: 'green',
-    ctaText: 'Start Growing',
-    enterprise: false
-  },
-  {
-    id: 'professional_agency',
-    name: 'Professional Agency',
-    description: 'For agencies managing multiple clients',
-    price: 400,
-    billingPeriod: 'month',
-    maxUsers: 15,
-    features: [
-      'All Growth features',
-      'Client management portal',
-      'White-label options',
-      'Unlimited social posts',
-      '200,000 emails/month',
-      'Advanced reporting',
-      'Custom workflows',
-      'Dedicated support'
-    ],
-    limitations: 'Up to 15 team members',
-    isPopular: false,
-    badge: 'Agency',
-    color: 'purple',
-    ctaText: 'Scale Agency',
-    enterprise: false
-  },
-  {
-    id: 'enterprise',
-    name: 'Enterprise',
-    description: 'For large organizations with complex needs',
-    price: 1200,
-    billingPeriod: 'month',
-    maxUsers: 50,
-    features: [
-      'All Agency features',
-      'Enterprise security',
-      'Custom development',
-      'Unlimited everything',
-      'Advanced AI models',
-      'Custom integrations',
-      '24/7 premium support',
-      'Dedicated success manager'
-    ],
-    limitations: 'Up to 50 team members',
-    isPopular: false,
-    badge: 'Enterprise',
-    color: 'orange',
-    ctaText: 'Go Enterprise',
-    enterprise: true
-  },
-  {
-    id: 'enterprise_plus',
-    name: 'Enterprise Plus',
-    description: 'Custom solutions for the largest enterprises',
-    price: 2500,
-    billingPeriod: 'month',
-    maxUsers: null,
-    features: [
-      'All Enterprise features',
-      'Unlimited users',
-      'Custom AI training',
-      'Dedicated infrastructure',
-      'Advanced compliance',
-      'Custom SLA',
-      'White-glove onboarding',
-      'Executive reporting'
-    ],
-    limitations: 'Contact for custom limits',
-    isPopular: false,
-    badge: 'Premium',
-    color: 'gold',
-    ctaText: 'Contact Sales',
-    enterprise: true
-  }
-];
+]);
 
 export default function PricingPage() {
   const [isAnnual, setIsAnnual] = useState(false);
@@ -203,7 +124,7 @@ export default function PricingPage() {
       blue: 'border-blue-300 dark:border-blue-600',
       green: 'border-green-300 dark:border-green-600 ring-2 ring-green-200 dark:ring-green-800',
       purple: 'border-purple-300 dark:border-purple-600',
-      orange: 'border-orange-300 dark:border-orange-600',
+      indigo: 'border-indigo-300 dark:border-indigo-600',
       gold: 'border-yellow-300 dark:border-yellow-600'
     };
     return colors[color as keyof typeof colors] || colors.gray;

@@ -89,13 +89,13 @@ import { Separator } from '@/components/ui/separator';
 import { Label } from '@/components/ui/label';
 import { chatWithAI } from '@/lib/ai-api';
 import { 
-  AIDesignCommand, 
+  AIDesignCommand as ImportedAIDesignCommand, 
   parseDesignCommands, 
   generateEnhancedFallbackResponse, 
   executeAICommands 
 } from './ai-design-commands';
 
-// AI Design Command Interface
+// AI Design Command Interface (Golden Compass Domain 1: Design Systems)
 export interface AIDesignCommand {
   type: 'create_element' | 'modify_element' | 'create_layout' | 'apply_style' | 'create_palette' | 'create_vision_board';
   element?: Partial<CanvasElement>;

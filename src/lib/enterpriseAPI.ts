@@ -172,7 +172,7 @@ export class EnterpriseCompanyAPI {
 
       if (error) throw error;
 
-      const companies = (data || []).map(company => ({
+      const companies = (data || []).map((company: any) => ({
         ...company,
         users: company.profiles || [],
         profiles: undefined // Remove nested object

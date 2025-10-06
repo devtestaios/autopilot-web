@@ -4,6 +4,8 @@
  * Implements per-user, per-tenant, and global rate limiting
  */
 
+import { supabase } from '@/lib/supabase';
+
 export interface RateLimitConfig {
   // Per-user limits by subscription tier
   userLimits: {
@@ -65,7 +67,6 @@ export interface RateLimitResult {
 
 class AIRateLimiter {
   private static instance: AIRateLimiter;
-  private usageStore: Map<string, AIUsageRecord[]> = new Map();
   private config: RateLimitConfig;
 
   constructor() {
@@ -110,8 +111,6 @@ class AIRateLimiter {
     subscriptionTier: string, 
     estimatedCost: number = 0.01
   ): Promise<RateLimitResult> {
-    const userKey = `user:${userId}`;
-    const userUsage = this.getUserUsage(userKey);
     const now = new Date();
 
     // Get time boundaries
@@ -119,14 +118,14 @@ class AIRateLimiter {
     const dayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
 
-    // Count current usage
-    const hourlyUsage = this.countUsage(userUsage, hourStart);
-    const dailyUsage = this.countUsage(userUsage, dayStart);
-    const monthlyUsage = this.countUsage(userUsage, monthStart);
-
-    // Calculate costs
-    const dailyCost = this.calculateCost(userUsage, dayStart);
-    const monthlyCost = this.calculateCost(userUsage, monthStart);
+    // Get usage from database instead of memory
+    const [hourlyUsage, dailyUsage, monthlyUsage, dailyCost, monthlyCost] = await Promise.all([
+      this.getUsageCount(userId, hourStart),
+      this.getUsageCount(userId, dayStart),
+      this.getUsageCount(userId, monthStart),
+      this.getCostSum(userId, dayStart),
+      this.getCostSum(userId, monthStart)
+    ]);
 
     // Get limits for subscription tier
     const limits = this.config.userLimits[subscriptionTier as keyof typeof this.config.userLimits];
@@ -188,18 +187,7 @@ class AIRateLimiter {
    * Record AI usage after successful request
    */
   async recordUsage(record: AIUsageRecord): Promise<void> {
-    const userKey = `user:${record.userId}`;
-    const userUsage = this.getUserUsage(userKey);
-    
-    userUsage.push(record);
-    this.usageStore.set(userKey, userUsage);
-
-    // Clean up old records (keep last 31 days)
-    const cutoff = new Date(Date.now() - 31 * 24 * 60 * 60 * 1000);
-    const filteredUsage = userUsage.filter(u => u.timestamp > cutoff);
-    this.usageStore.set(userKey, filteredUsage);
-
-    // TODO: Persist to database for permanent storage
+    // Persist directly to database instead of in-memory storage
     await this.persistToDatabase(record);
   }
 
@@ -213,35 +201,142 @@ class AIRateLimiter {
     dailyCost: number;
     monthlyCost: number;
   }> {
-    const userKey = `user:${userId}`;
-    const userUsage = this.getUserUsage(userKey);
     const now = new Date();
-
     const hourStart = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours());
     const dayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
 
+    const [hourly, daily, monthly, dailyCost, monthlyCost] = await Promise.all([
+      this.getUsageCount(userId, hourStart),
+      this.getUsageCount(userId, dayStart),
+      this.getUsageCount(userId, monthStart),
+      this.getCostSum(userId, dayStart),
+      this.getCostSum(userId, monthStart)
+    ]);
+
     return {
-      hourly: this.countUsage(userUsage, hourStart),
-      daily: this.countUsage(userUsage, dayStart),
-      monthly: this.countUsage(userUsage, monthStart),
-      dailyCost: this.calculateCost(userUsage, dayStart),
-      monthlyCost: this.calculateCost(userUsage, monthStart)
+      hourly,
+      daily,
+      monthly,
+      dailyCost,
+      monthlyCost
     };
   }
 
-  private getUserUsage(userKey: string): AIUsageRecord[] {
-    return this.usageStore.get(userKey) || [];
+  // ===============================================
+  // DATABASE QUERY METHODS
+  // ===============================================
+
+  private async getUsageCount(userId: string, since: Date): Promise<number> {
+    try {
+      const { count, error } = await supabase
+        .from('ai_usage')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', userId)
+        .gte('created_at', since.toISOString());
+
+      if (error) {
+        console.error('Error getting usage count:', error);
+        return 0;
+      }
+
+      return count || 0;
+    } catch (error) {
+      console.error('Error in getUsageCount:', error);
+      return 0;
+    }
   }
 
-  private countUsage(usage: AIUsageRecord[], since: Date): number {
-    return usage.filter(u => u.timestamp >= since).length;
+  private async getCostSum(userId: string, since: Date): Promise<number> {
+    try {
+      const { data, error } = await supabase
+        .from('ai_usage')
+        .select('cost_usd')
+        .eq('user_id', userId)
+        .gte('created_at', since.toISOString());
+
+      if (error) {
+        console.error('Error getting cost sum:', error);
+        return 0;
+      }
+
+      return data?.reduce((sum: number, record: any) => sum + parseFloat(record.cost_usd), 0) || 0;
+    } catch (error) {
+      console.error('Error in getCostSum:', error);
+      return 0;
+    }
   }
 
-  private calculateCost(usage: AIUsageRecord[], since: Date): number {
-    return usage
-      .filter(u => u.timestamp >= since)
-      .reduce((total, u) => total + u.costUSD, 0);
+  private async getGlobalDailyCost(): Promise<number> {
+    try {
+      const today = new Date();
+      const dayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+
+      const { data, error } = await supabase
+        .from('ai_usage')
+        .select('cost_usd')
+        .gte('created_at', dayStart.toISOString());
+
+      if (error) {
+        console.error('Error getting global daily cost:', error);
+        return 0;
+      }
+
+      return data?.reduce((sum: number, record: any) => sum + parseFloat(record.cost_usd), 0) || 0;
+    } catch (error) {
+      console.error('Error in getGlobalDailyCost:', error);
+      return 0;
+    }
+  }
+
+  private async getGlobalMonthlyCost(): Promise<number> {
+    try {
+      const today = new Date();
+      const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+
+      const { data, error } = await supabase
+        .from('ai_usage')
+        .select('cost_usd')
+        .gte('created_at', monthStart.toISOString());
+
+      if (error) {
+        console.error('Error getting global monthly cost:', error);
+        return 0;
+      }
+
+      return data?.reduce((sum: number, record: any) => sum + parseFloat(record.cost_usd), 0) || 0;
+    } catch (error) {
+      console.error('Error in getGlobalMonthlyCost:', error);
+      return 0;
+    }
+  }
+
+  private async persistToDatabase(record: AIUsageRecord): Promise<void> {
+    try {
+      const { error } = await supabase
+        .from('ai_usage')
+        .insert({
+          user_id: record.userId,
+          company_id: record.tenantId, // Map tenantId to company_id
+          tenant_id: record.tenantId,
+          model: record.model,
+          endpoint: record.endpoint,
+          subscription_tier: record.subscriptionTier,
+          input_tokens: record.inputTokens,
+          output_tokens: record.outputTokens,
+          cost_usd: record.costUSD,
+          request_status: 'success',
+          created_at: record.timestamp.toISOString()
+        });
+
+      if (error) {
+        console.error('Error persisting AI usage to database:', error);
+        // Don't throw - we don't want to break the AI request flow
+      }
+    } catch (error) {
+      console.error('Error in persistToDatabase:', error);
+      // Don't throw - we don't want to break the AI request flow
+    }
   }
 
   private createLimitResult(
@@ -278,20 +373,7 @@ class AIRateLimiter {
     };
   }
 
-  private async getGlobalDailyCost(): Promise<number> {
-    // TODO: Implement global cost tracking from database
-    return 0;
-  }
 
-  private async getGlobalMonthlyCost(): Promise<number> {
-    // TODO: Implement global cost tracking from database
-    return 0;
-  }
-
-  private async persistToDatabase(record: AIUsageRecord): Promise<void> {
-    // TODO: Implement database persistence
-    console.log('Recording AI usage:', record);
-  }
 }
 
 // Export singleton instance
