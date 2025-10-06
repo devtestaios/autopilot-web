@@ -116,7 +116,7 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
       }
 
       // Try to restore from cache first
-      const cachedSession = await sessionCache.get(userData.userId);
+      const cachedSession = (await sessionCache.get(userData.userId)) as SessionData | null;
       
       if (cachedSession && cachedSession.isActive) {
         // Validate cached session
@@ -398,12 +398,12 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
     if (isAuthenticated && user && !sessionData) {
       initializeSession({
         userId: user.id,
-        tenantId: user.app_metadata?.tenant_id,
+        tenantId: (user as any).app_metadata?.tenant_id,
         email: user.email || '',
-        role: user.app_metadata?.role || 'user',
-        permissions: user.app_metadata?.permissions || [],
-        features: user.app_metadata?.features || [],
-        subscriptionTier: user.app_metadata?.subscription_tier || 'free'
+        role: (user as any).app_metadata?.role || 'user',
+        permissions: (user as any).app_metadata?.permissions || [],
+        features: (user as any).app_metadata?.features || [],
+        subscriptionTier: (user as any).app_metadata?.subscription_tier || 'free'
       });
     } else if (!isAuthenticated && sessionData) {
       endSession();

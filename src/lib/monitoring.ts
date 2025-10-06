@@ -1,3 +1,5 @@
+'use client';
+
 /**
  * Enterprise Monitoring & Error Tracking
  * Production-grade error monitoring with Sentry integration
@@ -5,8 +7,6 @@
  */
 
 import React from 'react';
-
-'use client';
 
 // Sentry configuration for production error tracking
 export interface MonitoringConfig {
