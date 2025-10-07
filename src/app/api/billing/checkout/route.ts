@@ -6,9 +6,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2025-09-30.clover',
-});
+// Initialize Stripe only if API key is available
+const stripe = process.env.STRIPE_SECRET_KEY
+  ? new Stripe(process.env.STRIPE_SECRET_KEY, {
+      apiVersion: '2025-09-30.clover',
+    })
+  : null;
 
 interface CheckoutRequest {
   price_id: string;
@@ -20,6 +23,14 @@ interface CheckoutRequest {
 
 export async function POST(request: NextRequest) {
   try {
+    // Check if Stripe is configured
+    if (!stripe) {
+      return NextResponse.json(
+        { error: 'Stripe is not configured. Please set STRIPE_SECRET_KEY environment variable.' },
+        { status: 503 }
+      );
+    }
+
     const body: CheckoutRequest = await request.json();
     const { price_id, success_url, cancel_url, metadata } = body;
 

@@ -12,7 +12,7 @@ import dynamic from 'next/dynamic';
 import { designTokens } from '@/lib/designTokens';
 import animations from '@/lib/animations';
 import visualEffects from '@/lib/visualEffects';
-// import { Container, Grid, Flex, Section, Stack, Header, ContentArea, CardGrid } from '@/components/ui/LayoutSystem';
+import { Container, Grid, Flex, Section, Stack, Header, ContentArea, CardGrid } from '@/components/ui/LayoutSystem';
 import { Button, Card, Badge, Spinner, Avatar, Progress } from '@/components/ui/EnhancedComponents';
 
 // Dynamic imports for SSR safety
