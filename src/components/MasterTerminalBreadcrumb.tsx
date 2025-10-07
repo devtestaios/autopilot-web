@@ -48,7 +48,6 @@ export default function MasterTerminalBreadcrumb({
         'reports': 'Analytics & Insights',
         'performance': 'Analytics & Insights',
         
-        'ai-center': 'AI & Automation',
         'ai': 'AI & Automation',
         'optimization': 'AI & Automation',
         'ai-automation': 'AI & Automation',

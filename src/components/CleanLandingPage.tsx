@@ -291,7 +291,7 @@ export default function CleanLandingPage() {
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <Link
-                href="/ai-center"
+                href="/ai"
                 className="px-8 py-4 bg-white text-teal-600 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 flex items-center gap-2"
               >
                 Explore AI Features

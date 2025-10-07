@@ -69,13 +69,23 @@ PulseBridge.ai is the world's first truly AI-autonomous marketing platform that 
 - **Performance Alerts**: Instant notifications for significant changes
 - **Goal-Based Optimization**: AI adjusts strategies to meet business objectives
 
-## � Development Standards
+## 📚 Documentation
 
-### Golden Standard References
+**📖 [Complete Documentation Index](DOCUMENTATION.md)** - Central hub for all project documentation
+
+### Quick Links
+- **[Quick Start Guide](QUICK_START_NEW_SESSION.md)** - Jump right into development
+- **[Setup Guides](docs/guides/)** - Step-by-step setup instructions
+- **[Technical Reference](docs/reference/)** - Architecture and coding standards
+- **[API Documentation](docs/api/)** - Backend API integration guides
+- **[Deployment Guides](docs/deployment/)** - Production deployment procedures
+- **[Troubleshooting](docs/troubleshooting/)** - Common issues and solutions
+
+### Development Standards
 Before starting any development work, consult these definitive technical references:
 
-- **`ADVANCED_CODING_AI_DISSERTATION.md`** - Complete technical standards for backend, API, and architecture
-- **`ADVANCED_UI_UX_DISSERTATION.md`** - Comprehensive design system and frontend development guide
+- **`docs/reference/ADVANCED_CODING_AI_DISSERTATION.md`** - Complete technical standards for backend, API, and architecture
+- **`docs/reference/DESIGN_RULES_AND_GUIDELINES.md`** - Comprehensive design system and frontend development guide
 
 These documents establish the quality standards and patterns that ensure consistency across the entire platform.
 
@@ -260,19 +270,16 @@ ANTHROPIC_API_KEY=your_claude_key
 GOOGLE_ADS_DEVELOPER_TOKEN=your_google_ads_token
 ```
 
-## 📚 Documentation
-
-### Technical Documentation
-- [AI Control Documentation](AI_CONTROL_DOCUMENTATION.md) - Complete AI system guide
-- [Phase Completion Summaries](PHASE_6_AUTONOMOUS_DECISION_FRAMEWORK_COMPLETION.md) - Development milestones
-- [Deployment Guide](DEPLOYMENT_GUIDE.md) - Production deployment instructions
-- [User Guide](AUTOPILOT_USER_GUIDE.md) - Platform usage instructions
+## 📖 Additional Resources
 
 ### API Documentation
-- **Backend API**: OpenAPI/Swagger docs at `/docs` endpoint
+- **Backend API**: OpenAPI/Swagger docs at `/docs` endpoint when running the backend
 - **Autonomous API**: `/api/v1/autonomous/*` - Decision system endpoints
 - **Analytics API**: `/api/v1/analytics/*` - ML analytics endpoints
 - **Platform API**: Platform-specific integration endpoints
+
+### Historical Documentation
+All development milestones, phase completions, and session notes are archived in `docs/archive/` for reference.
 
 ## 🏆 Project Achievements
 

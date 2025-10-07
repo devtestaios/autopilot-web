@@ -61,10 +61,10 @@ const FEATURE_CATEGORIES: FeatureCategory[] = [
     userTypes: ['marketer', 'agency', 'enterprise'],
     features: [
       {
-        id: 'ai-center',
+        id: 'ai',
         name: 'AI Command Center',
         description: 'Chat with AI and control platform autonomously',
-        route: '/ai-center',
+        route: '/ai',
         isNew: true,
         difficulty: 'intermediate',
         estimatedTime: '5 min',

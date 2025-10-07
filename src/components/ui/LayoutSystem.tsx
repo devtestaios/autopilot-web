@@ -6,9 +6,9 @@
 
 import React, { forwardRef, HTMLAttributes, ReactNode } from 'react';
 import { motion, HTMLMotionProps } from 'framer-motion';
-import { cn } from '@/lib/visualEffects';
-import visualEffects from '@/lib/visualEffects';
+import { cn } from '@/lib/utils';
 import { animationVariants } from '@/lib/animations';
+import visualEffects from '@/lib/visualEffects';
 
 // Enhanced Container Component
 interface ContainerProps extends HTMLAttributes<HTMLDivElement> {
@@ -502,7 +502,10 @@ export const CardGrid = forwardRef<HTMLDivElement, CardGridProps>(
         variants={animationVariants.staggerContainer}
         initial="hidden"
         animate="visible"
-        {...props}
+        style={props.style}
+        id={props.id}
+        role={props.role}
+        onAnimationComplete={props.onAnimationComplete}
       >
         {children}
       </motion.div>
@@ -511,19 +514,6 @@ export const CardGrid = forwardRef<HTMLDivElement, CardGridProps>(
 );
 
 CardGrid.displayName = 'CardGrid';
-
-// Export all layout components
-export {
-  Container,
-  Grid,
-  Flex,
-  Section,
-  Stack,
-  SidebarLayout,
-  Header,
-  ContentArea,
-  CardGrid
-};
 
 // Export layout collection
 export default {

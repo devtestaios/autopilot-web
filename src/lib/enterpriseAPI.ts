@@ -125,6 +125,8 @@ export interface SubscriptionPlan {
     advanced_analytics: boolean;
     api_access: boolean;
   };
+  contact_sales?: boolean; // Flag for custom pricing tiers
+  custom_pricing?: boolean; // Hide price display
 }
 
 // ===============================================
@@ -470,23 +472,24 @@ export const SUBSCRIPTION_PLANS: SubscriptionPlan[] = [
     id: 'solo_professional',
     name: 'Solo Professional',
     description: 'Perfect for solo entrepreneurs, freelancers, and consultants',
-    price_monthly: 50,
-    price_yearly: 500,
+    price_monthly: 79,
+    price_yearly: 790, // 16% annual savings
     features: [
       'Full platform access',
       'Social Media + Content + Email suites',
       'AI content generation',
-      'Advanced design studio',
-      'Standard support',
-      'Community access'
+      'Advanced design studio', 
+      'Priority email support',
+      'Community access',
+      'Mobile app access'
     ],
     limits: {
       users: 1,
-      storage_gb: 10,
-      api_calls_month: 15000,
-      campaigns: 25,
-      social_accounts: 5,
-      email_contacts: 10000
+      storage_gb: 15, // Increased from 10GB
+      api_calls_month: 25000, // Increased from 15k
+      campaigns: 40, // Increased from 25
+      social_accounts: 8, // Increased from 5
+      email_contacts: 15000 // Increased from 10k
     },
     enterprise_features: {
       sso: false,
@@ -501,23 +504,24 @@ export const SUBSCRIPTION_PLANS: SubscriptionPlan[] = [
     id: 'growth_team',
     name: 'Growth Team',
     description: 'For small teams and growing agencies',
-    price_monthly: 150,
-    price_yearly: 1500,
+    price_monthly: 199,
+    price_yearly: 1990, // 17% annual savings
     features: [
       'Everything in Solo Professional',
       'Team collaboration features',
-      'Enhanced analytics',
-      'Priority support',
+      'Enhanced analytics & reporting',
+      'Priority phone + email support',
       'Client management basics',
-      'A/B testing'
+      'A/B testing framework',
+      'Advanced automation workflows'
     ],
     limits: {
-      users: 3,
-      storage_gb: 50,
-      api_calls_month: 50000,
-      campaigns: 75,
-      social_accounts: 15,
-      email_contacts: 30000
+      users: 5, // Increased from 3
+      storage_gb: 75, // Increased from 50GB
+      api_calls_month: 75000, // Increased from 50k
+      campaigns: 100, // Increased from 75
+      social_accounts: 20, // Increased from 15
+      email_contacts: 50000 // Increased from 30k
     },
     enterprise_features: {
       sso: false,
@@ -532,23 +536,24 @@ export const SUBSCRIPTION_PLANS: SubscriptionPlan[] = [
     id: 'professional_agency',
     name: 'Professional Agency',
     description: 'For established agencies and marketing departments',
-    price_monthly: 400,
-    price_yearly: 4000,
+    price_monthly: 599,
+    price_yearly: 5990, // 17% annual savings
     features: [
       'Everything in Growth Team',
       'Advanced client management',
-      'White-label options',
-      'Custom integrations',
+      'White-label branding options',
+      'Custom integrations & API access',
       'Dedicated account manager',
-      'Advanced reporting'
+      'Advanced reporting & dashboards',
+      'Custom onboarding & training'
     ],
     limits: {
-      users: 10,
-      storage_gb: 200,
-      api_calls_month: 200000,
-      campaigns: 250,
-      social_accounts: 50,
-      email_contacts: 100000
+      users: 15, // Increased from 10
+      storage_gb: 300, // Increased from 200GB
+      api_calls_month: 300000, // Increased from 200k
+      campaigns: 400, // Increased from 250
+      social_accounts: 75, // Increased from 50
+      email_contacts: 150000 // Increased from 100k
     },
     enterprise_features: {
       sso: true,
@@ -563,23 +568,24 @@ export const SUBSCRIPTION_PLANS: SubscriptionPlan[] = [
     id: 'enterprise',
     name: 'Enterprise',
     description: 'For large agencies and enterprise organizations',
-    price_monthly: 1200,
-    price_yearly: 12000,
+    price_monthly: 1799,
+    price_yearly: 17990, // 17% annual savings
     features: [
       'Everything in Professional Agency',
-      'Enterprise security',
-      'SSO integration',
-      'Dedicated success manager',
-      'Custom development',
-      'Premium support'
+      'Enterprise security & compliance',
+      'Single Sign-On (SSO) integration',
+      'Dedicated customer success manager',
+      'Custom development & features',
+      'Premium 24/7 support with SLAs',
+      'Advanced user permissions & roles'
     ],
     limits: {
-      users: 30,
-      storage_gb: 1000,
-      api_calls_month: 1000000,
-      campaigns: 1000,
+      users: 50, // Increased from 30
+      storage_gb: 1500, // Increased from 1000GB
+      api_calls_month: 1500000, // Increased from 1M
+      campaigns: 1500, // Increased from 1000
       social_accounts: -1, // Unlimited
-      email_contacts: 500000
+      email_contacts: 750000 // Increased from 500k
     },
     enterprise_features: {
       sso: true,
@@ -593,16 +599,20 @@ export const SUBSCRIPTION_PLANS: SubscriptionPlan[] = [
   {
     id: 'enterprise_plus',
     name: 'Enterprise Plus',
-    description: 'For multi-location enterprises and holding companies',
-    price_monthly: 2500,
-    price_yearly: 25000,
+    description: 'Custom solutions for complex organizations',
+    price_monthly: 0, // Contact sales - no public pricing
+    price_yearly: 0,   // Contact sales - no public pricing
     features: [
       'Everything in Enterprise',
       'Unlimited users and features',
       'On-premise deployment options',
       'White-glove onboarding',
-      'Custom contracts',
-      '24/7 dedicated support'
+      'Custom contracts & SLAs',
+      '24/7 dedicated support',
+      'Custom integrations',
+      'Dedicated customer success manager',
+      'Priority feature requests',
+      'Volume discounts available'
     ],
     limits: {
       users: -1, // Unlimited
@@ -619,7 +629,9 @@ export const SUBSCRIPTION_PLANS: SubscriptionPlan[] = [
       dedicated_support: true,
       advanced_analytics: true,
       api_access: true
-    }
+    },
+    contact_sales: true, // Flag for custom pricing
+    custom_pricing: true // Hide price display
   }
 ];
 

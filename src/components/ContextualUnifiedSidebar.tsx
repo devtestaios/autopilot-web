@@ -95,10 +95,10 @@ const sidebarContexts: Record<string, SidebarContext> = {
         path: '/platforms',
         description: 'Manage all connected business platforms',
         subItems: [
-          { id: 'marketing-platforms', label: 'Marketing Suite', path: '/marketing-command-center' },
+          { id: 'marketing-platforms', label: 'Marketing Suite', path: '/marketing' },
           { id: 'business-platforms', label: 'Business Operations', path: '/business-suite' },
           { id: 'analytics-platforms', label: 'Analytics Hub', path: '/analytics' },
-          { id: 'ai-platforms', label: 'AI & Automation', path: '/ai-center' }
+          { id: 'ai-platforms', label: 'AI & Automation', path: '/ai' }
         ]
       },
       {
@@ -134,7 +134,7 @@ const sidebarContexts: Record<string, SidebarContext> = {
         id: 'marketing-overview',
         label: 'Marketing Overview',
         icon: Megaphone,
-        path: '/marketing-command-center',
+        path: '/marketing',
         badge: 'Hub',
         description: 'Unified marketing dashboard and control center'
       },
@@ -305,7 +305,7 @@ const sidebarContexts: Record<string, SidebarContext> = {
         id: 'ai-overview',
         label: 'AI Dashboard',
         icon: Brain,
-        path: '/ai-center',
+        path: '/ai',
         badge: 'AI',
         description: 'Central AI control and monitoring dashboard'
       },
@@ -517,9 +517,8 @@ function detectDashboardContext(pathname: string): string {
   }
   
   // AI Center and Automation
-  if (pathname.startsWith('/ai') || 
-      pathname.startsWith('/optimization') || 
-      pathname === '/ai-center' ||
+  if (pathname.startsWith('/ai') ||
+      pathname.startsWith('/optimization') ||
       pathname === '/ai-automation') {
     return 'ai';
   }

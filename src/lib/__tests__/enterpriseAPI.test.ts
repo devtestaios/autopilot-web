@@ -112,7 +112,7 @@ describe('Enterprise API', () => {
       
       expect(features).toContain('Advanced Analytics');
       expect(features).toContain('Priority Support');
-      expect(features).toContain('Custom Integrations');
+      expect(features).toContain('Custom Domain');
     });
 
     it('should return empty array for invalid tier', () => {

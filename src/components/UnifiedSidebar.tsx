@@ -131,10 +131,10 @@ function getContextualSidebarItems(pathname: string): { contextName: string; ite
           description: 'Universal app marketplace'
         },
         {
-          id: 'ai-center',
+          id: 'ai',
           label: 'AI Center',
           icon: Brain,
-          path: '/ai-center',
+          path: '/ai',
           description: 'AI automation and insights',
           subItems: [
             { id: 'ai-automation', label: 'AI Automation', path: '/ai-automation' },
@@ -306,8 +306,8 @@ function getContextualSidebarItems(pathname: string): { contextName: string; ite
   }
 
   // AI Center Context
-  if (pathname.startsWith('/ai') || pathname.startsWith('/optimization') || 
-      pathname === '/ai-center' || pathname === '/ai-automation') {
+  if (pathname.startsWith('/ai') || pathname.startsWith('/optimization') ||
+      pathname === '/ai-automation') {
     return {
       contextName: 'AI Control Center',
       items: [
@@ -315,7 +315,7 @@ function getContextualSidebarItems(pathname: string): { contextName: string; ite
           id: 'ai-dashboard',
           label: 'AI Dashboard',
           icon: Brain,
-          path: '/ai-center',
+          path: '/ai',
           badge: 'AI',
           description: 'Central AI control and monitoring'
         },
