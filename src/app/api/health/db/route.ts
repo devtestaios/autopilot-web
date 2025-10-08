@@ -25,11 +25,34 @@ export async function GET(request: NextRequest) {
     const supabase = createClient(supabaseUrl, supabaseKey);
 
     // Test basic connection with a simple query
+    // Try multiple common tables to find one that exists
     const startTime = Date.now();
-    const { data, error } = await supabase
-      .from('campaigns')
+    let data, error;
+
+    // Try email_campaigns first (most likely to exist based on schema)
+    const result = await supabase
+      .from('email_campaigns')
       .select('id')
       .limit(1);
+
+    data = result.data;
+    error = result.error;
+
+    // If email_campaigns doesn't exist, try other tables
+    if (error && error.message.includes('does not exist')) {
+      const fallbackTables = ['social_media_posts', 'email_subscribers', 'users'];
+      for (const table of fallbackTables) {
+        const fallbackResult = await supabase
+          .from(table)
+          .select('id')
+          .limit(1);
+        if (!fallbackResult.error) {
+          data = fallbackResult.data;
+          error = null;
+          break;
+        }
+      }
+    }
 
     const responseTime = Date.now() - startTime;
 

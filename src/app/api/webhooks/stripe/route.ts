@@ -1,11 +1,12 @@
 /**
  * Stripe Webhook Handler
- * Processes subscription events from Stripe
+ * Processes subscription events from Stripe and saves to Supabase
  */
 
 import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { headers } from 'next/headers';
+import { createClient } from '@supabase/supabase-js';
 
 // Initialize Stripe only if API key is available
 const stripe = process.env.STRIPE_SECRET_KEY
@@ -15,6 +16,12 @@ const stripe = process.env.STRIPE_SECRET_KEY
   : null;
 
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET || '';
+
+// Initialize Supabase client
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
 
 export async function POST(request: NextRequest) {
   try {
@@ -77,81 +84,334 @@ export async function POST(request: NextRequest) {
 async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
   console.log('Checkout completed:', session.id);
   
-  // Update user subscription in your database
-  // This would typically involve:
-  // 1. Find user by session.customer
-  // 2. Update their subscription status
-  // 3. Grant access to paid features
-  
-  // Example database update (implement with your database)
-  // await updateUserSubscription({
-  //   customerId: session.customer as string,
-  //   subscriptionId: session.subscription as string,
-  //   status: 'active'
-  // });
+  try {
+    // Log webhook event
+    await supabase.from('stripe_webhook_events').insert({
+      stripe_event_id: `checkout_${session.id}`,
+      event_type: 'checkout.session.completed',
+      raw_data: session,
+      processed: false
+    });
+
+    // Create or update customer in database
+    if (session.customer && typeof session.customer === 'string') {
+      const customerData = {
+        stripe_customer_id: session.customer,
+        email: session.customer_details?.email || '',
+        name: session.customer_details?.name || '',
+        phone: session.customer_details?.phone || '',
+        address: session.customer_details?.address || {},
+        metadata: session.metadata || {}
+      };
+
+      await supabase.from('stripe_customers')
+        .upsert(customerData, { 
+          onConflict: 'stripe_customer_id',
+          ignoreDuplicates: false 
+        });
+
+      console.log('Customer created/updated:', session.customer);
+    }
+
+    // Mark event as processed
+    await supabase.from('stripe_webhook_events')
+      .update({ processed: true })
+      .eq('stripe_event_id', `checkout_${session.id}`);
+
+  } catch (error) {
+    console.error('Error handling checkout completed:', error);
+    
+    // Log error in webhook events
+    await supabase.from('stripe_webhook_events')
+      .update({ 
+        processed: false,
+        error_message: error instanceof Error ? error.message : 'Unknown error'
+      })
+      .eq('stripe_event_id', `checkout_${session.id}`);
+  }
 }
 
 async function handleSubscriptionCreated(subscription: Stripe.Subscription) {
   console.log('Subscription created:', subscription.id);
   
-  // Update user access and features based on subscription
-  const priceId = subscription.items.data[0]?.price.id;
-  const planId = subscription.metadata.plan_id;
-  
-  // Grant user access to subscription features
-  // await grantSubscriptionAccess({
-  //   customerId: subscription.customer as string,
-  //   subscriptionId: subscription.id,
-  //   planId: planId,
-  //   priceId: priceId
-  // });
+  try {
+    // Log webhook event
+    await supabase.from('stripe_webhook_events').insert({
+      stripe_event_id: `sub_created_${subscription.id}`,
+      event_type: 'customer.subscription.created',
+      raw_data: subscription,
+      processed: false
+    });
+
+    // Get plan details
+    const priceId = subscription.items.data[0]?.price.id;
+    const { data: plan } = await supabase
+      .from('subscription_plans')
+      .select('id')
+      .eq('stripe_price_id', priceId)
+      .single();
+
+    // Create subscription record
+    const subscriptionData = {
+      stripe_subscription_id: subscription.id,
+      stripe_customer_id: subscription.customer as string,
+      plan_id: plan?.id || null,
+      status: subscription.status,
+      current_period_start: (subscription as any).current_period_start ? new Date((subscription as any).current_period_start * 1000).toISOString() : null,
+      current_period_end: (subscription as any).current_period_end ? new Date((subscription as any).current_period_end * 1000).toISOString() : null,
+      trial_start: (subscription as any).trial_start ? new Date((subscription as any).trial_start * 1000).toISOString() : null,
+      trial_end: (subscription as any).trial_end ? new Date((subscription as any).trial_end * 1000).toISOString() : null,
+      cancel_at_period_end: subscription.cancel_at_period_end || false,
+      canceled_at: (subscription as any).canceled_at ? new Date((subscription as any).canceled_at * 1000).toISOString() : null,
+      ended_at: (subscription as any).ended_at ? new Date((subscription as any).ended_at * 1000).toISOString() : null,
+      metadata: subscription.metadata || {}
+    };
+
+    await supabase.from('subscriptions').insert(subscriptionData);
+
+    // Mark event as processed
+    await supabase.from('stripe_webhook_events')
+      .update({ processed: true })
+      .eq('stripe_event_id', `sub_created_${subscription.id}`);
+
+    console.log('Subscription saved to database:', subscription.id);
+
+  } catch (error) {
+    console.error('Error handling subscription created:', error);
+    
+    await supabase.from('stripe_webhook_events')
+      .update({ 
+        processed: false,
+        error_message: error instanceof Error ? error.message : 'Unknown error'
+      })
+      .eq('stripe_event_id', `sub_created_${subscription.id}`);
+  }
 }
 
 async function handleSubscriptionUpdated(subscription: Stripe.Subscription) {
   console.log('Subscription updated:', subscription.id);
   
-  // Handle plan changes, upgrades/downgrades
-  const status = subscription.status;
-  const planId = subscription.metadata.plan_id;
-  
-  // Update user access based on new subscription
-  // await updateSubscriptionAccess({
-  //   customerId: subscription.customer as string,
-  //   subscriptionId: subscription.id,
-  //   status: status,
-  //   planId: planId
-  // });
+  try {
+    // Log webhook event
+    await supabase.from('stripe_webhook_events').insert({
+      stripe_event_id: `sub_updated_${subscription.id}`,
+      event_type: 'customer.subscription.updated',
+      raw_data: subscription,
+      processed: false
+    });
+
+    // Get plan details
+    const priceId = subscription.items.data[0]?.price.id;
+    const { data: plan } = await supabase
+      .from('subscription_plans')
+      .select('id')
+      .eq('stripe_price_id', priceId)
+      .single();
+
+    // Update subscription record
+    const subscriptionData = {
+      plan_id: plan?.id || null,
+      status: subscription.status,
+      current_period_start: (subscription as any).current_period_start ? new Date((subscription as any).current_period_start * 1000).toISOString() : null,
+      current_period_end: (subscription as any).current_period_end ? new Date((subscription as any).current_period_end * 1000).toISOString() : null,
+      trial_start: (subscription as any).trial_start ? new Date((subscription as any).trial_start * 1000).toISOString() : null,
+      trial_end: (subscription as any).trial_end ? new Date((subscription as any).trial_end * 1000).toISOString() : null,
+      cancel_at_period_end: subscription.cancel_at_period_end || false,
+      canceled_at: (subscription as any).canceled_at ? new Date((subscription as any).canceled_at * 1000).toISOString() : null,
+      ended_at: (subscription as any).ended_at ? new Date((subscription as any).ended_at * 1000).toISOString() : null,
+      metadata: subscription.metadata || {},
+      updated_at: new Date().toISOString()
+    };
+
+    await supabase.from('subscriptions')
+      .update(subscriptionData)
+      .eq('stripe_subscription_id', subscription.id);
+
+    // Mark event as processed
+    await supabase.from('stripe_webhook_events')
+      .update({ processed: true })
+      .eq('stripe_event_id', `sub_updated_${subscription.id}`);
+
+    console.log('Subscription updated in database:', subscription.id);
+
+  } catch (error) {
+    console.error('Error handling subscription updated:', error);
+    
+    await supabase.from('stripe_webhook_events')
+      .update({ 
+        processed: false,
+        error_message: error instanceof Error ? error.message : 'Unknown error'
+      })
+      .eq('stripe_event_id', `sub_updated_${subscription.id}`);
+  }
 }
 
 async function handleSubscriptionDeleted(subscription: Stripe.Subscription) {
   console.log('Subscription deleted:', subscription.id);
   
-  // Revoke user access
-  // await revokeSubscriptionAccess({
-  //   customerId: subscription.customer as string,
-  //   subscriptionId: subscription.id
-  // });
+  try {
+    // Log webhook event
+    await supabase.from('stripe_webhook_events').insert({
+      stripe_event_id: `sub_deleted_${subscription.id}`,
+      event_type: 'customer.subscription.deleted',
+      raw_data: subscription,
+      processed: false
+    });
+
+    // Update subscription status to canceled and set ended_at
+    await supabase.from('subscriptions')
+      .update({ 
+        status: 'canceled',
+        ended_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      })
+      .eq('stripe_subscription_id', subscription.id);
+
+    // Mark event as processed
+    await supabase.from('stripe_webhook_events')
+      .update({ processed: true })
+      .eq('stripe_event_id', `sub_deleted_${subscription.id}`);
+
+    console.log('Subscription marked as deleted in database:', subscription.id);
+
+  } catch (error) {
+    console.error('Error handling subscription deleted:', error);
+    
+    await supabase.from('stripe_webhook_events')
+      .update({ 
+        processed: false,
+        error_message: error instanceof Error ? error.message : 'Unknown error'
+      })
+      .eq('stripe_event_id', `sub_deleted_${subscription.id}`);
+  }
 }
 
 async function handlePaymentSucceeded(invoice: Stripe.Invoice) {
   console.log('Payment succeeded:', invoice.id);
   
-  // Send payment receipt, update billing records
-  // await sendPaymentReceipt({
-  //   customerId: invoice.customer as string,
-  //   amount: invoice.amount_paid,
-  //   invoiceId: invoice.id
-  // });
+  try {
+    // Log webhook event
+    await supabase.from('stripe_webhook_events').insert({
+      stripe_event_id: `payment_succeeded_${invoice.id}`,
+      event_type: 'invoice.payment_succeeded',
+      raw_data: invoice,
+      processed: false
+    });
+
+    // Get subscription ID if this invoice is for a subscription
+    let subscriptionId = null;
+    if ((invoice as any).subscription) {
+      const { data: subscription } = await supabase
+        .from('subscriptions')
+        .select('id')
+        .eq('stripe_subscription_id', (invoice as any).subscription as string)
+        .single();
+      subscriptionId = subscription?.id || null;
+    }
+
+    // Create or update invoice record
+    const invoiceData = {
+      stripe_invoice_id: invoice.id,
+      stripe_customer_id: invoice.customer as string,
+      subscription_id: subscriptionId,
+      amount_due: invoice.amount_due || 0,
+      amount_paid: invoice.amount_paid || 0,
+      currency: invoice.currency || 'usd',
+      status: invoice.status || 'draft',
+      invoice_pdf: (invoice as any).invoice_pdf || null,
+      hosted_invoice_url: (invoice as any).hosted_invoice_url || null,
+      payment_intent_id: (invoice as any).payment_intent as string || null,
+      due_date: (invoice as any).due_date ? new Date((invoice as any).due_date * 1000).toISOString() : null,
+      paid_at: (invoice as any).status_transitions?.paid_at ? new Date((invoice as any).status_transitions.paid_at * 1000).toISOString() : null,
+      metadata: invoice.metadata || {}
+    };
+
+    await supabase.from('invoices')
+      .upsert(invoiceData, { 
+        onConflict: 'stripe_invoice_id',
+        ignoreDuplicates: false 
+      });
+
+    // Mark event as processed
+    await supabase.from('stripe_webhook_events')
+      .update({ processed: true })
+      .eq('stripe_event_id', `payment_succeeded_${invoice.id}`);
+
+    console.log('Payment success recorded in database:', invoice.id);
+
+  } catch (error) {
+    console.error('Error handling payment succeeded:', error);
+    
+    await supabase.from('stripe_webhook_events')
+      .update({ 
+        processed: false,
+        error_message: error instanceof Error ? error.message : 'Unknown error'
+      })
+      .eq('stripe_event_id', `payment_succeeded_${invoice.id}`);
+  }
 }
 
 async function handlePaymentFailed(invoice: Stripe.Invoice) {
   console.log('Payment failed:', invoice.id);
   
-  // Send payment failure notification
-  // Handle dunning management
-  // await handleFailedPayment({
-  //   customerId: invoice.customer as string,
-  //   amount: invoice.amount_due,
-  //   invoiceId: invoice.id
-  // });
+  try {
+    // Log webhook event
+    await supabase.from('stripe_webhook_events').insert({
+      stripe_event_id: `payment_failed_${invoice.id}`,
+      event_type: 'invoice.payment_failed',
+      raw_data: invoice,
+      processed: false
+    });
+
+    // Get subscription ID if this invoice is for a subscription
+    let subscriptionId = null;
+    if ((invoice as any).subscription) {
+      const { data: subscription } = await supabase
+        .from('subscriptions')
+        .select('id')
+        .eq('stripe_subscription_id', (invoice as any).subscription as string)
+        .single();
+      subscriptionId = subscription?.id || null;
+    }
+
+    // Create or update invoice record with failed status
+    const invoiceData = {
+      stripe_invoice_id: invoice.id,
+      stripe_customer_id: invoice.customer as string,
+      subscription_id: subscriptionId,
+      amount_due: invoice.amount_due || 0,
+      amount_paid: invoice.amount_paid || 0,
+      currency: invoice.currency || 'usd',
+      status: 'open', // Failed payments typically remain 'open' for retry
+      invoice_pdf: (invoice as any).invoice_pdf || null,
+      hosted_invoice_url: (invoice as any).hosted_invoice_url || null,
+      payment_intent_id: (invoice as any).payment_intent as string || null,
+      due_date: (invoice as any).due_date ? new Date((invoice as any).due_date * 1000).toISOString() : null,
+      paid_at: null, // Payment failed, so no paid_at date
+      metadata: { ...invoice.metadata, payment_failed: true }
+    };
+
+    await supabase.from('invoices')
+      .upsert(invoiceData, { 
+        onConflict: 'stripe_invoice_id',
+        ignoreDuplicates: false 
+      });
+
+    // Mark event as processed
+    await supabase.from('stripe_webhook_events')
+      .update({ processed: true })
+      .eq('stripe_event_id', `payment_failed_${invoice.id}`);
+
+    console.log('Payment failure recorded in database:', invoice.id);
+
+  } catch (error) {
+    console.error('Error handling payment failed:', error);
+    
+    await supabase.from('stripe_webhook_events')
+      .update({ 
+        processed: false,
+        error_message: error instanceof Error ? error.message : 'Unknown error'
+      })
+      .eq('stripe_event_id', `payment_failed_${invoice.id}`);
+  }
 }
