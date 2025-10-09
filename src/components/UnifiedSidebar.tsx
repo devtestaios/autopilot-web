@@ -112,6 +112,28 @@ function getContextualSidebarItems(pathname: string): { contextName: string; ite
           description: 'Real-time team coordination'
         },
         {
+          id: 'crm-hub',
+          label: 'CRM & Sales',
+          icon: Target,
+          path: '/crm',
+          description: 'Customer relationship management',
+          badge: 'CRM',
+          subItems: [
+            { id: 'leads', label: 'Lead Management', path: '/crm?tab=leads' },
+            { id: 'deals', label: 'Sales Pipeline', path: '/crm?tab=deals' },
+            { id: 'activities', label: 'Sales Activities', path: '/crm?tab=activities' },
+            { id: 'analytics', label: 'Sales Analytics', path: '/crm?tab=analytics' }
+          ]
+        },
+        {
+          id: 'lead-management',
+          label: 'Lead Management',
+          icon: Users,
+          path: '/leads',
+          description: 'Advanced lead tracking & scoring',
+          badge: 'Hot'
+        },
+        {
           id: 'business-intelligence',
           label: 'Business Intelligence',
           icon: BarChart3,
@@ -163,7 +185,7 @@ function getContextualSidebarItems(pathname: string): { contextName: string; ite
   // Marketing Context
   if (pathname.startsWith('/marketing') || pathname.startsWith('/campaigns') || 
       pathname.startsWith('/email-marketing') || pathname.startsWith('/social') ||
-      pathname === '/content-suite') {
+      pathname.startsWith('/crm') || pathname === '/content-suite') {
     return {
       contextName: 'Marketing Command Center',
       items: [
@@ -205,6 +227,20 @@ function getContextualSidebarItems(pathname: string): { contextName: string; ite
           icon: Mail,
           path: '/email-marketing',
           description: 'Email automation and analytics'
+        },
+        {
+          id: 'crm-sales',
+          label: 'CRM & Sales',
+          icon: Users,
+          path: '/crm',
+          description: 'Customer relationship & sales automation',
+          badge: 'CRM',
+          subItems: [
+            { id: 'leads', label: 'Lead Management', path: '/crm?tab=leads' },
+            { id: 'deals', label: 'Sales Pipeline', path: '/crm?tab=deals' },
+            { id: 'activities', label: 'Sales Activities', path: '/crm?tab=activities' },
+            { id: 'analytics', label: 'Sales Analytics', path: '/crm?tab=analytics' }
+          ]
         },
         {
           id: 'content-creation',
@@ -568,7 +604,9 @@ function getContextualSidebarItems(pathname: string): { contextName: string; ite
         subItems: [
           { id: 'campaigns', label: 'Campaign Management', path: '/campaigns' },
           { id: 'email-marketing', label: 'Email Marketing', path: '/email-marketing' },
-          { id: 'social-media', label: 'Social Media', path: '/social' }
+          { id: 'social-media', label: 'Social Media', path: '/social' },
+          { id: 'crm', label: 'CRM & Sales', path: '/crm' },
+          { id: 'leads', label: 'Lead Management', path: '/leads' }
         ]
       },
       {
