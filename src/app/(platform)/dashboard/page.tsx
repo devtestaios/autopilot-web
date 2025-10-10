@@ -252,7 +252,7 @@ export default function Dashboard() {
       title: 'Marketing Command Center',
       description: 'Unified marketing automation and optimization across all channels',
       icon: Target,
-      href: '/marketing-command-center',
+      href: '/marketing',
       status: 'active',
       features: ['Multi-Channel Campaigns', 'AI Optimization', 'Real-time Analytics', 'Lead Management'],
       kpi: {

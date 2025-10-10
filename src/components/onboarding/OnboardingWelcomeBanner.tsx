@@ -74,7 +74,7 @@ export default function OnboardingWelcomeBanner({ onDismiss }: WelcomeBannerProp
       title: 'Create Campaign',
       description: 'Set up your first marketing campaign',
       icon: Zap,
-      action: () => router.push('/marketing-command-center'),
+      action: () => router.push('/marketing'),
       color: 'from-purple-500 to-pink-500'
     },
     {

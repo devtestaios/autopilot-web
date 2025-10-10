@@ -84,7 +84,7 @@ const platformRegistry: PlatformModule[] = [
     id: 'marketing-command-center',
     name: 'Marketing Command Center',
     description: 'Unified marketing ecosystem hub',
-    route: '/marketing-command-center',
+    route: '/marketing',
     status: 'active',
     color: 'bg-purple-500',
     icon: Zap,

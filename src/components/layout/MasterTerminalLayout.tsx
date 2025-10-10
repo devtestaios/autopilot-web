@@ -106,7 +106,7 @@ function MasterTerminalSidebar({ isOpen, onClose }: MasterTerminalSidebarProps) 
       items: [
         { name: 'Social Media', path: '/social-media', icon: Users },
         { name: 'Email Marketing', path: '/email-marketing', icon: Grid3X3 },
-        { name: 'Marketing Command Center', path: '/marketing-command-center', icon: Target },
+        { name: 'Marketing Command Center', path: '/marketing', icon: Target },
         { name: 'Campaigns', path: '/campaigns', icon: TrendingUp }
       ]
     },
