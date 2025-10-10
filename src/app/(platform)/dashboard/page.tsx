@@ -421,29 +421,29 @@ export default function Dashboard() {
   ];
 
   return (
-    <UniversalPageWrapper
-      title="Master Terminal"
-      subtitle="Unified command center for your enterprise business ecosystem"
-      containerSize="full"
-      showBreadcrumb={true}
-      showAIChat={true}
-      statusBadge={{
-        variant: 'success',
-        text: 'All Systems Operational',
-        dot: true
-      }}
-      headerActions={
-        <button
-          onClick={() => router.push('/dashboard/enhanced')}
-          className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-        >
-          <LayoutDashboard className="w-4 h-4" />
-          <span className="hidden sm:inline">Customize Layout</span>
-        </button>
-      }
-      enablePageAnimations={true}
-      background="gradient"
-    >
+    <div className="space-y-8">
+      {/* Page Header */}
+      <div className="page-header">
+        <div className="flex items-center justify-between flex-wrap gap-4">
+          <div>
+            <h1 className="page-title">Master Terminal</h1>
+            <p className="page-subtitle">Unified command center for your enterprise business ecosystem</p>
+          </div>
+          <div className="flex items-center gap-3">
+            <span className="flex items-center gap-2 px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-full text-sm font-medium">
+              <span className="w-2 h-2 bg-green-600 rounded-full"></span>
+              All Systems Operational
+            </span>
+            <button
+              onClick={() => router.push('/dashboard/enhanced')}
+              className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              <LayoutDashboard className="w-4 h-4" />
+              <span className="hidden sm:inline">Customize Layout</span>
+            </button>
+          </div>
+        </div>
+      </div>
       {/* Welcome Banner */}
       {showWelcomeBanner && (
         <OnboardingWelcomeBanner onDismiss={handleWelcomeBannerDismiss} />
@@ -497,6 +497,6 @@ export default function Dashboard() {
           </div>
         </div>
       ))}
-    </UniversalPageWrapper>
+    </div>
   );
 }
