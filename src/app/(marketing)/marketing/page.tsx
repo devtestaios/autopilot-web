@@ -488,6 +488,7 @@ export default function MarketingCommandCenter() {
       containerSize="full"
       showBreadcrumb={false}
       showAIChat={true}
+      visualMode="standard"
       statusBadge={{
         variant: isStale ? 'warning' : 'success',
         text: lastUpdated ? `Updated ${new Date(lastUpdated).toLocaleTimeString()}` : 'Loading...',

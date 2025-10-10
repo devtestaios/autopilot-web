@@ -39,34 +39,37 @@ const MasterTerminalBreadcrumb = dynamic(() => import('@/components/MasterTermin
 interface UniversalPageWrapperProps {
   // Page Content
   children: ReactNode;
-  
+
   // Page Configuration
   title: string;
   subtitle?: string;
-  
+
   // Layout Options
   containerSize?: 'sm' | 'md' | 'lg' | 'xl' | 'full';
   headerBackground?: 'transparent' | 'solid' | 'blur';
   showBreadcrumb?: boolean;
   showAIChat?: boolean;
-  
+
+  // Visual Mode (NEW - controls visual complexity)
+  visualMode?: 'premium' | 'standard' | 'minimal';
+
   // Status and Badges
   statusBadge?: {
     variant: 'success' | 'warning' | 'error' | 'info' | 'default';
     text: string;
     dot?: boolean;
   };
-  
+
   // Custom Header Actions
   headerActions?: ReactNode;
-  
+
   // Animation Options
   enablePageAnimations?: boolean;
   animationDelay?: number;
-  
+
   // Background Options
   background?: 'default' | 'muted' | 'gradient';
-  
+
   // Custom Classes
   className?: string;
   contentClassName?: string;
@@ -80,6 +83,7 @@ export default function UniversalPageWrapper({
   headerBackground = 'blur',
   showBreadcrumb = true,
   showAIChat = true,
+  visualMode = 'standard', // Default to clean, professional mode
   statusBadge,
   headerActions,
   enablePageAnimations = true,
@@ -106,18 +110,22 @@ export default function UniversalPageWrapper({
     gradient: visualEffects.gradients.subtle.neutral
   };
   
-  // Page animations
-  const pageVariants = enablePageAnimations ? {
+  // Page animations (simplified based on visual mode)
+  const pageVariants = enablePageAnimations && visualMode !== 'minimal' ? {
     initial: { opacity: 0, y: 20 },
     animate: { opacity: 1, y: 0 },
     exit: { opacity: 0, y: -20 }
   } : undefined;
-  
-  const pageTransition = enablePageAnimations ? {
-    duration: 0.6,
+
+  const pageTransition = enablePageAnimations && visualMode !== 'minimal' ? {
+    duration: visualMode === 'standard' ? 0.3 : 0.6, // Faster for standard mode
     ease: "easeOut" as const,
     delay: animationDelay / 1000
   } : undefined;
+
+  // Typography classes based on visual mode
+  const titleClasses = visualEffects.typography.modes[visualMode].title;
+  const subtitleClasses = visualEffects.typography.modes[visualMode].subtitle;
 
   return (
     <div className={`min-h-screen ${backgroundClasses[background]} ${className}`}>
@@ -159,23 +167,35 @@ export default function UniversalPageWrapper({
             <Container size={containerSize} padding="lg" center>
               <Flex justify="between" align="center" className="w-full">
                 <Stack space="xs">
-                  <motion.h1 
-                    className={`${visualEffects.typography.display.title} ${visualEffects.gradients.text.primary}`}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.3 }}
-                  >
-                    {title}
-                  </motion.h1>
-                  {subtitle && (
-                    <motion.p 
-                      className={visualEffects.typography.enhanced.subtitle}
+                  {visualMode === 'minimal' ? (
+                    <h1 className={titleClasses}>
+                      {title}
+                    </h1>
+                  ) : (
+                    <motion.h1
+                      className={titleClasses}
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.4 }}
+                      transition={{ delay: visualMode === 'standard' ? 0.1 : 0.3 }}
                     >
-                      {subtitle}
-                    </motion.p>
+                      {title}
+                    </motion.h1>
+                  )}
+                  {subtitle && (
+                    visualMode === 'minimal' ? (
+                      <p className={subtitleClasses}>
+                        {subtitle}
+                      </p>
+                    ) : (
+                      <motion.p
+                        className={subtitleClasses}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: visualMode === 'standard' ? 0.15 : 0.4 }}
+                      >
+                        {subtitle}
+                      </motion.p>
+                    )
                   )}
                 </Stack>
                 

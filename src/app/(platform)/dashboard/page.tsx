@@ -427,6 +427,7 @@ export default function Dashboard() {
       containerSize="full"
       showBreadcrumb={false}
       showAIChat={true}
+      visualMode="standard"
       statusBadge={{
         variant: 'success',
         text: 'All Systems Operational',

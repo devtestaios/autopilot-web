@@ -15,7 +15,7 @@ export const glassmorphism = {
     ring: 'ring-1 ring-black/5'
   },
 
-  // Dark mode glassmorphism  
+  // Dark mode glassmorphism
   dark: {
     backdrop: 'backdrop-blur-md backdrop-saturate-150',
     background: 'bg-gray-900/80',
@@ -26,15 +26,22 @@ export const glassmorphism = {
 
   // Combined utility classes
   card: 'backdrop-blur-md backdrop-saturate-150 bg-white/80 dark:bg-gray-900/80 border border-white/20 dark:border-white/10 shadow-xl ring-1 ring-black/5 dark:ring-white/10',
-  
+
   sidebar: 'backdrop-blur-xl backdrop-saturate-200 bg-white/95 dark:bg-gray-900/95 border-r border-white/20 dark:border-white/10',
-  
+
   modal: 'backdrop-blur-lg backdrop-saturate-150 bg-white/90 dark:bg-gray-900/90 border border-white/20 dark:border-white/10 shadow-2xl',
 
   // Interactive states
   hover: 'hover:bg-white/90 dark:hover:bg-gray-900/90 hover:shadow-2xl transition-all duration-300',
-  
-  active: 'active:bg-white/95 dark:active:bg-gray-900/95 active:scale-[0.98] transition-all duration-150'
+
+  active: 'active:bg-white/95 dark:active:bg-gray-900/95 active:scale-[0.98] transition-all duration-150',
+
+  // Visual mode presets
+  modes: {
+    premium: 'backdrop-blur-md backdrop-saturate-150 bg-white/80 dark:bg-gray-900/80 border border-white/20 dark:border-white/10 shadow-xl',
+    standard: 'bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 shadow-sm',
+    minimal: 'bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800'
+  }
 };
 
 // Advanced Gradient System
@@ -129,7 +136,7 @@ export const shadows = {
 
 // Typography Enhancement System
 export const typography = {
-  // Premium font combinations
+  // Premium font combinations (with gradient effects)
   display: {
     hero: 'font-display text-6xl md:text-7xl lg:text-8xl font-bold tracking-tight',
     title: 'font-display text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight',
@@ -157,6 +164,22 @@ export const typography = {
     link: 'text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors underline-offset-4 hover:underline',
     button: 'font-semibold tracking-wide',
     nav: 'font-medium hover:text-blue-600 dark:hover:text-blue-400 transition-colors'
+  },
+
+  // Visual mode presets
+  modes: {
+    premium: {
+      title: 'text-4xl md:text-5xl font-bold tracking-tight',
+      subtitle: 'text-lg md:text-xl text-gray-600 dark:text-gray-400'
+    },
+    standard: {
+      title: 'text-3xl font-bold text-gray-900 dark:text-white',
+      subtitle: 'text-base text-gray-600 dark:text-gray-400'
+    },
+    minimal: {
+      title: 'text-2xl font-semibold text-gray-900 dark:text-white',
+      subtitle: 'text-sm text-gray-600 dark:text-gray-400'
+    }
   }
 };
 
