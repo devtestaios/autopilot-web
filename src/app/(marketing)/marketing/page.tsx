@@ -486,7 +486,7 @@ export default function MarketingCommandCenter() {
       title="Marketing Command Center"
       subtitle="Unified marketing operations across all channels • AI-Enhanced Dashboard"
       containerSize="full"
-      showBreadcrumb={true}
+      showBreadcrumb={false}
       showAIChat={true}
       statusBadge={{
         variant: isStale ? 'warning' : 'success',
