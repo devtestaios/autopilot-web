@@ -38,21 +38,7 @@ import {
   QrCode
 } from 'lucide-react';
 
-// SSR-safe imports for universal sidebar system
-const UnifiedSidebar = dynamic(() => import('@/components/UnifiedSidebar'), {
-  ssr: false,
-  loading: () => <div className="fixed left-0 top-0 h-screen w-56 bg-gray-900 animate-pulse" />
-});
-
-const AdvancedNavigation = dynamic(() => import('@/components/ui/AdvancedNavigation'), {
-  ssr: false,
-  loading: () => <div className="h-16 bg-white dark:bg-gray-900 border-b animate-pulse" />
-});
-
-const NavigationTabs = dynamic(() => import('@/components/NavigationTabs'), {
-  ssr: false,
-  loading: () => <div className="h-12 bg-white dark:bg-gray-900 border-b animate-pulse" />
-});
+import UniversalPageWrapper from '@/components/ui/UniversalPageWrapper';
 
 // Inventory Types
 interface Product {
@@ -111,7 +97,6 @@ interface InventoryAlert {
 }
 
 export default function InventoryManagement() {
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [activeTab, setActiveTab] = useState<'overview' | 'products' | 'movements' | 'suppliers' | 'alerts'>('overview');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [searchQuery, setSearchQuery] = useState('');
@@ -692,40 +677,28 @@ export default function InventoryManagement() {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      {/* Unified Sidebar */}
-      <UnifiedSidebar onCollapseChange={setSidebarCollapsed} />
-      
-      {/* Main Content Area */}
-      <div className={`transition-all duration-300 ${
-        sidebarCollapsed ? 'ml-14' : 'ml-56'
-      }`}>
-        {/* Advanced Navigation */}
-        <AdvancedNavigation sidebarCollapsed={sidebarCollapsed} />
-        
-        {/* Navigation Tabs */}
-        <NavigationTabs />
-        
-        {/* Inventory Management Content */}
-        <div className="p-6">
-          {/* Header */}
-          <div className="mb-8">
-            <div className="flex items-center space-x-4 mb-4">
-              <div className="p-3 bg-gradient-to-r from-purple-500 to-indigo-600 rounded-xl text-white">
-                <Warehouse className="w-8 h-8" />
-              </div>
-              <div>
-                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                  Inventory Management
-                </h1>
-                <p className="text-gray-600 dark:text-gray-400">
-                  Track stock levels, manage products, and monitor inventory movements
-                </p>
-              </div>
-            </div>
-
-            {/* Tabs */}
-            <div className="flex space-x-1 bg-gray-100 dark:bg-gray-800 rounded-lg p-1">
+    <UniversalPageWrapper
+      title="Inventory Management"
+      subtitle="Track stock levels, manage products, and monitor inventory movements"
+      showBreadcrumb={false}
+      visualMode="standard"
+      showAIChat={true}
+      headerActions={
+        <div className="flex items-center space-x-3">
+          <button className="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors flex items-center space-x-2">
+            <Download className="w-4 h-4" />
+            <span>Export</span>
+          </button>
+          <button className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors flex items-center space-x-2">
+            <Plus className="w-4 h-4" />
+            <span>Add Product</span>
+          </button>
+        </div>
+      }
+    >
+      {/* Tabs */}
+      <div className="mb-8">
+        <div className="flex space-x-1 bg-gray-100 dark:bg-gray-800 rounded-lg p-1">
               {[
                 { key: 'overview', label: 'Overview', icon: BarChart3 },
                 { key: 'products', label: 'Products', icon: Package },
@@ -754,39 +727,37 @@ export default function InventoryManagement() {
             </div>
           </div>
 
-          {/* Content */}
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activeTab}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.2 }}
-            >
-              {activeTab === 'overview' && renderOverviewTab()}
-              {activeTab === 'products' && renderProductsTab()}
-              {activeTab === 'movements' && (
-                <div className="text-center py-12 bg-white dark:bg-gray-800 rounded-xl">
-                  <ArrowUpDown className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                  <p className="text-gray-500 dark:text-gray-400">Stock movements interface coming soon</p>
-                </div>
-              )}
-              {activeTab === 'suppliers' && (
-                <div className="text-center py-12 bg-white dark:bg-gray-800 rounded-xl">
-                  <Truck className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                  <p className="text-gray-500 dark:text-gray-400">Supplier management interface coming soon</p>
-                </div>
-              )}
-              {activeTab === 'alerts' && (
-                <div className="text-center py-12 bg-white dark:bg-gray-800 rounded-xl">
-                  <AlertTriangle className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                  <p className="text-gray-500 dark:text-gray-400">Alert management interface coming soon</p>
-                </div>
-              )}
-            </motion.div>
-          </AnimatePresence>
-        </div>
-      </div>
-    </div>
+        {/* Content */}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeTab}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.2 }}
+          >
+            {activeTab === 'overview' && renderOverviewTab()}
+            {activeTab === 'products' && renderProductsTab()}
+            {activeTab === 'movements' && (
+              <div className="text-center py-12 bg-white dark:bg-gray-800 rounded-xl">
+                <ArrowUpDown className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+                <p className="text-gray-500 dark:text-gray-400">Stock movements interface coming soon</p>
+              </div>
+            )}
+            {activeTab === 'suppliers' && (
+              <div className="text-center py-12 bg-white dark:bg-gray-800 rounded-xl">
+                <Truck className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+                <p className="text-gray-500 dark:text-gray-400">Supplier management interface coming soon</p>
+              </div>
+            )}
+            {activeTab === 'alerts' && (
+              <div className="text-center py-12 bg-white dark:bg-gray-800 rounded-xl">
+                <AlertTriangle className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+                <p className="text-gray-500 dark:text-gray-400">Alert management interface coming soon</p>
+              </div>
+            )}
+          </motion.div>
+        </AnimatePresence>
+    </UniversalPageWrapper>
   );
 }

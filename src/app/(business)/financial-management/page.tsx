@@ -45,21 +45,7 @@ import {
   Zap
 } from 'lucide-react';
 
-// SSR-safe imports for universal sidebar system
-const UnifiedSidebar = dynamic(() => import('@/components/UnifiedSidebar'), {
-  ssr: false,
-  loading: () => <div className="fixed left-0 top-0 h-screen w-56 bg-gray-900 animate-pulse" />
-});
-
-const AdvancedNavigation = dynamic(() => import('@/components/ui/AdvancedNavigation'), {
-  ssr: false,
-  loading: () => <div className="h-16 bg-white dark:bg-gray-900 border-b animate-pulse" />
-});
-
-const NavigationTabs = dynamic(() => import('@/components/NavigationTabs'), {
-  ssr: false,
-  loading: () => <div className="h-12 bg-white dark:bg-gray-900 border-b animate-pulse" />
-});
+import UniversalPageWrapper from '@/components/ui/UniversalPageWrapper';
 
 // Financial Types
 interface Transaction {
@@ -105,7 +91,6 @@ interface FinancialGoal {
 }
 
 export default function FinancialManagement() {
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [activeTab, setActiveTab] = useState<'overview' | 'transactions' | 'budgets' | 'goals' | 'reports'>('overview');
   const [hideBalances, setHideBalances] = useState(false);
   const [selectedPeriod, setSelectedPeriod] = useState<'7d' | '30d' | '90d' | '1y'>('30d');
@@ -596,101 +581,90 @@ export default function FinancialManagement() {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      {/* Unified Sidebar */}
-      <UnifiedSidebar onCollapseChange={setSidebarCollapsed} />
-      
-      {/* Main Content Area */}
-      <div className={`transition-all duration-300 ${
-        sidebarCollapsed ? 'ml-14' : 'ml-56'
-      }`}>
-        {/* Advanced Navigation */}
-        <AdvancedNavigation sidebarCollapsed={sidebarCollapsed} />
-        
-        {/* Navigation Tabs */}
-        <NavigationTabs />
-        
-        {/* Financial Management Content */}
-        <div className="p-6">
-          {/* Header */}
-          <div className="mb-8">
-            <div className="flex items-center space-x-4 mb-4">
-              <div className="p-3 bg-gradient-to-r from-green-500 to-emerald-600 rounded-xl text-white">
-                <DollarSign className="w-8 h-8" />
-              </div>
-              <div>
-                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                  Financial Management
-                </h1>
-                <p className="text-gray-600 dark:text-gray-400">
-                  Track income, expenses, budgets, and financial goals in one place
-                </p>
-              </div>
-            </div>
-
-            {/* Tabs */}
-            <div className="flex space-x-1 bg-gray-100 dark:bg-gray-800 rounded-lg p-1">
-              {[
-                { key: 'overview', label: 'Overview', icon: PieChart },
-                { key: 'transactions', label: 'Transactions', icon: Receipt },
-                { key: 'budgets', label: 'Budgets', icon: Target },
-                { key: 'goals', label: 'Goals', icon: TrendingUp },
-                { key: 'reports', label: 'Reports', icon: BarChart3 }
-              ].map((tab) => (
-                <button
-                  key={tab.key}
-                  onClick={() => setActiveTab(tab.key as any)}
-                  className={`flex items-center space-x-2 px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                    activeTab === tab.key
-                      ? 'bg-white dark:bg-gray-700 text-green-600 shadow-sm'
-                      : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
-                  }`}
-                >
-                  <tab.icon className="w-4 h-4" />
-                  <span>{tab.label}</span>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Content */}
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activeTab}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.2 }}
+    <UniversalPageWrapper
+      title="Financial Management"
+      subtitle="Track income, expenses, budgets, and financial goals in one place"
+      showBreadcrumb={false}
+      visualMode="standard"
+      showAIChat={true}
+      headerActions={
+        <div className="flex items-center space-x-3">
+          <button
+            onClick={() => setHideBalances(!hideBalances)}
+            className="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors flex items-center space-x-2"
+          >
+            {hideBalances ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+            <span>{hideBalances ? 'Show' : 'Hide'} Balances</span>
+          </button>
+          <button className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center space-x-2">
+            <Plus className="w-4 h-4" />
+            <span>Add Transaction</span>
+          </button>
+        </div>
+      }
+    >
+      {/* Tabs */}
+      <div className="mb-8">
+        <div className="flex space-x-1 bg-gray-100 dark:bg-gray-800 rounded-lg p-1">
+          {[
+            { key: 'overview', label: 'Overview', icon: PieChart },
+            { key: 'transactions', label: 'Transactions', icon: Receipt },
+            { key: 'budgets', label: 'Budgets', icon: Target },
+            { key: 'goals', label: 'Goals', icon: TrendingUp },
+            { key: 'reports', label: 'Reports', icon: BarChart3 }
+          ].map((tab) => (
+            <button
+              key={tab.key}
+              onClick={() => setActiveTab(tab.key as any)}
+              className={`flex items-center space-x-2 px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                activeTab === tab.key
+                  ? 'bg-white dark:bg-gray-700 text-green-600 shadow-sm'
+                  : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+              }`}
             >
-              {activeTab === 'overview' && renderOverviewTab()}
-              {activeTab === 'transactions' && (
-                <div className="text-center py-12 bg-white dark:bg-gray-800 rounded-xl">
-                  <Receipt className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                  <p className="text-gray-500 dark:text-gray-400">Transaction management interface coming soon</p>
-                </div>
-              )}
-              {activeTab === 'budgets' && (
-                <div className="text-center py-12 bg-white dark:bg-gray-800 rounded-xl">
-                  <Target className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                  <p className="text-gray-500 dark:text-gray-400">Budget management interface coming soon</p>
-                </div>
-              )}
-              {activeTab === 'goals' && (
-                <div className="text-center py-12 bg-white dark:bg-gray-800 rounded-xl">
-                  <TrendingUp className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                  <p className="text-gray-500 dark:text-gray-400">Financial goals interface coming soon</p>
-                </div>
-              )}
-              {activeTab === 'reports' && (
-                <div className="text-center py-12 bg-white dark:bg-gray-800 rounded-xl">
-                  <BarChart3 className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                  <p className="text-gray-500 dark:text-gray-400">Financial reports interface coming soon</p>
-                </div>
-              )}
-            </motion.div>
-          </AnimatePresence>
+              <tab.icon className="w-4 h-4" />
+              <span>{tab.label}</span>
+            </button>
+          ))}
         </div>
       </div>
-    </div>
+
+      {/* Content */}
+      <AnimatePresence mode="wait">
+          <motion.div
+            key={activeTab}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.2 }}
+          >
+            {activeTab === 'overview' && renderOverviewTab()}
+            {activeTab === 'transactions' && (
+              <div className="text-center py-12 bg-white dark:bg-gray-800 rounded-xl">
+                <Receipt className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+                <p className="text-gray-500 dark:text-gray-400">Transaction management interface coming soon</p>
+              </div>
+            )}
+            {activeTab === 'budgets' && (
+              <div className="text-center py-12 bg-white dark:bg-gray-800 rounded-xl">
+                <Target className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+                <p className="text-gray-500 dark:text-gray-400">Budget management interface coming soon</p>
+              </div>
+            )}
+            {activeTab === 'goals' && (
+              <div className="text-center py-12 bg-white dark:bg-gray-800 rounded-xl">
+                <TrendingUp className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+                <p className="text-gray-500 dark:text-gray-400">Financial goals interface coming soon</p>
+              </div>
+            )}
+            {activeTab === 'reports' && (
+              <div className="text-center py-12 bg-white dark:bg-gray-800 rounded-xl">
+                <BarChart3 className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+                <p className="text-gray-500 dark:text-gray-400">Financial reports interface coming soon</p>
+              </div>
+            )}
+          </motion.div>
+        </AnimatePresence>
+    </UniversalPageWrapper>
   );
 }

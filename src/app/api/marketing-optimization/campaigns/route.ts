@@ -1,139 +1,78 @@
 /**
- * Marketing Optimization Platform API - Campaigns
+ * Marketing Optimization Platform API - Campaigns - CONNECTED TO SUPABASE
  * Consolidates original PulseBridge.ai campaign management functionality
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-
-// Mock data for development - replace with real database integration
-const mockCampaigns = [
-  {
-    id: '1',
-    name: 'Google Ads Q4 Campaign',
-    platform: 'google_ads',
-    status: 'active',
-    client_name: 'TechCorp Inc.',
-    budget: 10000,
-    spend: 7500,
-    target_audience: {
-      demographics: { age_range: '25-45', gender: 'all' },
-      interests: ['technology', 'business software'],
-      locations: ['US', 'CA', 'UK'],
-      custom_audiences: ['website-visitors', 'email-subscribers']
-    },
-    metrics: {
-      impressions: 150000,
-      clicks: 4500,
-      conversions: 180,
-      ctr: 3.0,
-      cpc: 1.67,
-      cpa: 41.67,
-      roas: 4.2,
-      quality_score: 8.5
-    },
-    ai_optimization: {
-      enabled: true,
-      strategy: 'balanced',
-      auto_budget: true,
-      auto_bidding: true,
-      last_optimized: new Date('2024-12-20T10:30:00Z'),
-      optimization_score: 87
-    },
-    created_at: new Date('2024-11-15T09:00:00Z'),
-    updated_at: new Date('2024-12-20T10:30:00Z')
-  },
-  {
-    id: '2',
-    name: 'Meta Holiday Promotion',
-    platform: 'meta',
-    status: 'active',
-    client_name: 'RetailPlus',
-    budget: 8000,
-    spend: 3200,
-    target_audience: {
-      demographics: { age_range: '18-55', gender: 'all' },
-      interests: ['shopping', 'fashion', 'home decor'],
-      locations: ['US'],
-      custom_audiences: ['lookalike-customers']
-    },
-    metrics: {
-      impressions: 95000,
-      clicks: 2850,
-      conversions: 142,
-      ctr: 3.0,
-      cpc: 1.12,
-      cpa: 22.54,
-      roas: 5.8,
-      quality_score: 7.2
-    },
-    ai_optimization: {
-      enabled: true,
-      strategy: 'aggressive',
-      auto_budget: true,
-      auto_bidding: false,
-      last_optimized: new Date('2024-12-19T14:15:00Z'),
-      optimization_score: 92
-    },
-    created_at: new Date('2024-12-01T08:00:00Z'),
-    updated_at: new Date('2024-12-19T14:15:00Z')
-  },
-  {
-    id: '3',
-    name: 'LinkedIn B2B Lead Gen',
-    platform: 'linkedin',
-    status: 'paused',
-    client_name: 'SaaS Innovations',
-    budget: 5000,
-    spend: 4800,
-    target_audience: {
-      demographics: { age_range: '28-50', gender: 'all' },
-      interests: ['software development', 'business intelligence'],
-      locations: ['US', 'EU'],
-      custom_audiences: ['c-level-executives']
-    },
-    metrics: {
-      impressions: 45000,
-      clicks: 900,
-      conversions: 45,
-      ctr: 2.0,
-      cpc: 5.33,
-      cpa: 106.67,
-      roas: 2.4,
-      quality_score: 6.8
-    },
-    ai_optimization: {
-      enabled: false,
-      strategy: 'conservative',
-      auto_budget: false,
-      auto_bidding: false,
-      optimization_score: 65
-    },
-    created_at: new Date('2024-11-01T10:00:00Z'),
-    updated_at: new Date('2024-12-10T16:20:00Z')
-  }
-];
+import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
+import { cookies } from 'next/headers';
 
 export async function GET(request: NextRequest) {
   try {
+    const supabase = createRouteHandlerClient({ cookies });
     const { searchParams } = new URL(request.url);
+
+    const page = parseInt(searchParams.get('page') || '1');
+    const limit = parseInt(searchParams.get('limit') || '50');
     const platform = searchParams.get('platform');
     const status = searchParams.get('status');
-    
-    let filteredCampaigns = mockCampaigns;
-    
+    const search = searchParams.get('search') || '';
+    const sortBy = searchParams.get('sortBy') || 'created_at';
+    const sortOrder = searchParams.get('sortOrder') || 'desc');
+
+    // Build Supabase query
+    let query = supabase
+      .from('campaigns')
+      .select('*', { count: 'exact' });
+
+    // Apply platform filter
     if (platform) {
-      filteredCampaigns = filteredCampaigns.filter(campaign => campaign.platform === platform);
+      query = query.eq('platform', platform);
     }
-    
+
+    // Apply status filter
     if (status) {
-      filteredCampaigns = filteredCampaigns.filter(campaign => campaign.status === status);
+      query = query.eq('status', status);
     }
-    
-    return NextResponse.json(filteredCampaigns);
+
+    // Apply search filter (search in name, client_name)
+    if (search) {
+      query = query.or(`name.ilike.%${search}%,client_name.ilike.%${search}%`);
+    }
+
+    // Apply sorting
+    query = query.order(sortBy, { ascending: sortOrder === 'asc' });
+
+    // Apply pagination
+    const from = (page - 1) * limit;
+    const to = from + limit - 1;
+    query = query.range(from, to);
+
+    // Execute query
+    const { data: campaigns, error, count } = await query;
+
+    if (error) {
+      console.error('Error fetching campaigns:', error);
+      return NextResponse.json(
+        { error: 'Failed to fetch campaigns', details: error.message },
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json({
+      campaigns: campaigns || [],
+      pagination: {
+        page,
+        limit,
+        total: count || 0,
+        totalPages: Math.ceil((count || 0) / limit)
+      }
+    });
+
   } catch (error) {
-    console.error('Error fetching campaigns:', error);
+    console.error('Unexpected error:', error);
     return NextResponse.json(
-      { error: 'Failed to fetch campaigns' },
+      { error: 'Internal server error' },
       { status: 500 }
     );
   }
@@ -141,39 +80,199 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const campaignData = await request.json();
-    
-    const newCampaign = {
-      id: String(mockCampaigns.length + 1),
-      ...campaignData,
-      metrics: {
-        impressions: 0,
-        clicks: 0,
-        conversions: 0,
-        ctr: 0,
-        cpc: 0,
-        cpa: 0,
-        roas: 0,
-        quality_score: 0
-      },
-      ai_optimization: {
-        enabled: campaignData.ai_optimization?.enabled || false,
-        strategy: campaignData.ai_optimization?.strategy || 'balanced',
-        auto_budget: campaignData.ai_optimization?.auto_budget || false,
-        auto_bidding: campaignData.ai_optimization?.auto_bidding || false,
-        optimization_score: 0
-      },
-      created_at: new Date(),
-      updated_at: new Date()
+    const supabase = createRouteHandlerClient({ cookies });
+    const body = await request.json();
+
+    // Validate required fields
+    if (!body.name || !body.platform) {
+      return NextResponse.json(
+        { error: 'Campaign name and platform are required' },
+        { status: 400 }
+      );
+    }
+
+    // Get current user
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    if (authError || !user) {
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      );
+    }
+
+    // Prepare initial metrics
+    const metrics = {
+      impressions: 0,
+      clicks: 0,
+      conversions: 0,
+      ctr: 0,
+      cpc: 0,
+      cpa: 0,
+      roas: 0,
+      quality_score: 0,
+      ...body.metrics
     };
-    
-    mockCampaigns.push(newCampaign);
-    
-    return NextResponse.json(newCampaign, { status: 201 });
+
+    // Prepare AI optimization settings
+    const ai_optimization = {
+      enabled: body.ai_optimization?.enabled || false,
+      strategy: body.ai_optimization?.strategy || 'balanced',
+      auto_budget: body.ai_optimization?.auto_budget || false,
+      auto_bidding: body.ai_optimization?.auto_bidding || false,
+      optimization_score: 0,
+      ...body.ai_optimization
+    };
+
+    // Insert new campaign
+    const { data: campaign, error } = await supabase
+      .from('campaigns')
+      .insert([{
+        name: body.name,
+        platform: body.platform,
+        status: body.status || 'draft',
+        client_name: body.client_name || null,
+        budget: body.budget || 0,
+        spend: body.spend || 0,
+        target_audience: body.target_audience || {},
+        metrics,
+        ai_optimization,
+        user_id: user.id,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      }])
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Error creating campaign:', error);
+      return NextResponse.json(
+        { error: 'Failed to create campaign', details: error.message },
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json({
+      campaign,
+      message: 'Campaign created successfully'
+    }, { status: 201 });
+
   } catch (error) {
-    console.error('Error creating campaign:', error);
+    console.error('Unexpected error:', error);
     return NextResponse.json(
-      { error: 'Failed to create campaign' },
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
+  }
+}
+
+export async function PUT(request: NextRequest) {
+  try {
+    const supabase = createRouteHandlerClient({ cookies });
+    const body = await request.json();
+    const { id, ...updates } = body;
+
+    if (!id) {
+      return NextResponse.json(
+        { error: 'Campaign ID is required' },
+        { status: 400 }
+      );
+    }
+
+    // Get current user
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    if (authError || !user) {
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      );
+    }
+
+    // Update campaign
+    const { data: campaign, error } = await supabase
+      .from('campaigns')
+      .update({
+        ...updates,
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', id)
+      .eq('user_id', user.id) // Ensure user owns the campaign
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Error updating campaign:', error);
+      return NextResponse.json(
+        { error: 'Failed to update campaign', details: error.message },
+        { status: 500 }
+      );
+    }
+
+    if (!campaign) {
+      return NextResponse.json(
+        { error: 'Campaign not found or unauthorized' },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json({
+      campaign,
+      message: 'Campaign updated successfully'
+    });
+
+  } catch (error) {
+    console.error('Unexpected error:', error);
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
+  }
+}
+
+export async function DELETE(request: NextRequest) {
+  try {
+    const supabase = createRouteHandlerClient({ cookies });
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get('id');
+
+    if (!id) {
+      return NextResponse.json(
+        { error: 'Campaign ID is required' },
+        { status: 400 }
+      );
+    }
+
+    // Get current user
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    if (authError || !user) {
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      );
+    }
+
+    // Delete campaign
+    const { error } = await supabase
+      .from('campaigns')
+      .delete()
+      .eq('id', id)
+      .eq('user_id', user.id); // Ensure user owns the campaign
+
+    if (error) {
+      console.error('Error deleting campaign:', error);
+      return NextResponse.json(
+        { error: 'Failed to delete campaign', details: error.message },
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json({
+      message: 'Campaign deleted successfully'
+    });
+
+  } catch (error) {
+    console.error('Unexpected error:', error);
+    return NextResponse.json(
+      { error: 'Internal server error' },
       { status: 500 }
     );
   }

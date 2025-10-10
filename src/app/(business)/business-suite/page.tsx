@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import NavigationTabs from '@/components/NavigationTabs';
+import UniversalPageWrapper from '@/components/ui/UniversalPageWrapper';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -176,44 +176,48 @@ export default function BusinessSuite() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <NavigationTabs />
-      
-      <div className="container mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">
-            Business Suite
-          </h1>
-          <p className="text-gray-600 dark:text-gray-400">
-            Complete business management with Advanced CRM, Sales Automation, and Financial Management
-          </p>
+    <UniversalPageWrapper
+      title="Business Suite"
+      subtitle="Complete business management with Advanced CRM, Sales Automation, and Financial Management"
+      showBreadcrumb={false}
+      visualMode="standard"
+      showAIChat={true}
+      headerActions={
+        <div className="flex items-center space-x-3">
+          <Button variant="outline" size="sm">
+            <Download className="w-4 h-4 mr-2" />
+            Export Data
+          </Button>
+          <Button size="sm">
+            <Plus className="w-4 h-4 mr-2" />
+            New Contact
+          </Button>
         </div>
-
-        {/* Tab Navigation */}
-        <Tabs defaultValue={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5 mb-8">
-            {tabConfig.map((tab) => (
-              <TabsTrigger 
-                key={tab.id} 
-                value={tab.id}
-                className="flex items-center gap-2"
-              >
-                {tab.icon}
-                <span className="hidden sm:inline">{tab.label}</span>
-              </TabsTrigger>
-            ))}
-          </TabsList>
-
-          {/* Tab Content */}
+      }
+    >
+      {/* Tab Navigation */}
+      <Tabs defaultValue={activeTab} onValueChange={setActiveTab} className="space-y-6">
+        <TabsList className="grid w-full grid-cols-5 mb-8">
           {tabConfig.map((tab) => (
-            <TabsContent key={tab.id} value={tab.id} className="space-y-6">
-              <tab.component />
-            </TabsContent>
+            <TabsTrigger
+              key={tab.id}
+              value={tab.id}
+              className="flex items-center gap-2"
+            >
+              {tab.icon}
+              <span className="hidden sm:inline">{tab.label}</span>
+            </TabsTrigger>
           ))}
-        </Tabs>
-      </div>
-    </div>
+        </TabsList>
+
+        {/* Tab Content */}
+        {tabConfig.map((tab) => (
+          <TabsContent key={tab.id} value={tab.id} className="space-y-6">
+            <tab.component />
+          </TabsContent>
+        ))}
+      </Tabs>
+    </UniversalPageWrapper>
   );
 }
 

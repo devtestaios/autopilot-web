@@ -9,31 +9,7 @@ import visualEffects from '@/lib/visualEffects';
 import { Container, Grid, Flex, Section, Stack, Header, ContentArea, CardGrid } from '@/components/ui/LayoutSystem';
 import { Button as EnhancedButton, Card as EnhancedCard, Badge, Spinner, Avatar, Progress } from '@/components/ui/EnhancedComponents';
 
-// SSR-safe imports using social-media pattern
-const UnifiedSidebar = dynamic(() => import('@/components/UnifiedSidebar'), {
-  ssr: false,
-  loading: () => <div className="fixed left-0 top-0 h-screen w-56 bg-gray-900 animate-pulse" />
-});
-
-const AdvancedNavigation = dynamic(() => import('@/components/ui/AdvancedNavigation'), {
-  ssr: false,
-  loading: () => <div className="h-16 bg-white dark:bg-gray-900 border-b animate-pulse" />
-});
-
-const AIControlChat = dynamic(() => import('@/components/AIControlChat'), {
-  ssr: false,
-  loading: () => null
-});
-
-const MasterTerminalBreadcrumb = dynamic(() => import('@/components/MasterTerminalBreadcrumb'), {
-  ssr: false,
-  loading: () => <div className="h-8 bg-gray-100 dark:bg-gray-800 animate-pulse rounded" />
-});
-
-const NavigationTabs = dynamic(() => import('@/components/NavigationTabs'), {
-  ssr: false,
-  loading: () => <div className="h-12 bg-white dark:bg-gray-900 border-b animate-pulse" />
-});
+import UniversalPageWrapper from '@/components/ui/UniversalPageWrapper';
 
 import { 
   TrendingUp, 
@@ -182,9 +158,6 @@ const generateInsights = () => [
 // ============================================================================
 
 export default function BusinessIntelligencePlatform() {
-  // Sidebar state management for unified layout
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  
   const [selectedTimeRange, setSelectedTimeRange] = useState('30d');
   const [selectedMetric, setSelectedMetric] = useState('revenue');
   const [showFilters, setShowFilters] = useState(false);
@@ -217,90 +190,55 @@ export default function BusinessIntelligencePlatform() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      {/* Unified Sidebar */}
-      <UnifiedSidebar onCollapseChange={setSidebarCollapsed} />
-      
-      {/* Advanced Navigation */}
-      <AdvancedNavigation sidebarCollapsed={sidebarCollapsed} />
-      
-      {/* Main Content with dynamic margins */}
-      <div className={`transition-all duration-300 ease-in-out ${
-        sidebarCollapsed ? 'ml-14' : 'ml-56'
-      } pt-16`}>
-        {/* Master Terminal Breadcrumb */}
-        <div className="border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
-          <div className="px-6 py-4">
-            <MasterTerminalBreadcrumb />
+    <UniversalPageWrapper
+      title="Business Intelligence"
+      subtitle="AI-powered insights and analytics dashboard"
+      showBreadcrumb={true}
+      visualMode="standard"
+      showAIChat={true}
+      background="gradient"
+      headerActions={
+        <div className="flex items-center space-x-4">
+          {/* Time Range Selector */}
+          <div className="flex bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
+            {['7d', '30d', '90d'].map((range) => (
+              <button
+                key={range}
+                onClick={() => setSelectedTimeRange(range)}
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
+                  selectedTimeRange === range
+                    ? 'bg-white dark:bg-gray-600 text-gray-900 dark:text-white shadow-sm'
+                    : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
+                }`}
+              >
+                {range.toUpperCase()}
+              </button>
+            ))}
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex space-x-2">
+            <button
+              onClick={() => setShowFilters(!showFilters)}
+              className="flex items-center space-x-2 px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+            >
+              <Filter className="w-4 h-4" />
+              <span>Filters</span>
+            </button>
+            <button className="flex items-center space-x-2 px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
+              <Download className="w-4 h-4" />
+              <span>Export</span>
+            </button>
+            <button className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+              <RefreshCw className="w-4 h-4" />
+              <span>Refresh</span>
+            </button>
           </div>
         </div>
-        
-        {/* Navigation Tabs */}
-        <NavigationTabs />
-        
-        {/* Business Intelligence Content */}
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-gray-900 dark:via-blue-950 dark:to-indigo-950">
-          {/* Header */}
-          <div className="border-b border-gray-200 dark:border-gray-700 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm">
-            <div className="max-w-7xl mx-auto px-6 py-6">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-4">
-                  <div className="p-3 bg-gradient-to-r from-purple-500 to-blue-600 rounded-lg text-white">
-                    <Brain className="w-8 h-8" />
-                  </div>
-                  <div>
-                    <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                      Business Intelligence
-                    </h1>
-                    <p className="text-gray-600 dark:text-gray-300 mt-1">
-                      AI-powered insights and analytics dashboard
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-center space-x-4">
-                  {/* Time Range Selector */}
-                  <div className="flex bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
-                    {['7d', '30d', '90d'].map((range) => (
-                      <button
-                        key={range}
-                        onClick={() => setSelectedTimeRange(range)}
-                        className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
-                          selectedTimeRange === range
-                            ? 'bg-white dark:bg-gray-600 text-gray-900 dark:text-white shadow-sm'
-                            : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
-                        }`}
-                      >
-                        {range.toUpperCase()}
-                      </button>
-                    ))}
-                  </div>
-
-                  {/* Action Buttons */}
-                  <div className="flex space-x-2">
-                    <button
-                      onClick={() => setShowFilters(!showFilters)}
-                      className="flex items-center space-x-2 px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
-                    >
-                      <Filter className="w-4 h-4" />
-                      <span>Filters</span>
-                    </button>
-                    <button className="flex items-center space-x-2 px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
-                      <Download className="w-4 h-4" />
-                      <span>Export</span>
-                    </button>
-                    <button className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-                      <RefreshCw className="w-4 h-4" />
-                      <span>Refresh</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Main Dashboard Content */}
-          <div className="max-w-7xl mx-auto p-6 space-y-8">
+      }
+    >
+      {/* Main Dashboard Content */}
+      <div className="space-y-8">
             {/* KPI Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {kpiData.map((kpi) => (
@@ -567,12 +505,7 @@ export default function BusinessIntelligencePlatform() {
                 ))}
               </div>
             </motion.div>
-          </div>
-        </div>
       </div>
-      
-      {/* AI Control Chat - Fixed positioning outside content flow */}
-      <AIControlChat />
-    </div>
+    </UniversalPageWrapper>
   );
 }

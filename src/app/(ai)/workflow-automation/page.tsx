@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import dynamic from 'next/dynamic';
 
 // Enhanced Design System Imports - Phase 1 Visual Polish
 import { designTokens } from '@/lib/designTokens';
@@ -10,6 +9,8 @@ import { animations } from '@/lib/animations';
 import visualEffects from '@/lib/visualEffects';
 import { Container, Grid, Flex, Section, Stack, Header, ContentArea, CardGrid } from '@/components/ui/LayoutSystem';
 import { Button as EnhancedButton, Card as EnhancedCard, Badge, Spinner, Avatar, Progress } from '@/components/ui/EnhancedComponents';
+import UniversalPageWrapper from '@/components/ui/UniversalPageWrapper';
+import { Button } from '@/components/ui/button';
 
 import {
   Workflow,
@@ -63,22 +64,6 @@ import {
   Globe,
   Shield
 } from 'lucide-react';
-
-// SSR-safe imports for universal sidebar system
-const UnifiedSidebar = dynamic(() => import('@/components/UnifiedSidebar'), {
-  ssr: false,
-  loading: () => <div className="fixed left-0 top-0 h-screen w-56 bg-gray-900 animate-pulse" />
-});
-
-const AdvancedNavigation = dynamic(() => import('@/components/ui/AdvancedNavigation'), {
-  ssr: false,
-  loading: () => <div className="h-16 bg-white dark:bg-gray-900 border-b animate-pulse" />
-});
-
-const NavigationTabs = dynamic(() => import('@/components/NavigationTabs'), {
-  ssr: false,
-  loading: () => <div className="h-12 bg-white dark:bg-gray-900 border-b animate-pulse" />
-});
 
 // Workflow Types
 interface WorkflowStep {
@@ -149,7 +134,6 @@ interface WorkflowTemplate {
 }
 
 export default function WorkflowAutomation() {
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [activeTab, setActiveTab] = useState<'dashboard' | 'workflows' | 'executions' | 'templates' | 'logs'>('dashboard');
   const [selectedWorkflow, setSelectedWorkflow] = useState<Workflow | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -876,96 +860,82 @@ export default function WorkflowAutomation() {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      {/* Unified Sidebar */}
-      <UnifiedSidebar onCollapseChange={setSidebarCollapsed} />
-      
-      {/* Main Content Area */}
-      <div className={`transition-all duration-300 ${
-        sidebarCollapsed ? 'ml-14' : 'ml-56'
-      }`}>
-        {/* Advanced Navigation */}
-        <AdvancedNavigation sidebarCollapsed={sidebarCollapsed} />
-        
-        {/* Navigation Tabs */}
-        <NavigationTabs />
-        
-        {/* Workflow Automation Content */}
-        <div className="p-6">
-          {/* Header */}
-          <div className="mb-8">
-            <div className="flex items-center space-x-4 mb-4">
-              <div className="p-3 bg-gradient-to-r from-purple-500 to-indigo-600 rounded-xl text-white">
-                <Workflow className="w-8 h-8" />
-              </div>
-              <div>
-                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                  Workflow Automation
-                </h1>
-                <p className="text-gray-600 dark:text-gray-400">
-                  Automate business processes and increase operational efficiency
-                </p>
-              </div>
-            </div>
-
-            {/* Tabs */}
-            <div className="flex space-x-1 bg-gray-100 dark:bg-gray-800 rounded-lg p-1">
-              {[
-                { key: 'dashboard', label: 'Dashboard', icon: BarChart3 },
-                { key: 'workflows', label: 'Workflows', icon: Workflow },
-                { key: 'executions', label: 'Executions', icon: PlayCircle },
-                { key: 'templates', label: 'Templates', icon: FileText },
-                { key: 'logs', label: 'Logs', icon: Activity }
-              ].map((tab) => (
-                <button
-                  key={tab.key}
-                  onClick={() => setActiveTab(tab.key as any)}
-                  className={`flex items-center space-x-2 px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                    activeTab === tab.key
-                      ? 'bg-white dark:bg-gray-700 text-blue-600 shadow-sm'
-                      : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
-                  }`}
-                >
-                  <tab.icon className="w-4 h-4" />
-                  <span>{tab.label}</span>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Content */}
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activeTab}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.2 }}
-            >
-              {activeTab === 'dashboard' && renderDashboardTab()}
-              {activeTab === 'workflows' && renderWorkflowsTab()}
-              {activeTab === 'executions' && (
-                <div className="text-center py-12 bg-white dark:bg-gray-800 rounded-xl">
-                  <PlayCircle className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                  <p className="text-gray-500 dark:text-gray-400">Execution monitoring interface coming soon</p>
-                </div>
-              )}
-              {activeTab === 'templates' && (
-                <div className="text-center py-12 bg-white dark:bg-gray-800 rounded-xl">
-                  <FileText className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                  <p className="text-gray-500 dark:text-gray-400">Workflow templates library coming soon</p>
-                </div>
-              )}
-              {activeTab === 'logs' && (
-                <div className="text-center py-12 bg-white dark:bg-gray-800 rounded-xl">
-                  <Activity className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                  <p className="text-gray-500 dark:text-gray-400">Execution logs viewer coming soon</p>
-                </div>
-              )}
-            </motion.div>
-          </AnimatePresence>
+    <UniversalPageWrapper
+      title="Workflow Automation"
+      subtitle="Automate business processes and increase operational efficiency"
+      showBreadcrumb={false}
+      visualMode="standard"
+      showAIChat={true}
+      headerActions={
+        <div className="flex items-center space-x-3">
+          <Button variant="outline" size="sm">
+            <Upload className="w-4 h-4 mr-2" />
+            Import
+          </Button>
+          <Button variant="outline" size="sm">
+            <Plus className="w-4 h-4 mr-2" />
+            New Workflow
+          </Button>
         </div>
+      }
+    >
+      <div className="space-y-6">
+        {/* Tabs */}
+        <div className="flex space-x-1 bg-gray-100 dark:bg-gray-800 rounded-lg p-1">
+          {[
+            { key: 'dashboard', label: 'Dashboard', icon: BarChart3 },
+            { key: 'workflows', label: 'Workflows', icon: Workflow },
+            { key: 'executions', label: 'Executions', icon: PlayCircle },
+            { key: 'templates', label: 'Templates', icon: FileText },
+            { key: 'logs', label: 'Logs', icon: Activity }
+          ].map((tab) => (
+            <button
+              key={tab.key}
+              onClick={() => setActiveTab(tab.key as any)}
+              className={`flex items-center space-x-2 px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                activeTab === tab.key
+                  ? 'bg-white dark:bg-gray-700 text-blue-600 shadow-sm'
+                  : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+              }`}
+            >
+              <tab.icon className="w-4 h-4" />
+              <span>{tab.label}</span>
+            </button>
+          ))}
+        </div>
+
+        {/* Content */}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeTab}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.2 }}
+          >
+            {activeTab === 'dashboard' && renderDashboardTab()}
+            {activeTab === 'workflows' && renderWorkflowsTab()}
+            {activeTab === 'executions' && (
+              <div className="text-center py-12 bg-white dark:bg-gray-800 rounded-xl">
+                <PlayCircle className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+                <p className="text-gray-500 dark:text-gray-400">Execution monitoring interface coming soon</p>
+              </div>
+            )}
+            {activeTab === 'templates' && (
+              <div className="text-center py-12 bg-white dark:bg-gray-800 rounded-xl">
+                <FileText className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+                <p className="text-gray-500 dark:text-gray-400">Workflow templates library coming soon</p>
+              </div>
+            )}
+            {activeTab === 'logs' && (
+              <div className="text-center py-12 bg-white dark:bg-gray-800 rounded-xl">
+                <Activity className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+                <p className="text-gray-500 dark:text-gray-400">Execution logs viewer coming soon</p>
+              </div>
+            )}
+          </motion.div>
+        </AnimatePresence>
       </div>
-    </div>
+    </UniversalPageWrapper>
   );
 }

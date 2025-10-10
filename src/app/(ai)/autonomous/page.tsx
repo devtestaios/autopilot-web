@@ -5,19 +5,21 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
-import { 
-  Brain, 
-  Play, 
-  Pause, 
-  AlertTriangle, 
-  CheckCircle, 
-  XCircle, 
+import UniversalPageWrapper from '@/components/ui/UniversalPageWrapper';
+import {
+  Brain,
+  Play,
+  Pause,
+  AlertTriangle,
+  CheckCircle,
+  XCircle,
   Clock,
   Shield,
   Zap,
   Settings,
   Activity,
-  TrendingUp
+  TrendingUp,
+  Bot
 } from 'lucide-react';
 
 interface Decision {
@@ -196,49 +198,46 @@ export default function AutonomousControlCenter() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-6">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-3">
-                <Brain className="w-8 h-8" />
-                Autonomous Control Center
-              </h1>
-              <p className="text-gray-600 dark:text-gray-400 mt-2">
-                AI-powered autonomous decision making and campaign optimization
-              </p>
+    <UniversalPageWrapper
+      title="Autonomous Control Center"
+      subtitle="AI-powered autonomous decision making and campaign optimization"
+      showBreadcrumb={false}
+      visualMode="standard"
+      showAIChat={true}
+      headerActions={
+        <div className="flex items-center space-x-3">
+          {settings && (
+            <div className="flex items-center gap-2">
+              <label className="text-sm font-medium">Autonomous Mode</label>
+              <Switch
+                checked={settings.auto_execution_enabled}
+                onCheckedChange={toggleAutonomousMode}
+              />
             </div>
-            
-            <div className="flex items-center gap-4">
-              {settings && (
-                <div className="flex items-center gap-2">
-                  <label className="text-sm font-medium">Autonomous Mode</label>
-                  <Switch
-                    checked={settings.auto_execution_enabled}
-                    onCheckedChange={toggleAutonomousMode}
-                  />
-                </div>
-              )}
-              
-              <Button
-                variant="destructive"
-                onClick={emergencyStop}
-                className="flex items-center gap-2"
-              >
-                <AlertTriangle className="w-4 h-4" />
-                Emergency Stop
-              </Button>
-            </div>
-          </div>
+          )}
+          <Button
+            variant="outline"
+            size="sm"
+          >
+            <Settings className="w-4 h-4 mr-2" />
+            Configure
+          </Button>
+          <Button
+            variant="destructive"
+            size="sm"
+            onClick={emergencyStop}
+          >
+            <AlertTriangle className="w-4 h-4 mr-2" />
+            Emergency Stop
+          </Button>
         </div>
-
-        {error && (
-          <div className="mb-6 p-4 bg-red-100 border border-red-300 text-red-700 rounded-lg">
-            {error}
-          </div>
-        )}
+      }
+    >
+      {error && (
+        <div className="mb-6 p-4 bg-red-100 border border-red-300 text-red-700 rounded-lg">
+          {error}
+        </div>
+      )}
 
         {/* System Status */}
         {performanceData && (
@@ -457,7 +456,6 @@ export default function AutonomousControlCenter() {
             </CardContent>
           </Card>
         )}
-      </div>
-    </div>
+    </UniversalPageWrapper>
   );
 }

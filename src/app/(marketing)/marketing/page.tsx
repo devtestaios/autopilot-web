@@ -505,10 +505,6 @@ export default function MarketingCommandCenter() {
             <Activity className={`w-4 h-4 mr-2 ${isRefreshing ? 'animate-spin' : ''}`} />
             {isRefreshing ? 'Refreshing...' : 'Refresh Data'}
           </Button>
-          <Button variant="outline" size="sm">
-            <Settings className="w-4 h-4 mr-2" />
-            Settings
-          </Button>
           <Button size="sm">
             <Plus className="w-4 h-4 mr-2" />
             New Campaign

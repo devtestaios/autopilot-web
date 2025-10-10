@@ -14,31 +14,7 @@ import visualEffects from '@/lib/visualEffects';
 import { Container, Grid, Flex, Section, Stack, Header, ContentArea, CardGrid } from '@/components/ui/LayoutSystem';
 import { Button as EnhancedButton, Card as EnhancedCard, Badge, Spinner, Avatar, Progress } from '@/components/ui/EnhancedComponents';
 
-// SSR-safe imports using social-media pattern
-const UnifiedSidebar = dynamic(() => import('@/components/UnifiedSidebar'), {
-  ssr: false,
-  loading: () => <div className="fixed left-0 top-0 h-screen w-56 bg-gray-900 animate-pulse" />
-});
-
-const AdvancedNavigation = dynamic(() => import('@/components/ui/AdvancedNavigation'), {
-  ssr: false,
-  loading: () => <div className="h-16 bg-white dark:bg-gray-900 border-b animate-pulse" />
-});
-
-const AIControlChat = dynamic(() => import('@/components/AIControlChat'), {
-  ssr: false,
-  loading: () => null
-});
-
-const MasterTerminalBreadcrumb = dynamic(() => import('@/components/MasterTerminalBreadcrumb'), {
-  ssr: false,
-  loading: () => <div className="h-8 bg-gray-100 dark:bg-gray-800 animate-pulse rounded" />
-});
-
-const NavigationTabs = dynamic(() => import('@/components/NavigationTabs'), {
-  ssr: false,
-  loading: () => <div className="h-12 bg-white dark:bg-gray-900 border-b animate-pulse" />
-});
+import UniversalPageWrapper from '@/components/ui/UniversalPageWrapper';
 
 // Project management skeleton component for lazy loading states
 const ProjectManagementSkeleton = ({ type }: { type: 'wizard' | 'kanban' | 'seeder' | 'analytics' }) => {
@@ -146,8 +122,6 @@ import {
 // ============================================================================
 
 export default function ProjectManagementDashboard() {
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  
   const {
     currentProject,
     projects,
@@ -212,61 +186,33 @@ export default function ProjectManagementDashboard() {
   };
 
   return (
-    <div className="flex min-h-screen bg-gray-50 dark:bg-gray-900">
-      {/* Unified Sidebar */}
-      <UnifiedSidebar onCollapseChange={setSidebarCollapsed} />
-      
-      {/* Main Content Area */}
-      <div className={`flex-1 transition-all duration-300 ${
-        sidebarCollapsed ? 'ml-14' : 'ml-56'
-      }`}>
-        {/* Advanced Navigation */}
-        <AdvancedNavigation sidebarCollapsed={sidebarCollapsed} />
-        
-        {/* Navigation Tabs */}
-        <NavigationTabs />
-        
-        {/* Content Container */}
-        <div className="container mx-auto px-4 py-6">
-          {/* Breadcrumb */}
-          <MasterTerminalBreadcrumb />
-          
-          {/* Header with Project Status */}
-          <motion.div 
-            className="mb-8"
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
+    <UniversalPageWrapper
+      title="Project Command Center"
+      subtitle="Enterprise project management with advanced analytics and team collaboration"
+      showBreadcrumb={true}
+      visualMode="standard"
+      showAIChat={true}
+      headerActions={
+        <div className="flex items-center gap-3">
+          <Button
+            onClick={() => setShowCreateWizard(true)}
+            className="bg-blue-600 hover:bg-blue-700 text-white"
           >
-            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
-            <div>
-              <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">
-                Project Command Center
-              </h1>
-              <p className="text-lg text-gray-600 dark:text-gray-300">
-                Enterprise project management with advanced analytics and team collaboration
-              </p>
-            </div>
-
-            <div className="flex items-center gap-3">
-              <Button 
-                onClick={() => setShowCreateWizard(true)}
-                className="bg-blue-600 hover:bg-blue-700 text-white"
-              >
-                <Plus className="h-4 w-4 mr-2" />
-                New Project
-              </Button>
-              <Button 
-                variant="outline"
-                onClick={() => {
-                  // TODO: Open create task modal
-                }}
-              >
-                <Plus className="h-4 w-4 mr-2" />
-                New Task
-              </Button>
-            </div>
-          </div>
+            <Plus className="h-4 w-4 mr-2" />
+            New Project
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => {
+              // TODO: Open create task modal
+            }}
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            New Task
+          </Button>
+        </div>
+      }
+    >
 
           {/* ========== VIEW SELECTOR ========== */}
           <div className="flex flex-wrap items-center gap-2 mt-6 p-2 bg-white dark:bg-slate-800 rounded-lg border border-gray-200 dark:border-slate-700">
@@ -298,7 +244,6 @@ export default function ProjectManagementDashboard() {
               Filters
             </Button>
           </div>
-        </motion.div>
 
         {/* ========== DASHBOARD OVERVIEW ========== */}
         {currentView === 'dashboard' && (
@@ -757,16 +702,11 @@ export default function ProjectManagementDashboard() {
           </motion.div>
         )}
 
-        {/* ========== PROJECT CREATION WIZARD ========== */}
-        <ProjectCreationWizard
-          isOpen={showCreateWizard}
-          onClose={() => setShowCreateWizard(false)}
-        />
-        </div>
-      </div>
-
-      {/* AI Control Chat - Bottom Right */}
-      <AIControlChat defaultMinimized={true} />
-    </div>
+      {/* ========== PROJECT CREATION WIZARD ========== */}
+      <ProjectCreationWizard
+        isOpen={showCreateWizard}
+        onClose={() => setShowCreateWizard(false)}
+      />
+    </UniversalPageWrapper>
   );
 }

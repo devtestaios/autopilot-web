@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { 
+import UniversalPageWrapper from '@/components/ui/UniversalPageWrapper';
+import {
   Brain,
   Map,
   Link,
@@ -11,7 +12,6 @@ import {
   Users,
   Target
 } from 'lucide-react';
-import NavigationTabs from '@/components/NavigationTabs';
 
 // Import modular CRM components
 import { 
@@ -31,28 +31,24 @@ export default function UnifiedCRMPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <NavigationTabs />
-      
-      <div className="container mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="p-2 bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg">
-              <Users className="w-8 h-8 text-white" />
-            </div>
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                Unified CRM Platform Suite
-              </h1>
-              <p className="text-gray-600 dark:text-gray-400">
-                AI-powered lead scoring, customer journey mapping, and CRM integrations
-              </p>
-            </div>
-          </div>
-
-          {/* Tab Navigation */}
-          <div className="flex flex-wrap gap-2 mt-6">
+    <UniversalPageWrapper
+      title="Unified CRM Platform Suite"
+      subtitle="AI-powered lead scoring, customer journey mapping, and CRM integrations"
+      showBreadcrumb={false}
+      visualMode="standard"
+      showAIChat={true}
+      headerActions={
+        <div className="flex items-center space-x-3">
+          <button className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors flex items-center space-x-2">
+            <Users className="w-4 h-4" />
+            <span>Manage Leads</span>
+          </button>
+        </div>
+      }
+    >
+      {/* Tab Navigation */}
+      <div className="mb-8">
+        <div className="flex flex-wrap gap-2">
             {tabs.map((tab) => {
               const Icon = tab.icon;
               return (
@@ -71,10 +67,10 @@ export default function UnifiedCRMPage() {
               );
             })}
           </div>
-        </div>
+      </div>
 
-        {/* Tab Content */}
-        <div className="min-h-[600px]">
+      {/* Tab Content */}
+      <div className="min-h-[600px]">
           {activeTab === 'overview' && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -208,8 +204,7 @@ export default function UnifiedCRMPage() {
               <CRMIntegrations />
             </motion.div>
           )}
-        </div>
       </div>
-    </div>
+    </UniversalPageWrapper>
   );
 }

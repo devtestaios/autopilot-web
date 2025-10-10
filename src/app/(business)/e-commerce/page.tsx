@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import NavigationTabs from '@/components/NavigationTabs';
+import UniversalPageWrapper from '@/components/ui/UniversalPageWrapper';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -78,19 +78,25 @@ export default function ECommercePlatform() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <NavigationTabs />
-      
-      <div className="container mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">
-            E-Commerce Platform
-          </h1>
-          <p className="text-gray-600 dark:text-gray-400">
-            Complete online store management and analytics
-          </p>
+    <UniversalPageWrapper
+      title="E-Commerce Platform"
+      subtitle="Complete online store management and analytics"
+      showBreadcrumb={false}
+      visualMode="standard"
+      showAIChat={true}
+      headerActions={
+        <div className="flex items-center space-x-3">
+          <Button variant="outline" size="sm">
+            <Filter className="w-4 h-4 mr-2" />
+            Filter
+          </Button>
+          <Button size="sm">
+            <Plus className="w-4 h-4 mr-2" />
+            Add Product
+          </Button>
         </div>
+      }
+    >
 
         {/* Quick Stats */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
@@ -327,7 +333,6 @@ export default function ECommercePlatform() {
             </Card>
           </TabsContent>
         </Tabs>
-      </div>
-    </div>
+    </UniversalPageWrapper>
   );
 }

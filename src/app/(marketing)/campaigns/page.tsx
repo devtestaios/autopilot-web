@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import UniversalPageWrapper from '@/components/ui/UniversalPageWrapper';
+import { fetchCampaigns, EnhancedCampaign } from '@/lib/campaigns-service';
 import { 
   Plus, 
   Bot, 
@@ -37,49 +38,6 @@ import {
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
-// Enhanced Campaign Interface
-interface EnhancedCampaign {
-  id: string;
-  name: string;
-  type: 'cross-platform' | 'single-platform';
-  platforms: ('google-ads' | 'meta' | 'linkedin' | 'tiktok' | 'twitter')[];
-  status: 'draft' | 'active' | 'paused' | 'completed' | 'optimizing';
-  budget: {
-    total: number;
-    daily: number;
-    spent: number;
-    remaining: number;
-    allocation: Record<string, number>;
-  };
-  performance: {
-    impressions: number;
-    clicks: number;
-    conversions: number;
-    ctr: number;
-    cpc: number;
-    cpa: number;
-    roas: number;
-    confidence: number;
-  };
-  splitTests: {
-    active: number;
-    total: number;
-    winnerFound: boolean;
-    confidence: number;
-  };
-  aiInsights: {
-    score: number;
-    recommendations: string[];
-    predictions: {
-      nextDaySpend: number;
-      expectedROAS: number;
-      riskLevel: 'low' | 'medium' | 'high';
-    };
-  };
-  createdAt: string;
-  lastOptimized: string;
-}
-
 export default function CampaignsPage() {
   const router = useRouter();
   const [campaigns, setCampaigns] = useState<EnhancedCampaign[]>([]);
@@ -88,150 +46,32 @@ export default function CampaignsPage() {
   const [selectedCampaigns, setSelectedCampaigns] = useState<string[]>([]);
   const [aiOptimizing, setAiOptimizing] = useState(false);
 
-  // Mock data for demonstration
+  // Load campaigns from database
   useEffect(() => {
-    const mockCampaigns: EnhancedCampaign[] = [
-      {
-        id: '1',
-        name: 'Q4 Holiday Cross-Platform Blitz',
-        type: 'cross-platform',
-        platforms: ['google-ads', 'meta', 'linkedin'],
-        status: 'active',
-        budget: {
-          total: 50000,
-          daily: 1667,
-          spent: 32400,
-          remaining: 17600,
-          allocation: { 'google-ads': 45, 'meta': 35, 'linkedin': 20 }
-        },
-        performance: {
-          impressions: 2840000,
-          clicks: 42600,
-          conversions: 1278,
-          ctr: 1.5,
-          cpc: 0.76,
-          cpa: 25.35,
-          roas: 4.2,
-          confidence: 94
-        },
-        splitTests: {
-          active: 8,
-          total: 15,
-          winnerFound: true,
-          confidence: 96
-        },
-        aiInsights: {
-          score: 92,
-          recommendations: [
-            'Increase Meta budget by 15% based on performance',
-            'Test new creative variants for LinkedIn',
-            'Expand winning audience on Google Ads'
-          ],
-          predictions: {
-            nextDaySpend: 1845,
-            expectedROAS: 4.6,
-            riskLevel: 'low'
-          }
-        },
-        createdAt: '2025-09-01',
-        lastOptimized: '2025-09-23T10:30:00Z'
-      },
-      {
-        id: '2',
-        name: 'Lead Gen B2B Focus',
-        type: 'single-platform',
-        platforms: ['linkedin'],
-        status: 'optimizing',
-        budget: {
-          total: 25000,
-          daily: 833,
-          spent: 18200,
-          remaining: 6800,
-          allocation: { 'linkedin': 100 }
-        },
-        performance: {
-          impressions: 890000,
-          clicks: 12450,
-          conversions: 456,
-          ctr: 1.4,
-          cpc: 1.46,
-          cpa: 39.91,
-          roas: 3.1,
-          confidence: 87
-        },
-        splitTests: {
-          active: 12,
-          total: 18,
-          winnerFound: false,
-          confidence: 73
-        },
-        aiInsights: {
-          score: 78,
-          recommendations: [
-            'Test different job title targeting',
-            'A/B test CTA variations',
-            'Optimize landing page conversion rate'
-          ],
-          predictions: {
-            nextDaySpend: 920,
-            expectedROAS: 3.4,
-            riskLevel: 'medium'
-          }
-        },
-        createdAt: '2025-08-15',
-        lastOptimized: '2025-09-23T09:15:00Z'
-      },
-      {
-        id: '3',
-        name: 'Brand Awareness Multi-Touch',
-        type: 'cross-platform',
-        platforms: ['google-ads', 'meta', 'tiktok'],
-        status: 'active',
-        budget: {
-          total: 75000,
-          daily: 2500,
-          spent: 45600,
-          remaining: 29400,
-          allocation: { 'google-ads': 40, 'meta': 35, 'tiktok': 25 }
-        },
-        performance: {
-          impressions: 4200000,
-          clicks: 84000,
-          conversions: 2100,
-          ctr: 2.0,
-          cpc: 0.54,
-          cpa: 21.71,
-          roas: 5.8,
-          confidence: 98
-        },
-        splitTests: {
-          active: 15,
-          total: 22,
-          winnerFound: true,
-          confidence: 91
-        },
-        aiInsights: {
-          score: 95,
-          recommendations: [
-            'Scale winning TikTok creative to other platforms',
-            'Increase budget allocation to top performing segments',
-            'Launch sequential remarketing campaign'
-          ],
-          predictions: {
-            nextDaySpend: 2750,
-            expectedROAS: 6.1,
-            riskLevel: 'low'
-          }
-        },
-        createdAt: '2025-07-20',
-        lastOptimized: '2025-09-23T11:45:00Z'
+    const loadCampaigns = async () => {
+      try {
+        setLoading(true);
+        console.log('🔍 Loading campaigns from database...');
+        
+        const { campaigns: fetchedCampaigns, error } = await fetchCampaigns();
+        
+        if (error) {
+          console.error('❌ Failed to load campaigns:', error);
+          // Fall back to empty array for now
+          setCampaigns([]);
+        } else {
+          console.log('✅ Successfully loaded campaigns:', fetchedCampaigns.length);
+          setCampaigns(fetchedCampaigns);
+        }
+      } catch (error) {
+        console.error('❌ Unexpected error loading campaigns:', error);
+        setCampaigns([]);
+      } finally {
+        setLoading(false);
       }
-    ];
+    };
 
-    setTimeout(() => {
-      setCampaigns(mockCampaigns);
-      setLoading(false);
-    }, 1000);
+    loadCampaigns();
   }, []);
 
   const handleBulkOptimize = async () => {

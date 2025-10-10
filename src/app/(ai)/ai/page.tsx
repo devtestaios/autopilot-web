@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import dynamic from 'next/dynamic';
 import {
   Bot,
   Sparkles,
@@ -27,29 +26,14 @@ import AIControlChat from '@/components/AIControlChat';
 import AIAutomationPanel from '@/components/ai/AIAutomationPanel';
 import AIOptimizationPanel from '@/components/ai/AIOptimizationPanel';
 import { useUnifiedAI } from '@/contexts/UnifiedAIContext';
-
-// SSR-safe imports for universal sidebar system
-const UnifiedSidebar = dynamic(() => import('@/components/UnifiedSidebar'), {
-  ssr: false,
-  loading: () => <div className="fixed left-0 top-0 h-screen w-56 bg-gray-900 animate-pulse" />
-});
-
-const AdvancedNavigation = dynamic(() => import('@/components/ui/AdvancedNavigation'), {
-  ssr: false,
-  loading: () => <div className="h-16 bg-white dark:bg-gray-900 border-b animate-pulse" />
-});
-
-const NavigationTabs = dynamic(() => import('@/components/NavigationTabs'), {
-  ssr: false,
-  loading: () => <div className="h-12 bg-white dark:bg-gray-900 border-b animate-pulse" />
-});
+import UniversalPageWrapper from '@/components/ui/UniversalPageWrapper';
+import { Button } from '@/components/ui/button';
 
 type AIView = 'overview' | 'dashboard' | 'automation' | 'optimization' | 'chat' | 'settings';
 
 export default function AIPage() {
   const [currentView, setCurrentView] = useState<AIView>('overview');
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  
+
   const {
     aiStatus,
     autonomousMode,
@@ -110,99 +94,73 @@ export default function AIPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      {/* Unified Sidebar */}
-      <UnifiedSidebar onCollapseChange={setSidebarCollapsed} />
-      
-      {/* Main Content Area */}
-      <div className={`transition-all duration-300 ${
-        sidebarCollapsed ? 'ml-14' : 'ml-56'
-      }`}>
-        {/* Advanced Navigation */}
-        <AdvancedNavigation sidebarCollapsed={sidebarCollapsed} />
-        
-        {/* Navigation Tabs */}
-        <NavigationTabs />
-        
-        {/* AI Center Content */}
-        <div className="p-6">
-          {/* Header */}
-          <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 mb-6">
-            <div className="px-6 py-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-4">
-                  <div className="flex items-center space-x-2">
-                    <Bot className="w-8 h-8 text-blue-600" />
-                    <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-                      AI Control Center
-                    </h1>
-                  </div>
-                  
-                  {/* Status Indicator */}
-                  <div className="flex items-center space-x-2 px-3 py-1 bg-gray-100 dark:bg-gray-700 rounded-full">
-                    <div className={`w-2 h-2 rounded-full ${
-                      aiStatus === 'active' ? 'bg-green-400 animate-pulse' :
-                      aiStatus === 'processing' ? 'bg-yellow-400 animate-pulse' :
-                      aiStatus === 'error' ? 'bg-red-400' : 'bg-gray-400'
-                    }`} />
-                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300 capitalize">
-                      {aiStatus}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Quick Actions */}
-                <div className="flex items-center space-x-2">
-                  <button
-                    onClick={toggleAutonomousMode}
-                    className={`flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                      autonomousMode 
-                        ? 'bg-purple-100 text-purple-700 hover:bg-purple-200' 
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                    }`}
-                  >
-                    {autonomousMode ? <Bot className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                    <span>{autonomousMode ? 'Autonomous' : 'Supervised'}</span>
-                  </button>
-                </div>
-              </div>
-
-              {/* View Tabs */}
-              <div className="mt-6 border-t pt-4">
-                <div className="flex space-x-1">
-                  {[
-                    { key: 'overview', label: 'Overview', icon: BarChart3 },
-                    { key: 'dashboard', label: 'Dashboard', icon: TrendingUp },
-                    { key: 'automation', label: 'Automation', icon: Workflow },
-                    { key: 'optimization', label: 'Optimization', icon: Target },
-                    { key: 'chat', label: 'Chat', icon: MessageSquare },
-                    { key: 'settings', label: 'Settings', icon: Settings }
-                  ].map((tab) => (
-                    <button
-                      key={tab.key}
-                      onClick={() => setCurrentView(tab.key as AIView)}
-                      className={`flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                        currentView === tab.key
-                          ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300'
-                          : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700'
-                      }`}
-                    >
-                      <tab.icon className="w-4 h-4" />
-                      <span>{tab.label}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
+    <UniversalPageWrapper
+      title="AI Control Center"
+      subtitle="Unified AI-powered automation and optimization control"
+      showBreadcrumb={false}
+      visualMode="standard"
+      showAIChat={true}
+      headerActions={
+        <div className="flex items-center space-x-3">
+          <div className="flex items-center space-x-2 px-3 py-1 bg-gray-100 dark:bg-gray-700 rounded-full">
+            <div className={`w-2 h-2 rounded-full ${
+              aiStatus === 'active' ? 'bg-green-400 animate-pulse' :
+              aiStatus === 'processing' ? 'bg-yellow-400 animate-pulse' :
+              aiStatus === 'error' ? 'bg-red-400' : 'bg-gray-400'
+            }`} />
+            <span className="text-sm font-medium text-gray-700 dark:text-gray-300 capitalize">
+              {aiStatus}
+            </span>
           </div>
-
-          {/* Content Area */}
-          <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-            {renderContent()}
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={toggleAutonomousMode}
+          >
+            {autonomousMode ? <Bot className="w-4 h-4 mr-2" /> : <Eye className="w-4 h-4 mr-2" />}
+            {autonomousMode ? 'Autonomous' : 'Supervised'}
+          </Button>
+          <Button variant="outline" size="sm">
+            <Settings className="w-4 h-4 mr-2" />
+            Configure
+          </Button>
+        </div>
+      }
+    >
+      <div className="space-y-6">
+        {/* View Tabs */}
+        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4">
+          <div className="flex space-x-1">
+            {[
+              { key: 'overview', label: 'Overview', icon: BarChart3 },
+              { key: 'dashboard', label: 'Dashboard', icon: TrendingUp },
+              { key: 'automation', label: 'Automation', icon: Workflow },
+              { key: 'optimization', label: 'Optimization', icon: Target },
+              { key: 'chat', label: 'Chat', icon: MessageSquare },
+              { key: 'settings', label: 'Settings', icon: Settings }
+            ].map((tab) => (
+              <button
+                key={tab.key}
+                onClick={() => setCurrentView(tab.key as AIView)}
+                className={`flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  currentView === tab.key
+                    ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300'
+                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-700'
+                }`}
+              >
+                <tab.icon className="w-4 h-4" />
+                <span>{tab.label}</span>
+              </button>
+            ))}
           </div>
         </div>
+
+        {/* Content Area */}
+        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+          {renderContent()}
+        </div>
       </div>
-    </div>
+    </UniversalPageWrapper>
   );
 }
 
