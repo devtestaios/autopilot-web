@@ -5,12 +5,12 @@ import { usePathname, useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useAuth } from '@/contexts/EnhancedAuthContext';
-import { 
-  LayoutDashboard, 
-  Megaphone, 
-  BarChart3, 
-  Settings, 
-  Users, 
+import {
+  LayoutDashboard,
+  Megaphone,
+  BarChart3,
+  Settings,
+  Users,
   Calendar,
   Target,
   TrendingUp,
@@ -43,7 +43,11 @@ import {
   Activity,
   Lock,
   Eye,
-  AlertTriangle
+  AlertTriangle,
+  DollarSign,
+  Headphones,
+  Package,
+  Bot
 } from 'lucide-react';
 import { PulseWaveLogo } from './PulseWaveLogo';
 
@@ -248,6 +252,114 @@ function getContextualSidebarItems(pathname: string): { contextName: string; ite
           icon: PenTool,
           path: '/content-suite',
           description: 'AI-powered content creation'
+        }
+      ]
+    };
+  }
+
+  // Business Suite Context
+  if (pathname.startsWith('/business') || pathname.startsWith('/financial') ||
+      pathname.startsWith('/e-commerce') || pathname.startsWith('/inventory') ||
+      pathname.startsWith('/unified-crm') || pathname.startsWith('/customer-service')) {
+    return {
+      contextName: 'Business Suite',
+      items: [
+        {
+          id: 'business-overview',
+          label: 'Business Suite',
+          icon: Briefcase,
+          path: '/business-suite',
+          badge: 'Suite',
+          description: 'Business operations hub'
+        },
+        {
+          id: 'financial',
+          label: 'Financial',
+          icon: DollarSign,
+          path: '/financial-management',
+          description: 'Accounting & finance'
+        },
+        {
+          id: 'ecommerce',
+          label: 'E-Commerce',
+          icon: ShoppingCart,
+          path: '/e-commerce',
+          description: 'Online store management'
+        },
+        {
+          id: 'crm',
+          label: 'CRM',
+          icon: Users,
+          path: '/unified-crm',
+          description: 'Customer relationships'
+        },
+        {
+          id: 'customer-service',
+          label: 'Customer Service',
+          icon: Headphones,
+          path: '/customer-service',
+          description: 'Support & tickets'
+        },
+        {
+          id: 'inventory',
+          label: 'Inventory',
+          icon: Package,
+          path: '/inventory-management',
+          description: 'Stock management'
+        },
+        {
+          id: 'project-management',
+          label: 'Projects',
+          icon: Briefcase,
+          path: '/project-management',
+          description: 'Project tracking'
+        }
+      ]
+    };
+  }
+
+  // AI Suite Context
+  if (pathname.startsWith('/ai') || pathname.startsWith('/workflow') ||
+      pathname.startsWith('/autonomous')) {
+    return {
+      contextName: 'AI Suite',
+      items: [
+        {
+          id: 'ai-overview',
+          label: 'AI Suite',
+          icon: Brain,
+          path: '/ai',
+          badge: 'AI',
+          description: 'AI operations hub'
+        },
+        {
+          id: 'ai-automation',
+          label: 'AI Automation',
+          icon: Zap,
+          path: '/ai-automation',
+          description: 'Intelligent automation'
+        },
+        {
+          id: 'ai-optimization',
+          label: 'AI Optimization',
+          icon: TrendingUp,
+          path: '/ai-optimization',
+          description: 'Performance optimization'
+        },
+        {
+          id: 'workflow-automation',
+          label: 'Workflows',
+          icon: Workflow,
+          path: '/workflow-automation',
+          description: 'Custom workflows'
+        },
+        {
+          id: 'autonomous',
+          label: 'Autonomous Agents',
+          icon: Bot,
+          path: '/autonomous',
+          description: 'Self-learning AI',
+          badge: 'Beta'
         }
       ]
     };

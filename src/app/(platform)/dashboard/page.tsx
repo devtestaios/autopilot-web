@@ -8,7 +8,8 @@ import {
   Target, TrendingUp, DollarSign, BarChart3, Users, Zap,
   Activity, Clock, AlertCircle, ChevronRight, ExternalLink,
   Globe, Rocket, Shield, Brain, Play, Settings,
-  MessageSquare, Calendar, FileText, PieChart, LayoutDashboard
+  MessageSquare, Calendar, FileText, PieChart, LayoutDashboard,
+  Briefcase, ShoppingCart, Headphones, Package, Bot, GitBranch
 } from 'lucide-react';
 
 const OnboardingWelcomeBanner = dynamic(() => import('@/components/onboarding/OnboardingWelcomeBanner'), {
@@ -287,6 +288,119 @@ export default function Dashboard() {
           href: '/content-suite',
           status: 'beta',
           kpi: { label: 'Generated', value: '156' }
+        }
+      ]
+    },
+    {
+      id: 'business',
+      title: 'Business Suite',
+      description: 'Complete business management and operations platform',
+      icon: Briefcase,
+      href: '/business-suite',
+      status: 'active',
+      features: ['Financial Management', 'E-Commerce', 'CRM', 'Customer Service'],
+      kpi: {
+        label: 'Active Operations',
+        value: '5',
+        trend: 'up'
+      },
+      subPlatforms: [
+        {
+          id: 'financial',
+          title: 'Financial Management',
+          description: 'Accounting, invoicing, and financial reporting',
+          icon: DollarSign,
+          href: '/financial-management',
+          status: 'active',
+          kpi: { label: 'Revenue', value: '$125k' }
+        },
+        {
+          id: 'ecommerce',
+          title: 'E-Commerce',
+          description: 'Online store management and sales',
+          icon: ShoppingCart,
+          href: '/e-commerce',
+          status: 'active',
+          kpi: { label: 'Orders', value: '342' }
+        },
+        {
+          id: 'crm',
+          title: 'Unified CRM',
+          description: 'Customer relationship management',
+          icon: Users,
+          href: '/unified-crm',
+          status: 'active',
+          kpi: { label: 'Contacts', value: '1,247' }
+        },
+        {
+          id: 'customer-service',
+          title: 'Customer Service',
+          description: 'Support tickets and helpdesk',
+          icon: Headphones,
+          href: '/customer-service',
+          status: 'active',
+          kpi: { label: 'Tickets', value: '23' }
+        },
+        {
+          id: 'inventory',
+          title: 'Inventory Management',
+          description: 'Stock tracking and warehouse management',
+          icon: Package,
+          href: '/inventory-management',
+          status: 'beta',
+          kpi: { label: 'Items', value: '1,542' }
+        }
+      ]
+    },
+    {
+      id: 'ai-suite',
+      title: 'AI Suite',
+      description: 'Advanced AI automation and intelligent optimization',
+      icon: Brain,
+      href: '/ai',
+      status: 'active',
+      features: ['AI Automation', 'Optimization', 'Predictive Analytics', 'Workflows'],
+      kpi: {
+        label: 'Active AI Agents',
+        value: '12',
+        trend: 'up'
+      },
+      subPlatforms: [
+        {
+          id: 'ai-automation',
+          title: 'AI Automation',
+          description: 'Intelligent task automation and decision-making',
+          icon: Zap,
+          href: '/ai-automation',
+          status: 'active',
+          kpi: { label: 'Automations', value: '18' }
+        },
+        {
+          id: 'ai-optimization',
+          title: 'AI Optimization',
+          description: 'Performance optimization and recommendations',
+          icon: TrendingUp,
+          href: '/ai-optimization',
+          status: 'active',
+          kpi: { label: 'Optimized', value: '24' }
+        },
+        {
+          id: 'workflow-automation',
+          title: 'Workflow Automation',
+          description: 'Custom workflow creation and management',
+          icon: GitBranch,
+          href: '/workflow-automation',
+          status: 'active',
+          kpi: { label: 'Workflows', value: '8' }
+        },
+        {
+          id: 'autonomous',
+          title: 'Autonomous Agents',
+          description: 'Self-learning AI agents',
+          icon: Bot,
+          href: '/autonomous',
+          status: 'beta',
+          kpi: { label: 'Agents', value: '4' }
         }
       ]
     },
