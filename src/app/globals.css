@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "../styles/unified-theme.css";
+@import "../styles/design-system.css";
 
 /* PulseBridge.ai Brand Typography */
 html {

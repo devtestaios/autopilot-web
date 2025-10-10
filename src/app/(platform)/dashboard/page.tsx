@@ -57,22 +57,22 @@ interface SubPlatform {
 
 // Performance-optimized KPI Card Component
 const KPICard = memo(({ kpi }: { kpi: EnterpriseKPI }) => (
-  <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow">
-    <div className="flex items-center justify-between mb-4">
-      <div className="p-2 rounded-lg bg-gray-100 dark:bg-gray-700">
+  <div className="card-standard kpi-card">
+    <div className="flex items-center justify-between">
+      <div className="p-3 rounded-lg bg-gray-100 dark:bg-gray-700">
         <kpi.icon className={`w-6 h-6 ${kpi.color}`} />
       </div>
-      <span className={`text-sm font-medium ${
+      <span className={`kpi-change ${
         kpi.changeType === 'positive' ? 'text-green-600' :
         kpi.changeType === 'negative' ? 'text-red-600' : 'text-gray-600'
       }`}>
         {kpi.change}
       </span>
     </div>
-    <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">
+    <h3 className="kpi-value">
       {kpi.value}
     </h3>
-    <p className="text-sm text-gray-600 dark:text-gray-400">
+    <p className="kpi-label">
       {kpi.title}
     </p>
   </div>
@@ -83,20 +83,20 @@ KPICard.displayName = 'KPICard';
 // Performance-optimized Platform Suite Card Component
 const PlatformSuiteCard = memo(({ suite, onClick }: { suite: PlatformSuite; onClick: () => void }) => (
   <div
-    className="bg-white dark:bg-gray-800 rounded-xl p-8 shadow-sm hover:shadow-lg transition-all cursor-pointer group border border-gray-200 dark:border-gray-700"
+    className="card-standard cursor-pointer group"
     onClick={onClick}
   >
     {/* Suite Header */}
-    <div className="flex items-start justify-between mb-6">
-      <div className="flex items-center">
+    <div className="card-header">
+      <div className="flex items-center gap-4">
         <div className="p-4 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 group-hover:scale-105 transition-transform duration-200">
           <suite.icon className="w-8 h-8 text-white" />
         </div>
-        <div className="ml-4">
-          <h3 className="text-xl font-bold text-gray-900 dark:text-white group-hover:text-blue-600 transition-colors">
+        <div>
+          <h3 className="card-title group-hover:text-blue-600 transition-colors">
             {suite.title}
           </h3>
-          <p className="text-gray-600 dark:text-gray-400 text-sm mt-1">
+          <p className="card-description">
             {suite.description}
           </p>
         </div>
