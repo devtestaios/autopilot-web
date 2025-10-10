@@ -271,7 +271,8 @@ export default function CampaignsPage() {
         title="Campaign Management"
         subtitle="AI-powered multi-platform campaign orchestration"
         containerSize="full"
-        showBreadcrumb={true}
+        visualMode="standard"
+        showBreadcrumb={false}
         showAIChat={true}
       >
         <div className="animate-pulse space-y-6">
@@ -291,7 +292,8 @@ export default function CampaignsPage() {
       title="Campaign Management"
       subtitle="AI-powered multi-platform campaign orchestration"
       containerSize="full"
-      showBreadcrumb={true}
+      visualMode="standard"
+      showBreadcrumb={false}
       showAIChat={true}
       statusBadge={{
         variant: aiOptimizing ? 'info' : 'success',
