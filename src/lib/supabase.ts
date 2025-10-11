@@ -1,31 +1,42 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 
 // Create a fallback client if environment variables are not set
 let supabase: any;
 
-// Only initialize Supabase if we have valid environment variables and we're in a browser environment
-if (typeof window !== 'undefined' && supabaseUrl && supabaseAnonKey && supabaseUrl.startsWith('http')) {
-  supabase = createClient(supabaseUrl, supabaseAnonKey, {
-    auth: {
-      autoRefreshToken: true,
-      persistSession: true,
-      detectSessionInUrl: true
-    }
-  });
-} else {
-  if (typeof window !== 'undefined') {
-    console.warn('Supabase environment variables not found or invalid. Using mock authentication.');
+// Initialize Supabase if we have valid environment variables
+// FIXED: Removed 'typeof window !== undefined' check to work server-side
+if (supabaseUrl && supabaseAnonKey && supabaseUrl.startsWith('http')) {
+  try {
+    supabase = createClient(supabaseUrl, supabaseAnonKey, {
+      auth: {
+        autoRefreshToken: true,
+        persistSession: typeof window !== 'undefined', // Only persist in browser
+        detectSessionInUrl: typeof window !== 'undefined',
+        storage: typeof window !== 'undefined' ? window.localStorage : undefined
+      }
+    });
+    console.log('✅ Supabase client initialized successfully');
+  } catch (error) {
+    console.error('❌ Failed to initialize Supabase client:', error);
+    supabase = createMockClient();
   }
-  // Create a mock client for development/demo purposes
-  supabase = {
+} else {
+  console.warn('⚠️ Supabase environment variables not found or invalid. Using mock authentication.');
+  console.warn(`URL: ${supabaseUrl ? '✓' : '✗'}, Key: ${supabaseAnonKey ? '✓' : '✗'}`);
+  supabase = createMockClient();
+}
+
+function createMockClient() {
+  return {
     auth: {
       signInWithPassword: async () => ({ data: null, error: { message: 'Supabase not configured' } }),
       signUp: async () => ({ data: null, error: { message: 'Supabase not configured' } }),
       signOut: async () => ({ error: null }),
-      getSession: async () => ({ data: { session: null } }),
+      getSession: async () => ({ data: { session: null }, error: null }),
+      getUser: async () => ({ data: { user: null }, error: null }),
       onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } })
     },
     from: () => ({

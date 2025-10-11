@@ -52,9 +52,9 @@ export default function AdminLoginPage() {
 
       // Fallback to local credentials for development
       const validEmails = ['admin@pulsebridge.ai', 'admin@20n1.ai', 'admin@20n1digital.com'];
-      const validPassword = 'PulseBridge2025!';
+      const validPasswords = ['PulseBridge2025', 'PulseBridge2025!'];
 
-      if (validEmails.includes(formData.email) && formData.password === validPassword) {
+      if (validEmails.includes(formData.email) && validPasswords.includes(formData.password)) {
         // Set admin session in localStorage
         localStorage.setItem('admin_authenticated', 'true');
         localStorage.setItem('admin_email', formData.email);
@@ -72,9 +72,9 @@ export default function AdminLoginPage() {
       
       // Fallback authentication if API is down
       const validEmails = ['admin@pulsebridge.ai', 'admin@20n1.ai', 'admin@20n1digital.com'];
-      const validPassword = 'PulseBridge2025!';
+      const validPasswords = ['PulseBridge2025', 'PulseBridge2025!'];
 
-      if (validEmails.includes(formData.email) && formData.password === validPassword) {
+      if (validEmails.includes(formData.email) && validPasswords.includes(formData.password)) {
         localStorage.setItem('admin_authenticated', 'true');
         localStorage.setItem('admin_email', formData.email);
         localStorage.setItem('admin_role', 'super_admin');
@@ -197,7 +197,7 @@ export default function AdminLoginPage() {
               </p>
               <div className="bg-gray-50 p-3 rounded text-left font-mono text-xs space-y-1">
                 <p><strong>Email:</strong> admin@pulsebridge.ai</p>
-                <p><strong>Password:</strong> PulseBridge2025!</p>
+                <p><strong>Password:</strong> PulseBridge2025</p>
                 <p className="text-gray-400 text-xs mt-2">
                   Also accepts: admin@20n1.ai, admin@20n1digital.com
                 </p>
