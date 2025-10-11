@@ -47,6 +47,28 @@ nav .brand {
   --brand-coral-rgb: 224, 120, 86;
   --brand-navy: #0a2540;          /* Foundation color */
   
+  /* Semantic Colors for Components */
+  --background: 222.2 84% 4.9%;
+  --foreground: 210 40% 98%;
+  --card: 222.2 84% 4.9%;
+  --card-foreground: 210 40% 98%;
+  --popover: 222.2 84% 4.9%;
+  --popover-foreground: 210 40% 98%;
+  --primary: 185 100% 39%;
+  --primary-foreground: 222.2 84% 4.9%;
+  --secondary: 217.2 32.6% 17.5%;
+  --secondary-foreground: 210 40% 98%;
+  --muted: 217.2 32.6% 17.5%;
+  --muted-foreground: 215 20.2% 65.1%;
+  --accent: 217.2 32.6% 17.5%;
+  --accent-foreground: 210 40% 98%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 210 40% 98%;
+  --border: 217.2 32.6% 17.5%;
+  --input: 217.2 32.6% 17.5%;
+  --ring: 212.7 26.8% 83.9%;
+  --radius: 0.5rem;
+  
   /* Gradients for animations */
   --gradient-hero: linear-gradient(135deg, rgba(0, 201, 167, 0.2), rgba(224, 120, 86, 0.2), rgba(10, 37, 64, 0.2));
   --gradient-brand: linear-gradient(135deg, var(--brand-teal), var(--brand-coral));

@@ -1,4 +1,5 @@
 import React from 'react';
+import { cn } from '@/lib/utils';
 
 interface BadgeProps {
   children: React.ReactNode;
@@ -15,7 +16,7 @@ export function Badge({ children, variant = 'default', className = '', onClick, 
     default: 'bg-blue-100 text-blue-800',
     secondary: 'bg-gray-100 text-gray-800',
     destructive: 'bg-red-100 text-red-800',
-    outline: 'border border-gray-200 text-gray-800'
+    outline: 'border border-gray-200 text-gray-700 bg-white'
   };
 
   const Component = onClick ? 'button' : 'span';
@@ -24,7 +25,12 @@ export function Badge({ children, variant = 'default', className = '', onClick, 
     <Component 
       onClick={onClick}
       data-testid={testId}
-      className={`${baseClasses} ${variantClasses[variant]} ${onClick ? 'cursor-pointer hover:opacity-80' : ''} ${className}`}
+      className={cn(
+        baseClasses,
+        variantClasses[variant],
+        onClick ? 'cursor-pointer' : '',
+        className
+      )}
     >
       {children}
     </Component>

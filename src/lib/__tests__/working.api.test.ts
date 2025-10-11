@@ -1,14 +1,13 @@
 import * as api from '@/lib/api';
 import { APIError } from '@/lib/api';
+import { mockFetch, mockSocialMediaData, mockEmailData, mockTeamData, resetAllMocks } from './test-mocks';
 
 // Mock fetch globally
-const mockFetch = jest.fn();
-global.fetch = mockFetch;
+global.fetch = mockFetch as unknown as typeof fetch;
 
 describe('API Library Tests', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
-    mockFetch.mockClear();
+    resetAllMocks();
   });
 
   describe('APIError Class', () => {
@@ -39,15 +38,10 @@ describe('API Library Tests', () => {
 
   describe('Social Media API Functions', () => {
     test('fetchSocialMediaAccounts returns account data', async () => {
-      const mockAccounts = [
-        { id: '1', platform: 'instagram', username: 'test_user' },
-        { id: '2', platform: 'twitter', username: 'test_user2' }
-      ];
-
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: jest.fn().mockResolvedValue(mockAccounts)
-      });
+        json: jest.fn().mockResolvedValue(mockSocialMediaData.accounts)
+      } as unknown as Response);
 
       const result = await api.fetchSocialMediaAccounts();
       

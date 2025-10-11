@@ -1,4 +1,5 @@
 import React from 'react';
+import { cn } from '@/lib/utils';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
@@ -11,6 +12,7 @@ export function Button({
   variant = 'default', 
   size = 'default',
   className = '',
+  tabIndex = 0,
   ...props
 }: ButtonProps) {
   const baseClasses = 'inline-flex items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none';
@@ -24,15 +26,21 @@ export function Button({
   };
 
   const sizeClasses = {
-    default: 'h-10 py-2 px-4',
-    sm: 'h-9 px-3 text-sm',
-    lg: 'h-11 px-8'
+    default: 'h-10 px-4 py-2',
+    sm: 'h-9 rounded-md px-3',
+    lg: 'h-11 rounded-md px-8'
   };
 
   return (
     <button
       {...props}
-      className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${className}`}
+      tabIndex={tabIndex}
+      className={cn(
+        baseClasses,
+        variantClasses[variant],
+        sizeClasses[size],
+        className
+      )}
     >
       {children}
     </button>

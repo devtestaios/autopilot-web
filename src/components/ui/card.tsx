@@ -57,9 +57,11 @@ export function CardHeader({ children, className = '', 'data-testid': testId }: 
 
 export function CardTitle({ children, className = '', 'data-testid': testId }: CardTitleProps) {
   return (
-    <h3 className={cn('text-lg font-semibold text-theme-primary', className)} data-testid={testId}>
-      {children}
-    </h3>
+    <div className={cn('', className)} data-testid={testId}>
+      <h3 className="text-lg font-semibold text-theme-primary">
+        {children}
+      </h3>
+    </div>
   );
 }
 
