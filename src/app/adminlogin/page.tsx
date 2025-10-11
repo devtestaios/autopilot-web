@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { supabase } from '@/lib/supabase';
 
 export default function AdminLoginPage() {
   const router = useRouter();
@@ -24,69 +25,69 @@ export default function AdminLoginPage() {
     setError('');
 
     try {
-      // First try the new API-based authentication
-      const apiResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/api/v1/auth/admin/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: formData.email,
-          password: formData.password,
-        }),
+      // Use Supabase authentication
+      const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+        email: formData.email,
+        password: formData.password,
       });
 
-      const apiData = await apiResponse.json();
-
-      if (apiResponse.ok && apiData.access_token) {
-        // Store admin token and info
-        localStorage.setItem('admin_token', apiData.access_token);
-        localStorage.setItem('admin_email', apiData.email);
-        localStorage.setItem('admin_role', apiData.role);
-        localStorage.setItem('admin_login_time', Date.now().toString());
-        
-        // Redirect to admin dashboard
-        router.push('/admin');
+      if (authError) {
+        console.error('Supabase auth error:', authError);
+        setError('Invalid admin credentials. Please check your email and password.');
+        setLoading(false);
         return;
       }
 
-      // Fallback to local credentials for development
-      const validEmails = ['admin@pulsebridge.ai', 'admin@20n1.ai', 'admin@20n1digital.com'];
-      const validPasswords = ['PulseBridge2025', 'PulseBridge2025!'];
-
-      if (validEmails.includes(formData.email) && validPasswords.includes(formData.password)) {
-        // Set admin session in localStorage
-        localStorage.setItem('admin_authenticated', 'true');
-        localStorage.setItem('admin_email', formData.email);
-        localStorage.setItem('admin_role', 'super_admin');
-        localStorage.setItem('admin_login_time', Date.now().toString());
-        
-        // Redirect to admin dashboard
-        router.push('/admin');
+      if (!authData.user) {
+        setError('Login failed. No user returned.');
+        setLoading(false);
         return;
       }
 
-      setError('Invalid admin credentials');
+      // Verify user is admin
+      const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('role, account_status')
+        .eq('id', authData.user.id)
+        .single();
+
+      if (profileError || !profile) {
+        console.error('Profile fetch error:', profileError);
+        setError('Unable to verify admin status.');
+        await supabase.auth.signOut();
+        setLoading(false);
+        return;
+      }
+
+      // Check if user is admin
+      if (!['super_admin', 'agency_owner'].includes(profile.role)) {
+        setError('Access denied. Admin privileges required.');
+        await supabase.auth.signOut();
+        setLoading(false);
+        return;
+      }
+
+      // Check account status
+      if (profile.account_status !== 'active') {
+        setError('Account is not active. Please contact support.');
+        await supabase.auth.signOut();
+        setLoading(false);
+        return;
+      }
+
+      // Set admin session
+      localStorage.setItem('admin_authenticated', 'true');
+      localStorage.setItem('admin_email', formData.email);
+      localStorage.setItem('admin_role', profile.role);
+      localStorage.setItem('admin_login_time', Date.now().toString());
+
+      // Redirect to admin dashboard
+      router.push('/admin');
     } catch (err) {
-      console.error('Admin login error:', err);
-      
-      // Fallback authentication if API is down
-      const validEmails = ['admin@pulsebridge.ai', 'admin@20n1.ai', 'admin@20n1digital.com'];
-      const validPasswords = ['PulseBridge2025', 'PulseBridge2025!'];
-
-      if (validEmails.includes(formData.email) && validPasswords.includes(formData.password)) {
-        localStorage.setItem('admin_authenticated', 'true');
-        localStorage.setItem('admin_email', formData.email);
-        localStorage.setItem('admin_role', 'super_admin');
-        localStorage.setItem('admin_login_time', Date.now().toString());
-        router.push('/admin');
-        return;
-      }
-
-      setError('Login failed. Please check your credentials.');
+      console.error('Unexpected admin login error:', err);
+      setError('An unexpected error occurred. Please try again.');
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -193,13 +194,17 @@ export default function AdminLoginPage() {
           <div className="mt-6 pt-4 border-t border-gray-200">
             <div className="text-xs text-gray-500 text-center">
               <p className="mb-2">
-                <strong>Admin Credentials:</strong>
+                <strong>Admin Access</strong>
               </p>
-              <div className="bg-gray-50 p-3 rounded text-left font-mono text-xs space-y-1">
-                <p><strong>Email:</strong> admin@pulsebridge.ai</p>
-                <p><strong>Password:</strong> PulseBridge2025</p>
-                <p className="text-gray-400 text-xs mt-2">
-                  Also accepts: admin@20n1.ai, admin@20n1digital.com
+              <div className="bg-gray-50 p-3 rounded text-left text-xs space-y-1">
+                <p className="text-gray-600">
+                  Use your admin credentials from Supabase to sign in.
+                </p>
+                <p className="text-gray-500 mt-2">
+                  Email: <span className="font-mono">admin@pulsebridge.ai</span>
+                </p>
+                <p className="text-gray-500">
+                  Password: <span className="font-mono">PulseBridge2025!</span>
                 </p>
               </div>
               <p className="mt-2 text-gray-400">
