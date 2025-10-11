@@ -19,8 +19,15 @@ export default function AdminLoginPage() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
+  // Debug: Log when component mounts
+  console.log('🔵 AdminLoginPage component mounted');
+  console.log('📝 Form data:', formData);
+  console.log('🔘 Button should be disabled:', loading || !formData.email || !formData.password);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log('🎯 BUTTON CLICKED - handleSubmit fired!');
+
     setLoading(true);
     setError('');
 
@@ -129,6 +136,7 @@ export default function AdminLoginPage() {
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log('⌨️ Input changed:', e.target.name, '=', e.target.value);
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
