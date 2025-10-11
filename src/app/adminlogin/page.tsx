@@ -24,25 +24,49 @@ export default function AdminLoginPage() {
     setLoading(true);
     setError('');
 
+    console.log('🔐 Starting admin login process...');
+    console.log('📧 Email:', formData.email);
+    console.log('🔌 Supabase client exists:', !!supabase);
+
     try {
+      // Check if supabase client is initialized
+      if (!supabase || !supabase.auth) {
+        console.error('❌ Supabase client not initialized!');
+        setError('Authentication service not available. Please check configuration.');
+        setLoading(false);
+        return;
+      }
+
+      console.log('✅ Supabase client initialized, attempting login...');
+
       // Use Supabase authentication
       const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
         email: formData.email,
         password: formData.password,
       });
 
+      console.log('🔍 Auth response:', {
+        hasUser: !!authData?.user,
+        hasError: !!authError,
+        errorMessage: authError?.message
+      });
+
       if (authError) {
-        console.error('Supabase auth error:', authError);
-        setError('Invalid admin credentials. Please check your email and password.');
+        console.error('❌ Supabase auth error:', authError);
+        setError(`Authentication failed: ${authError.message}`);
         setLoading(false);
         return;
       }
 
       if (!authData.user) {
+        console.error('❌ No user returned from auth');
         setError('Login failed. No user returned.');
         setLoading(false);
         return;
       }
+
+      console.log('✅ User authenticated:', authData.user.id);
+      console.log('🔍 Fetching user profile...');
 
       // Verify user is admin
       const { data: profile, error: profileError } = await supabase
@@ -51,9 +75,16 @@ export default function AdminLoginPage() {
         .eq('id', authData.user.id)
         .single();
 
+      console.log('🔍 Profile response:', {
+        hasProfile: !!profile,
+        role: profile?.role,
+        status: profile?.account_status,
+        hasError: !!profileError
+      });
+
       if (profileError || !profile) {
-        console.error('Profile fetch error:', profileError);
-        setError('Unable to verify admin status.');
+        console.error('❌ Profile fetch error:', profileError);
+        setError('Unable to verify admin status. Profile not found.');
         await supabase.auth.signOut();
         setLoading(false);
         return;
@@ -61,7 +92,8 @@ export default function AdminLoginPage() {
 
       // Check if user is admin
       if (!['super_admin', 'agency_owner'].includes(profile.role)) {
-        setError('Access denied. Admin privileges required.');
+        console.error('❌ User is not admin. Role:', profile.role);
+        setError(`Access denied. Admin privileges required. Your role: ${profile.role}`);
         await supabase.auth.signOut();
         setLoading(false);
         return;
@@ -69,11 +101,15 @@ export default function AdminLoginPage() {
 
       // Check account status
       if (profile.account_status !== 'active') {
+        console.error('❌ Account not active. Status:', profile.account_status);
         setError('Account is not active. Please contact support.');
         await supabase.auth.signOut();
         setLoading(false);
         return;
       }
+
+      console.log('✅ Admin verification passed!');
+      console.log('💾 Setting localStorage...');
 
       // Set admin session
       localStorage.setItem('admin_authenticated', 'true');
@@ -81,11 +117,13 @@ export default function AdminLoginPage() {
       localStorage.setItem('admin_role', profile.role);
       localStorage.setItem('admin_login_time', Date.now().toString());
 
+      console.log('🚀 Redirecting to admin dashboard...');
+
       // Redirect to admin dashboard
       router.push('/admin');
     } catch (err) {
-      console.error('Unexpected admin login error:', err);
-      setError('An unexpected error occurred. Please try again.');
+      console.error('❌ Unexpected admin login error:', err);
+      setError(`An unexpected error occurred: ${err instanceof Error ? err.message : 'Unknown error'}`);
       setLoading(false);
     }
   };
