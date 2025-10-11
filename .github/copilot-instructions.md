@@ -1,3 +1,4 @@
+````instructions
 # PulseBridge.ai - AI Coding Assistant Instructions
 
 > **🚀 Enterprise Marketing Automation Platform** with AI-autonomous decision making, multi-platform campaign optimization, complete database-driven architecture, and premium pricing structure
@@ -7,25 +8,27 @@
 **Platform**: AI-powered marketing automation with enterprise business ecosystem features  
 **Status**: Production-ready with 115+ routes, 60+ API endpoints, 100% E2E test coverage, 6-tier premium pricing  
 **Live URLs**: https://pulsebridge.ai | Backend: https://autopilot-api-1.onrender.com  
-**Architecture**: Next.js 15.5.2 + FastAPI + Supabase + Claude AI + Multi-platform APIs
+**Architecture**: Next.js 15.5.2 + FastAPI + Supabase + Claude AI + Multi-platform APIs  
+**Current Date**: October 11, 2025
 
 ## 🗂️ **PROJECT STRUCTURE**
 
-This codebase has dual backend locations:
-- `/Users/grayadkins/Desktop/Autopilot_Repos/autopilot-web/backend/` - Primary FastAPI backend (3,393 lines)
-- `/Users/grayadkins/Desktop/Autopilot_Repos/autopilot-api/app/` - Secondary API backend
+**Primary Codebase**: `/Users/grayadkins/Desktop/Autopilot_Repos/autopilot-web/`
+- **Frontend**: Next.js 15.5.2 with App Router (`src/app/` structure)
+- **Backend**: FastAPI service (`backend/` - 3,393 lines main.py)
+- **Database**: Supabase with 64-table enterprise schema
+- **AI Integration**: Claude (Anthropic) + OpenAI for autonomous decisions
 
-Always work with the primary backend unless specifically directed to the autopilot-api folder.
+**Secondary API**: `/Users/grayadkins/Desktop/Autopilot_Repos/autopilot-api/` (backup/alternative service)
 
-## 🎯 **CURRENT STATUS** (October 6, 2025)
-**LANDING PAGE RESTORED & BUILD FULLY OPERATIONAL**
-- ✅ **Landing Page**: Professional marketing showcase restored on pulsebridge.ai root
-- ✅ **Build Status**: 115 routes building successfully, zero build errors  
-- ✅ **Production Ready**: Vercel deployments completing successfully
-- ⚠️ **TypeScript**: 99 errors remain (isolated in experimental components)
-- 🎯 **Strategy**: Core functionality stable, experimental components for incremental fixes
-- 📁 **Missing Files**: `optimizedAPI.ts` exists as `.problematic`, needs restoration
-- 🚀 **Next Priority**: Restore missing module files and re-enable experimental components
+## 🎯 **CURRENT STATUS** (October 11, 2025)
+**APP ROUTER MIGRATION COMPLETED & PRODUCTION READY**
+- ✅ **App Router Structure**: Complete migration from pages to src/app/ directory structure
+- ✅ **Route Groups**: Organized with (ai), (auth), (business), (collab) groups 
+- ✅ **Build Status**: All routes building successfully with --turbopack optimization
+- ✅ **Live Environment**: Production deployments working, local dev server operational
+- ✅ **API Integration**: 60+ endpoints connected through comprehensive api.ts client (1,334 lines)
+- � **Next Priority**: Complete remaining TypeScript error fixes and restore experimental components
 
 ## 💰 **PREVIOUS MAJOR MILESTONE** (October 5, 2025)
 **PREMIUM PRICING STRUCTURE COMPLETE - ENTERPRISE SUBSCRIPTION SYSTEM LIVE**
@@ -39,20 +42,51 @@ Always work with the primary backend unless specifically directed to the autopil
 ## 🏗️ **CRITICAL ARCHITECTURE PATTERNS**
 
 ### **Provider Hierarchy (MANDATORY)**
-All pages wrapped in comprehensive provider architecture:
+All pages wrapped in comprehensive 22-layer provider architecture:
 ```typescript
-// src/components/ClientProviders.tsx - 141 lines
+// src/components/ClientProviders.tsx - 150+ lines
 <ErrorProvider>
   <ThemeProvider>
-    <WebSocketProvider>
-      <AuthProvider>
-        <UnifiedAIProvider>          // Core AI chat system
-          <AnalyticsProvider>
-            <SocialMediaProvider>    // Connected to database
-            <EmailMarketingProvider> // Connected to database  
-            <CollaborationProvider>  // Connected to database
-            <IntegrationsProvider>   // Connected to database
-              {children}
+    <CacheProvider>
+      <WebSocketProvider>
+        <AuthProvider>
+          <TenantProvider>
+            <MonitoringProvider>
+              <SessionProvider>
+                <UserTierProvider>
+                <SearchProvider>
+                  <UnifiedAIProvider>          // Core AI chat system
+                  <AnalyticsProvider>
+                    <SocialMediaProvider>      // Connected to database
+                    <EmailMarketingProvider>   // Connected to database  
+                    <MarketingOptimizationProvider>
+                    <BusinessConfigurationProvider>
+                    <DashboardCustomizationProvider>
+                    <ProjectManagementProvider>
+                      <AIProjectAutomationProvider>
+                      <CollaborationProvider>  // Connected to database
+                        <IntegrationsProvider> // Connected to database
+                        <CrossPlatformProvider>
+                        <PerformanceProvider>
+                          <ABTestProvider>
+                            <ToastProvider>
+                              <PageTransition>
+                                {children}
+```
+
+### **App Router Structure**
+```
+src/app/
+├── (ai)/              # AI-focused routes (workflow, automation, analytics)
+├── (auth)/            # Authentication flows (login, register, verify)
+├── (business)/        # Business management (campaigns, analytics, settings)
+├── (collab)/          # Collaboration features (teams, projects)
+├── dashboard/         # Main enterprise dashboard
+├── email-marketing/   # Email campaign management
+├── social-media/      # Social platform management
+├── project-management/ # Enterprise project tools
+├── layout.tsx         # Root layout with provider hierarchy
+└── page.tsx           # Landing page
 ```
 
 ### **Context-Based State Management**
@@ -128,25 +162,22 @@ npm run test:e2e      # Playwright E2E (100% pass rate)
 npm test              # Jest unit tests (12.51% coverage)
 npm run test:all      # Full test suite
 
-# Backend development (Primary location)
+# Backend development (Primary location: backend/)
 cd backend && uvicorn main:app --reload --port 8000
 
-# Type validation (current: ~99 errors remaining)
+# Type validation
 npx tsc --noEmit --skipLibCheck
+
+# Quick API testing
+./test-apis.sh        # Comprehensive API endpoint testing script
 ```
 
-### **Critical Error Resolution Strategy**
-1. **Missing Module Pattern**: Files moved to `.experimental` extensions to isolate errors
-2. **Import Restoration**: Key missing modules need restoration from `.problematic` files
-3. **Incremental Re-enablement**: Enable experimental components one by one after fixes
-4. **Build Stability**: Always maintain successful builds while fixing TypeScript errors
-
-### **Build Requirements**
-1. **Functional builds** - Despite TypeScript errors, builds must complete successfully
-2. **Turbopack mandatory** - Performance optimization requirement (--turbopack flag)
-3. **E2E test data-testid** - Use `data-testid` attributes for reliable selectors
-4. **SSR compatibility** - All components must handle server-side rendering
-5. **Dynamic imports** - Use `dynamic()` for client-only components
+### **Development Workflow Patterns**
+1. **App Router First**: All new pages use `src/app/` structure with route groups
+2. **Provider Integration**: All pages must be wrapped in ClientProviders hierarchy  
+3. **API Client Usage**: Use established `src/lib/api.ts` patterns (1,334 lines) for backend calls
+4. **TypeScript Safety**: Maintain zero-error builds, isolate problematic code in .experimental files
+5. **Turbopack Requirement**: Always use `--turbopack` flag for optimal performance
 
 ## 🎨 **UI/UX PATTERNS**
 
@@ -161,15 +192,16 @@ const { theme, toggleTheme } = useTheme();
 
 ### **Navigation Architecture**
 ```typescript
-// Required on all major pages
-import NavigationTabs from '@/components/NavigationTabs';
+// App Router navigation patterns
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
+// Standard page layout with navigation
 export default function Page() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <NavigationTabs />
       <div className="container mx-auto px-4 py-8">
-        {/* Page content */}
+        {/* Page content with theme support */}
       </div>
     </div>
   );
@@ -184,12 +216,30 @@ src/components/
 ├── email-marketing/      # Campaign management UI
 ├── project-management/   # Enterprise project tools
 ├── ui/                   # Reusable UI components (Radix-based)
-└── providers/            # Error boundaries and context providers
+├── providers/            # Error boundaries and context providers
+└── ClientProviders.tsx   # Master provider chain (22 providers)
+```
+
+### **Backend Integration Patterns**
+```typescript
+// API client usage (src/lib/api.ts - 1,334 lines)
+import { apiClient, APIError } from '@/lib/api';
+
+// Standard error handling pattern
+try {
+  const campaigns = await apiClient.social.getCampaigns();
+  setCampaigns(campaigns);
+} catch (error) {
+  if (error instanceof APIError) {
+    console.error(`API Error ${error.status}: ${error.message}`);
+  }
+  setError('Failed to load campaigns');
+}
 ```
 
 ## 🧪 **TESTING ARCHITECTURE**
 
-### **E2E Testing (Playwright)**
+### **Testing Architecture (Playwright)**
 ```typescript
 // playwright.config.ts - Multi-browser testing
 projects: [
@@ -273,182 +323,89 @@ NEXT_PUBLIC_API_URL=https://autopilot-api-1.onrender.com
 ## 📁 **CRITICAL FILE LOCATIONS**
 
 **Core Architecture:**
-- `src/app/layout.tsx` - Root layout with provider hierarchy
-- `src/components/ClientProviders.tsx` - Context provider chain
-- `src/lib/api.ts` - Complete API client (1,334 lines)
-- `backend/main.py` - FastAPI server (3,393 lines)
+- `src/app/layout.tsx` - Root layout with 22-provider hierarchy
+- `src/components/ClientProviders.tsx` - Master provider chain (150+ lines)
+- `src/lib/api.ts` - Complete API client with rate limiting and error handling (1,334 lines)
+- `backend/main.py` - FastAPI server with 60+ endpoints (3,393 lines)
 
-**Business Domains:**
+**App Router Structure:**
+- `src/app/(ai)/` - AI workflow and automation routes
+- `src/app/(auth)/` - Authentication and user management
+- `src/app/(business)/` - Campaign management and analytics
+- `src/app/(collab)/` - Team collaboration features
 - `src/app/dashboard/page.tsx` - Main enterprise dashboard
 - `src/app/social-media/page.tsx` - Social media management hub
 - `src/app/email-marketing/page.tsx` - Campaign automation center
 - `src/app/project-management/page.tsx` - Enterprise project suite
 
-**Advanced Features:**
-- `src/components/content-suite/AdvancedDesignStudio.tsx` - Professional design tools
-- `src/contexts/UnifiedAIContext.tsx` - AI chat and automation
-- `src/components/FacebookSDK.tsx` - Global Facebook SDK integration
+**Context Architecture:**
+- `src/contexts/UnifiedAIContext.tsx` - AI chat and automation system
+- `src/contexts/SocialMediaContext.tsx` - Multi-platform social management (728 lines)
+- `src/contexts/EmailMarketingContext.tsx` - Campaign automation (1000+ lines)
+- `src/contexts/CollaborationContext.tsx` - Real-time team features
+- `src/contexts/IntegrationsContext.tsx` - Marketplace & API management
 
-**Enterprise Pricing System:**
-- `src/lib/enterpriseAPI.ts` - Complete subscription management system
-- `SAFE_PRICING_UPDATE_SCRIPT.sql` - Production database deployment script
-- 6-tier pricing structure with trial management and feature gates
+**Backend Modules:**
+- `backend/autonomous_decision_framework.py` - AI decision-making (33,876 lines)
+- `backend/advanced_analytics_engine.py` - ML analytics (35,781 lines)
+- `backend/ai_chat_service.py` - AI conversation handling (13,276 lines)
 
 ## ⚠️ **CRITICAL REQUIREMENTS**
 
 1. **Always use `--turbopack`** for dev and build commands
-2. **Zero TypeScript errors** required for production builds  
-3. **SSR compatibility** for all components using dynamic imports
-4. **Theme support** mandatory for all UI components
-5. **data-testid attributes** required for all interactive elements
-6. **Provider hierarchy** must be respected when adding new contexts
-7. **API error handling** using custom APIError class patterns
-8. **Database connectivity** through established context patterns
+2. **App Router compliance** - Use `src/app/` structure with route groups
+3. **Provider integration** - All pages must be wrapped in ClientProviders hierarchy
+4. **SSR compatibility** for all components using dynamic imports when needed
+5. **Theme support** mandatory for all UI components (`dark:` classes)
+6. **data-testid attributes** required for all interactive elements
+7. **API error handling** using established APIError class patterns
+8. **Context-based state** - Use appropriate context providers for data management
 9. **Safe deployments** using DO $$ blocks for schema changes
-10. **Dual backend awareness** - specify which backend when unclear
+10. **Rate limiting awareness** - API client includes built-in rate limiting (100 req/min)
 
-## 🎯 **DEVELOPMENT PRIORITIES**
+## 🎯 **IMMEDIATE DEVELOPMENT PRIORITIES**
 
-When working on this codebase, prioritize:
-1. **TypeScript zero-error completion** - Fix remaining 99 errors (missing module imports pattern)
-2. **Missing module restoration** - Restore optimizedAPI.ts from .problematic file
-3. **Enhancement component re-enablement** - Systematically restore 8 disabled .experimental components
-4. **Frontend pricing page integration** - Implement new 6-tier pricing structure display
-5. **Payment processor integration** - Connect Stripe or similar for subscription management
-6. **Context-database connectivity** - Connect EmailMarketingContext, CollaborationContext, IntegrationsContext to live API endpoints
-7. **E2E test coverage** - Maintain 100% test pass rate
-8. **Performance optimization** - Leverage Turbopack and dynamic imports
-9. **Cross-platform compatibility** - Support all major browsers and devices
+When working on this codebase, focus on:
 
-## 📝 **IMMEDIATE IMPLEMENTATION PRIORITIES**
+### **High Priority:**
+1. **TypeScript error resolution** - Address remaining build warnings systematically
+2. **Context-API integration** - Connect remaining contexts to live backend endpoints
+3. **Component restoration** - Re-enable experimental components after dependency fixes
+4. **Performance optimization** - Leverage established patterns in api.ts for efficient data loading
 
-### **URGENT: Complete TypeScript Zero-Error Goal** (Est. 30-60 minutes):
-**Current Status**: 333 → 99 errors (70% complete)
-**Primary Issues**: Missing module imports and component dependencies
-**Action Required**: Restore missing module files and fix import paths
+### **Architecture Priorities:**
+1. **Route group organization** - Maintain clean (ai), (auth), (business), (collab) separation
+2. **Provider hierarchy maintenance** - Keep 22-layer provider structure stable
+3. **API client expansion** - Add new endpoints following established patterns in api.ts
+4. **Testing coverage** - Maintain 100% E2E test pass rate, expand unit test coverage
 
-```bash
-# Priority file restoration needed:
-src/lib/performance/optimizedAPI.ts (exists as .problematic)
-src/components/ui/EnhancedComponents.tsx (exists as .experimental)
-```
-
-### **Enhancement Components Ready for Re-enablement**:
-```
-src/components/ui/LayoutSystem.tsx (clsx issues - component redeclaration)
-src/components/ui/EnhancedComponents.tsx.experimental (missing imports)
-src/components/ui/UniversalPageWrapper.tsx.experimental (dependency issues)
-src/components/social-media/ContentSuiteImporter.tsx.experimental
-src/components/social-media/EnhancedPostComposer.tsx.experimental
-src/components/email-marketing/EmailContentImporter.tsx.experimental
-src/app/dashboard/enhanced/page.tsx.experimental
-src/lib/performance/optimizedAPI.ts.problematic (performance optimization)
-```
-
-### **Experimental Component Strategy**:
-- Components with TypeScript errors moved to `.experimental` extensions
-- Core functionality preserved while isolating problematic code
-- Incremental re-enablement planned after fixing dependencies
-- Build stability maintained throughout error reduction process
-
-## 🔧 **ERROR RESOLUTION PATTERNS**
-
-### **Missing Module Resolution**:
+### **Integration Patterns:**
 ```typescript
-// Current error pattern:
-import { optimizedAPI } from '@/lib/performance/optimizedAPI';
-// Solution: Restore optimizedAPI.ts from .problematic file
-
-import { EnhancedComponents } from '@/components/ui/EnhancedComponents';
-// Solution: Enable .experimental file after dependency fixes
-```
-
-### **Component Redeclaration Issues**:
-```typescript
-// Current error in LayoutSystem.tsx:
-export const Container = forwardRef<HTMLDivElement, ContainerProps>(
-// Cannot redeclare exported variable 'Container'
-// Solution: Check for duplicate exports and consolidate
-```
-
-### **clsx Usage Patterns** (Critical for UI components):
-```typescript
-// Proper clsx usage pattern:
-import { cn } from '@/lib/utils';
-
-className={cn(
-  "base-classes",
-  {
-    "conditional-class": condition,
-    "another-class": anotherCondition
-  },
-  className
-)}
-```
-
-### **Ready for Immediate Connection** (Est. 1-2 hours):
-1. **EmailMarketingContext** → Email Marketing APIs (15+ endpoints)
-2. **CollaborationContext** → Collaboration APIs (20+ endpoints)  
-3. **IntegrationsContext** → Integrations APIs (18+ endpoints)
-
-### **Implementation Pattern**:
-```typescript
-// Replace mock data loading:
-useEffect(() => {
-  setEmailCampaigns(mockData);
-}, []);
-
-// With real API calls:
-useEffect(() => {
-  fetchEmailCampaigns()
-    .then(setEmailCampaigns)
-    .catch(console.error);
-}, []);
-```
-
-## 🎯 **CURRENT ARCHITECTURAL PATTERNS**
-
-### **Build System**:
-- **Turbopack Required**: Always use `--turbopack` flag for dev and build
-- **Dynamic Imports**: Client-only components must use `dynamic()` from Next.js
-- **Error Tolerance**: Builds complete successfully despite TypeScript errors
-
-### **File Management Strategy**:
-- **`.experimental` Extension**: Components with TypeScript errors temporarily disabled
-- **`.problematic` Extension**: Missing modules moved aside during error reduction
-- **Incremental Recovery**: Re-enable components systematically after fixing dependencies
-
-### **Provider Architecture**:
-```typescript
-// Comprehensive provider nesting in ClientProviders.tsx (150 lines)
-<ErrorProvider>
-  <ThemeProvider>
-    <WebSocketProvider>
-      <AuthProvider>
-        <UnifiedAIProvider>          // AI chat system
-          <AnalyticsProvider>
-            <SocialMediaProvider>    // Database connected
-            <EmailMarketingProvider> // Ready for connection
-            <CollaborationProvider>  // Ready for connection
-            <IntegrationsProvider>   // Ready for connection
-```
-
-### **API Client Pattern**:
-```typescript
-// src/lib/api.ts (1,334 lines) - Comprehensive REST client
-const API_BASE = 'https://autopilot-api-1.onrender.com';
-
-export class APIError extends Error {
-  constructor(public status: number, message: string) {
-    super(message);
-  }
+// New page creation pattern
+export default function NewPage() {
+  // Always use established context patterns
+  const { theme } = useTheme();
+  const { user } = useAuth();
+  
+  return (
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <div data-testid="page-container" className="container mx-auto px-4 py-8">
+        {/* Page content with theme support */}
+      </div>
+    </div>
+  );
 }
 
-// 60+ categorized endpoints with proper error handling
+// API integration pattern
+const handleDataFetch = async () => {
+  try {
+    const data = await apiClient.endpoint.getData();
+    setData(data);
+  } catch (error) {
+    if (error instanceof APIError) {
+      console.error(`API Error ${error.status}: ${error.message}`);
+    }
+    setError('Failed to load data');
+  }
+};
 ```
-
-### **Context State Management**:
-- Each business domain has dedicated context (Social Media: 728 lines, Email Marketing: 1000+ lines)
-- Real-time WebSocket connections for collaboration features
-- Database connectivity through established API patterns
-- Mock data patterns ready for API connection

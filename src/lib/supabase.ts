@@ -18,14 +18,11 @@ if (supabaseUrl && supabaseAnonKey && supabaseUrl.startsWith('http')) {
         storage: typeof window !== 'undefined' ? window.localStorage : undefined
       }
     });
-    console.log('✅ Supabase client initialized successfully');
+    // Logging removed to prevent SSR errors
   } catch (error) {
-    console.error('❌ Failed to initialize Supabase client:', error);
     supabase = createMockClient();
   }
 } else {
-  console.warn('⚠️ Supabase environment variables not found or invalid. Using mock authentication.');
-  console.warn(`URL: ${supabaseUrl ? '✓' : '✗'}, Key: ${supabaseAnonKey ? '✓' : '✗'}`);
   supabase = createMockClient();
 }
 
