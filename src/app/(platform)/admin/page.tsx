@@ -12,10 +12,11 @@ import {
   Globe, DollarSign, Plus, Filter
 } from 'lucide-react';
 import NavigationTabs from '@/components/NavigationTabs';
-import { 
-  fetchAllUsers, 
-  fetchSecurityEvents, 
-  fetchAuditLogs, 
+import InviteUserModal from '@/components/admin/InviteUserModal';
+import {
+  fetchAllUsers,
+  fetchSecurityEvents,
+  fetchAuditLogs,
   fetchAdminStats,
   updateUserStatus,
   updateUserRole,
@@ -94,7 +95,7 @@ export default function AdminPage() {
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeTab, setActiveTab] = useState<'overview' | 'users' | 'companies' | 'rbac' | 'security' | 'audit'>('overview');
-  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showInviteModal, setShowInviteModal] = useState(false);
 
   // Data fetching
   const loadUsers = async () => {
@@ -254,11 +255,11 @@ export default function AdminPage() {
               Refresh
             </button>
             <button
-              onClick={() => setShowCreateModal(true)}
+              onClick={() => setShowInviteModal(true)}
               className="flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
             >
-              <Plus className="w-4 h-4 mr-2" />
-              Add User
+              <UserPlus className="w-4 h-4 mr-2" />
+              Invite User
             </button>
             <button
               onClick={logout}
@@ -775,6 +776,16 @@ export default function AdminPage() {
           </motion.div>
         )}
       </div>
+
+      {/* Invite User Modal */}
+      <InviteUserModal
+        isOpen={showInviteModal}
+        onClose={() => setShowInviteModal(false)}
+        onSuccess={() => {
+          setShowInviteModal(false);
+          loadUsers();
+        }}
+      />
     </div>
   );
 }
