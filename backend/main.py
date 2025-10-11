@@ -22,14 +22,21 @@ logger = logging.getLogger(__name__)
 # Supabase Integration
 try:
     from supabase import create_client, Client
-    SUPABASE_URL = os.getenv('SUPABASE_URL')
-    # Try SUPABASE_KEY first (your variable), then fallback to SUPABASE_ANON_KEY
-    SUPABASE_KEY = os.getenv('SUPABASE_KEY') or os.getenv('SUPABASE_ANON_KEY')
-    
+    # Try both SUPABASE_URL and NEXT_PUBLIC_SUPABASE_URL (Render uses NEXT_PUBLIC_ prefix)
+    SUPABASE_URL = os.getenv('SUPABASE_URL') or os.getenv('NEXT_PUBLIC_SUPABASE_URL')
+    # Try all possible Supabase key variable names
+    SUPABASE_KEY = (
+        os.getenv('SUPABASE_SERVICE_ROLE_KEY') or
+        os.getenv('SUPABASE_KEY') or
+        os.getenv('SUPABASE_ANON_KEY') or
+        os.getenv('NEXT_PUBLIC_SUPABASE_ANON_KEY')
+    )
+
     if SUPABASE_URL and SUPABASE_KEY:
         supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
         SUPABASE_AVAILABLE = True
         logger.info("✅ Supabase client initialized successfully")
+        logger.info(f"Connected to: {SUPABASE_URL[:30]}...")
     else:
         logger.warning("❌ Supabase environment variables not found")
         logger.warning(f"SUPABASE_URL: {bool(SUPABASE_URL)}, SUPABASE_KEY: {bool(SUPABASE_KEY)}")
