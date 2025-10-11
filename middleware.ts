@@ -22,6 +22,7 @@ export async function middleware(req: NextRequest) {
     '/login',
     '/signup',
     '/adminlogin',
+    '/admin',  // Allow admin dashboard access (has its own auth check)
     '/auth/callback',
     '/auth/reset-password',
     '/pricing',
