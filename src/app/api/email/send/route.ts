@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { sendEmail, sendWelcomeEmail, sendCampaignAlert, sendMonthlyReport } from '@/lib/email';
+import { sendInvitationEmail, sendWelcomeEmail, sendPasswordResetEmail } from '@/lib/email/resend';
 
 export async function POST(request: NextRequest) {
   try {
@@ -17,74 +17,81 @@ export async function POST(request: NextRequest) {
 
     switch (type) {
       case 'welcome':
-        if (!params.name) {
+        if (!params.firstName) {
           return NextResponse.json(
-            { success: false, error: 'Name is required for welcome email' },
+            { success: false, error: 'firstName is required for welcome email' },
             { status: 400 }
           );
         }
-        result = await sendWelcomeEmail(to, params.name);
+        result = await sendWelcomeEmail({ 
+          to, 
+          firstName: params.firstName,
+          loginUrl: params.loginUrl || 'https://pulsebridge.ai/login'
+        });
         break;
 
-      case 'campaign-alert':
-        if (!params.campaignName || !params.message) {
+      case 'invitation':
+        if (!params.firstName || !params.tempPassword || !params.invitedBy || !params.suiteAccess) {
           return NextResponse.json(
-            { success: false, error: 'Campaign name and message are required' },
+            { success: false, error: 'firstName, tempPassword, invitedBy, and suiteAccess are required for invitation email' },
             { status: 400 }
           );
         }
-        result = await sendCampaignAlert(to, params.campaignName, params.message);
-        break;
-
-      case 'monthly-report':
-        if (!params.reportData) {
-          return NextResponse.json(
-            { success: false, error: 'Report data is required' },
-            { status: 400 }
-          );
-        }
-        result = await sendMonthlyReport(to, params.reportData);
-        break;
-
-      case 'custom':
-        if (!params.subject || (!params.html && !params.text)) {
-          return NextResponse.json(
-            { success: false, error: 'Subject and content (html or text) are required' },
-            { status: 400 }
-          );
-        }
-        result = await sendEmail({
+        result = await sendInvitationEmail({
           to,
-          subject: params.subject,
-          html: params.html,
-          text: params.text,
-          from: params.from
+          firstName: params.firstName,
+          tempPassword: params.tempPassword,
+          invitedBy: params.invitedBy,
+          suiteAccess: params.suiteAccess,
+          isTestUser: params.isTestUser || false
+        });
+        break;
+
+      case 'password-reset':
+        if (!params.resetToken || !params.resetUrl) {
+          return NextResponse.json(
+            { success: false, error: 'resetToken and resetUrl are required for password reset email' },
+            { status: 400 }
+          );
+        }
+        result = await sendPasswordResetEmail({
+          to,
+          resetToken: params.resetToken,
+          resetUrl: params.resetUrl
         });
         break;
 
       default:
         return NextResponse.json(
-          { success: false, error: 'Invalid email type. Use: welcome, campaign-alert, monthly-report, or custom' },
+          { success: false, error: 'Invalid email type. Supported types: welcome, invitation, password-reset' },
           { status: 400 }
         );
     }
 
-    return NextResponse.json(result);
+    return NextResponse.json({
+      success: true,
+      message: 'Email sent successfully',
+      emailId: result.emailId
+    });
+
   } catch (error) {
-    console.error('Error in email API:', error);
+    console.error('Email API Error:', error);
     return NextResponse.json(
-      { success: false, error: 'Internal server error' },
+      { 
+        success: false, 
+        error: error instanceof Error ? error.message : 'Failed to send email' 
+      },
       { status: 500 }
     );
   }
 }
 
-// Test endpoint
 export async function GET() {
   return NextResponse.json({
-    message: 'Email API is working',
+    message: 'Email API is ready',
+    supportedTypes: ['welcome', 'invitation', 'password-reset'],
+    endpoint: '/api/email/send',
     resendConfigured: !!process.env.RESEND_API_KEY,
-    fromEmail: process.env.RESEND_FROM_EMAIL || 'Not configured',
-    availableTypes: ['welcome', 'campaign-alert', 'monthly-report', 'custom']
+    fromEmail: process.env.RESEND_FROM_EMAIL || 'Not configured'
   });
 }

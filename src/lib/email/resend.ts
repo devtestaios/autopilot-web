@@ -5,8 +5,19 @@
 
 import { Resend } from 'resend';
 
-// Initialize Resend client
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Lazy-initialize Resend client to avoid build-time issues
+let resendClient: Resend | null = null;
+
+function getResendClient(): Resend {
+  if (!resendClient) {
+    const apiKey = process.env.RESEND_API_KEY;
+    if (!apiKey) {
+      throw new Error('RESEND_API_KEY environment variable is required');
+    }
+    resendClient = new Resend(apiKey);
+  }
+  return resendClient;
+}
 
 // Email configuration
 const FROM_EMAIL = process.env.RESEND_FROM_EMAIL || 'PulseBridge <noreply@pulsebridge.ai>';
@@ -257,7 +268,7 @@ export async function sendInvitationEmail({
       </html>
     `;
 
-    const { data, error } = await resend.emails.send({
+    const { data, error } = await getResendClient().emails.send({
       from: FROM_EMAIL,
       to,
       subject,
@@ -318,7 +329,7 @@ export async function sendPasswordResetEmail({
       </html>
     `;
 
-    const { data, error } = await resend.emails.send({
+    const { data, error } = await getResendClient().emails.send({
       from: FROM_EMAIL,
       to,
       subject: 'Reset Your Password - PulseBridge.ai',
@@ -371,7 +382,7 @@ export async function sendWelcomeEmail({
       </html>
     `;
 
-    const { data, error } = await resend.emails.send({
+    const { data, error } = await getResendClient().emails.send({
       from: FROM_EMAIL,
       to,
       subject: 'Welcome to PulseBridge.ai! 🚀',
