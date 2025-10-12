@@ -36,6 +36,7 @@ export async function middleware(req: NextRequest) {
   const isPublicRoute = publicRoutes.some(route =>
     req.nextUrl.pathname === route ||
     req.nextUrl.pathname.startsWith('/api/auth') ||
+    req.nextUrl.pathname.startsWith('/api/admin') || // Allow admin API routes (they have their own auth)
     req.nextUrl.pathname.startsWith('/_next') ||
     req.nextUrl.pathname.startsWith('/static')
   );
