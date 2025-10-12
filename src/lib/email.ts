@@ -1,14 +1,21 @@
 // Email utility using Resend
 import { Resend } from 'resend';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 interface EmailOptions {
   to: string | string[];
   subject: string;
   html?: string;
   text?: string;
   from?: string;
+}
+
+// Lazy initialization of Resend client
+let resendInstance: Resend | null = null;
+function getResendClient() {
+  if (!resendInstance && process.env.RESEND_API_KEY) {
+    resendInstance = new Resend(process.env.RESEND_API_KEY);
+  }
+  return resendInstance;
 }
 
 export async function sendEmail({
@@ -22,6 +29,12 @@ export async function sendEmail({
     if (!process.env.RESEND_API_KEY) {
       console.error('RESEND_API_KEY is not configured');
       return { success: false, error: 'Email service not configured' };
+    }
+
+    const resend = getResendClient();
+    if (!resend) {
+      console.error('Failed to initialize Resend client');
+      return { success: false, error: 'Email service initialization failed' };
     }
 
     const result = await resend.emails.send({
