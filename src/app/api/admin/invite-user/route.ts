@@ -6,6 +6,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
+import { sendInvitationEmail } from '@/lib/email/resend';
 
 export async function POST(request: NextRequest) {
   try {
@@ -206,15 +207,16 @@ export async function POST(request: NextRequest) {
       created_at: new Date().toISOString(),
     });
 
-    // Send invitation email
+    // Send invitation email via Resend
     try {
       await sendInvitationEmail({
-        email,
+        to: email,
         firstName: firstName || displayName,
         tempPassword,
         invitedBy: user.email || 'Admin',
         suiteAccess,
         isTestUser,
+        loginUrl: `${process.env.NEXT_PUBLIC_BASE_URL || 'https://pulsebridge.ai'}/login`,
       });
     } catch (emailError) {
       console.error('Failed to send invitation email:', emailError);
@@ -265,117 +267,3 @@ function getDefaultSuiteAccess() {
   };
 }
 
-// Helper function to send invitation email
-async function sendInvitationEmail({
-  email,
-  firstName,
-  tempPassword,
-  invitedBy,
-  suiteAccess,
-  isTestUser,
-}: {
-  email: string;
-  firstName: string;
-  tempPassword: string;
-  invitedBy: string;
-  suiteAccess: any;
-  isTestUser: boolean;
-}) {
-  // Get enabled suites
-  const enabledSuites = Object.entries(suiteAccess)
-    .filter(([_, access]: [string, any]) => access.enabled)
-    .map(([suiteId]) => suiteId.replace('_', ' ').replace(/\b\w/g, (l) => l.toUpperCase()));
-
-  const subject = `You're invited to PulseBridge.ai${isTestUser ? ' (Test Access)' : ''}`;
-
-  const htmlBody = `
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <style>
-        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; border-radius: 8px 8px 0 0; text-align: center; }
-        .content { background: #f9fafb; padding: 30px; border-radius: 0 0 8px 8px; }
-        .credentials { background: white; padding: 20px; border-radius: 8px; border-left: 4px solid #667eea; margin: 20px 0; }
-        .suites { background: white; padding: 20px; border-radius: 8px; margin: 20px 0; }
-        .suite-item { padding: 10px; margin: 5px 0; background: #f3f4f6; border-radius: 4px; }
-        .button { display: inline-block; padding: 12px 24px; background: #667eea; color: white; text-decoration: none; border-radius: 6px; margin: 20px 0; }
-        .footer { text-align: center; padding: 20px; color: #666; font-size: 12px; }
-        ${isTestUser ? '.test-badge { background: #fbbf24; color: #78350f; padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: bold; display: inline-block; margin-top: 10px; }' : ''}
-      </style>
-    </head>
-    <body>
-      <div class="container">
-        <div class="header">
-          <h1>🚀 Welcome to PulseBridge.ai!</h1>
-          ${isTestUser ? '<div class="test-badge">TEST ACCESS</div>' : ''}
-        </div>
-        <div class="content">
-          <p>Hi ${firstName},</p>
-          <p>${invitedBy} has invited you to join PulseBridge.ai - the AI-powered marketing automation platform.</p>
-
-          <div class="credentials">
-            <h3>Your Login Credentials:</h3>
-            <p><strong>Email:</strong> ${email}</p>
-            <p><strong>Temporary Password:</strong> <code style="background: #e5e7eb; padding: 4px 8px; border-radius: 4px; font-family: monospace;">${tempPassword}</code></p>
-            <p><small style="color: #666;">Please change your password after your first login.</small></p>
-          </div>
-
-          <div class="suites">
-            <h3>Your Enabled Features:</h3>
-            ${enabledSuites.map(suite => `<div class="suite-item">✓ ${suite}</div>`).join('')}
-          </div>
-
-          ${isTestUser ? `
-            <div style="background: #fef3c7; border: 1px solid #fbbf24; padding: 15px; border-radius: 8px; margin: 20px 0;">
-              <strong>🧪 Test User Access</strong>
-              <p style="margin: 10px 0 0 0; font-size: 14px;">You have full access to all enabled features without payment. This is for testing and providing feedback.</p>
-            </div>
-          ` : ''}
-
-          <div style="text-align: center;">
-            <a href="https://autopilot-web-rho.vercel.app/login" class="button">
-              Login to Your Account
-            </a>
-          </div>
-
-          <p style="margin-top: 30px; font-size: 14px; color: #666;">
-            Need help? Reply to this email or contact support@pulsebridge.ai
-          </p>
-        </div>
-        <div class="footer">
-          <p>© 2025 PulseBridge.ai. All rights reserved.</p>
-          <p>This invitation was sent to ${email}</p>
-        </div>
-      </div>
-    </body>
-    </html>
-  `;
-
-  // In production, integrate with email service (SendGrid, Resend, etc.)
-  // For now, just log the email details
-  console.log('Invitation email to send:', {
-    to: email,
-    subject,
-    tempPassword,
-  });
-
-  // TODO: Integrate with actual email service
-  // Example with Resend:
-  // await fetch('https://api.resend.com/emails', {
-  //   method: 'POST',
-  //   headers: {
-  //     'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
-  //     'Content-Type': 'application/json',
-  //   },
-  //   body: JSON.stringify({
-  //     from: 'PulseBridge <noreply@pulsebridge.ai>',
-  //     to: email,
-  //     subject,
-  //     html: htmlBody,
-  //   }),
-  // });
-
-  return true;
-}
