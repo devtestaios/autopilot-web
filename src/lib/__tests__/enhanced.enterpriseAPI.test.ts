@@ -37,21 +37,21 @@ describe('Enhanced Enterprise API Suite', () => {
       
       // Verify ascending price order (except trial = 0)
       expect(prices[0]).toBe(0); // trial
-      expect(prices[1]).toBe(50); // solo_professional
-      expect(prices[2]).toBe(150); // growth_team
-      expect(prices[3]).toBe(400); // professional_agency
-      expect(prices[4]).toBe(1200); // enterprise
-      expect(prices[5]).toBe(2500); // enterprise_plus
+      expect(prices[1]).toBe(69); // solo_professional (starter)
+      expect(prices[2]).toBe(169); // growth_team
+      expect(prices[3]).toBe(469); // professional_agency
+      expect(prices[4]).toBe(1069); // enterprise
+      expect(prices[5]).toBe(0); // enterprise_plus (custom pricing)
     });
 
     test('validates user limits progression', () => {
       const userLimits = SUBSCRIPTION_PLANS.map(p => p.limits.users);
       
-      expect(userLimits[0]).toBe(10); // trial
+      expect(userLimits[0]).toBe(2); // trial
       expect(userLimits[1]).toBe(1); // solo_professional
-      expect(userLimits[2]).toBe(3); // growth_team
-      expect(userLimits[3]).toBe(10); // professional_agency
-      expect(userLimits[4]).toBe(30); // enterprise
+      expect(userLimits[2]).toBe(5); // growth_team
+      expect(userLimits[3]).toBe(15); // professional_agency (updated from 10)
+      expect(userLimits[4]).toBe(50); // enterprise (updated from 30)
       expect(userLimits[5]).toBe(-1); // enterprise_plus (unlimited)
     });
 
@@ -59,7 +59,7 @@ describe('Enhanced Enterprise API Suite', () => {
       const trialPlan = SUBSCRIPTION_PLANS.find(p => p.id === 'trial');
       const enterprisePlan = SUBSCRIPTION_PLANS.find(p => p.id === 'enterprise');
       
-      expect(trialPlan?.features).toContain('Full platform access');
+      expect(trialPlan?.features).toContain('Basic platform access');
       expect(enterprisePlan?.features).toContain('Enterprise security');
       expect(enterprisePlan?.features.length).toBeGreaterThanOrEqual(trialPlan?.features.length || 0);
     });
@@ -91,12 +91,10 @@ describe('Enhanced Enterprise API Suite', () => {
       const plan = SUBSCRIPTION_PLANS.find(p => p.id === 'growth_team');
       
       expect(plan).toBeDefined();
-      expect(plan?.name).toBe('Growth Team');
-      expect(plan?.price_monthly).toBe(150);
-      expect(plan?.limits.users).toBe(3);
-    });
-
-    test('validates unlimited resources in enterprise_plus', () => {
+      expect(plan?.name).toBe('Growth');
+      expect(plan?.price_monthly).toBe(169);
+      expect(plan?.limits.users).toBe(5);
+    });    test('validates unlimited resources in enterprise_plus', () => {
       const plan = SUBSCRIPTION_PLANS.find(p => p.id === 'enterprise_plus');
       
       expect(plan?.limits.users).toBe(-1);
@@ -148,8 +146,8 @@ describe('Enhanced Enterprise API Suite', () => {
 
       const growthPlan = getSubscriptionPlan('growth_team');
       expect(growthPlan).toBeDefined();
-      expect(growthPlan?.limits.users).toBe(3);
-      expect(growthPlan?.price_monthly).toBe(150);
+      expect(growthPlan?.limits.users).toBe(5);
+      expect(growthPlan?.price_monthly).toBe(169);
     });
 
     test('validates subscription limits by tier', () => {
@@ -188,10 +186,10 @@ describe('Enhanced Enterprise API Suite', () => {
       };
 
       const growthSavings = calculateAnnualSavings('growth_team');
-      expect(growthSavings).toBe(300); // 2 months free
+      expect(growthSavings).toBe(338); // 2 months free: 169*12 - 1690 = 338
 
       const enterpriseSavings = calculateAnnualSavings('enterprise');
-      expect(enterpriseSavings).toBe(2400); // 2 months free
+      expect(enterpriseSavings).toBe(2138); // 2 months free: 1069*12 - 10690 = 2138
     });
   });
 
@@ -294,8 +292,14 @@ describe('Enhanced Enterprise API Suite', () => {
 
     test('all plans include essential features', () => {
       SUBSCRIPTION_PLANS.forEach(plan => {
-        expect(plan.enterprise_features.advanced_analytics).toBe(true);
-        expect(plan.enterprise_features.api_access).toBe(true);
+        // Only higher tiers have advanced analytics
+        if (plan.id === 'trial' || plan.id === 'solo_professional') {
+          expect(plan.enterprise_features.advanced_analytics).toBe(false);
+          expect(plan.enterprise_features.api_access).toBe(plan.id === 'solo_professional'); // Only starter+ has API access
+        } else {
+          expect(plan.enterprise_features.advanced_analytics).toBe(true);
+          expect(plan.enterprise_features.api_access).toBe(true);
+        }
         expect(plan.features.length).toBeGreaterThan(0);
       });
     });

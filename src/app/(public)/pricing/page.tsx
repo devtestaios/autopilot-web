@@ -52,15 +52,15 @@ const SUBSCRIPTION_PLANS = API_PLANS.map(plan => ({
   billingPeriod: 'month',
   maxUsers: plan.limits.users,
   features: plan.features,
-  limitations: plan.id === 'trial' ? '15-day trial period' : 
+  limitations: plan.id === 'trial' ? '14-day trial period' : 
                plan.id === 'solo_professional' ? 'Single user only' :
-               plan.id === 'growth_team' ? 'Up to 3 team members' :
-               plan.id === 'professional_agency' ? 'Up to 10 team members' :
-               plan.id === 'enterprise' ? 'Up to 30 team members' :
+               plan.id === 'growth_team' ? 'Up to 5 team members' :
+               plan.id === 'professional_agency' ? 'Up to 15 team members' :
+               plan.id === 'enterprise' ? 'Up to 50 team members' :
                'Unlimited users',
   isPopular: plan.id === 'growth_team',
   badge: plan.id === 'trial' ? 'Start Here' :
-         plan.id === 'solo_professional' ? 'Solo' :
+         plan.id === 'solo_professional' ? 'Starter' :
          plan.id === 'growth_team' ? 'Most Popular' :
          plan.id === 'professional_agency' ? 'Agency' :
          plan.id === 'enterprise' ? 'Enterprise' :
@@ -72,7 +72,7 @@ const SUBSCRIPTION_PLANS = API_PLANS.map(plan => ({
          plan.id === 'enterprise' ? 'indigo' :
          'gold',
   ctaText: plan.id === 'trial' ? 'Start Free Trial' :
-           plan.id === 'solo_professional' ? 'Choose Solo' :
+           plan.id === 'solo_professional' ? 'Choose Starter' :
            plan.id === 'growth_team' ? 'Start Growing' :
            plan.id === 'professional_agency' ? 'Scale Agency' :
            plan.id === 'enterprise' ? 'Go Enterprise' :

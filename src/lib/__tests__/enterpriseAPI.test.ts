@@ -102,8 +102,8 @@ describe('Enterprise API', () => {
     it('should return correct features for trial tier', () => {
       const features = getSubscriptionFeatures('trial');
       
-      expect(features).toContain('Basic AI Chat');
-      expect(features).toContain('15-day trial');
+      expect(features).toContain('Basic platform access');
+      expect(features).toContain('All platforms connected');
       expect(features).not.toContain('Advanced Analytics');
     });
 

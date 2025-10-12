@@ -27,16 +27,20 @@ describe('Enterprise API - Simplified Tests', () => {
     it('should have increasing price structure', () => {
       const prices = SUBSCRIPTION_PLANS.map(plan => plan.price_monthly);
       
-      // Check that each price is greater than or equal to the previous
-      for (let i = 1; i < prices.length; i++) {
-        expect(prices[i]).toBeGreaterThanOrEqual(prices[i - 1]);
-      }
+      // Check ascending order for priced tiers (exclude trial at 0 and enterprise_plus custom pricing)
+      expect(prices[0]).toBe(0); // trial
+      expect(prices[1]).toBeGreaterThan(0); // starter
+      expect(prices[2]).toBeGreaterThan(prices[1]); // growth > starter
+      expect(prices[3]).toBeGreaterThan(prices[2]); // agency > growth
+      expect(prices[4]).toBeGreaterThan(prices[3]); // enterprise > agency
+      expect(prices[5]).toBe(0); // enterprise_plus (custom pricing)
     });
 
     it('should include trial tier', () => {
       const trialPlan = SUBSCRIPTION_PLANS.find(plan => plan.id === 'trial');
       expect(trialPlan).toBeDefined();
       expect(trialPlan?.price_monthly).toBe(0);
+      expect(trialPlan?.limits.users).toBe(2); // Updated to 2 users
     });
 
     it('should include enterprise tiers', () => {
@@ -46,7 +50,8 @@ describe('Enterprise API - Simplified Tests', () => {
       expect(enterprisePlan).toBeDefined();
       expect(enterprisePlusPlan).toBeDefined();
       expect(enterprisePlan?.price_monthly).toBeGreaterThan(0);
-      expect(enterprisePlusPlan?.price_monthly).toBeGreaterThan(0);
+      expect(enterprisePlusPlan?.price_monthly).toBe(0); // Custom pricing
+      expect(enterprisePlusPlan?.custom_pricing).toBe(true);
     });
   });
 
