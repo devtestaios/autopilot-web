@@ -13,19 +13,32 @@ import {
   Globe,
   Menu,
   X,
-  FileText
+  FileText,
+  Megaphone,
+  Users,
+  Image,
+  Shield,
+  Workflow,
+  TestTube,
+  TrendingUp
 } from 'lucide-react';
 import { useState } from 'react';
 
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: Home },
+  { name: 'Campaigns', href: '/campaigns', icon: Megaphone },
+  { name: 'Performance', href: '/performance', icon: TrendingUp },
+  { name: 'Reports', href: '/reports', icon: FileText },
+  { name: 'AI Optimization', href: '/ai', icon: Brain },
+  { name: 'Cross-Platform', href: '/orchestration', icon: Workflow },
+  { name: 'A/B Testing', href: '/ab-testing', icon: TestTube },
+  { name: 'Creative Assets', href: '/creative', icon: Image },
+  { name: 'Audiences', href: '/audiences', icon: Users },
+  { name: 'Security', href: '/security', icon: Shield },
   { name: 'Platforms', href: '/platforms', icon: Globe },
   { name: 'Analytics', href: '/analytics', icon: BarChart3 },
-  { name: 'Performance', href: '/performance', icon: Activity },
-  { name: 'Reports', href: '/reports', icon: FileText },
-  { name: 'Optimization', href: '/optimization', icon: Brain },
-  { name: 'Campaigns', href: '/campaigns', icon: Target },
   { name: 'Automation', href: '/automation', icon: Zap },
+  { name: 'Optimization', href: '/optimization', icon: Target },
   { name: 'Settings', href: '/settings', icon: Settings },
 ];
 
