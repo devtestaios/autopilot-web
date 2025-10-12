@@ -122,13 +122,17 @@ export default function AdminLoginPage() {
       }
 
       console.log('✅ Admin verification passed!');
-      console.log('💾 Setting localStorage...');
+      console.log('💾 Setting localStorage and session...');
 
-      // Set admin session
+      // Set admin session in localStorage
       localStorage.setItem('admin_authenticated', 'true');
       localStorage.setItem('admin_email', formData.email);
       localStorage.setItem('admin_role', profile.role);
       localStorage.setItem('admin_login_time', Date.now().toString());
+
+      // The user is already authenticated with Supabase from the signInWithPassword call above
+      // The session cookies will be automatically handled by Supabase
+      console.log('✅ Supabase session active for:', authData.user.email);
 
       console.log('🚀 Redirecting to admin dashboard...');
 

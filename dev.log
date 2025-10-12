@@ -111,3 +111,8 @@ Error: Route "/api/oauth" used `cookies().get('sb-aggorhmzuhdirterhyej-auth-toke
  ○ Compiling /api/health/db ...
  ✓ Compiled /api/health/db in 1842ms
  GET /api/health/db 200 in 5243ms
+ ○ Compiling /api/admin/invite-user ...
+ ✓ Compiled /api/admin/invite-user in 3.2s
+ POST /api/admin/invite-user 401 in 4930ms
+ POST /api/admin/invite-user 401 in 780ms
+ GET /api/health 200 in 491ms

@@ -10,13 +10,22 @@ import { sendInvitationEmail } from '@/lib/email/resend';
 
 export async function POST(request: NextRequest) {
   try {
+    console.log('🔍 Admin invite API called');
     const cookieStore = await cookies();
     const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
 
     // Check admin authentication
     const { data: { user }, error: authError } = await supabase.auth.getUser();
+    
+    console.log('🔍 Auth check result:', { 
+      hasUser: !!user, 
+      userId: user?.id, 
+      userEmail: user?.email,
+      authError: authError?.message 
+    });
 
     if (authError || !user) {
+      console.log('❌ Unauthorized - no valid session');
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }

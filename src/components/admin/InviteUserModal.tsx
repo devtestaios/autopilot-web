@@ -262,10 +262,22 @@ export default function InviteUserModal({
         body: JSON.stringify(inviteData),
       });
 
-      const result = await response.json();
+      // Check if response has content before parsing JSON
+      let result;
+      const contentType = response.headers.get('content-type');
+      if (contentType && contentType.includes('application/json')) {
+        const text = await response.text();
+        if (text.trim()) {
+          result = JSON.parse(text);
+        } else {
+          result = {};
+        }
+      } else {
+        result = { error: 'Server returned non-JSON response' };
+      }
 
       if (!response.ok) {
-        throw new Error(result.error || 'Failed to invite user');
+        throw new Error(result.error || `Server error: ${response.status} ${response.statusText}`);
       }
 
       setSuccess(true);
@@ -275,7 +287,15 @@ export default function InviteUserModal({
       }, 2000);
     } catch (err) {
       console.error('Invite user error:', err);
-      setError(err instanceof Error ? err.message : 'Failed to invite user');
+      
+      // Provide more specific error messages
+      if (err instanceof TypeError && err.message.includes('Failed to fetch')) {
+        setError('Network error: Could not connect to server. Please check your connection.');
+      } else if (err instanceof SyntaxError && err.message.includes('JSON')) {
+        setError('Server response error: Invalid JSON received. Please try again.');
+      } else {
+        setError(err instanceof Error ? err.message : 'Failed to invite user');
+      }
     } finally {
       setLoading(false);
     }
