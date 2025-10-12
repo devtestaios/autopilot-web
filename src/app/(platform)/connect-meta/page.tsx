@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/contexts/EnhancedAuthContext'
+import toast, { Toaster } from 'react-hot-toast'
 
 export default function ConnectMetaPage() {
   const [loading, setLoading] = useState(false)
@@ -45,9 +46,21 @@ export default function ConnectMetaPage() {
 
       const data = await response.json()
       console.log('Meta connection status:', data)
-      alert(JSON.stringify(data, null, 2))
+
+      if (data.connected) {
+        toast.success('✅ Meta account connected successfully!', {
+          duration: 4000,
+          position: 'top-center',
+        })
+      } else {
+        toast.error('❌ Meta account not connected', {
+          duration: 4000,
+          position: 'top-center',
+        })
+      }
     } catch (err) {
       console.error('Failed to check status:', err)
+      toast.error('Failed to check connection status')
     }
   }
 
@@ -66,19 +79,31 @@ export default function ConnectMetaPage() {
       }
 
       const data = await response.json()
-      alert(`Success! Synced ${data.campaigns_synced} campaigns with ${data.metrics_synced} metrics`)
+      toast.success(
+        `🎉 Successfully synced ${data.campaigns_synced} campaigns with ${data.metrics_synced} metrics!`,
+        {
+          duration: 5000,
+          position: 'top-center',
+        }
+      )
 
     } catch (err: any) {
       console.error('Failed to sync:', err)
       setError(err.message || 'Failed to sync campaigns')
+      toast.error(err.message || 'Failed to sync campaigns', {
+        duration: 4000,
+        position: 'top-center',
+      })
     } finally {
       setLoading(false)
     }
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 p-8">
-      <div className="max-w-2xl mx-auto">
+    <>
+      <Toaster />
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 p-8">
+        <div className="max-w-2xl mx-auto">
         <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20">
           <h1 className="text-3xl font-bold text-white mb-2">
             Connect Meta Ads
@@ -172,6 +197,7 @@ export default function ConnectMetaPage() {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   )
 }
