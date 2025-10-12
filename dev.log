@@ -1,0 +1,113 @@
+
+> autopilot-web@0.1.0 dev
+> next dev --turbopack
+
+ ⚠ The config property `experimental.turbo` is deprecated. Move this setting to `config.turbopack` or run `npx @next/codemod@latest next-experimental-turbo-to-turbopack .`
+ ⚠ Port 3000 is in use by process 17267, using available port 3002 instead.
+   ▲ Next.js 15.5.2 (Turbopack)
+   - Local:        http://localhost:3002
+   - Network:      http://192.168.40.121:3002
+   - Environments: .env.local
+   - Experiments (use with caution):
+     · turbo
+     · optimizePackageImports
+
+ ✓ Starting...
+ ○ Compiling middleware ...
+ ✓ Compiled middleware in 1451ms
+ ✓ Ready in 4.2s
+ ○ Compiling /api/health ...
+ ✓ Compiled /api/health in 8.2s
+ ⨯ ./src/app/optimization
+You cannot have two parallel pages that resolve to the same path. Please check /(other)/optimization and /optimization.
+
+
+./src/app/performance
+You cannot have two parallel pages that resolve to the same path. Please check /(platform)/performance and /performance.
+
+
+./src/app/reports
+You cannot have two parallel pages that resolve to the same path. Please check /(platform)/reports and /reports.
+
+ ○ Compiling /_error ...
+ ✓ Compiled /_error in 3.7s
+ GET /api/health 500 in 12636ms
+ ✓ Compiled middleware in 9ms
+ ⨯ ./src/app/performance
+You cannot have two parallel pages that resolve to the same path. Please check /(platform)/performance and /performance.
+
+
+./src/app/reports
+You cannot have two parallel pages that resolve to the same path. Please check /(platform)/reports and /reports.
+
+ GET /api/health 500 in 111ms
+ ✓ Compiled middleware in 1ms
+ ⨯ ./src/app/reports
+You cannot have two parallel pages that resolve to the same path. Please check /(platform)/reports and /reports.
+
+ GET /api/health 500 in 177ms
+ ✓ Compiled middleware in 68ms
+ GET /api/health 200 in 1854ms
+ ○ Compiling /_not-found/page ...
+ ✓ Compiled /_not-found/page in 27.1s
+🔗 Redis Cache initializing... {
+  retryDelayOnFailover: 100,
+  enableOfflineQueue: false,
+  maxRetriesPerRequest: 3,
+  lazyConnect: true,
+  url: undefined,
+  host: 'localhost',
+  port: 6379,
+  password: undefined,
+  db: 0
+}
+✅ Redis Cache connected
+ GET /api/platforms 404 in 29265ms
+ GET /api/dashboard 404 in 320ms
+ GET /api/health 200 in 480ms
+ GET /api/oauth/meta/status 404 in 311ms
+ GET /api/billing/plans 404 in 419ms
+ ○ Compiling /api/billing/status ...
+ ✓ Compiled /api/billing/status in 2.8s
+ GET /api/billing/status 200 in 3625ms
+ GET /api/meta/auth 404 in 345ms
+ ○ Compiling /api/oauth ...
+ ✓ Compiled /api/oauth in 2.2s
+Error: Route "/api/oauth" used `cookies().get('sb-aggorhmzuhdirterhyej-auth-token')`. `cookies()` should be awaited before using its value. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at getItemAsync (../../../src/lib/helpers.ts:129:31)
+    at SupabaseAuthClient.__loadSession (../../src/GoTrueClient.ts:1358:46)
+    at SupabaseAuthClient._useSession (../../src/GoTrueClient.ts:1316:33)
+    at SupabaseAuthClient._emitInitialSession (../../src/GoTrueClient.ts:1931:23)
+    at <unknown> (../../src/GoTrueClient.ts:1923:14)
+    at <unknown> (../../src/GoTrueClient.ts:1248:26)
+    at SupabaseAuthClient.lockNoOp [as lock] (../../src/GoTrueClient.ts:135:16)
+    at SupabaseAuthClient._acquireLock (../../src/GoTrueClient.ts:1242:25)
+    at <unknown> (../../src/GoTrueClient.ts:1922:18)
+Error: Route "/api/oauth" used `cookies().get('sb-aggorhmzuhdirterhyej-auth-token.0')`. `cookies()` should be awaited before using its value. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at getItemAsync (../../../src/lib/helpers.ts:129:31)
+    at SupabaseAuthClient.__loadSession (../../src/GoTrueClient.ts:1358:46)
+    at SupabaseAuthClient._useSession (../../src/GoTrueClient.ts:1316:33)
+    at SupabaseAuthClient._emitInitialSession (../../src/GoTrueClient.ts:1931:23)
+    at <unknown> (../../src/GoTrueClient.ts:1923:14)
+    at <unknown> (../../src/GoTrueClient.ts:1248:26)
+    at SupabaseAuthClient.lockNoOp [as lock] (../../src/GoTrueClient.ts:135:16)
+    at SupabaseAuthClient._acquireLock (../../src/GoTrueClient.ts:1242:25)
+    at <unknown> (../../src/GoTrueClient.ts:1922:18)
+Error: Route "/api/oauth" used `cookies().get('sb-aggorhmzuhdirterhyej-auth-token')`. `cookies()` should be awaited before using its value. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at getItemAsync (../../../src/lib/helpers.ts:129:31)
+    at SupabaseAuthClient.__loadSession (../../src/GoTrueClient.ts:1358:46)
+    at SupabaseAuthClient._useSession (../../src/GoTrueClient.ts:1316:33)
+    at SupabaseAuthClient._getUser (../../src/GoTrueClient.ts:1468:25)
+    at <unknown> (../../src/GoTrueClient.ts:1452:25)
+    at <unknown> (../../src/GoTrueClient.ts:1226:24)
+Error: Route "/api/oauth" used `cookies().get('sb-aggorhmzuhdirterhyej-auth-token.0')`. `cookies()` should be awaited before using its value. Learn more: https://nextjs.org/docs/messages/sync-dynamic-apis
+    at getItemAsync (../../../src/lib/helpers.ts:129:31)
+    at SupabaseAuthClient.__loadSession (../../src/GoTrueClient.ts:1358:46)
+    at SupabaseAuthClient._useSession (../../src/GoTrueClient.ts:1316:33)
+    at SupabaseAuthClient._getUser (../../src/GoTrueClient.ts:1468:25)
+    at <unknown> (../../src/GoTrueClient.ts:1452:25)
+    at <unknown> (../../src/GoTrueClient.ts:1226:24)
+ POST /api/oauth 401 in 3605ms
+ ○ Compiling /api/health/db ...
+ ✓ Compiled /api/health/db in 1842ms
+ GET /api/health/db 200 in 5243ms

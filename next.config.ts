@@ -25,6 +25,9 @@ const nextConfig: NextConfig = {
   
     // Enhanced performance optimizations
   experimental: {
+    turbo: {
+      root: __dirname,
+    },
     optimizePackageImports: [
       'lucide-react', 
       '@radix-ui/react-dialog',
