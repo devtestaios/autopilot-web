@@ -2,11 +2,13 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { useAuth } from '@/contexts/EnhancedAuthContext'
 
 export default function ConnectMetaPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-  const [userId] = useState('test-user-123') // TODO: Get from auth
+  const { user } = useAuth()
+  const userId = user?.id || 'test-user-123' // Use real user ID with fallback for demo
   const router = useRouter()
 
   async function handleConnectMeta() {

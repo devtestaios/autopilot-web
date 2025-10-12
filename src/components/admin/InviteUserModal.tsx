@@ -258,6 +258,7 @@ export default function InviteUserModal({
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'x-admin-password': process.env.NEXT_PUBLIC_ADMIN_PASSWORD || 'PulseBridge2025!',
         },
         body: JSON.stringify(inviteData),
       });

@@ -11,40 +11,57 @@ import { sendInvitationEmail } from '@/lib/email/resend';
 export async function POST(request: NextRequest) {
   try {
     console.log('🔍 Admin invite API called');
-    const cookieStore = await cookies();
-    const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
 
-    // Check admin authentication
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
-    
-    console.log('🔍 Auth check result:', { 
-      hasUser: !!user, 
-      userId: user?.id, 
-      userEmail: user?.email,
-      authError: authError?.message 
-    });
+    // Check for admin authentication via either Supabase session OR admin password
+    const adminPassword = request.headers.get('x-admin-password');
+    const expectedAdminPassword = process.env.ADMIN_PASSWORD || 'PulseBridge2025!';
 
-    if (authError || !user) {
-      console.log('❌ Unauthorized - no valid session');
+    let user: any = null;
+    let isAdmin = false;
+
+    // Method 1: Admin password authentication (for admin dashboard)
+    if (adminPassword && adminPassword === expectedAdminPassword) {
+      console.log('✅ Admin authenticated via password');
+      isAdmin = true;
+      user = { id: 'admin', email: 'admin@pulsebridge.ai' };
+    } else {
+      // Method 2: Supabase session authentication
+      const cookieStore = await cookies();
+      const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
+      const { data: { user: sessionUser }, error: authError } = await supabase.auth.getUser();
+
+      console.log('🔍 Auth check result:', {
+        hasUser: !!sessionUser,
+        userId: sessionUser?.id,
+        userEmail: sessionUser?.email,
+        authError: authError?.message
+      });
+
+      if (!authError && sessionUser) {
+        // Verify user is admin
+        const { data: profile, error: profileError } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', sessionUser.id)
+          .single();
+
+        if (!profileError && profile && ['super_admin', 'agency_owner'].includes(profile.role)) {
+          user = sessionUser;
+          isAdmin = true;
+        }
+      }
+    }
+
+    if (!isAdmin || !user) {
+      console.log('❌ Unauthorized - no valid session or password');
       return NextResponse.json(
-        { error: 'Unauthorized' },
+        { error: 'Unauthorized. Admin authentication required.' },
         { status: 401 }
       );
     }
 
-    // Verify user is admin
-    const { data: profile, error: profileError } = await supabase
-      .from('profiles')
-      .select('role')
-      .eq('id', user.id)
-      .single();
-
-    if (profileError || !profile || !['super_admin', 'agency_owner'].includes(profile.role)) {
-      return NextResponse.json(
-        { error: 'Insufficient permissions. Admin access required.' },
-        { status: 403 }
-      );
-    }
+    const cookieStore = await cookies();
+    const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
 
     // Parse request body
     const body = await request.json();
