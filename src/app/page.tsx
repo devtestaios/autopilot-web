@@ -1,268 +1,224 @@
 'use client';
 
 import React from 'react';
-import { motion } from 'framer-motion';
-import Link from 'next/link';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Card, CardContent } from '@/components/ui/card';
-import {
-  Brain,
-  Target,
-  MessageSquare,
-  Mail,
-  BarChart3,
-  Users,
-  Globe,
-  DollarSign,
-  Sparkles,
+import { 
   ArrowRight,
-  Clock,
-  Star,
-  PlayCircle,
-  Trophy,
-  Timer,
+  BarChart3,
   CheckCircle,
-  Gauge,
-  FileText,
-  ShoppingCart
+  ExternalLink,
+  Shield,
+  Wifi,
+  Zap
 } from 'lucide-react';
+import Link from 'next/link';
+import { Navigation, QuickStartBanner } from '@/components/navigation/Navigation';
 
 export default function HomePage() {
+  const features = [
+    {
+      icon: Wifi,
+      title: 'OAuth Platform Connections',
+      description: 'Securely connect Facebook Ads, Google Ads, LinkedIn, and more using industry-standard OAuth 2.0',
+      status: 'Ready',
+      color: 'text-green-600'
+    },
+    {
+      icon: BarChart3,
+      title: 'Unified Campaign Analytics',
+      description: 'View performance metrics from all your marketing platforms in one centralized dashboard',
+      status: 'Active',
+      color: 'text-blue-600'
+    },
+    {
+      icon: Zap,
+      title: 'Real-time Data Sync',
+      description: 'Automatically sync campaign data every hour with configurable alerts and notifications',
+      status: 'Live',
+      color: 'text-purple-600'
+    },
+    {
+      icon: Shield,
+      title: 'Enterprise Security',
+      description: 'Bank-level encryption, SOC 2 compliance, and read-only access to protect your data',
+      status: 'Secure',
+      color: 'text-orange-600'
+    }
+  ];
+  
+  const platforms = [
+    { name: 'Facebook Ads', logo: '📘', status: 'Ready' },
+    { name: 'Google Ads', logo: '🎯', status: 'Ready' },
+    { name: 'LinkedIn Ads', logo: '💼', status: 'Ready' },
+    { name: 'TikTok Business', logo: '🎵', status: 'Coming Soon' },
+    { name: 'Twitter Ads', logo: '🐦', status: 'Coming Soon' },
+    { name: 'Instagram Business', logo: '📸', status: 'Ready' }
+  ];
+  
+  const benefits = [
+    '✅ Save 10+ hours per week on manual reporting',
+    '✅ Increase campaign ROI by 25% with unified insights',
+    '✅ Reduce setup time from days to minutes',
+    '✅ Never miss optimization opportunities with real-time alerts'
+  ];
+  
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+    <div className="min-h-screen bg-gray-50">
+      <Navigation />
+      <QuickStartBanner />
       
-      {/* Hero Section - Problem/Solution */}
-      <section className="py-20 px-4">
-        <div className="max-w-7xl mx-auto text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-          >
-            <Badge className="bg-teal-50 text-teal-700 border-teal-200 dark:bg-teal-900/20 dark:text-teal-300 dark:border-teal-800 mb-4">
-              <Sparkles className="w-4 h-4 mr-2" />
-              AI-Powered Marketing Platform
-            </Badge>
+      <div className="container mx-auto px-4 py-12">
+        {/* Hero Section */}
+        <div className="text-center mb-16">
+          <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
+            Marketing Automation
+            <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
+              Made Simple
+            </span>
+          </h1>
+          
+          <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+            Connect all your marketing platforms through secure OAuth flows and get unified campaign analytics, 
+            automated reporting, and AI-powered optimization recommendations.
+          </p>
+          
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link href="/platforms/setup">
+              <Button size="lg" className="px-8">
+                <Wifi className="h-5 w-5 mr-2" />
+                Connect Your First Platform
+                <ArrowRight className="h-5 w-5 ml-2" />
+              </Button>
+            </Link>
             
-            <h1 className="text-5xl md:text-7xl font-bold mb-8 bg-gradient-to-r from-gray-900 via-gray-700 to-gray-900 dark:from-white dark:via-gray-200 dark:to-white bg-clip-text text-transparent">
-              Stop Managing 15+ Tools.
-              <span className="block text-teal-600 dark:text-teal-400">
-                Start Growing Instead.
-              </span>
-            </h1>
-            
-            <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 leading-relaxed max-w-3xl mx-auto">
-              Replace 15+ scattered tools with one AI-powered platform that connects every aspect of your business.
-            </p>
-
-            {/* Social Proof */}
-            <div className="flex items-center justify-center gap-8 mb-8 flex-wrap">
-              <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-                <Users className="w-4 h-4" />
-                <span>10,000+ Active Users</span>
-              </div>
-              <div className="flex items-center gap-1 text-yellow-500">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-4 h-4 fill-current" />
-                ))}
-                <span className="text-sm text-gray-600 dark:text-gray-400 ml-1">4.9/5 rating</span>
-              </div>
-              <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-                <Trophy className="w-4 h-4" />
-                <span>Industry Leader</span>
-              </div>
-            </div>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-          >
-            <div className="bg-gradient-to-r from-teal-50 to-cyan-50 dark:from-teal-900/20 dark:to-cyan-900/20 p-6 rounded-xl border border-teal-200 dark:border-teal-800 mb-8">
-              <div className="flex items-center justify-center gap-2 mb-4">
-                <Timer className="w-5 h-5 text-teal-600 dark:text-teal-400" />
-                <Badge className="bg-red-50 text-red-700 border-red-200 dark:bg-red-900/20 dark:text-red-300 dark:border-red-800">
-                  Limited Time
-                </Badge>
-              </div>
-              <p className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-                Free 15-Day Trial - No Credit Card Required
-              </p>
-              
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Link href="/signup">
-                  <Button size="lg" className="px-8 py-4 bg-teal-600 hover:bg-teal-700 text-white">
-                    <Clock className="w-5 h-5 mr-2" />
-                    Start Free Trial
-                  </Button>
-                </Link>
-                <Link href="/dashboard">
-                  <Button variant="outline" size="lg" className="px-6 py-4 text-teal-600 border-teal-300 hover:bg-teal-50">
-                    <PlayCircle className="w-5 h-5 mr-2" />
-                    Watch Demo
-                  </Button>
-                </Link>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Product Power Section */}
-      <section className="py-20 bg-white dark:bg-gray-800">
-        <div className="max-w-7xl mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-          >
-            <h2 className="text-4xl md:text-5xl font-bold text-center mb-4 text-gray-900 dark:text-white">
-              The Power of Integration
-            </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 leading-relaxed max-w-3xl mx-auto text-center">
-              Everything your business needs in one unified platform. No more switching between tools.
-            </p>
-          </motion.div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">
-            {[
-              {
-                icon: <Brain className="w-8 h-8 text-teal-600" />,
-                title: "AI Automation",
-                description: "Claude AI handles routine tasks while you focus on growth strategy."
-              },
-              {
-                icon: <Target className="w-8 h-8 text-teal-600" />,
-                title: "Smart Optimization",
-                description: "AI optimizes campaigns, budgets, and performance automatically."
-              },
-              {
-                icon: <BarChart3 className="w-8 h-8 text-teal-600" />,
-                title: "Unified Analytics",
-                description: "Track performance across all channels with actionable insights."
-              },
-              {
-                icon: <MessageSquare className="w-8 h-8 text-teal-600" />,
-                title: "Content Creation",
-                description: "Generate high-converting content for every platform instantly."
-              },
-              {
-                icon: <Mail className="w-8 h-8 text-teal-600" />,
-                title: "Email Marketing",
-                description: "Sophisticated email campaigns with automated sequences."
-              },
-              {
-                icon: <Users className="w-8 h-8 text-teal-600" />,
-                title: "Team Collaboration",
-                description: "Seamless teamwork with real-time collaboration tools."
-              }
-            ].map((feature, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                whileHover={{ y: -5 }}
-              >
-                <Card className="h-full border-gray-200 dark:border-gray-700 hover:border-teal-300 dark:hover:border-teal-600 transition-colors">
-                  <CardContent className="p-6">
-                    <div className="mb-4">{feature.icon}</div>
-                    <h3 className="text-xl font-semibold mb-2 text-gray-900 dark:text-white">
-                      {feature.title}
-                    </h3>
-                    <p className="text-gray-600 dark:text-gray-300">
-                      {feature.description}
-                    </p>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
+            <Link href="/platforms">
+              <Button variant="outline" size="lg" className="px-8">
+                <ExternalLink className="h-5 w-5 mr-2" />
+                View Dashboard
+              </Button>
+            </Link>
           </div>
         </div>
-      </section>
-
-      {/* ROI Section */}
-      <section className="py-20 bg-gradient-to-r from-teal-50 to-cyan-50 dark:from-teal-900/10 dark:to-cyan-900/10">
-        <div className="max-w-7xl mx-auto px-4 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-          >
-            <h2 className="text-4xl md:text-5xl font-bold mb-8 text-gray-900 dark:text-white">
-              The Numbers Don't Lie
-            </h2>
-            
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mt-16">
-              {[
-                { number: "400%", label: "Average ROI Increase", icon: <DollarSign className="w-6 h-6" /> },
-                { number: "15+", label: "Tools Replaced", icon: <FileText className="w-6 h-6" /> },
-                { number: "80%", label: "Time Saved", icon: <Clock className="w-6 h-6" /> },
-                { number: "10k+", label: "Happy Customers", icon: <Users className="w-6 h-6" /> }
-              ].map((stat, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.6, delay: index * 0.1 }}
-                  className="text-center"
-                >
-                  <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg border border-gray-200 dark:border-gray-700">
-                    <div className="flex justify-center mb-4 text-teal-600 dark:text-teal-400">
-                      {stat.icon}
-                    </div>
-                    <div className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-2">
-                      {stat.number}
-                    </div>
-                    <div className="text-gray-600 dark:text-gray-300">
-                      {stat.label}
-                    </div>
-                  </div>
-                </motion.div>
+        
+        {/* Features Grid */}
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+          {features.map((feature, index) => (
+            <Card key={index} className="text-center hover:shadow-lg transition-shadow">
+              <CardHeader>
+                <div className={`w-12 h-12 rounded-lg mx-auto mb-4 flex items-center justify-center ${feature.color} bg-opacity-10`}>
+                  <feature.icon className={`h-6 w-6 ${feature.color}`} />
+                </div>
+                <CardTitle className="text-lg">{feature.title}</CardTitle>
+                <Badge variant="secondary" className="w-fit mx-auto">
+                  {feature.status}
+                </Badge>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-gray-600">{feature.description}</p>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+        
+        {/* Supported Platforms */}
+        <Card className="mb-16">
+          <CardHeader className="text-center">
+            <CardTitle className="text-2xl">Supported Marketing Platforms</CardTitle>
+            <CardDescription>
+              Connect your existing marketing accounts through secure OAuth 2.0 authentication
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+              {platforms.map((platform, index) => (
+                <div key={index} className="text-center p-4 rounded-lg border hover:bg-gray-50 transition-colors">
+                  <div className="text-3xl mb-2">{platform.logo}</div>
+                  <h3 className="font-medium text-sm mb-1">{platform.name}</h3>
+                  <Badge 
+                    variant={platform.status === 'Ready' ? 'default' : 'secondary'}
+                    className="text-xs"
+                  >
+                    {platform.status}
+                  </Badge>
+                </div>
               ))}
             </div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-20 bg-gray-900 dark:bg-black">
-        <div className="max-w-4xl mx-auto px-4 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-          >
-            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">
-              Ready to Transform Your Business?
+          </CardContent>
+        </Card>
+        
+        {/* Benefits & CTA */}
+        <div className="grid lg:grid-cols-2 gap-12 items-center">
+          <div>
+            <h2 className="text-3xl font-bold text-gray-900 mb-6">
+              Why Choose PulseBridge?
             </h2>
-            <p className="text-xl text-gray-300 mb-8 leading-relaxed">
-              Join thousands of businesses already using PulseBridge.ai to automate their marketing and scale faster.
-            </p>
             
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/signup">
-                <Button size="lg" className="px-8 py-4 bg-teal-600 hover:bg-teal-700 text-white">
-                  <ArrowRight className="w-5 h-5 mr-2" />
-                  Start Free Trial
+            <div className="space-y-4 mb-8">
+              {benefits.map((benefit, index) => (
+                <div key={index} className="flex items-start space-x-3">
+                  <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
+                  <span className="text-gray-700">{benefit}</span>
+                </div>
+              ))}
+            </div>
+            
+            <div className="flex flex-col sm:flex-row gap-4">
+              <Link href="/platforms/setup">
+                <Button size="lg" className="w-full sm:w-auto">
+                  Start Free Setup
+                  <ArrowRight className="h-4 w-4 ml-2" />
                 </Button>
               </Link>
-              <Link href="/pricing">
-                <Button variant="outline" size="lg" className="px-6 py-4 border-gray-400 text-gray-300 hover:bg-gray-800">
-                  <DollarSign className="w-5 h-5 mr-2" />
-                  View Pricing
+              
+              <Link href="/dashboard">
+                <Button variant="outline" size="lg" className="w-full sm:w-auto">
+                  View Dashboard
                 </Button>
               </Link>
             </div>
-            
-            <p className="text-sm text-gray-400 mt-4">
-              No credit card required • 15-day free trial • Cancel anytime
-            </p>
-          </motion.div>
+          </div>
+          
+          <Card className="bg-gradient-to-br from-blue-50 to-purple-50 border-0">
+            <CardContent className="p-8">
+              <div className="text-center">
+                <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <Zap className="h-8 w-8 text-white" />
+                </div>
+                
+                <h3 className="text-xl font-bold mb-4">Ready to Get Started?</h3>
+                <p className="text-gray-600 mb-6">
+                  Connect your first marketing platform in under 2 minutes. 
+                  No credit card required.
+                </p>
+                
+                <div className="space-y-3">
+                  <div className="flex items-center justify-center space-x-2 text-sm text-gray-600">
+                    <Shield className="h-4 w-4 text-green-500" />
+                    <span>Enterprise-grade security</span>
+                  </div>
+                  <div className="flex items-center justify-center space-x-2 text-sm text-gray-600">
+                    <CheckCircle className="h-4 w-4 text-green-500" />
+                    <span>Read-only access</span>
+                  </div>
+                  <div className="flex items-center justify-center space-x-2 text-sm text-gray-600">
+                    <Wifi className="h-4 w-4 text-green-500" />
+                    <span>OAuth 2.0 authentication</span>
+                  </div>
+                </div>
+                
+                <Link href="/platforms/setup" className="block mt-6">
+                  <Button className="w-full" size="lg">
+                    Connect Platform Now
+                  </Button>
+                </Link>
+              </div>
+            </CardContent>
+          </Card>
         </div>
-      </section>
+      </div>
     </div>
   );
 }

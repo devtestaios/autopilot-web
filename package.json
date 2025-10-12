@@ -41,6 +41,7 @@
     "@tabler/icons-react": "^3.35.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "date-fns": "^4.1.0",
     "framer-motion": "^12.23.22",
     "google-ads-api": "^21.0.1",
     "lucide-react": "^0.544.0",
