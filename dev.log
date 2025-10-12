@@ -120,3 +120,16 @@ Error: Route "/api/oauth" used `cookies().get('sb-aggorhmzuhdirterhyej-auth-toke
  ✓ Compiled middleware in 85ms
  ✓ Compiled in 2.7s
  ✓ Compiled middleware in 4ms
+   Reload env: .env.local
+ ⚠ Found a change in next.config.ts. Restarting the server to apply the changes...
+   ▲ Next.js 15.5.2 (Turbopack)
+   - Local:        http://localhost:3002
+   - Network:      http://192.168.1.121:3002
+   - Environments: .env.local
+   - Experiments (use with caution):
+     · optimizePackageImports
+
+ ✓ Starting...
+ ○ Compiling middleware ...
+ ✓ Compiled middleware in 3.5s
+ ✓ Ready in 11.6s

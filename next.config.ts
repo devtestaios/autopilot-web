@@ -25,9 +25,6 @@ const nextConfig: NextConfig = {
   
     // Enhanced performance optimizations
   experimental: {
-    turbo: {
-      root: __dirname,
-    },
     optimizePackageImports: [
       'lucide-react', 
       '@radix-ui/react-dialog',
@@ -40,6 +37,7 @@ const nextConfig: NextConfig = {
   
   // Turbopack configuration (Next.js 15.5.2+)
   turbopack: {
+    root: __dirname,
     rules: {
       '*.svg': {
         loaders: ['@svgr/webpack'],
