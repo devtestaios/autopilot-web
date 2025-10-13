@@ -31,6 +31,13 @@ const PROTECTED_ROUTES = [
   '/analytics',
   '/settings',
   '/platforms',
+  '/marketing',
+  '/leads',
+  '/content-suite',
+  '/predictive-analytics',
+  '/recommendation-engine',
+  '/performance-advisor',
+  '/onboarding',
 ];
 
 export async function middleware(req: NextRequest) {
@@ -52,17 +59,17 @@ export async function middleware(req: NextRequest) {
   const isProtectedRoute = PROTECTED_ROUTES.some(route => pathname.startsWith(route));
   const isAdminRoute = ADMIN_ROUTES.some(route => pathname.startsWith(route));
 
-  // Redirect to login if accessing protected route without session
-  if (isProtectedRoute && !session) {
-    const redirectUrl = req.nextUrl.clone();
-    redirectUrl.pathname = '/login';
-    redirectUrl.searchParams.set('redirectTo', pathname);
-    return NextResponse.redirect(redirectUrl);
-  }
+  // Admin routes require authentication AND admin role
+  if (isAdminRoute) {
+    // First check if user is logged in
+    if (!session) {
+      const redirectUrl = req.nextUrl.clone();
+      redirectUrl.pathname = '/login';
+      redirectUrl.searchParams.set('redirectTo', pathname);
+      return NextResponse.redirect(redirectUrl);
+    }
 
-  // Check admin access for admin routes
-  if (isAdminRoute && session) {
-    // Fetch user profile to check role
+    // Then check if user has admin role
     const { data: profile } = await supabase
       .from('profiles')
       .select('role')
@@ -75,6 +82,14 @@ export async function middleware(req: NextRequest) {
       redirectUrl.pathname = '/dashboard';
       return NextResponse.redirect(redirectUrl);
     }
+  }
+
+  // Redirect to login if accessing protected route without session
+  if (isProtectedRoute && !session) {
+    const redirectUrl = req.nextUrl.clone();
+    redirectUrl.pathname = '/login';
+    redirectUrl.searchParams.set('redirectTo', pathname);
+    return NextResponse.redirect(redirectUrl);
   }
 
   // Redirect to dashboard if accessing login while authenticated
