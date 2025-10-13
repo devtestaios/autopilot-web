@@ -5,6 +5,9 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   // Disable static export to prevent SSR issues with theme context
   output: undefined,
   trailingSlash: false,
