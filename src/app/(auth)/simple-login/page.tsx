@@ -33,10 +33,24 @@ export default function SimpleLoginPage() {
         return;
       }
 
-      if (data?.user) {
+      if (data?.session && data?.user) {
         console.log('✅ Login successful! User:', data.user.email);
-        // Just redirect to dashboard
+        console.log('✅ Session:', data.session);
+
+        // Store session in localStorage as backup
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('supabase.auth.token', JSON.stringify(data.session));
+        }
+
+        // Give Supabase time to set cookies
+        await new Promise(resolve => setTimeout(resolve, 500));
+
+        // Redirect to dashboard
+        console.log('🚀 Redirecting to dashboard...');
         window.location.href = '/dashboard';
+      } else {
+        setError('Login succeeded but no session created');
+        setLoading(false);
       }
     } catch (err) {
       console.error('💥 Caught error:', err);
