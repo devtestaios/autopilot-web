@@ -4,14 +4,13 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import dynamic from 'next/dynamic';
-import { 
-  Users, Shield, Activity, AlertTriangle, Settings, ChevronRight, 
-  UserPlus, UserX, Edit, Trash2, LogOut, Database, BarChart3, 
+import {
+  Users, Shield, Activity, AlertTriangle, Settings, ChevronRight,
+  UserPlus, UserX, Edit, Trash2, LogOut, Database, BarChart3,
   Bell, Search, RefreshCw, Eye, Ban, CheckCircle, Clock,
   TrendingUp, AlertCircle, User, Building, Crown, Key,
-  Globe, DollarSign, Plus, Filter
+  Globe, DollarSign, Plus, Filter, Menu, X
 } from 'lucide-react';
-import NavigationTabs from '@/components/NavigationTabs';
 import InviteUserModal from '@/components/admin/InviteUserModal';
 import {
   fetchAllUsers,
@@ -85,7 +84,7 @@ const useAdminAuth = () => {
 
 export default function AdminPage() {
   const { isAuthenticated, loading, logout } = useAdminAuth();
-  
+
   // State management
   const [users, setUsers] = useState<AdminUser[]>([]);
   const [securityEvents, setSecurityEvents] = useState<AdminSecurityEvent[]>([]);
@@ -96,6 +95,8 @@ export default function AdminPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeTab, setActiveTab] = useState<'overview' | 'users' | 'companies' | 'rbac' | 'security' | 'audit'>('overview');
   const [showInviteModal, setShowInviteModal] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   // Data fetching
   const loadUsers = async () => {
@@ -230,89 +231,131 @@ export default function AdminPage() {
     return null;
   }
 
+  const navigationItems = [
+    { key: 'overview', label: 'Overview', icon: BarChart3 },
+    { key: 'users', label: 'User Management', icon: Users },
+    { key: 'companies', label: 'Enterprise Companies', icon: Building },
+    { key: 'rbac', label: 'Role & Permissions', icon: Shield },
+    { key: 'security', label: 'Security', icon: AlertTriangle },
+    { key: 'audit', label: 'Audit Logs', icon: Database },
+  ];
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <NavigationTabs />
-      
-      <div className="container mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="flex justify-between items-start mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-              Enterprise Admin Dashboard
-            </h1>
-            <p className="text-gray-600 dark:text-gray-400 mt-2">
-              Multi-tenant administration, user management, and enterprise controls
-            </p>
-          </div>
-          <div className="flex items-center space-x-4">
+      {/* Sidebar */}
+      <aside
+        className={`fixed left-0 top-0 z-40 h-screen transition-all duration-300 ${
+          sidebarCollapsed ? 'w-16' : 'w-64'
+        } bg-gray-900 border-r border-gray-800`}
+      >
+        <div className="flex flex-col h-full">
+          {/* Sidebar Header */}
+          <div className="flex items-center justify-between p-4 border-b border-gray-800">
+            {!sidebarCollapsed && (
+              <div className="flex items-center">
+                <Shield className="w-6 h-6 text-blue-500 mr-2" />
+                <span className="text-white font-semibold">Admin</span>
+              </div>
+            )}
             <button
-              onClick={loadUsers}
-              disabled={dataLoading}
-              className="flex items-center px-3 py-2 bg-gray-600 hover:bg-gray-700 disabled:opacity-50 text-white rounded-lg transition-colors"
+              onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+              className="p-1.5 rounded-lg hover:bg-gray-800 text-gray-400 hover:text-white transition-colors"
             >
-              <RefreshCw className={`w-4 h-4 mr-2 ${dataLoading ? 'animate-spin' : ''}`} />
-              Refresh
-            </button>
-            <button
-              onClick={() => setShowInviteModal(true)}
-              className="flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
-            >
-              <UserPlus className="w-4 h-4 mr-2" />
-              Invite User
-            </button>
-            <button
-              onClick={logout}
-              className="flex items-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors"
-            >
-              <LogOut className="w-4 h-4 mr-2" />
-              Logout
+              {sidebarCollapsed ? <Menu className="w-5 h-5" /> : <X className="w-5 h-5" />}
             </button>
           </div>
-        </div>
 
-        {/* Error Alert */}
-        {error && (
-          <div className="mb-6 p-4 bg-red-100 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-lg">
-            <div className="flex items-center">
-              <AlertTriangle className="w-5 h-5 text-red-600 dark:text-red-400 mr-2" />
-              <p className="text-red-800 dark:text-red-200">{error}</p>
-              <button
-                onClick={() => setError(null)}
-                className="ml-auto text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-200"
-              >
-                ×
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* Navigation Tabs */}
-        <div className="mb-8 border-b border-gray-200 dark:border-gray-700">
-          <nav className="-mb-px flex space-x-8">
-            {[
-              { key: 'overview', label: 'Overview', icon: BarChart3 },
-              { key: 'users', label: 'User Management', icon: Users },
-              { key: 'companies', label: 'Enterprise Companies', icon: Building },
-              { key: 'rbac', label: 'Role & Permissions', icon: Shield },
-              { key: 'security', label: 'Security', icon: AlertTriangle },
-              { key: 'audit', label: 'Audit Logs', icon: Database },
-            ].map(({ key, label, icon: Icon }) => (
+          {/* Navigation Items */}
+          <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
+            {navigationItems.map(({ key, label, icon: Icon }) => (
               <button
                 key={key}
                 onClick={() => setActiveTab(key as any)}
-                className={`group inline-flex items-center py-4 px-1 border-b-2 font-medium text-sm ${
+                className={`w-full flex items-center ${
+                  sidebarCollapsed ? 'justify-center' : 'justify-start'
+                } px-3 py-2.5 rounded-lg transition-colors ${
                   activeTab === key
-                    ? 'border-blue-500 text-blue-600 dark:text-blue-400'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300'
+                    ? 'bg-blue-600 text-white'
+                    : 'text-gray-400 hover:bg-gray-800 hover:text-white'
                 }`}
+                title={sidebarCollapsed ? label : undefined}
               >
-                <Icon className="w-5 h-5 mr-2" />
-                {label}
+                <Icon className={`w-5 h-5 ${sidebarCollapsed ? '' : 'mr-3'}`} />
+                {!sidebarCollapsed && <span className="text-sm font-medium">{label}</span>}
               </button>
             ))}
           </nav>
+
+          {/* Sidebar Footer */}
+          <div className="p-4 border-t border-gray-800 space-y-2">
+            <button
+              onClick={loadUsers}
+              disabled={dataLoading}
+              className={`w-full flex items-center ${
+                sidebarCollapsed ? 'justify-center' : 'justify-start'
+              } px-3 py-2.5 rounded-lg transition-colors text-gray-400 hover:bg-gray-800 hover:text-white disabled:opacity-50`}
+              title={sidebarCollapsed ? 'Refresh' : undefined}
+            >
+              <RefreshCw className={`w-5 h-5 ${dataLoading ? 'animate-spin' : ''} ${sidebarCollapsed ? '' : 'mr-3'}`} />
+              {!sidebarCollapsed && <span className="text-sm font-medium">Refresh</span>}
+            </button>
+            <button
+              onClick={logout}
+              className={`w-full flex items-center ${
+                sidebarCollapsed ? 'justify-center' : 'justify-start'
+              } px-3 py-2.5 rounded-lg transition-colors text-red-400 hover:bg-red-900/20 hover:text-red-300`}
+              title={sidebarCollapsed ? 'Logout' : undefined}
+            >
+              <LogOut className={`w-5 h-5 ${sidebarCollapsed ? '' : 'mr-3'}`} />
+              {!sidebarCollapsed && <span className="text-sm font-medium">Logout</span>}
+            </button>
+          </div>
         </div>
+      </aside>
+
+      {/* Main Content */}
+      <div
+        className={`transition-all duration-300 ${
+          sidebarCollapsed ? 'ml-16' : 'ml-64'
+        }`}
+      >
+        <div className="container mx-auto px-4 py-8">
+          {/* Header */}
+          <div className="flex justify-between items-start mb-8">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+                Enterprise Admin Dashboard
+              </h1>
+              <p className="text-gray-600 dark:text-gray-400 mt-2">
+                Multi-tenant administration, user management, and enterprise controls
+              </p>
+            </div>
+            <div className="flex items-center space-x-4">
+              <button
+                onClick={() => setShowInviteModal(true)}
+                className="flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+              >
+                <UserPlus className="w-4 h-4 mr-2" />
+                Invite User
+              </button>
+            </div>
+          </div>
+
+          {/* Error Alert */}
+          {error && (
+            <div className="mb-6 p-4 bg-red-100 dark:bg-red-900/30 border border-red-200 dark:border-red-800 rounded-lg">
+              <div className="flex items-center">
+                <AlertTriangle className="w-5 h-5 text-red-600 dark:text-red-400 mr-2" />
+                <p className="text-red-800 dark:text-red-200">{error}</p>
+                <button
+                  onClick={() => setError(null)}
+                  className="ml-auto text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-200"
+                >
+                  ×
+                </button>
+              </div>
+            </div>
+          )}
 
         {/* Overview Tab */}
         {activeTab === 'overview' && (
@@ -775,6 +818,7 @@ export default function AdminPage() {
             </div>
           </motion.div>
         )}
+        </div>
       </div>
 
       {/* Invite User Modal */}
