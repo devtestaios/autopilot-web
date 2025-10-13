@@ -431,8 +431,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   // Enhanced login with security logging
   const login = async (email: string, password: string, rememberMe: boolean = false): Promise<{ success: boolean; error?: string; requiresMfa?: boolean }> => {
+    console.log('🔐 Login attempt started for:', email);
+
     try {
       if (!isSupabaseConfigured) {
+        console.log('⚠️ Supabase not configured, using mock login');
         // Mock login for demo
         const mockUser: EnhancedUser = {
           id: 'mock-user-id',
@@ -490,56 +493,78 @@ export function AuthProvider({ children }: AuthProviderProps) {
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString()
         };
-        
+
         setUser(mockUser);
         safeLocalStorage.setItem('demo_user', JSON.stringify(mockUser));
+        console.log('✅ Mock login successful');
         return { success: true };
       }
 
+      console.log('🔍 Attempting Supabase authentication...');
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password
       });
 
       if (error) {
-        // Log failed login attempt
-        await supabase.from('security_events').insert({
-          user_id: null,
-          event_type: 'login_failure',
-          severity: 'warning',
-          description: `Failed login attempt for ${email}`,
-          metadata: { error: error.message }
-        });
-        
+        console.error('❌ Authentication failed:', error.message);
+
+        // Log failed login attempt (non-blocking)
+        try {
+          await supabase.from('security_events').insert({
+            user_id: null,
+            event_type: 'login_failure',
+            severity: 'warning',
+            description: `Failed login attempt for ${email}`,
+            metadata: { error: error.message }
+          });
+        } catch (logError) {
+          console.warn('Failed to log security event:', logError);
+        }
+
         return { success: false, error: error.message };
       }
 
       if (data.user) {
+        console.log('✅ Authentication successful, fetching profile...');
         const enhancedUser = await fetchUserProfile(data.user);
-        
-        if (enhancedUser?.mfaEnabled) {
-          // User has MFA enabled, return flag for MFA challenge
+
+        if (!enhancedUser) {
+          console.error('❌ Failed to fetch user profile');
+          return { success: false, error: 'Failed to load user profile' };
+        }
+
+        console.log('✅ User profile loaded:', enhancedUser.displayName);
+
+        if (enhancedUser.mfaEnabled) {
+          console.log('🔐 MFA enabled for user, requiring verification');
           return { success: true, requiresMfa: true };
         }
-        
+
         setUser(enhancedUser);
-        
-        // Update login statistics
-        await supabase
-          .from('profiles')
-          .update({ 
-            last_login_at: new Date().toISOString(),
-            login_count: (enhancedUser?.loginCount || 0) + 1,
-            failed_login_attempts: 0 // Reset on successful login
-          })
-          .eq('id', data.user.id);
-        
+
+        // Update login statistics (non-blocking)
+        try {
+          await supabase
+            .from('profiles')
+            .update({
+              last_login_at: new Date().toISOString(),
+              login_count: (enhancedUser.loginCount || 0) + 1,
+              failed_login_attempts: 0
+            })
+            .eq('id', data.user.id);
+        } catch (updateError) {
+          console.warn('Failed to update login stats:', updateError);
+        }
+
+        console.log('✅ Login completed successfully');
         return { success: true };
       }
 
+      console.error('❌ No user data returned from authentication');
       return { success: false, error: 'Unknown error occurred' };
     } catch (error) {
-      console.error('Login error:', error);
+      console.error('❌ Login error:', error);
       return { success: false, error: 'An unexpected error occurred' };
     }
   };

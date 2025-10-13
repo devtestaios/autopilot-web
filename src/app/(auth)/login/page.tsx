@@ -54,18 +54,25 @@ export default function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log('🚀 Login form submitted');
+    console.log('📧 Email:', formData.email);
+    console.log('🔑 Password length:', formData.password.length);
     setError('');
 
     try {
+      console.log('⏳ Calling login function...');
       const result = await login(formData.email, formData.password);
-      
+      console.log('📥 Login result:', result);
+
       if (result.success) {
+        console.log('✅ Login successful, redirecting to dashboard...');
         router.push('/dashboard');
       } else {
+        console.log('❌ Login failed:', result.error);
         setError(result.error || 'Login failed');
       }
     } catch (error) {
-      console.error('Login error:', error);
+      console.error('💥 Login error caught:', error);
       setError('Authentication service temporarily unavailable. Please try the demo access.');
     }
   };
