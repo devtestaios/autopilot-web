@@ -3,6 +3,9 @@
 import { useEffect, useState, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 
+// Force dynamic rendering for OAuth callback
+export const dynamic = 'force-dynamic'
+
 function MetaCallbackContent() {
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading')
   const [message, setMessage] = useState('')
@@ -11,6 +14,7 @@ function MetaCallbackContent() {
 
   useEffect(() => {
     handleCallback()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   async function handleCallback() {
