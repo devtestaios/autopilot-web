@@ -8,6 +8,8 @@ const PUBLIC_ROUTES = [
   '/login',
   '/simple-login',
   '/signup',
+  '/reset-password',
+  '/forgot-password',
   '/auth/callback',
   '/auth/meta/callback',
   '/auth/instagram/callback',
