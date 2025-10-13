@@ -287,12 +287,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
   // Enhanced user profile fetching with company data
   const fetchUserProfile = async (supabaseUser: SupabaseUser): Promise<EnhancedUser | null> => {
     try {
-      // Fetch user profile with company data
+      // Fetch user profile with company data using explicit join
       const { data: profile, error: profileError } = await supabase
         .from('profiles')
         .select(`
           *,
-          company:companies(*)
+          companies!company_id(*)
         `)
         .eq('id', supabaseUser.id)
         .single();
@@ -329,7 +329,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         avatar: profile.avatar_url,
         phone: profile.phone,
         
-        company: profile.company,
+        company: profile.companies,
         companyId: profile.company_id,
         department: profile.department,
         jobTitle: profile.job_title,

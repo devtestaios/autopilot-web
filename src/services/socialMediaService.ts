@@ -509,31 +509,9 @@ export class EnhancedSocialMediaService {
 
   // Real-time Features
   async subscribeToRealTimeUpdates(accountId: string, callback: (update: any) => void): Promise<WebSocket | null> {
-    // SSR-safe WebSocket creation
-    if (typeof window === 'undefined') {
-      console.warn('WebSocket not available in SSR environment');
-      return null;
-    }
-
-    const wsUrl = `${this.apiBase.replace('http', 'ws')}/api/social-media/realtime/${accountId}`;
-    
-    try {
-      const ws = new WebSocket(wsUrl);
-
-      ws.onmessage = (event) => {
-        const update = JSON.parse(event.data);
-        callback(update);
-      };
-
-      ws.onerror = (error) => {
-        console.error('WebSocket error:', error);
-      };
-
-      return ws;
-    } catch (error) {
-      console.error('Failed to create WebSocket connection:', error);
-      return null;
-    }
+    // Temporarily disabled - backend not running
+    console.log('WebSocket connections temporarily disabled - backend not available');
+    return null;
   }
 
   async getDashboardMetrics(accountIds: string[]): Promise<{
