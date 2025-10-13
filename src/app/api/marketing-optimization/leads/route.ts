@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
     const minScore = searchParams.get('min_score');
     const search = searchParams.get('search') || '';
     const sortBy = searchParams.get('sortBy') || 'created_at';
-    const sortOrder = searchParams.get('sortOrder') || 'desc');
+    const sortOrder = searchParams.get('sortOrder') || 'desc';
 
     // Build Supabase query
     let query = supabase

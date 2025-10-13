@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
     const status = searchParams.get('status');
     const search = searchParams.get('search') || '';
     const sortBy = searchParams.get('sortBy') || 'created_at';
-    const sortOrder = searchParams.get('sortOrder') || 'desc');
+    const sortOrder = searchParams.get('sortOrder') || 'desc';
 
     // Build Supabase query
     let query = supabase
