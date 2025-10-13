@@ -131,6 +131,9 @@ export async function POST(request: NextRequest) {
     }
 
     // Create user profile
+    // Use null for created_by if admin password auth (user.id would be 'admin' string, not a UUID)
+    const createdBy = user.id === 'admin' ? null : user.id;
+
     const { data: profileData, error: profileCreateError } = await supabaseAdmin
       .from('profiles')
       .insert([{
@@ -148,7 +151,7 @@ export async function POST(request: NextRequest) {
         test_user_expires_at: testUserExpiresAt || null,
         suite_access: suiteAccess || getDefaultSuiteAccess(),
         admin_notes: adminNotes || null,
-        created_by: user.id,
+        created_by: createdBy,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
       }])
@@ -170,6 +173,7 @@ export async function POST(request: NextRequest) {
     // Grant suite-specific permissions
     if (suiteAccess) {
       const permissions: any[] = [];
+      const grantedBy = user.id === 'admin' ? null : user.id;
 
       Object.entries(suiteAccess).forEach(([suiteId, access]: [string, any]) => {
         if (access.enabled) {
@@ -179,7 +183,7 @@ export async function POST(request: NextRequest) {
             resource: suiteId,
             action: 'read',
             is_active: true,
-            granted_by: user.id,
+            granted_by: grantedBy,
             granted_at: new Date().toISOString(),
           });
 
@@ -190,7 +194,7 @@ export async function POST(request: NextRequest) {
                 resource: suiteId,
                 action: 'create',
                 is_active: true,
-                granted_by: user.id,
+                granted_by: grantedBy,
                 granted_at: new Date().toISOString(),
               },
               {
@@ -198,7 +202,7 @@ export async function POST(request: NextRequest) {
                 resource: suiteId,
                 action: 'update',
                 is_active: true,
-                granted_by: user.id,
+                granted_by: grantedBy,
                 granted_at: new Date().toISOString(),
               },
               {
@@ -206,7 +210,7 @@ export async function POST(request: NextRequest) {
                 resource: suiteId,
                 action: 'delete',
                 is_active: true,
-                granted_by: user.id,
+                granted_by: grantedBy,
                 granted_at: new Date().toISOString(),
               }
             );
@@ -227,21 +231,24 @@ export async function POST(request: NextRequest) {
     }
 
     // Log the invitation in audit logs
-    await supabaseAdmin.from('audit_logs').insert({
-      user_id: user.id,
-      action: 'user_invited',
-      resource: 'users',
-      resource_id: authData.user.id,
-      metadata: {
-        invited_email: email,
-        role,
-        is_test_user: isTestUser,
-        enabled_suites: Object.keys(suiteAccess || {}).filter(
-          (key) => suiteAccess[key].enabled
-        ),
-      },
-      created_at: new Date().toISOString(),
-    });
+    // Only create audit log if we have a valid user ID (not admin password auth)
+    if (user.id !== 'admin') {
+      await supabaseAdmin.from('audit_logs').insert({
+        user_id: user.id,
+        action: 'user_invited',
+        resource: 'users',
+        resource_id: authData.user.id,
+        metadata: {
+          invited_email: email,
+          role,
+          is_test_user: isTestUser,
+          enabled_suites: Object.keys(suiteAccess || {}).filter(
+            (key) => suiteAccess[key].enabled
+          ),
+        },
+        created_at: new Date().toISOString(),
+      });
+    }
 
     // Send invitation email via Resend
     try {
