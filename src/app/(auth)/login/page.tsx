@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
@@ -8,6 +8,22 @@ import { useAuth } from '@/contexts/EnhancedAuthContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { Eye, EyeOff, Mail, Lock, ArrowLeft } from 'lucide-react';
 import { PulseWaveLogo } from '@/components/PulseWaveLogo';
+
+// Immediate execution test - this runs when the module loads
+console.log('🚨 LOGIN PAGE MODULE LOADED - JavaScript IS executing!');
+console.log('🚨 Current URL:', typeof window !== 'undefined' ? window.location.href : 'SSR');
+console.log('🚨 Console methods available:', typeof console.log);
+
+// Test if we can access window and document
+if (typeof window !== 'undefined') {
+  console.log('🚨 Window is available');
+  console.log('🚨 Document ready state:', document.readyState);
+
+  // Add a global click listener to verify ANY clicks are working
+  window.addEventListener('click', (e) => {
+    console.log('🚨 GLOBAL CLICK DETECTED on:', e.target);
+  });
+}
 
 export default function LoginPage() {
   console.log('🔧 Login page component rendering...');
@@ -26,6 +42,23 @@ export default function LoginPage() {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
+
+  // Test component mounting
+  useEffect(() => {
+    console.log('✅ LoginPage component MOUNTED');
+    console.log('✅ FormData state:', formData);
+    console.log('✅ Window location:', window.location.href);
+
+    // Add inline onclick test to test button after mount
+    const testBtn = document.getElementById('test-button');
+    if (testBtn) {
+      console.log('✅ Found test button element');
+      testBtn.onclick = () => {
+        console.log('🎯 INLINE ONCLICK FIRED!');
+        alert('Inline onclick works!');
+      };
+    }
+  }, []);
 
   const handleAutoFill = () => {
     setFormData({
@@ -124,8 +157,13 @@ export default function LoginPage() {
 
           {/* Debug Test Button */}
           <button
-            onClick={() => console.log('🧪 TEST BUTTON CLICKED - JS is working!')}
-            className="w-full bg-yellow-500 text-black py-2 px-4 rounded mb-4"
+            id="test-button"
+            onClick={() => {
+              console.log('🧪 TEST BUTTON CLICKED - JS is working!');
+              alert('React onClick works!');
+            }}
+            className="w-full bg-yellow-500 text-black py-2 px-4 rounded mb-4 cursor-pointer"
+            style={{ pointerEvents: 'auto' }}
           >
             🧪 Test Button (Click Me!)
           </button>
