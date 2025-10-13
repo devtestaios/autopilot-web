@@ -10,9 +10,13 @@ const PUBLIC_ROUTES = [
   '/signup',
   '/auth/callback',
   '/auth/meta/callback',
+  '/auth/instagram/callback',
   '/pricing',
   '/enterprise-contact',
+  '/home',
+  '/landing',
   '/api/auth',
+  '/adminlogin',
 ];
 
 // Define routes that require admin access
@@ -38,6 +42,9 @@ const PROTECTED_ROUTES = [
   '/recommendation-engine',
   '/performance-advisor',
   '/onboarding',
+  '/social-media',
+  '/email-marketing',
+  '/automation',
 ];
 
 export async function middleware(req: NextRequest) {
@@ -55,32 +62,42 @@ export async function middleware(req: NextRequest) {
     return res;
   }
 
-  // Check if route is protected
-  const isProtectedRoute = PROTECTED_ROUTES.some(route => pathname.startsWith(route));
+  // Check if route is admin route
   const isAdminRoute = ADMIN_ROUTES.some(route => pathname.startsWith(route));
+
+  // Everything else requires authentication (default protected)
+  const isProtectedRoute = !PUBLIC_ROUTES.some(route => pathname === route || pathname.startsWith(`${route}/`));
 
   // Admin routes require authentication AND admin role
   if (isAdminRoute) {
-    // First check if user is logged in
-    if (!session) {
+    // Admin routes use separate authentication system via /adminlogin
+    // Redirect to /adminlogin if accessing /admin without auth
+    if (pathname.startsWith('/admin') && !session) {
       const redirectUrl = req.nextUrl.clone();
-      redirectUrl.pathname = '/login';
+      redirectUrl.pathname = '/adminlogin';
       redirectUrl.searchParams.set('redirectTo', pathname);
       return NextResponse.redirect(redirectUrl);
     }
 
-    // Then check if user has admin role
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('role')
-      .eq('id', session.user.id)
-      .single();
+    // If accessing /adminlogin, allow it (no further checks)
+    if (pathname.startsWith('/adminlogin')) {
+      return res;
+    }
 
-    // Only allow super_admin, admin, or agency_owner
-    if (!profile || !['super_admin', 'admin', 'agency_owner'].includes(profile.role)) {
-      const redirectUrl = req.nextUrl.clone();
-      redirectUrl.pathname = '/dashboard';
-      return NextResponse.redirect(redirectUrl);
+    // For /admin route with session, check role
+    if (session) {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', session.user.id)
+        .single();
+
+      // Only allow super_admin, admin, or agency_owner
+      if (!profile || !['super_admin', 'admin', 'agency_owner'].includes(profile.role)) {
+        const redirectUrl = req.nextUrl.clone();
+        redirectUrl.pathname = '/dashboard';
+        return NextResponse.redirect(redirectUrl);
+      }
     }
   }
 
