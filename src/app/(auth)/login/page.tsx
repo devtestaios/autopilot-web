@@ -122,8 +122,22 @@ export default function LoginPage() {
             </p>
           </div>
 
+          {/* Debug Test Button */}
+          <button
+            onClick={() => console.log('🧪 TEST BUTTON CLICKED - JS is working!')}
+            className="w-full bg-yellow-500 text-black py-2 px-4 rounded mb-4"
+          >
+            🧪 Test Button (Click Me!)
+          </button>
+
           {/* Form */}
-          <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+          <form
+            className="mt-8 space-y-6"
+            onSubmit={(e) => {
+              console.log('📝 Form onSubmit fired!');
+              handleSubmit(e);
+            }}
+          >
             {error && (
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
@@ -250,21 +264,23 @@ export default function LoginPage() {
 
             {/* Submit Button */}
             <div className="space-y-3">
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
+              <button
                 type="submit"
                 disabled={isLoading}
                 onClick={(e) => {
                   console.log('🖱️ Sign in button clicked!');
                   console.log('Button type:', e.currentTarget.type);
                   console.log('Is loading:', isLoading);
+                  console.log('Form element:', e.currentTarget.form);
                 }}
+                onMouseDown={() => console.log('🐭 Mouse down on button')}
+                onMouseUp={() => console.log('🐭 Mouse up on button')}
                 className={`group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pulse-cyan transition-colors ${
                   isLoading
                     ? 'bg-pulse-cyan/50 cursor-not-allowed'
                     : 'bg-gradient-to-r from-pulse-cyan to-pulse-purple hover:from-pulse-cyan/80 hover:to-pulse-purple/80'
                 }`}
+                style={{ pointerEvents: 'auto', zIndex: 10 }}
               >
                 {isLoading ? (
                   <div className="flex items-center">
@@ -274,7 +290,7 @@ export default function LoginPage() {
                 ) : (
                   'Sign in'
                 )}
-              </motion.button>
+              </button>
 
               {/* Auto Fill Demo Credentials */}
               <motion.button
