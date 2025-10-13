@@ -11,6 +11,7 @@ import {
   TrendingUp, AlertCircle, User, Building, Crown, Key,
   Globe, DollarSign, Plus, Filter, Menu, X
 } from 'lucide-react';
+import NavigationTabs from '@/components/NavigationTabs';
 import InviteUserModal from '@/components/admin/InviteUserModal';
 import {
   fetchAllUsers,
@@ -242,11 +243,15 @@ export default function AdminPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      {/* Sidebar */}
+      {/* Top Navigation */}
+      <NavigationTabs />
+
+      {/* Sidebar - positioned below the navigation bar */}
       <aside
-        className={`fixed left-0 top-0 z-40 h-screen transition-all duration-300 ${
+        className={`fixed left-0 top-16 z-40 transition-all duration-300 ${
           sidebarCollapsed ? 'w-16' : 'w-64'
         } bg-gray-900 border-r border-gray-800`}
+        style={{ height: 'calc(100vh - 64px)' }}
       >
         <div className="flex flex-col h-full">
           {/* Sidebar Header */}
@@ -315,7 +320,7 @@ export default function AdminPage() {
 
       {/* Main Content */}
       <div
-        className={`transition-all duration-300 ${
+        className={`transition-all duration-300 pt-16 ${
           sidebarCollapsed ? 'ml-16' : 'ml-64'
         }`}
       >
