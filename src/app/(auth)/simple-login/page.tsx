@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { supabase } from '@/lib/supabase';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
 export default function SimpleLoginPage() {
   const [email, setEmail] = useState('');
@@ -10,6 +10,7 @@ export default function SimpleLoginPage() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const supabase = createClientComponentClient();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,19 +36,14 @@ export default function SimpleLoginPage() {
 
       if (data?.session && data?.user) {
         console.log('✅ Login successful! User:', data.user.email);
-        console.log('✅ Session:', data.session);
+        console.log('✅ Session created with cookies');
 
-        // Store session in localStorage as backup
-        if (typeof window !== 'undefined') {
-          localStorage.setItem('supabase.auth.token', JSON.stringify(data.session));
-        }
+        // Refresh the router to pick up the new session
+        router.refresh();
 
-        // Give Supabase time to set cookies
-        await new Promise(resolve => setTimeout(resolve, 500));
-
-        // Redirect to dashboard
+        // Navigate to dashboard
         console.log('🚀 Redirecting to dashboard...');
-        window.location.href = '/dashboard';
+        router.push('/dashboard');
       } else {
         setError('Login succeeded but no session created');
         setLoading(false);
