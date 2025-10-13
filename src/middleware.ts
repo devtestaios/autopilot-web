@@ -22,7 +22,6 @@ const PUBLIC_ROUTES = [
 // Define routes that require admin access
 const ADMIN_ROUTES = [
   '/admin',
-  '/adminlogin',
 ];
 
 // Define protected routes (require authentication)
