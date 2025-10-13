@@ -5,6 +5,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
+import { createClient } from '@supabase/supabase-js';
 import { cookies } from 'next/headers';
 import { sendInvitationEmail } from '@/lib/email/resend';
 
@@ -60,8 +61,17 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const cookieStore = await cookies();
-    const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
+    // Create admin Supabase client with service role for user creation
+    const supabaseAdmin = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!,
+      {
+        auth: {
+          autoRefreshToken: false,
+          persistSession: false
+        }
+      }
+    );
 
     // Parse request body
     const body = await request.json();
@@ -91,8 +101,8 @@ export async function POST(request: NextRequest) {
     // Generate a temporary password
     const tempPassword = generateSecurePassword();
 
-    // Create auth user in Supabase
-    const { data: authData, error: authCreateError } = await supabase.auth.admin.createUser({
+    // Create auth user in Supabase using admin client
+    const { data: authData, error: authCreateError } = await supabaseAdmin.auth.admin.createUser({
       email,
       password: tempPassword,
       email_confirm: emailVerified || true, // Auto-confirm invited users
@@ -121,7 +131,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Create user profile
-    const { data: profileData, error: profileCreateError } = await supabase
+    const { data: profileData, error: profileCreateError } = await supabaseAdmin
       .from('profiles')
       .insert([{
         id: authData.user.id,
@@ -149,7 +159,7 @@ export async function POST(request: NextRequest) {
       console.error('Error creating profile:', profileCreateError);
 
       // Cleanup: Delete the auth user if profile creation failed
-      await supabase.auth.admin.deleteUser(authData.user.id);
+      await supabaseAdmin.auth.admin.deleteUser(authData.user.id);
 
       return NextResponse.json(
         { error: `Failed to create profile: ${profileCreateError.message}` },
@@ -205,7 +215,7 @@ export async function POST(request: NextRequest) {
       });
 
       if (permissions.length > 0) {
-        const { error: permissionsError } = await supabase
+        const { error: permissionsError } = await supabaseAdmin
           .from('user_permissions')
           .insert(permissions);
 
@@ -217,7 +227,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Log the invitation in audit logs
-    await supabase.from('audit_logs').insert({
+    await supabaseAdmin.from('audit_logs').insert({
       user_id: user.id,
       action: 'user_invited',
       resource: 'users',
