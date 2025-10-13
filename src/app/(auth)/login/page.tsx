@@ -12,15 +12,22 @@ import { PulseWaveLogo } from '@/components/PulseWaveLogo';
 export default function LoginPage() {
   const router = useRouter();
   const { theme } = useTheme();
-  
+
   // Always call hooks at the top level
   const authContext = useAuth();
-  
+
+  console.log('🔧 Login page initialized');
+  console.log('Auth context available:', !!authContext);
+
   // Handle potential auth context issues
   const { login, isLoading } = authContext || {
     login: async () => ({ success: false, error: 'Authentication service not available' }),
     isLoading: false
   };
+
+  console.log('Login function available:', typeof login);
+  console.log('isLoading:', isLoading);
+
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -256,6 +263,11 @@ export default function LoginPage() {
                 whileTap={{ scale: 0.98 }}
                 type="submit"
                 disabled={isLoading}
+                onClick={(e) => {
+                  console.log('🖱️ Sign in button clicked!');
+                  console.log('Button type:', e.currentTarget.type);
+                  console.log('Is loading:', isLoading);
+                }}
                 className={`group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pulse-cyan transition-colors ${
                   isLoading
                     ? 'bg-pulse-cyan/50 cursor-not-allowed'
