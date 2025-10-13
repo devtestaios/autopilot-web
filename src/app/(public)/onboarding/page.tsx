@@ -3,7 +3,7 @@
 import React, { useState, useEffect, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSearchParams, useRouter } from 'next/navigation';
-import NavigationTabs from '@/components/NavigationTabs';
+// NavigationTabs removed - using root layout Navigation instead
 import UnifiedSetupWizard from '@/components/UnifiedSetupWizard';
 import RoleBasedLanding from '@/components/onboarding/RoleBasedLanding';
 import { Button } from '@/components/ui/button';
@@ -172,7 +172,7 @@ function OnboardingContent() {
 
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
-        <NavigationTabs />
+        {/* Navigation provided by root layout */}
         
         <div className="container mx-auto px-4 py-16">
           <motion.div
@@ -287,7 +287,7 @@ function OnboardingContent() {
   if (currentStep === 'role-discovery') {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-        <NavigationTabs />
+        {/* Navigation provided by root layout */}
         
         <div className="container mx-auto px-4 py-8">
           {/* Progress Bar */}
@@ -376,7 +376,7 @@ function OnboardingContent() {
   if (currentStep === 'business-setup') {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-        <NavigationTabs />
+        {/* Navigation provided by root layout */}
         <UnifiedSetupWizard 
           onComplete={handleSetupComplete}
           onSkip={handleSetupSkip}

@@ -12,7 +12,7 @@ import {
 } from 'lucide-react';
 
 // Simple imports - no complex design system
-import NavigationTabs from '@/components/NavigationTabs';
+// NavigationTabs removed - using root layout Navigation instead
 
 // Import UnifiedSidebar for collapsible navigation
 const UnifiedSidebar = dynamic(() => import('@/components/UnifiedSidebar'), {
@@ -437,9 +437,8 @@ function DashboardContent() {
 
   return (
     <div className={cn(themeClasses.appBackground)}>
-      {/* Navigation Header */}
-      <NavigationTabs />
-      
+      {/* Navigation provided by root layout */}
+
       {/* Unified Sidebar for navigation */}
       <UnifiedSidebar onCollapseChange={setSidebarCollapsed} />
       

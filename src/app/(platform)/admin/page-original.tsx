@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Users, Shield, Activity, AlertTriangle, Settings, ChevronRight, UserPlus, UserX, Edit, Trash2, LogOut, Database, BarChart3, Bell, Search, RefreshCw } from 'lucide-react';
-import NavigationTabs from '@/components/NavigationTabs';
+// NavigationTabs removed - using root layout Navigation instead
 import { 
   fetchAllUsers, 
   fetchSecurityEvents, 
@@ -153,7 +153,7 @@ export default function AdminPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <NavigationTabs />
+      {/* Navigation provided by root layout */}
       
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-7xl mx-auto">

@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useRouter } from 'next/navigation';
-import NavigationTabs from '@/components/NavigationTabs';
+// NavigationTabs removed - using root layout Navigation instead
 import CampaignTemplateLibrary from '@/components/CampaignTemplateLibrary';
 import { useToast } from '@/components/ui/Toast';
 
@@ -44,7 +44,7 @@ export default function CampaignTemplatesPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <NavigationTabs />
+      {/* Navigation provided by root layout */}
       <main className="p-4 md:p-8">
         <CampaignTemplateLibrary
           onSelectTemplate={handleSelectTemplate}

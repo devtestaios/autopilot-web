@@ -12,7 +12,7 @@ import React, { useState, useEffect } from 'react';
 import { usePerformance, usePerformanceAnalytics } from '@/contexts/PerformanceContext';
 import { useWebVitals } from '@/hooks/useWebVitals';
 import WebVitalsMonitor from '@/components/performance/WebVitalsMonitor';
-import NavigationTabs from '@/components/NavigationTabs';
+// NavigationTabs removed - using root layout Navigation instead
 import { designTokens } from '@/lib/designTokens';
 import { animationVariants } from '@/lib/animations';
 import visualEffects from '@/lib/visualEffects';
@@ -312,7 +312,7 @@ export default function PerformancePage() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <NavigationTabs />
+      {/* Navigation provided by root layout */}
       
       <div className="container mx-auto px-4 py-8">
         {/* Page Header */}

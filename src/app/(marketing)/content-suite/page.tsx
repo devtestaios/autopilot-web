@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import NavigationTabs from '@/components/NavigationTabs';
+// NavigationTabs removed - using root layout Navigation instead
 import AdvancedNavigation from '@/components/ui/AdvancedNavigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -246,7 +246,7 @@ export default function ContentCreationSuite() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <NavigationTabs />
+      {/* Navigation provided by root layout */}
       <AdvancedNavigation 
         sidebarCollapsed={sidebarCollapsed}
       />

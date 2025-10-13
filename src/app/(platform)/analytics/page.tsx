@@ -40,8 +40,7 @@ import { Button as EnhancedButton, Card as EnhancedCard, Badge, Spinner, Avatar,
 import { trackingHelpers, realAnalytics } from '@/lib/performance/realAnalytics';
 import { analyticsManager } from '@/lib/performance/analyticsManager';
 import { simpleAnalytics } from '@/lib/performance/simpleAnalytics';
-import NavigationTabs from '@/components/NavigationTabs';
-
+// NavigationTabs removed - using root layout Navigation instead
 // ==================== TYPES ====================
 
 interface KPI {
@@ -333,7 +332,7 @@ export default function AnalyticsPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-        <NavigationTabs />
+        {/* Navigation provided by root layout */}
         <div className="flex items-center justify-center" style={{ height: 'calc(100vh - 80px)' }}>
           <div className="text-center">
             <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900 dark:border-white"></div>

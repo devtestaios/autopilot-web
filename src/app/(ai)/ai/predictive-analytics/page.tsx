@@ -7,7 +7,7 @@
  */
 
 import React from 'react';
-import NavigationTabs from '@/components/NavigationTabs';
+// NavigationTabs removed - using root layout Navigation instead
 import PredictiveCampaignAnalytics from '@/components/ai/PredictiveCampaignAnalytics';
 import WebVitalsMonitor from '@/components/performance/WebVitalsMonitor';
 
@@ -18,7 +18,7 @@ export default function PredictiveAnalyticsPage() {
       <WebVitalsMonitor />
       
       {/* Navigation */}
-      <NavigationTabs />
+      {/* Navigation provided by root layout */}
       
       {/* Main Content */}
       <div className="container mx-auto px-4 py-8">

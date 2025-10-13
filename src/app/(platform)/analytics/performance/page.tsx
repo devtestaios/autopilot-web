@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { fetchAnalyticsPerformance } from '@/lib/api';
 import AIInsights from '@/components/AIInsights';
-import NavigationTabs from '@/components/NavigationTabs';
+// NavigationTabs removed - using root layout Navigation instead
 import { 
   InteractiveLineChart, 
   InteractiveBarChart, 
@@ -112,7 +112,7 @@ export default function PerformanceAnalytics() {
 
   return (
     <div className="min-h-screen bg-background">
-      <NavigationTabs />
+      {/* Navigation provided by root layout */}
       <div className="container mx-auto px-4 py-8">
         <div className="space-y-8">
           {/* Header */}

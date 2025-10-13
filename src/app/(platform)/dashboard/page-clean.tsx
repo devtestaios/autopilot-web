@@ -10,8 +10,7 @@ import {
 } from 'lucide-react';
 
 // Simple imports - no complex design system
-import NavigationTabs from '@/components/NavigationTabs';
-
+// NavigationTabs removed - using root layout Navigation instead
 const AIControlChat = dynamic(() => import('@/components/AIControlChat'), {
   ssr: false,
   loading: () => null
@@ -144,7 +143,7 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Simple Navigation */}
-      <NavigationTabs />
+      {/* Navigation provided by root layout */}
       
       {/* Welcome Banner */}
       {showWelcomeBanner && (

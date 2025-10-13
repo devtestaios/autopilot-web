@@ -1,12 +1,11 @@
 'use client';
 
 import CustomReportBuilder from '@/components/CustomReportBuilder';
-import NavigationTabs from '@/components/NavigationTabs';
-
+// NavigationTabs removed - using root layout Navigation instead
 export default function ReportBuilderPage() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <NavigationTabs />
+      {/* Navigation provided by root layout */}
       <CustomReportBuilder />
     </div>
   );

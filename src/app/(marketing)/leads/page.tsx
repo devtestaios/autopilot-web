@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Plus, Search, Filter, Download, RefreshCw, Mail, User, Calendar, Globe, MoreHorizontal, Trash2, Edit3 } from "lucide-react";
-import NavigationTabs from "@/components/NavigationTabs";
+// NavigationTabs removed - using root layout Navigation instead
 import { LeadFiltersComponent } from "@/components/LeadFilters";
 import { useLeadFilters } from "@/hooks/useLeadFilters";
 import { useSearchContext } from "@/contexts/SearchContext";
@@ -80,7 +80,7 @@ export default function LeadsPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <NavigationTabs />
+      {/* Navigation provided by root layout */}
       <div className="p-6">
         <div className="max-w-7xl mx-auto">
         {/* Header */}

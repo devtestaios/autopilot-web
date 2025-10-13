@@ -11,7 +11,7 @@ import {
   TrendingUp, AlertCircle, User, Building, Crown, Key,
   Globe, DollarSign, Plus, Filter, Menu, X
 } from 'lucide-react';
-import NavigationTabs from '@/components/NavigationTabs';
+// NavigationTabs removed - using root layout Navigation instead
 import InviteUserModal from '@/components/admin/InviteUserModal';
 import {
   fetchAllUsers,
@@ -243,8 +243,7 @@ export default function AdminPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      {/* Top Navigation */}
-      <NavigationTabs />
+      {/* Navigation provided by root layout */}
 
       {/* Sidebar - positioned below the navigation bar */}
       <aside

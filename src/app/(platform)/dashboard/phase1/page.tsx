@@ -8,8 +8,7 @@
 import { useState, useEffect, Suspense } from 'react';
 import dynamic from 'next/dynamic';
 import { motion } from 'framer-motion';
-import NavigationTabs from '@/components/NavigationTabs';
-
+// NavigationTabs removed - using root layout Navigation instead
 // Dashboard skeleton component for lazy loading states
 const DashboardWidgetSkeleton = ({ type }: { type: 'chart' | 'comparison' | 'timeline' | 'alerts' | 'status' }) => {
   const getSkeletonHeight = (type: string) => {
@@ -208,7 +207,7 @@ export default function Phase1Dashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <NavigationTabs />
+      {/* Navigation provided by root layout */}
       
       <div className="container mx-auto px-4 py-8">
         {/* Header */}

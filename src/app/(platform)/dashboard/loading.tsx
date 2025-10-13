@@ -7,7 +7,7 @@ import UnifiedSidebar from '@/components/UnifiedSidebar'
 export default function DashboardLoading() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <NavigationTabs />
+      {/* Navigation provided by root layout */}
       <div className="flex">
         <UnifiedSidebar />
         <main className="flex-1 lg:ml-64 pt-6">

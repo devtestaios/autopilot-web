@@ -23,7 +23,7 @@ import {
   Pause,
   RefreshCw
 } from 'lucide-react';
-import NavigationTabs from '@/components/NavigationTabs';
+// NavigationTabs removed - using root layout Navigation instead
 import UnifiedSidebar from '@/components/UnifiedSidebar';
 
 // Types for AI optimization
@@ -323,7 +323,7 @@ export default function OptimizationPage() {
       <div className={`transition-all duration-300 ${
         sidebarCollapsed ? 'lg:ml-14' : 'lg:ml-56'
       }`}>
-        <NavigationTabs />
+        {/* Navigation provided by root layout */}
         
         <div className="p-6 space-y-6">
           {/* Header */}

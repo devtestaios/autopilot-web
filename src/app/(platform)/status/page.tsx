@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import NavigationTabs from '@/components/NavigationTabs';
+// NavigationTabs removed - using root layout Navigation instead
 import { 
   Activity, 
   Cpu, 
@@ -114,7 +114,7 @@ export default function StatusPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <NavigationTabs />
+      {/* Navigation provided by root layout */}
       <main className="p-4 md:p-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}

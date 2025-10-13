@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import NavigationTabs from '@/components/NavigationTabs';
+// NavigationTabs removed - using root layout Navigation instead
 import { 
   Crown,
   Users,
@@ -63,7 +63,7 @@ export default function EnterpriseContactPage() {
   if (submitted) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-        <NavigationTabs />
+        {/* Navigation provided by root layout */}
         
         <div className="pt-24 pb-16">
           <div className="container mx-auto px-4">
@@ -116,7 +116,7 @@ export default function EnterpriseContactPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <NavigationTabs />
+      {/* Navigation provided by root layout */}
       
       {/* Hero Section */}
       <div className="pt-24 pb-16 bg-gradient-to-br from-blue-900 via-indigo-900 to-purple-900">

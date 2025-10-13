@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { DraggableDashboard, LAYOUT_PRESETS } from '@/components/DraggableDashboard';
 import { DashboardCustomizationProvider, useDashboardCustomization } from '@/contexts/DashboardCustomizationContext';
-import NavigationTabs from '@/components/NavigationTabs';
+// NavigationTabs removed - using root layout Navigation instead
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   LayoutDashboard, Save, Download, Upload, Settings, 
@@ -328,7 +328,7 @@ function EnhancedDashboardContent() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <NavigationTabs />
+      {/* Navigation provided by root layout */}
       
       <div className="container mx-auto px-4 py-8">
         {/* Page Header */}

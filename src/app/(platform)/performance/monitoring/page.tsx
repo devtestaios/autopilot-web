@@ -9,7 +9,7 @@
 'use client';
 
 import React from 'react';
-import NavigationTabs from '@/components/NavigationTabs';
+// NavigationTabs removed - using root layout Navigation instead
 import PerformanceMonitor from '@/components/performance/PerformanceMonitor';
 import WebVitalsMonitor from '@/components/performance/WebVitalsMonitor';
 
@@ -33,7 +33,7 @@ export default function PerformanceMonitoringPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <NavigationTabs />
+      {/* Navigation provided by root layout */}
       
       <div className="container mx-auto px-4 py-8">
         {/* Page Header */}
