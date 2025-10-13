@@ -10,23 +10,15 @@ import { Eye, EyeOff, Mail, Lock, ArrowLeft } from 'lucide-react';
 import { PulseWaveLogo } from '@/components/PulseWaveLogo';
 
 export default function LoginPage() {
+  console.log('🔧 Login page component rendering...');
+
   const router = useRouter();
   const { theme } = useTheme();
+  const { login, isLoading } = useAuth();
 
-  // Always call hooks at the top level
-  const authContext = useAuth();
-
-  console.log('🔧 Login page initialized');
-  console.log('Auth context available:', !!authContext);
-
-  // Handle potential auth context issues
-  const { login, isLoading } = authContext || {
-    login: async () => ({ success: false, error: 'Authentication service not available' }),
-    isLoading: false
-  };
-
-  console.log('Login function available:', typeof login);
-  console.log('isLoading:', isLoading);
+  console.log('✅ All hooks loaded');
+  console.log('Login function type:', typeof login);
+  console.log('isLoading state:', isLoading);
 
   const [formData, setFormData] = useState({
     email: '',

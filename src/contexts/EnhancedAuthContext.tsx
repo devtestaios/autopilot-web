@@ -212,7 +212,36 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function useAuth() {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    console.error('⚠️ useAuth called outside of AuthProvider!');
+    // Return a mock context instead of throwing
+    return {
+      user: null,
+      isLoading: false,
+      isAuthenticated: false,
+      login: async () => ({ success: false, error: 'Auth provider not initialized' }),
+      signup: async () => ({ success: false, error: 'Auth provider not initialized' }),
+      logout: async () => {},
+      resetPassword: async () => ({ success: false }),
+      enableMfa: async () => ({ success: false }),
+      disableMfa: async () => ({ success: false }),
+      verifyMfa: async () => ({ success: false }),
+      updateUser: async () => ({ success: false }),
+      updatePreferences: async () => ({ success: false }),
+      changePassword: async () => ({ success: false }),
+      deleteAccount: async () => ({ success: false }),
+      hasPermission: () => false,
+      hasRole: () => false,
+      canAccess: () => false,
+      getSessions: async () => [],
+      revokeSession: async () => ({ success: false }),
+      revokeAllSessions: async () => ({ success: false }),
+      getAuditLogs: async () => [],
+      updateCompany: async () => ({ success: false }),
+      inviteUser: async () => ({ success: false }),
+      getCompanyUsers: async () => [],
+      updateUserRole: async () => ({ success: false }),
+      deactivateUser: async () => ({ success: false }),
+    } as AuthContextType;
   }
   return context;
 }
