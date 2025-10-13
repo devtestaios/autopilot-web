@@ -1,20 +1,20 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useToast } from '@/components/ui/use-toast';
-import { 
-  PlatformsGrid, 
+import {
+  PlatformsGrid,
   ConnectionStats,
   type Platform,
-  type PlatformConnection 
+  type PlatformConnection
 } from '@/components/platforms/PlatformConnectionCard';
-import { 
-  AlertCircle, 
-  CheckCircle, 
-  RefreshCw, 
+import {
+  AlertCircle,
+  CheckCircle,
+  RefreshCw,
   Plus,
   Settings,
   Info
@@ -25,17 +25,17 @@ import { useRouter, useSearchParams } from 'next/navigation';
 // PLATFORMS PAGE COMPONENT
 // =============================================================================
 
-export default function PlatformsPage() {
+function PlatformsPageContent() {
   const [platforms, setPlatforms] = useState<Platform[]>([]);
   const [connections, setConnections] = useState<PlatformConnection[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isConnecting, setIsConnecting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  
+
   const { toast } = useToast();
   const router = useRouter();
   const searchParams = useSearchParams();
-  
+
   // Handle OAuth callback results
   useEffect(() => {
     const success = searchParams.get('success');
@@ -430,5 +430,24 @@ export default function PlatformsPage() {
         </Card>
       )}
     </div>
+  );
+}
+
+// =============================================================================
+// WRAPPER WITH SUSPENSE BOUNDARY
+// =============================================================================
+
+export default function PlatformsPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <RefreshCw className="h-8 w-8 animate-spin mx-auto mb-4" />
+          <p className="text-muted-foreground">Loading platforms...</p>
+        </div>
+      </div>
+    }>
+      <PlatformsPageContent />
+    </Suspense>
   );
 }

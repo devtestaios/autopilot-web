@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, memo } from 'react';
+import React, { useState, useEffect, memo, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import { themeClasses, cn } from '@/lib/theme-utils';
@@ -200,7 +200,7 @@ const SubPlatformCard = memo(({ subPlatform, onClick }: { subPlatform: SubPlatfo
 
 SubPlatformCard.displayName = 'SubPlatformCard';
 
-export default function Dashboard() {
+function DashboardContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   
@@ -541,5 +541,24 @@ export default function Dashboard() {
         </div>
       </div>
     </div>
+  );
+}
+
+// =============================================================================
+// WRAPPER WITH SUSPENSE BOUNDARY
+// =============================================================================
+
+export default function Dashboard() {
+  return (
+    <Suspense fallback={
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <Activity className="h-8 w-8 animate-spin mx-auto mb-4 text-blue-600" />
+          <p className="text-gray-600 dark:text-gray-400">Loading dashboard...</p>
+        </div>
+      </div>
+    }>
+      <DashboardContent />
+    </Suspense>
   );
 }
