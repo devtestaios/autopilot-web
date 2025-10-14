@@ -1,4 +1,4 @@
-import UnifiedNavigation from '@/components/UnifiedNavigation';
+import MainNavigation from '@/components/MainNavigation';
 import Breadcrumbs from '@/components/Breadcrumbs';
 
 export default function CollabLayout({
@@ -8,7 +8,7 @@ export default function CollabLayout({
 }) {
   return (
     <>
-      <UnifiedNavigation variant="app" />
+      <MainNavigation variant="app" />
       <div className="page-container">
         <Breadcrumbs />
         {children}
