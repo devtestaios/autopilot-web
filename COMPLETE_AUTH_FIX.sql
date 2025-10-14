@@ -24,6 +24,9 @@ DROP POLICY IF EXISTS "profiles_service_role" ON public.profiles;
 -- Drop security_events policies
 DROP POLICY IF EXISTS "Users can view own security events" ON public.security_events;
 DROP POLICY IF EXISTS "Security admins can view all events" ON public.security_events;
+DROP POLICY IF EXISTS "security_events_insert" ON public.security_events;
+DROP POLICY IF EXISTS "security_events_select_own" ON public.security_events;
+DROP POLICY IF EXISTS "security_events_service_role" ON public.security_events;
 
 -- Drop companies policies that might cause recursion
 DROP POLICY IF EXISTS "Company members can view their company" ON public.companies;

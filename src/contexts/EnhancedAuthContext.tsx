@@ -425,15 +425,19 @@ export function AuthProvider({ children }: AuthProviderProps) {
           const enhancedUser = await fetchUserProfile(session.user);
           setUser(enhancedUser);
           
-          // Update last activity
+          // Profile update temporarily disabled - RLS policy timing issue (causes 403)
+          // TODO: Re-enable after fixing RLS timing or move to server-side API
           if (enhancedUser) {
+            console.log('📝 [DISABLED] Would update last_activity_at for:', enhancedUser.displayName);
+            /* DISABLED:
             await supabase
               .from('profiles')
-              .update({ 
+              .update({
                 last_activity_at: new Date().toISOString(),
                 last_login_ip: null // This would be set server-side
               })
               .eq('id', enhancedUser.id);
+            */
           }
         }
       } catch (error) {
@@ -622,7 +626,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
         setUser(enhancedUser);
 
-        // Update login statistics (non-blocking)
+        // Profile update temporarily disabled - RLS policy timing issue (causes 403)
+        // TODO: Re-enable after fixing RLS timing or move to server-side API
+        console.log('📝 [DISABLED] Would update login stats for:', enhancedUser.displayName);
+        /* DISABLED:
         try {
           await supabase
             .from('profiles')
@@ -635,6 +642,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         } catch (updateError) {
           console.warn('Failed to update login stats:', updateError);
         }
+        */
 
         console.log('✅ Login completed successfully');
         return { success: true };

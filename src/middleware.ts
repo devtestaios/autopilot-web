@@ -19,6 +19,8 @@ const PUBLIC_ROUTES = [
   '/landing',
   '/api/auth',
   '/adminlogin',
+  '/privacy',
+  '/terms',
 ];
 
 // Define routes that require admin access

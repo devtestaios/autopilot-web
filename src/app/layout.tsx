@@ -3,7 +3,8 @@ import { Orbitron, Exo_2 } from "next/font/google";
 import "./globals.css";
 import ClientProviders from "@/components/ClientProviders";
 import FacebookSDK from '@/components/FacebookSDK';
-import Navigation from '@/components/Navigation';
+import UnifiedNavigation from '@/components/UnifiedNavigation';
+import Footer from '@/components/Footer';
 
 export const metadata: Metadata = {
   title: "PulseBridge.ai - AI Marketing Intelligence",
@@ -57,10 +58,11 @@ export default function RootLayout({
       <body className={`${orbitron.variable} ${exo2.variable} app-background`}>
         <FacebookSDK />
         <ClientProviders>
-          <Navigation />
+          <UnifiedNavigation />
           <main className="min-h-screen">
             {children}
           </main>
+          <Footer />
         </ClientProviders>
       </body>
     </html>

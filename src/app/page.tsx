@@ -14,7 +14,7 @@ import {
   Zap
 } from 'lucide-react';
 import Link from 'next/link';
-import { Navigation, QuickStartBanner } from '@/components/navigation/Navigation';
+import QuickStartBanner from '@/components/QuickStartBanner';
 
 export default function HomePage() {
   const features = [
@@ -66,7 +66,6 @@ export default function HomePage() {
   
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navigation />
       <QuickStartBanner />
       
       <div className="container mx-auto px-4 py-12">
