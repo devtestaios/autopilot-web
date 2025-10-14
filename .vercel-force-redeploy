@@ -1,0 +1,5 @@
+# Force Vercel Redeploy
+# This file forces Vercel to deploy the latest commit
+# Timestamp: 2025-10-14 06:45:00
+# Latest commit should be: 9479368
+# Issue: Vercel deploying stale commit 5c61544
