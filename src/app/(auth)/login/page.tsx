@@ -10,9 +10,17 @@ import { Eye, EyeOff, Mail, Lock, ArrowLeft } from 'lucide-react';
 import { PulseWaveLogo } from '@/components/PulseWaveLogo';
 
 export default function LoginPage() {
+  console.log('🔵 [LOGIN PAGE] Component rendering');
+
   const router = useRouter();
   const { theme } = useTheme();
   const { login, isLoading } = useAuth();
+
+  console.log('🔧 [LOGIN PAGE] Auth context loaded:', {
+    hasLogin: typeof login === 'function',
+    isLoading,
+    loginFunction: login?.toString().substring(0, 50)
+  });
 
   const [formData, setFormData] = useState({
     email: '',
@@ -22,30 +30,41 @@ export default function LoginPage() {
   const [error, setError] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
+    console.log('🎯 [LOGIN PAGE] handleSubmit called!');
     e.preventDefault();
     setError('');
 
+    console.log('📝 [LOGIN PAGE] Form data:', { email: formData.email, passwordLength: formData.password.length });
+    console.log('🔧 [LOGIN PAGE] Auth context:', { login: typeof login, isLoading });
+
     // Validation
     if (!formData.email || !formData.password) {
+      console.log('❌ [LOGIN PAGE] Validation failed: empty fields');
       setError('Please fill in all fields');
       return;
     }
 
     if (!formData.email.includes('@')) {
+      console.log('❌ [LOGIN PAGE] Validation failed: invalid email');
       setError('Please enter a valid email address');
       return;
     }
 
+    console.log('✅ [LOGIN PAGE] Validation passed, calling login...');
+
     try {
       const result = await login(formData.email, formData.password);
+      console.log('📊 [LOGIN PAGE] Login result:', result);
 
       if (result && result.success) {
+        console.log('✅ [LOGIN PAGE] Login successful, redirecting to dashboard...');
         router.push('/dashboard');
       } else {
+        console.log('❌ [LOGIN PAGE] Login failed:', result?.error);
         setError(result?.error || 'Invalid email or password. Please try again.');
       }
     } catch (error) {
-      console.error('Login error:', error);
+      console.error('❌ [LOGIN PAGE] Login error:', error);
       setError('Authentication service temporarily unavailable. Please try again.');
     }
   };
@@ -113,6 +132,17 @@ export default function LoginPage() {
             )}
 
             <div className="space-y-4">
+              {/* Demo Credentials Hint */}
+              <div className={`p-3 rounded-lg border ${
+                theme === 'dark' 
+                  ? 'bg-blue-900/20 border-blue-800/50 text-blue-200' 
+                  : 'bg-blue-50 border-blue-200 text-blue-700'
+              }`}>
+                <p className="text-sm">
+                  <strong>Demo Login:</strong> demo@pulsebridge.ai / TestPassword123!
+                </p>
+              </div>
+
               {/* Email Field */}
               <div>
                 <label htmlFor="email" className={`block text-sm font-medium mb-2 ${
