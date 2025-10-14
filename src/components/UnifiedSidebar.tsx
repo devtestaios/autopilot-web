@@ -220,9 +220,9 @@ function getContextualSidebarItems(pathname: string): { contextName: string; ite
           path: '/social-media',
           description: 'Multi-platform social management',
           subItems: [
-            { id: 'social-overview', label: 'Social Overview', path: '/social-media' },
-            { id: 'composer', label: 'Content Composer', path: '/social-media' },
-            { id: 'calendar', label: 'Content Calendar', path: '/social-media' }
+            { id: 'social-overview', label: 'Social Overview', path: '/social-media/overview' },
+            { id: 'composer', label: 'Content Composer', path: '/social-media/content-composer' },
+            { id: 'calendar', label: 'Content Calendar', path: '/social-media/content-calendar' }
           ]
         },
         {
