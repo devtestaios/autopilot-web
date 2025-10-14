@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { useTheme } from 'next-themes';
+import { useTheme } from '@/contexts/ThemeContext';
 
 export default function PrivacyPolicyPage() {
   const { theme } = useTheme();
