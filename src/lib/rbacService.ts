@@ -4,8 +4,11 @@
  * Multi-tenant aware with company and project-level scoping
  */
 
-import { supabase } from '@/lib/supabase';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import type { PostgrestError } from '@supabase/supabase-js';
+
+// Initialize cookie-based Supabase client (FIXED: was using localStorage client)
+const supabase = createClientComponentClient();
 
 // ===============================================
 // RBAC TYPES

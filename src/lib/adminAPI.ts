@@ -4,8 +4,11 @@
  * Enterprise user management with comprehensive security
  */
 
-import { supabase } from '@/lib/supabase';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import type { PostgrestError } from '@supabase/supabase-js';
+
+// Initialize cookie-based Supabase client (FIXED: was using localStorage client)
+const supabase = createClientComponentClient();
 
 // ===============================================
 // ADMIN API TYPES

@@ -1,7 +1,7 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { supabase } from '@/lib/supabase';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import type { User as SupabaseUser } from '@supabase/supabase-js';
 
 // ===============================================
@@ -225,6 +225,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<EnhancedUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSupabaseConfigured, setIsSupabaseConfigured] = useState(false);
+
+  // Initialize cookie-based Supabase client (FIXED: was using localStorage client)
+  const supabase = createClientComponentClient();
 
   // Check if Supabase is properly configured
   useEffect(() => {

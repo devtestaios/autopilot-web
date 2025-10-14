@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Eye, EyeOff, Shield, Lock, AlertCircle } from 'lucide-react';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -17,18 +18,9 @@ export default function AdminLoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [supabase, setSupabase] = useState<any>(null);
 
-  // Initialize Supabase client only on client-side
-  useEffect(() => {
-    const initSupabase = async () => {
-      const { supabase: client } = await import('@/lib/supabase');
-      setSupabase(client);
-      console.log('🔵 AdminLoginPage component mounted');
-      console.log('✅ Supabase client loaded');
-    };
-    initSupabase();
-  }, []);
+  // Initialize cookie-based Supabase client (FIXED: was using localStorage client)
+  const supabase = createClientComponentClient();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -42,15 +34,7 @@ export default function AdminLoginPage() {
     console.log('🔌 Supabase client exists:', !!supabase);
 
     try {
-      // Check if supabase client is initialized
-      if (!supabase || !supabase.auth) {
-        console.error('❌ Supabase client not initialized!');
-        setError('Authentication service not available. Please check configuration.');
-        setLoading(false);
-        return;
-      }
-
-      console.log('✅ Supabase client initialized, attempting login...');
+      console.log('✅ Supabase client initialized (cookie-based), attempting login...');
 
       // Use Supabase authentication
       const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
