@@ -4,6 +4,7 @@ import "./globals.css";
 import ClientProviders from "@/components/ClientProviders";
 import FacebookSDK from '@/components/FacebookSDK';
 import MainNavigation from '@/components/MainNavigation';
+import NavigationErrorBoundary from '@/components/NavigationErrorBoundary';
 import Footer from '@/components/Footer';
 
 export const metadata: Metadata = {
@@ -58,7 +59,9 @@ export default function RootLayout({
       <body className={`${orbitron.variable} ${exo2.variable} app-background`}>
         <FacebookSDK />
         <ClientProviders>
-          <MainNavigation />
+          <NavigationErrorBoundary>
+            <MainNavigation />
+          </NavigationErrorBoundary>
           <main className="min-h-screen">
             {children}
           </main>

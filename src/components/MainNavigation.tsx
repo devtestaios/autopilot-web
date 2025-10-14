@@ -31,21 +31,29 @@ import { useTheme } from '@/contexts/ThemeContext';
 import { PulseWaveLogo } from './PulseWaveLogo';
 import { primaryNavigation } from '@/config/navigation';
 
-interface UnifiedNavigationProps {
+interface MainNavigationProps {
   variant?: 'landing' | 'app';
   className?: string;
 }
 
-export default function UnifiedNavigation({ 
+export default function MainNavigation({ 
   variant = 'app', 
   className = '' 
-}: UnifiedNavigationProps) {
+}: MainNavigationProps) {
   const pathname = usePathname();
   const { user, isAuthenticated, logout } = useAuth();
-  const { theme, toggleTheme } = useTheme();
+  const { theme } = useTheme();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+
+  console.log('🧭 [MainNavigation] Rendering:', {
+    pathname,
+    isAuthenticated,
+    variant,
+    user: user?.email,
+    theme
+  });
 
   // Close mobile menu on route change
   useEffect(() => {
@@ -163,10 +171,16 @@ export default function UnifiedNavigation({
                           <div className="absolute top-full left-0 mt-1 w-56 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 py-1">
                             {item.children?.map((child) => {
                               const ChildIcon = child.icon;
+                              // Ensure href is valid
+                              const safeHref = child.href?.startsWith('/') ? child.href : `/${child.href}`;
                               return (
                                 <Link
                                   key={child.id}
-                                  href={child.href}
+                                  href={safeHref}
+                                  onClick={() => {
+                                    console.log('🔗 [MainNavigation] Child nav click:', safeHref);
+                                    setOpenDropdown(null);
+                                  }}
                                   className={`flex items-center space-x-3 px-4 py-2 text-sm hover:bg-gray-50 dark:hover:bg-gray-700 ${
                                     isActive(child.href)
                                       ? 'text-blue-600 bg-blue-50 dark:bg-blue-900/20'
@@ -194,7 +208,10 @@ export default function UnifiedNavigation({
                   return (
                     <Link
                       key={item.id}
-                      href={item.href}
+                      href={item.href?.startsWith('/') ? item.href : `/${item.href}`}
+                      onClick={() => {
+                        console.log('🔗 [MainNavigation] Nav click:', item.href);
+                      }}
                       className={`flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                         isItemActive
                           ? 'text-blue-600 bg-blue-50 dark:bg-blue-900/20'

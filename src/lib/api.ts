@@ -44,7 +44,12 @@ import type {
 } from '@/types';
 import { environmentManager } from './environment';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'https://autopilot-api-1.onrender.com';
+// Use local API in development, external API in production
+const API_BASE = process.env.NODE_ENV === 'development' 
+  ? '/api' 
+  : (process.env.NEXT_PUBLIC_API_URL || '/api');
+
+console.log('🔧 API Configuration:', { API_BASE, NODE_ENV: process.env.NODE_ENV });
 
 // Enhanced API Error Class
 export class APIError extends Error {

@@ -58,6 +58,14 @@ export default function LoginPage() {
 
       if (result && result.success) {
         console.log('✅ [LOGIN PAGE] Login successful, redirecting to dashboard...');
+        
+        // Small delay to ensure auth context is updated
+        setTimeout(() => {
+          console.log('🔄 [LOGIN PAGE] Executing redirect to /dashboard');
+          router.push('/dashboard');
+        }, 100);
+        
+        // Also try immediate redirect as backup
         router.push('/dashboard');
       } else {
         console.log('❌ [LOGIN PAGE] Login failed:', result?.error);
