@@ -260,10 +260,17 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   // Check if Supabase is properly configured
   useEffect(() => {
-    const configured = !!(process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
+    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    const configured = !!(url && key && url !== 'your_supabase_url_here' && key !== 'your_supabase_anon_key_here');
+    
+    console.log('🔧 Supabase configuration check:', { url: !!url, key: !!key, configured });
+    
     setIsSupabaseConfigured(configured);
     if (!configured) {
       console.warn('Supabase not configured. Using mock authentication for demo purposes.');
+    } else {
+      console.log('✅ Supabase properly configured');
     }
   }, []);
 
@@ -444,7 +451,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
         const enhancedUser = await fetchUserProfile(session.user);
         setUser(enhancedUser);
         
-        // Log security event
+        // Security event logging temporarily disabled - schema mismatch
+        // TODO: Re-enable after fixing security_events table schema
+        console.log('📝 [DISABLED] Would log successful login for:', enhancedUser?.displayName);
+
+        /* DISABLED:
         if (enhancedUser) {
           await supabase.from('security_events').insert({
             user_id: enhancedUser.id,
@@ -453,6 +464,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
             description: 'User logged in successfully'
           });
         }
+        */
       } else if (event === 'SIGNED_OUT') {
         setUser(null);
       }
@@ -464,10 +476,21 @@ export function AuthProvider({ children }: AuthProviderProps) {
   // Enhanced login with security logging
   const login = async (email: string, password: string, rememberMe: boolean = false): Promise<{ success: boolean; error?: string; requiresMfa?: boolean }> => {
     console.log('🔐 Login attempt started for:', email);
+    console.log('🔧 Supabase configured:', isSupabaseConfigured);
+    console.log('🔧 Environment check:', {
+      url: !!process.env.NEXT_PUBLIC_SUPABASE_URL,
+      key: !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+    });
 
     try {
       if (!isSupabaseConfigured) {
         console.log('⚠️ Supabase not configured, using mock login');
+        
+        // Check for valid demo credentials
+        if (email !== 'demo@pulsebridge.ai' || password !== 'TestPassword123!') {
+          console.log('❌ Invalid demo credentials provided');
+          return { success: false, error: 'Invalid email or password. Please use demo@pulsebridge.ai with password TestPassword123!' };
+        }
         // Mock login for demo
         const mockUser: EnhancedUser = {
           id: 'mock-user-id',
@@ -533,28 +556,52 @@ export function AuthProvider({ children }: AuthProviderProps) {
       }
 
       console.log('🔍 Attempting Supabase authentication...');
+      console.log('🔍 Using credentials:', { email, passwordLength: password.length });
+      
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password
+      });
+      
+      console.log('🔍 Supabase auth response:', { 
+        hasData: !!data, 
+        hasUser: !!data?.user, 
+        hasError: !!error,
+        errorMessage: error?.message 
       });
 
       if (error) {
         console.error('❌ Authentication failed:', error.message);
 
-        // Log failed login attempt (non-blocking)
+        // Security event logging temporarily disabled - schema mismatch
+        // TODO: Re-enable after fixing security_events table schema
+        console.log('📝 [DISABLED] Would log failed login attempt');
+
+        /* DISABLED:
         try {
-          await supabase.from('security_events').insert({
+          const logResult = await supabase.from('security_events').insert({
             user_id: null,
             event_type: 'login_failure',
             severity: 'warning',
-            description: `Failed login attempt for ${email}`,
-            metadata: { error: error.message }
+            description: `Failed login attempt for ${email}`
           });
+          console.log('Security event logged:', logResult);
         } catch (logError) {
-          console.warn('Failed to log security event:', logError);
+          console.warn('Failed to log security event (non-critical):', logError);
+        }
+        */
+
+        // Provide user-friendly error messages
+        let userError = error.message;
+        if (error.message.includes('Invalid login credentials')) {
+          userError = 'Invalid email or password. Please check your credentials and try again.';
+        } else if (error.message.includes('Email not confirmed')) {
+          userError = 'Please check your email and click the confirmation link before signing in.';
+        } else if (error.message.includes('Too many requests')) {
+          userError = 'Too many login attempts. Please wait a moment and try again.';
         }
 
-        return { success: false, error: error.message };
+        return { success: false, error: userError };
       }
 
       if (data.user) {
@@ -673,8 +720,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
   // Enhanced logout with session cleanup
   const logout = async (): Promise<void> => {
     try {
+      // Security event logging temporarily disabled - schema mismatch
+      // TODO: Re-enable after fixing security_events table schema
+      console.log('📝 [DISABLED] Would log logout for:', user?.displayName);
+
+      /* DISABLED:
       if (user) {
-        // Log security event
         await supabase.from('security_events').insert({
           user_id: user.id,
           event_type: 'logout',
@@ -682,6 +733,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
           description: 'User logged out'
         });
       }
+      */
 
       if (isSupabaseConfigured) {
         await supabase.auth.signOut();
