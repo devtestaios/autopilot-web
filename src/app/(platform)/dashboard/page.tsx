@@ -207,13 +207,17 @@ function DashboardContent() {
   // Simple state management
   const [showWelcomeBanner, setShowWelcomeBanner] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  
+
+  // Auth context for user isolation and personalization
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const { user, isLoading } = require('@/contexts/EnhancedAuthContext').useAuth();
+
   // Check for onboarding completion
   useEffect(() => {
     const onboardingComplete = searchParams?.get('onboarding') === 'complete';
     const welcomeParam = searchParams?.get('welcome') === 'true';
-    const onboardingCompleteFlag = localStorage.getItem('onboardingComplete') === 'true';
-    const welcomeDismissed = localStorage.getItem('onboardingWelcomeDismissed') === 'true';
+    const onboardingCompleteFlag = typeof window !== 'undefined' && localStorage.getItem('onboardingComplete') === 'true';
+    const welcomeDismissed = typeof window !== 'undefined' && localStorage.getItem('onboardingWelcomeDismissed') === 'true';
 
     if ((onboardingComplete || welcomeParam || onboardingCompleteFlag) && !welcomeDismissed) {
       setShowWelcomeBanner(true);
@@ -441,7 +445,7 @@ function DashboardContent() {
 
       {/* Unified Sidebar for navigation */}
       <UnifiedSidebar onCollapseChange={setSidebarCollapsed} />
-      
+
       {/* Main Content with responsive margin based on sidebar state */}
       <div className={`transition-all duration-300 ease-in-out ${
         sidebarCollapsed 
@@ -452,91 +456,124 @@ function DashboardContent() {
         {showWelcomeBanner && (
           <OnboardingWelcomeBanner onDismiss={handleWelcomeBannerDismiss} />
         )}
-        
-        {/* Content Container */}
+
+        {/* Personalized Welcome & Profile Section */}
         <div className="container mx-auto px-4 py-8">
-        {/* Simple Header */}
-        <div className="mb-8 flex items-center justify-between" data-testid="dashboard-header">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2" data-testid="dashboard-title">
-              Master Terminal
-            </h1>
-            <p className="text-gray-600 dark:text-gray-400">
-              Unified command center for your enterprise business ecosystem
-            </p>
-          </div>
-          
-          {/* Dashboard Actions */}
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => router.push('/dashboard/enhanced')}
-              className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-            >
-              <LayoutDashboard className="w-4 h-4" />
-              <span className="hidden sm:inline">Customize Layout</span>
-            </button>
-          </div>
-        </div>
-
-        {/* KPI Cards - Performance Optimized Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8" data-testid="kpi-grid">
-          {enterpriseKPIs.map((kpi) => (
-            <KPICard key={kpi.title} kpi={kpi} />
-          ))}
-        </div>
-
-        {/* Secondary Platform Suites - Large Cards */}
-        <div className="mb-12">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
-            Platform Suites
-          </h2>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {platformSuites.map((suite) => (
-              <PlatformSuiteCard 
-                key={suite.id} 
-                suite={suite} 
-                onClick={() => router.push(suite.href)} 
-              />
-            ))}
-          </div>
-        </div>
-
-        {/* Tertiary Sub-Platforms - Rows of 3 */}
-        {platformSuites.map((suite) => (
-          <div key={`${suite.id}-sub`} className="mb-10">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                {suite.title} - Sub-Platforms
-              </h3>
-              <button 
-                onClick={() => router.push(suite.href)}
-                className="text-sm text-blue-600 hover:text-blue-700 transition-colors"
+          {/* Personalized Welcome Message */}
+          <div className="mb-8 flex items-center justify-between" data-testid="dashboard-header">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2" data-testid="dashboard-title">
+                {user && !isLoading ? `Welcome, ${user.displayName || user.email}` : 'Master Terminal'}
+              </h1>
+              <p className="text-gray-600 dark:text-gray-400">
+                {user && !isLoading
+                  ? `Your private dashboard for company: ${user.company?.name || 'N/A'} | Role: ${user.role}`
+                  : 'Unified command center for your enterprise business ecosystem'}
+              </p>
+            </div>
+            {/* Dashboard Actions */}
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => router.push('/dashboard/enhanced')}
+                className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
               >
-                View All →
+                <LayoutDashboard className="w-4 h-4" />
+                <span className="hidden sm:inline">Customize Layout</span>
               </button>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {suite.subPlatforms.map((subPlatform) => (
-                <SubPlatformCard
-                  key={subPlatform.id}
-                  subPlatform={subPlatform}
-                  onClick={() => router.push(subPlatform.href)}
+          </div>
+
+          {/* User Profile Card */}
+          {user && !isLoading && (
+            <div className="mb-8 flex flex-col md:flex-row items-center gap-6 p-6 bg-white dark:bg-gray-800 rounded-lg shadow border border-gray-200 dark:border-gray-700">
+              <img
+                src={user.avatar || '/default-avatar.png'}
+                alt="User Avatar"
+                className="w-20 h-20 rounded-full border-2 border-blue-500 mb-4 md:mb-0"
+                data-testid="dashboard-user-avatar"
+              />
+              <div className="flex-1">
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-1" data-testid="dashboard-user-name">
+                  {user.displayName || user.email}
+                </h2>
+                <p className="text-gray-600 dark:text-gray-400 mb-2">
+                  <span className="font-medium">Email:</span> {user.email}
+                </p>
+                <p className="text-gray-600 dark:text-gray-400 mb-2">
+                  <span className="font-medium">Company:</span> {user.company?.name || 'N/A'}
+                </p>
+                <p className="text-gray-600 dark:text-gray-400 mb-2">
+                  <span className="font-medium">Role:</span> {user.role}
+                </p>
+                <p className="text-gray-600 dark:text-gray-400 mb-2">
+                  <span className="font-medium">Subscription:</span> {user.subscriptionTier}
+                </p>
+                <p className="text-gray-600 dark:text-gray-400">
+                  <span className="font-medium">Last Login:</span> {user.lastLoginAt ? new Date(user.lastLoginAt).toLocaleString() : 'N/A'}
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* KPI Cards - Performance Optimized Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8" data-testid="kpi-grid">
+            {enterpriseKPIs.map((kpi) => (
+              <KPICard key={kpi.title} kpi={kpi} />
+            ))}
+          </div>
+
+          {/* Secondary Platform Suites - Large Cards */}
+          <div className="mb-12">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+              Platform Suites
+            </h2>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {platformSuites.map((suite) => (
+                <PlatformSuiteCard 
+                  key={suite.id} 
+                  suite={suite} 
+                  onClick={() => router.push(suite.href)} 
                 />
               ))}
             </div>
           </div>
-        ))}
 
-        {/* AI Control Chat */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm">
-          <div className="flex items-center mb-4">
-            <Brain className="w-6 h-6 text-purple-600 mr-2" />
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-              AI Assistant
-            </h2>
+          {/* Tertiary Sub-Platforms - Rows of 3 */}
+          {platformSuites.map((suite) => (
+            <div key={`${suite.id}-sub`} className="mb-10">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                  {suite.title} - Sub-Platforms
+                </h3>
+                <button 
+                  onClick={() => router.push(suite.href)}
+                  className="text-sm text-blue-600 hover:text-blue-700 transition-colors"
+                >
+                  View All →
+                </button>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {suite.subPlatforms.map((subPlatform) => (
+                  <SubPlatformCard
+                    key={subPlatform.id}
+                    subPlatform={subPlatform}
+                    onClick={() => router.push(subPlatform.href)}
+                  />
+                ))}
+              </div>
+            </div>
+          ))}
+
+          {/* AI Control Chat */}
+          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm">
+            <div className="flex items-center mb-4">
+              <Brain className="w-6 h-6 text-purple-600 mr-2" />
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+                AI Assistant
+              </h2>
+            </div>
+            <AIControlChat />
           </div>
-          </div>
-          <AIControlChat />
         </div>
       </div>
     </div>
