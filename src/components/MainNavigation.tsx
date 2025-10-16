@@ -87,13 +87,19 @@ export default function MainNavigation({
   const showLandingNav = variant === 'landing' || pathname === '/' || !isAuthenticated;
   const navigationItems = showLandingNav ? landingNavItems : appNavItems;
 
+  const handleNavClick = (href: string) => {
+    console.log('[MainNavigation] Nav click:', href, 'Current pathname:', pathname);
+  };
+
   return (
     <nav className={`bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-50 ${className}`}>
+      {/* Diagnostic logging for navigation render */}
+      {console.log('[MainNavigation] Rendered. Pathname:', pathname, 'Authenticated:', isAuthenticated)}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           {/* Logo */}
           <div className="flex items-center">
-            <Link href={isAuthenticated ? "/dashboard" : "/"} className="flex items-center space-x-2">
+            <Link href={isAuthenticated ? "/dashboard" : "/"} className="flex items-center space-x-2" onClick={() => handleNavClick(isAuthenticated ? "/dashboard" : "/") }>
               <PulseWaveLogo 
                 size="small" 
                 variant={theme === 'dark' ? 'light' : 'dark'} 
@@ -112,6 +118,7 @@ export default function MainNavigation({
                   <Link
                     key={item.name}
                     href={item.href}
+                    onClick={() => handleNavClick(item.href)}
                     className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                       isActive(item.href)
                         ? 'text-blue-600 bg-blue-50 dark:bg-blue-900/20'
@@ -125,12 +132,12 @@ export default function MainNavigation({
                 {/* Auth Buttons for Landing */}
                 {!isAuthenticated && (
                   <div className="flex items-center space-x-2 ml-4">
-                    <Link href="/login">
+                    <Link href="/login" onClick={() => handleNavClick('/login')}>
                       <button className="px-4 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">
                         Sign In
                       </button>
                     </Link>
-                    <Link href="/register">
+                    <Link href="/register" onClick={() => handleNavClick('/register')}>
                       <button className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md">
                         Get Started
                       </button>
@@ -177,10 +184,7 @@ export default function MainNavigation({
                                 <Link
                                   key={child.id}
                                   href={safeHref}
-                                  onClick={() => {
-                                    console.log('🔗 [MainNavigation] Child nav click:', safeHref);
-                                    setOpenDropdown(null);
-                                  }}
+                                  onClick={() => { handleNavClick(safeHref); setOpenDropdown(null); }}
                                   className={`flex items-center space-x-3 px-4 py-2 text-sm hover:bg-gray-50 dark:hover:bg-gray-700 ${
                                     isActive(child.href)
                                       ? 'text-blue-600 bg-blue-50 dark:bg-blue-900/20'
@@ -209,9 +213,7 @@ export default function MainNavigation({
                     <Link
                       key={item.id}
                       href={item.href?.startsWith('/') ? item.href : `/${item.href}`}
-                      onClick={() => {
-                        console.log('🔗 [MainNavigation] Nav click:', item.href);
-                      }}
+                      onClick={() => handleNavClick(item.href)}
                       className={`flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                         isItemActive
                           ? 'text-blue-600 bg-blue-50 dark:bg-blue-900/20'
@@ -245,6 +247,7 @@ export default function MainNavigation({
                   <div className="absolute right-0 top-full mt-1 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 py-1">
                     <Link
                       href="/settings"
+                      onClick={() => handleNavClick('/settings')}
                       className="flex items-center space-x-2 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
                     >
                       <Settings className="h-4 w-4" />
@@ -306,14 +309,14 @@ export default function MainNavigation({
                   <>
                     <Link
                       href="/login"
-                      onClick={() => setIsMobileMenuOpen(false)}
+                      onClick={() => handleNavClick('/login')}
                       className="block px-3 py-2 rounded-md text-base font-medium text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800"
                     >
                       Sign In
                     </Link>
                     <Link
                       href="/register"
-                      onClick={() => setIsMobileMenuOpen(false)}
+                      onClick={() => handleNavClick('/register')}
                       className="block px-3 py-2 rounded-md text-base font-medium text-white bg-blue-600 hover:bg-blue-700"
                     >
                       Get Started
@@ -375,7 +378,7 @@ export default function MainNavigation({
                     <div className="border-t border-gray-200 dark:border-gray-700 mt-2 pt-2">
                       <Link
                         href="/settings"
-                        onClick={() => setIsMobileMenuOpen(false)}
+                        onClick={() => handleNavClick('/settings')}
                         className="flex items-center space-x-3 px-3 py-2 rounded-md text-base font-medium text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800"
                       >
                         <Settings className="h-5 w-5" />

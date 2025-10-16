@@ -811,12 +811,13 @@ export default function UnifiedSidebar({
   }, [isCollapsed, onCollapseChange]);
 
   const handleItemClick = (item: SidebarItem) => {
+    console.log('[UnifiedSidebar] Item click:', item.label, 'Path:', item.path, 'Current pathname:', pathname);
     if (item.subItems) {
       setExpandedItem(expandedItem === item.id ? null : item.id);
     } else {
-      // Don't navigate if we're already on the same page
       if (pathname !== item.path) {
         router.push(item.path);
+        console.log('[UnifiedSidebar] router.push:', item.path);
       }
       if (isMobile) {
         setIsMobileOpen(false);
@@ -825,6 +826,7 @@ export default function UnifiedSidebar({
   };
 
   const handleSubItemClick = (path: string) => {
+    console.log('[UnifiedSidebar] SubItem click:', path, 'Current pathname:', pathname);
     router.push(path);
     if (isMobile) {
       setIsMobileOpen(false);
@@ -1085,7 +1087,7 @@ function SidebarContent({
                       {item.subItems.map((subItem) => (
                         <button
                           key={subItem.id}
-                          onClick={() => onSubItemClick(subItem.path)}
+                          onClick={() => handleSubItemClick(subItem.path)}
                           className={`w-full text-left p-2 rounded-md text-sm transition-colors ${
                             pathname === subItem.path
                               ? theme === 'dark'
