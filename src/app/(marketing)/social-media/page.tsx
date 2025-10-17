@@ -99,10 +99,10 @@ const EnhancedAnalytics = dynamic(() => import('@/components/EnhancedAnalytics')
 //   loading: () => <div className="w-full h-96 bg-gray-100 dark:bg-gray-800 animate-pulse rounded-lg" />
 // });
 
-// const EnhancedPostComposer = dynamic(() => import('@/components/social-media/EnhancedPostComposer'), {
-//   ssr: false,
-//   loading: () => <div className="w-full h-96 bg-gray-100 dark:bg-gray-800 animate-pulse rounded-lg" />
-// });
+const EnhancedPostComposer = dynamic(() => import('@/components/social-media/EnhancedPostComposer'), {
+  ssr: false,
+  loading: () => <div className="w-full h-96 bg-gray-100 dark:bg-gray-800 animate-pulse rounded-lg" />
+});
 
 const PlatformOptimizationManager = dynamic(() => import('@/components/social-media/PlatformOptimizationManager'), {
   ssr: false,
@@ -1037,13 +1037,13 @@ export default function EnhancedSocialMediaPlatform() {
         targetPlatforms={selectedPlatforms}
       /> */}
       
-      {/* <EnhancedPostComposer
+      <EnhancedPostComposer
         isOpen={showEnhancedComposer}
         onClose={() => setShowEnhancedComposer(false)}
         onPost={handleEnhancedPostCreate}
         selectedPlatforms={selectedPlatforms}
         importedContent={importedContent}
-      /> */}
+      />
       
       <SocialMediaAnalytics
         isOpen={showSocialAnalytics}

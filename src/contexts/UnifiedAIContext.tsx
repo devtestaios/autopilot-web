@@ -247,10 +247,12 @@ const unifiedCapabilities: AICapability[] = [
 // DEFAULT AI PROVIDERS
 // ============================================================================
 
+const enableClaudeSonnet45 = process.env.NEXT_PUBLIC_ENABLE_CLAUDE_SONNET_45 === 'true';
+
 const defaultProviders: AIProvider[] = [
   {
-    id: 'claude',
-    name: 'Claude (Anthropic)',
+    id: enableClaudeSonnet45 ? 'claude-sonnet-4-5' : 'claude',
+    name: enableClaudeSonnet45 ? 'Claude Sonnet 4.5 (Anthropic)' : 'Claude (Anthropic)',
     available: true,
     preferred: true
   },

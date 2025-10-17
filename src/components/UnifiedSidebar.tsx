@@ -862,6 +862,8 @@ export default function UnifiedSidebar({
               ? 'bg-gray-900/50 border-gray-700 text-gray-200 hover:bg-gray-800/60'
               : 'bg-white/50 border-gray-200 text-gray-700 hover:bg-white/60'
           }`}
+          title="Open sidebar menu"
+          aria-label="Open sidebar menu"
         >
           <Menu size={20} />
         </button>
@@ -940,6 +942,8 @@ export default function UnifiedSidebar({
             ? 'bg-gray-800 border-gray-600 text-gray-300 hover:bg-gray-700'
             : 'bg-white border-gray-300 text-gray-800 hover:bg-gray-50'
         }`}
+        title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+        aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
       >
         {isCollapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
       </button>
@@ -1008,6 +1012,8 @@ function SidebarContent({
                 ? 'text-gray-400 hover:text-gray-200 hover:bg-gray-800'
                 : 'text-gray-700 hover:text-gray-900 hover:bg-gray-100'
             }`}
+            title="Close sidebar"
+            aria-label="Close sidebar"
           >
             <X size={20} />
           </button>
@@ -1031,6 +1037,8 @@ function SidebarContent({
                       ? 'text-gray-300 hover:bg-gray-800/60 hover:text-white'
                       : 'text-gray-800 hover:bg-gray-100 hover:text-gray-900'
                 }`}
+                title={item.label}
+                aria-label={item.label}
               >
                 <item.icon 
                   size={20} 
@@ -1087,7 +1095,7 @@ function SidebarContent({
                       {item.subItems.map((subItem) => (
                         <button
                           key={subItem.id}
-                          onClick={() => handleSubItemClick(subItem.path)}
+                          onClick={() => onSubItemClick(subItem.path)}
                           className={`w-full text-left p-2 rounded-md text-sm transition-colors ${
                             pathname === subItem.path
                               ? theme === 'dark'

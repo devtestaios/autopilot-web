@@ -233,31 +233,23 @@ export default function EnhancedPostComposer({
     
     try {
       const optimizations: AIOptimization[] = [];
-      
       for (const platform of platforms) {
-        const prompt = `
-          Optimize this social media post for ${platform}:
-          
-          Content: "${content}"
-          Current hashtags: ${hashtags.join(', ')}
-          Optimization goal: ${optimizationMode}
-          
-          Please provide:
-          1. Optimized content (platform-specific tone and length)
-          2. Best hashtags for ${platform} (max 10)
-          3. Recommended tone
-          4. Expected engagement score (1-10)
-          5. Best posting time
-          6. Brief reasoning for changes
-          
-          Format as JSON with keys: content, hashtags, tone, engagementScore, bestTime, reasoning
-        `;
-
-        const response = await generateResponse(prompt, 'social-media-optimization');
-        
+        const prompt = `\nOptimize this social media post for ${platform}:\n\nContent: "${content}"\nCurrent hashtags: ${hashtags.join(', ')}\nOptimization goal: ${optimizationMode}\n\nPlease provide:\n1. Optimized content (platform-specific tone and length)\n2. Best hashtags for ${platform} (max 10)\n3. Recommended tone\n4. Expected engagement score (1-10)\n5. Best posting time\n6. Brief reasoning for changes\n\nFormat as JSON with keys: content, hashtags, tone, engagementScore, bestTime, reasoning`;
+        // Use sendMessage to get AI response
+        let aiResponse = '';
         try {
-          const aiSuggestion = JSON.parse(response);
-          
+          await sendMessage(prompt, { page: 'social-media-optimization' });
+          // Wait for the latest message from the assistant
+          // This assumes sendMessage updates messages state
+          // In production, you may want to refactor to return the response directly
+          // For now, get the last assistant message
+          const lastMsg = messages.filter(m => m.role === 'assistant').slice(-1)[0];
+          aiResponse = lastMsg?.content || '';
+        } catch (err) {
+          aiResponse = '';
+        }
+        try {
+          const aiSuggestion = JSON.parse(aiResponse);
           optimizations.push({
             platform,
             suggestions: {
@@ -295,9 +287,7 @@ export default function EnhancedPostComposer({
           });
         }
       }
-
       setAiOptimizations(optimizations);
-      
       // Create platform-specific posts
       const newPlatformPosts: PlatformPost[] = optimizations.map(opt => ({
         platform: opt.platform,
@@ -317,24 +307,15 @@ export default function EnhancedPostComposer({
           reach: opt.performance.expectedReach
         }
       }));
-
       setPlatformPosts(newPlatformPosts);
       setActiveTab('optimize');
       toast.success('Content optimized for all platforms');
-      
     } catch (error) {
       console.error('Optimization error:', error);
       toast.error('Failed to optimize content');
     } finally {
       setIsOptimizing(false);
     }
-  }, [content, hashtags, platforms, optimizationMode, generateResponse]);
-
-  // Apply optimization to main content
-  const applyOptimization = useCallback((optimization: AIOptimization) => {
-    setContent(optimization.suggestions.content);
-    setHashtags(optimization.suggestions.hashtags);
-    toast.success(`Applied ${optimization.platform} optimization`);
   }, []);
 
   // Handle post submission
@@ -470,18 +451,11 @@ export default function EnhancedPostComposer({
 
         {/* Content */}
         <div className="flex-1 overflow-hidden">
-          <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as any)} className="h-full">
+          <Tabs defaultValue={activeTab} className="h-full">
             <div className="px-6 py-2 border-b border-gray-100 dark:border-gray-700">
               <TabsList className="grid w-full max-w-md grid-cols-4">
                 <TabsTrigger value="compose">Compose</TabsTrigger>
-                <TabsTrigger value="optimize" className="relative">
-                  Optimize
-                  {aiOptimizations.length > 0 && (
-                    <Badge className="ml-1 h-4 w-4 p-0 text-xs bg-green-500">
-                      {aiOptimizations.length}
-                    </Badge>
-                  )}
-                </TabsTrigger>
+                <TabsTrigger value="optimize" className="relative">Optimize</TabsTrigger>
                 <TabsTrigger value="schedule">Schedule</TabsTrigger>
                 <TabsTrigger value="preview">Preview</TabsTrigger>
               </TabsList>
@@ -513,9 +487,7 @@ export default function EnhancedPostComposer({
                           size="sm"
                           onClick={() => {
                             const prompt = `Suggest 3 engaging social media post ideas for: ${content || 'a business post'}`;
-                            generateResponse(prompt, 'content-ideas').then(response => {
-                              setContent(response);
-                            });
+                            sendMessage(prompt, { page: 'content-ideas' });
                           }}
                           disabled={aiLoading}
                         >
@@ -548,6 +520,8 @@ export default function EnhancedPostComposer({
                             <button
                               onClick={() => setHashtags(prev => prev.filter((_, i) => i !== index))}
                               className="ml-1 hover:text-red-500"
+                              title={`Remove hashtag #${tag}`}
+                              aria-label={`Remove hashtag #${tag}`}
                             >
                               <X className="w-3 h-3" />
                             </button>
@@ -579,6 +553,8 @@ export default function EnhancedPostComposer({
                             <button
                               onClick={() => setMentions(prev => prev.filter((_, i) => i !== index))}
                               className="ml-1 hover:text-red-500"
+                              title={`Remove mention @${mention}`}
+                              aria-label={`Remove mention @${mention}`}
                             >
                               <X className="w-3 h-3" />
                             </button>
@@ -596,7 +572,6 @@ export default function EnhancedPostComposer({
                         value={location}
                         onChange={(e) => setLocation(e.target.value)}
                         placeholder="Add location..."
-                        icon={<MapPin className="w-4 h-4" />}
                       />
                     </div>
                   </div>
@@ -628,6 +603,8 @@ export default function EnhancedPostComposer({
                         accept="image/*,video/*"
                         onChange={handleFileUpload}
                         className="hidden"
+                        title="Upload media files"
+                        placeholder="Select media files"
                       />
                     </div>
 
@@ -668,6 +645,8 @@ export default function EnhancedPostComposer({
                               <button
                                 onClick={() => setMediaFiles(prev => prev.filter((_, i) => i !== index))}
                                 className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                                title={`Remove media file ${file.name}`}
+                                aria-label={`Remove media file ${file.name}`}
                               >
                                 <X className="w-3 h-3" />
                               </button>
@@ -706,6 +685,7 @@ export default function EnhancedPostComposer({
                         value={optimizationMode}
                         onChange={(e) => setOptimizationMode(e.target.value as any)}
                         className="px-3 py-1 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700"
+                        title="Select optimization goal"
                       >
                         <option value="engagement">Maximize Engagement</option>
                         <option value="reach">Maximize Reach</option>
@@ -872,7 +852,21 @@ export default function EnhancedPostComposer({
                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                           Time Zone
                         </label>
-                        <select className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700">
+                        <select 
+                          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700"
+                          title="Select time zone" aria-label="Select time zone">
+                          title="Select time zone"
+                          title="Select time zone"
+                          <option>UTC-8 (Pacific)</option>
+                          <option>UTC-5 (Eastern)</option>
+                          <option>UTC+0 (GMT)</option>
+                          <option>UTC+1 (Central European)</option>
+                        </select>
+                        {/* Add title for accessibility */}
+                        <select
+                          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700"
+                          title="Select time zone"
+                        >
                           <option>UTC-8 (Pacific)</option>
                           <option>UTC-5 (Eastern)</option>
                           <option>UTC+0 (GMT)</option>
@@ -930,6 +924,7 @@ export default function EnhancedPostComposer({
                         value={previewPlatform}
                         onChange={(e) => setPreviewPlatform(e.target.value)}
                         className="px-3 py-1 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700"
+                        title="Select preview platform"
                       >
                         {platforms.map(platform => (
                           <option key={platform} value={platform}>

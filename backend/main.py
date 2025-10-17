@@ -407,6 +407,216 @@ async def meta_api_test():
             "timestamp": datetime.now(timezone.utc).isoformat()
         }
 
+# ===== META OAUTH ENDPOINTS =====
+
+@app.get("/api/v1/oauth/meta/authorize-url")
+async def get_meta_authorize_url(user_id: str):
+    """Generate Meta OAuth authorization URL"""
+    try:
+        # Meta OAuth configuration
+        app_id = os.getenv('META_APP_ID')
+        base_url = os.getenv('NEXT_PUBLIC_BASE_URL', 'http://localhost:3000')
+        
+        if not app_id:
+            raise HTTPException(status_code=500, detail="Meta App ID not configured")
+        
+        # Required permissions for Meta Business API
+        permissions = [
+            'ads_management',
+            'ads_read', 
+            'business_management',
+            'pages_read_engagement',
+            'pages_manage_posts',
+            'instagram_basic',
+            'instagram_content_publish'
+        ]
+        
+        # Generate state parameter for security
+        import json
+        import base64
+        state_data = {
+            'user_id': user_id,
+            'platform': 'meta',
+            'timestamp': datetime.now(timezone.utc).isoformat()
+        }
+        state = base64.b64encode(json.dumps(state_data).encode()).decode()
+        
+        # Build OAuth URL
+        redirect_uri = f"{base_url}/auth/meta/callback"
+        scope = ','.join(permissions)
+        
+        authorization_url = (
+            f"https://www.facebook.com/v19.0/dialog/oauth?"
+            f"client_id={app_id}&"
+            f"redirect_uri={redirect_uri}&"
+            f"scope={scope}&"
+            f"state={state}&"
+            f"response_type=code"
+        )
+        
+        return {
+            "authorization_url": authorization_url,
+            "state": state,
+            "user_id": user_id,
+            "timestamp": datetime.now(timezone.utc).isoformat()
+        }
+        
+    except Exception as e:
+        logger.error(f"Error generating Meta OAuth URL: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to generate OAuth URL: {str(e)}")
+
+@app.get("/api/v1/oauth/meta/callback")
+async def handle_meta_callback(code: str, state: str):
+    """Handle Meta OAuth callback"""
+    try:
+        # Decode and validate state
+        import json
+        import base64
+        
+        try:
+            state_data = json.loads(base64.b64decode(state).decode())
+            user_id = state_data.get('user_id')
+            platform = state_data.get('platform')
+            
+            if platform != 'meta':
+                raise ValueError("Invalid state platform")
+                
+        except Exception as e:
+            raise HTTPException(status_code=400, detail="Invalid state parameter")
+        
+        # Exchange code for access token
+        app_id = os.getenv('META_APP_ID')
+        app_secret = os.getenv('META_APP_SECRET')
+        base_url = os.getenv('NEXT_PUBLIC_BASE_URL', 'http://localhost:3000')
+        redirect_uri = f"{base_url}/auth/meta/callback"
+        
+        if not app_id or not app_secret:
+            raise HTTPException(status_code=500, detail="Meta OAuth credentials not configured")
+        
+        # Exchange authorization code for access token
+        token_url = "https://graph.facebook.com/v19.0/oauth/access_token"
+        token_params = {
+            'client_id': app_id,
+            'client_secret': app_secret,
+            'redirect_uri': redirect_uri,
+            'code': code
+        }
+        
+        async with aiohttp.ClientSession() as session:
+            async with session.post(token_url, data=token_params) as response:
+                token_data = await response.json()
+                
+                if 'error' in token_data:
+                    raise HTTPException(
+                        status_code=400, 
+                        detail=f"OAuth token exchange failed: {token_data['error']['message']}"
+                    )
+                
+                access_token = token_data.get('access_token')
+                
+                if not access_token:
+                    raise HTTPException(status_code=400, detail="No access token received")
+        
+        # Store connection in database if Supabase is available
+        if SUPABASE_AVAILABLE and supabase:
+            try:
+                connection_data = {
+                    'user_id': user_id,
+                    'platform': 'meta',
+                    'access_token': access_token,
+                    'token_type': 'Bearer',
+                    'connected_at': datetime.now(timezone.utc).isoformat(),
+                    'status': 'active'
+                }
+                
+                # Insert or update platform connection
+                result = supabase.table('platform_connections').upsert(
+                    connection_data,
+                    on_conflict='user_id,platform'
+                ).execute()
+                
+                logger.info(f"Meta connection stored for user {user_id}")
+                
+            except Exception as e:
+                logger.warning(f"Failed to store Meta connection in database: {e}")
+        
+        return {
+            "success": True,
+            "message": "Meta OAuth connection successful",
+            "user_id": user_id,
+            "platform": "meta",
+            "connected_at": datetime.now(timezone.utc).isoformat()
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error handling Meta OAuth callback: {e}")
+        raise HTTPException(status_code=500, detail=f"OAuth callback failed: {str(e)}")
+
+@app.get("/api/v1/oauth/meta/status/{user_id}")
+async def get_meta_connection_status(user_id: str):
+    """Check Meta connection status for user"""
+    try:
+        if not SUPABASE_AVAILABLE or not supabase:
+            # Fallback: Check if we have general Meta API access
+            try:
+                account_info = meta_api.get_account_info()
+                return {
+                    "connected": not ('error' in account_info),
+                    "user_id": user_id,
+                    "platform": "meta",
+                    "message": "Using system Meta credentials" if not ('error' in account_info) else "No connection",
+                    "timestamp": datetime.now(timezone.utc).isoformat()
+                }
+            except:
+                return {
+                    "connected": False,
+                    "user_id": user_id,
+                    "platform": "meta",
+                    "message": "No Meta connection available",
+                    "timestamp": datetime.now(timezone.utc).isoformat()
+                }
+        
+        # Check user-specific connection in database
+        try:
+            result = supabase.table('platform_connections').select('*').eq(
+                'user_id', user_id
+            ).eq('platform', 'meta').execute()
+            
+            if result.data and len(result.data) > 0:
+                connection = result.data[0]
+                return {
+                    "connected": connection.get('status') == 'active',
+                    "user_id": user_id,
+                    "platform": "meta",
+                    "connected_at": connection.get('connected_at'),
+                    "message": "User has Meta connection",
+                    "timestamp": datetime.now(timezone.utc).isoformat()
+                }
+            else:
+                return {
+                    "connected": False,
+                    "user_id": user_id,
+                    "platform": "meta",
+                    "message": "No Meta connection found for user",
+                    "timestamp": datetime.now(timezone.utc).isoformat()
+                }
+                
+        except Exception as e:
+            logger.error(f"Error checking Meta connection status: {e}")
+            return {
+                "connected": False,
+                "user_id": user_id,
+                "platform": "meta",
+                "error": str(e),
+                "timestamp": datetime.now(timezone.utc).isoformat()
+            }
+            
+    except Exception as e:
+        logger.error(f"Error in Meta connection status check: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to check connection status: {str(e)}")
+
 # ===== LINKEDIN ADS ENDPOINTS =====
 
 @app.get("/linkedin-ads/status")
