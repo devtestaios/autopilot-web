@@ -634,6 +634,8 @@ function AdvancedCanvasToolbar({
   onDeleteElement?: () => void;
   onDuplicateElement?: () => void;
   hasSelectedElement?: boolean;
+  onRemoveBackground?: () => void;
+  onMagicResize?: () => void;
 }) {
   const toolGroups = [
     {
@@ -789,6 +791,33 @@ function AdvancedCanvasToolbar({
           className="h-8"
         >
           <Maximize className="w-4 h-4" />
+        </Button>
+      </div>
+
+      <Separator orientation="vertical" className="h-6" />
+
+      {/* AI-Powered Tools (NEW!) */}
+      <div className="flex items-center gap-1">
+        <Button
+          size="sm"
+          variant="outline"
+          onClick={onRemoveBackground}
+          disabled={!hasSelectedElement}
+          title="Remove Background (AI)"
+          className="h-8 gap-1 px-3"
+        >
+          <Scissors className="w-4 h-4" />
+          <Sparkles className="w-3 h-3 text-purple-500" />
+        </Button>
+        <Button
+          size="sm"
+          variant="outline"
+          onClick={onMagicResize}
+          title="Magic Resize - Convert to 50+ formats"
+          className="h-8 gap-1 px-3"
+        >
+          <Wand2 className="w-4 h-4" />
+          <span className="text-xs font-medium">Magic Resize</span>
         </Button>
       </div>
     </div>
@@ -1222,6 +1251,122 @@ export default function AdvancedDesignStudio({
     }
   }, [elements]);
 
+  // AI Background Removal (NEW FEATURE!)
+  const handleRemoveBackground = useCallback(async () => {
+    if (!selectedElementId) return;
+
+    const selectedElement = elements.find(el => el.id === selectedElementId);
+    if (!selectedElement || selectedElement.type !== 'image' || !selectedElement.src) {
+      alert('Please select an image element to remove its background');
+      return;
+    }
+
+    try {
+      // Dynamic import of background removal utility
+      const { removeBackground } = await import('@/lib/background-removal');
+      
+      // Show loading state (you could add a loading indicator)
+      const result = await removeBackground(selectedElement.src, {
+        method: 'client', // Use client-side AI (free)
+        format: 'png',
+      });
+
+      if (result.success && result.dataUrl) {
+        // Update the element with transparent background
+        const updatedElements = elements.map(el => 
+          el.id === selectedElementId 
+            ? { ...el, src: result.dataUrl }
+            : el
+        );
+        updateElements(updatedElements);
+        
+        console.log(`Background removed in ${result.processingTime.toFixed(0)}ms using ${result.method}`);
+      } else {
+        alert(`Failed to remove background: ${result.error}`);
+      }
+    } catch (error) {
+      console.error('Background removal error:', error);
+      alert('Background removal failed. Please try again.');
+    }
+  }, [selectedElementId, elements, updateElements]);
+
+  // Magic Resize - Convert to 50+ platform formats (NEW FEATURE!)
+  const [showMagicResizeDialog, setShowMagicResizeDialog] = useState(false);
+  
+  const handleMagicResize = useCallback(async () => {
+    if (elements.length === 0) {
+      alert('Please add some content to your design first');
+      return;
+    }
+
+    // Open Magic Resize dialog
+    setShowMagicResizeDialog(true);
+  }, [elements]);
+
+  const handleMagicResizeExport = useCallback(async (selectedPlatforms: string[]) => {
+    try {
+      // Convert canvas to image
+      if (!canvasRef.current) return;
+      
+      // Dynamic import of magic resize utility
+      const { magicResize, downloadResizedImages } = await import('@/lib/magic-resize');
+      
+      // Create a temporary canvas to capture current design
+      const tempCanvas = document.createElement('canvas');
+      tempCanvas.width = canvasSize.width;
+      tempCanvas.height = canvasSize.height;
+      const ctx = tempCanvas.getContext('2d');
+      
+      if (!ctx) return;
+      
+      // Draw white background
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
+      
+      // Render all elements (simplified - in production, use proper canvas rendering)
+      elements.forEach(element => {
+        if (!element.visible) return;
+        
+        ctx.save();
+        ctx.globalAlpha = element.opacity;
+        
+        if (element.type === 'shape' && element.fill) {
+          ctx.fillStyle = element.fill;
+          ctx.fillRect(element.x, element.y, element.width, element.height);
+        } else if (element.type === 'text' && element.text) {
+          ctx.fillStyle = element.color || '#000000';
+          ctx.font = `${element.fontSize}px ${element.fontFamily || 'Inter'}`;
+          ctx.fillText(element.text, element.x, element.y);
+        }
+        // Add more element type rendering as needed
+        
+        ctx.restore();
+      });
+      
+      const sourceDataUrl = tempCanvas.toDataURL('image/png');
+      
+      // Generate all resized versions
+      console.log('Starting Magic Resize for platforms:', selectedPlatforms);
+      const results = await magicResize(sourceDataUrl, {
+        presets: selectedPlatforms.length > 0 ? selectedPlatforms : ['instagram', 'facebook', 'twitter', 'linkedin'],
+        smartCrop: true,
+        quality: 0.9,
+        format: 'png',
+      });
+      
+      console.log(`Generated ${results.length} resized versions`);
+      
+      // Download as ZIP
+      await downloadResizedImages(results, 'pulsebridge-design');
+      
+      setShowMagicResizeDialog(false);
+      alert(`Successfully generated ${results.length} platform-optimized versions! Check your downloads.`);
+    } catch (error) {
+      console.error('Magic Resize error:', error);
+      alert('Magic Resize failed. Please try again.');
+    }
+  }, [elements, canvasSize]);
+
   // Undo/Redo
   const undo = useCallback(() => {
     if (historyIndex > 0) {
@@ -1413,6 +1558,8 @@ export default function AdvancedDesignStudio({
         onDeleteElement={deleteSelectedElement}
         onDuplicateElement={duplicateSelectedElement}
         hasSelectedElement={!!selectedElementId}
+        onRemoveBackground={handleRemoveBackground}
+        onMagicResize={handleMagicResize}
       />
 
       {/* Main Canvas Area */}
@@ -1907,6 +2054,48 @@ export default function AdvancedDesignStudio({
         style={{ display: 'none' }}
       />
 
+      {/* Magic Resize Dialog (NEW!) */}
+      <AnimatePresence>
+        {showMagicResizeDialog && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
+            onClick={() => setShowMagicResizeDialog(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="bg-white dark:bg-gray-800 rounded-lg shadow-2xl max-w-4xl w-full max-h-[80vh] overflow-hidden"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+                <div className="flex items-center gap-3">
+                  <Wand2 className="w-8 h-8 text-purple-500" />
+                  <div>
+                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                      Magic Resize
+                    </h2>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                      Convert your design to 50+ platform-specific formats with AI-powered smart cropping
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <ScrollArea className="p-6 max-h-[60vh]">
+                <MagicResizePlatformSelector
+                  onExport={handleMagicResizeExport}
+                  onCancel={() => setShowMagicResizeDialog(false)}
+                />
+              </ScrollArea>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* AI Design Assistant */}
       <AIDesignAssistant
         elements={elements}
@@ -1914,6 +2103,140 @@ export default function AdvancedDesignStudio({
         canvasSize={canvasSize}
         onAutoSuggestion={setAiSuggestion}
       />
+    </div>
+  );
+}
+
+// Magic Resize Platform Selector Component
+function MagicResizePlatformSelector({ 
+  onExport, 
+  onCancel 
+}: { 
+  onExport: (platforms: string[]) => void; 
+  onCancel: () => void;
+}) {
+  const [selectedPlatforms, setSelectedPlatforms] = useState<string[]>(['instagram', 'facebook', 'twitter', 'linkedin']);
+
+  const platforms = [
+    { id: 'instagram', name: 'Instagram', icon: '📸', count: 7, color: 'bg-gradient-to-br from-purple-500 to-pink-500' },
+    { id: 'facebook', name: 'Facebook', icon: '📘', count: 6, color: 'bg-blue-600' },
+    { id: 'twitter', name: 'Twitter', icon: '🐦', count: 4, color: 'bg-sky-500' },
+    { id: 'linkedin', name: 'LinkedIn', icon: '💼', count: 5, color: 'bg-blue-700' },
+    { id: 'tiktok', name: 'TikTok', icon: '🎵', count: 2, color: 'bg-black' },
+    { id: 'youtube', name: 'YouTube', icon: '▶️', count: 5, color: 'bg-red-600' },
+    { id: 'pinterest', name: 'Pinterest', icon: '📌', count: 3, color: 'bg-red-500' },
+    { id: 'email', name: 'Email', icon: '📧', count: 3, color: 'bg-gray-600' },
+    { id: 'web', name: 'Web', icon: '🌐', count: 4, color: 'bg-green-600' },
+    { id: 'print', name: 'Print', icon: '🖨️', count: 4, color: 'bg-orange-600' },
+  ];
+
+  const togglePlatform = (platformId: string) => {
+    setSelectedPlatforms(prev =>
+      prev.includes(platformId)
+        ? prev.filter(id => id !== platformId)
+        : [...prev, platformId]
+    );
+  };
+
+  const selectAll = () => {
+    setSelectedPlatforms(platforms.map(p => p.id));
+  };
+
+  const deselectAll = () => {
+    setSelectedPlatforms([]);
+  };
+
+  const totalFormats = platforms
+    .filter(p => selectedPlatforms.includes(p.id))
+    .reduce((sum, p) => sum + p.count, 0);
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
+            Select Platforms ({totalFormats} formats selected)
+          </p>
+          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+            Your design will be optimized for each platform's specifications
+          </p>
+        </div>
+        <div className="flex gap-2">
+          <Button size="sm" variant="outline" onClick={selectAll}>
+            Select All
+          </Button>
+          <Button size="sm" variant="outline" onClick={deselectAll}>
+            Deselect All
+          </Button>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+        {platforms.map((platform) => (
+          <motion.div
+            key={platform.id}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className={`relative cursor-pointer rounded-lg p-4 border-2 transition-all ${
+              selectedPlatforms.includes(platform.id)
+                ? 'border-purple-500 bg-purple-50 dark:bg-purple-900/20'
+                : 'border-gray-200 dark:border-gray-700 hover:border-gray-300'
+            }`}
+            onClick={() => togglePlatform(platform.id)}
+          >
+            <div className="flex flex-col items-center gap-2">
+              <div className={`w-12 h-12 rounded-full ${platform.color} flex items-center justify-center text-2xl`}>
+                {platform.icon}
+              </div>
+              <div className="text-center">
+                <p className="font-medium text-sm text-gray-900 dark:text-white">
+                  {platform.name}
+                </p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  {platform.count} formats
+                </p>
+              </div>
+              {selectedPlatforms.includes(platform.id) && (
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  className="absolute top-2 right-2 w-6 h-6 bg-purple-500 rounded-full flex items-center justify-center text-white text-xs font-bold"
+                >
+                  ✓
+                </motion.div>
+              )}
+            </div>
+          </motion.div>
+        ))}
+      </div>
+
+      <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+        <div className="flex items-start gap-3">
+          <Sparkles className="w-5 h-5 text-blue-500 mt-0.5" />
+          <div>
+            <p className="text-sm font-medium text-blue-900 dark:text-blue-100">
+              Smart Cropping Enabled
+            </p>
+            <p className="text-xs text-blue-700 dark:text-blue-300 mt-1">
+              AI will intelligently crop your design to preserve important content for each format
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div className="flex gap-3 justify-end pt-4 border-t border-gray-200 dark:border-gray-700">
+        <Button variant="outline" onClick={onCancel}>
+          Cancel
+        </Button>
+        <Button 
+          onClick={() => onExport(selectedPlatforms)}
+          disabled={selectedPlatforms.length === 0}
+          className="gap-2"
+        >
+          <Download className="w-4 h-4" />
+          Export {totalFormats} Formats
+        </Button>
+      </div>
     </div>
   );
 }
