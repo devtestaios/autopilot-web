@@ -26,7 +26,7 @@ import { cn } from '@/lib/utils';
 import { useUnifiedAI } from '@/contexts/UnifiedAIContext';
 import { PremiumCard } from '@/components/ui/PremiumCard';
 import { PremiumButton } from '@/components/ui/PremiumButton';
-import AdvancedNavigation from '@/components/ui/AdvancedNavigation';
+import DashboardNavbar from '@/components/DashboardNavbar';
 import UnifiedSidebar from '@/components/UnifiedSidebar';
 
 // Dynamic imports for performance optimization
@@ -191,7 +191,7 @@ const AIAnalyticsPage = () => {
       <UnifiedSidebar onCollapseChange={setSidebarCollapsed} />
       
       <div className={`transition-all duration-300 ${sidebarCollapsed ? 'lg:ml-14' : 'lg:ml-[220px]'}`}>
-        <AdvancedNavigation sidebarCollapsed={sidebarCollapsed} />
+        <DashboardNavbar sidebarCollapsed={sidebarCollapsed} />
 
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Header */}

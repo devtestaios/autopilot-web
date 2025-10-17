@@ -12,7 +12,7 @@ const UnifiedSidebar = dynamic(() => import('@/components/UnifiedSidebar'), {
   loading: () => <div className="fixed left-0 top-0 h-screen w-56 bg-gray-900 animate-pulse" />
 });
 
-const AdvancedNavigation = dynamic(() => import('@/components/ui/AdvancedNavigation'), {
+const AdvancedNavigation = dynamic(() => import('@/components/DashboardNavbar'), {
   ssr: false,
   loading: () => <div className="h-16 bg-white dark:bg-gray-900 border-b animate-pulse" />
 });
@@ -22,15 +22,6 @@ const AIControlChat = dynamic(() => import('@/components/AIControlChat'), {
   loading: () => null
 });
 
-const MasterTerminalBreadcrumb = dynamic(() => import('@/components/MasterTerminalBreadcrumb'), {
-  ssr: false,
-  loading: () => <div className="h-8 bg-gray-100 dark:bg-gray-800 animate-pulse rounded" />
-});
-
-const NavigationTabs = dynamic(() => import('@/components/NavigationTabs'), {
-  ssr: false,
-  loading: () => <div className="h-12 bg-white dark:bg-gray-900 border-b animate-pulse" />
-});
 import { 
   Users, 
   MessageCircle, 
@@ -531,16 +522,6 @@ export default function CollaborationHub() {
       <div className={`transition-all duration-300 ease-in-out ${
         sidebarCollapsed ? 'ml-14' : 'ml-56'
       } pt-16`}>
-        {/* Master Terminal Breadcrumb */}
-        <div className="border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
-          <div className="px-6 py-4">
-            <MasterTerminalBreadcrumb />
-          </div>
-        </div>
-        
-        {/* Navigation Tabs */}
-        <NavigationTabs />
-        
         {/* Collaboration Content */}
         <div className="relative min-h-screen">
           {/* Main Content - This would typically wrap your app */}

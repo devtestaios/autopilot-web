@@ -3,14 +3,18 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 // NavigationTabs removed - using root layout Navigation instead
-import AdvancedNavigation from '@/components/ui/AdvancedNavigation';
+import dynamic from 'next/dynamic';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
-import dynamic from 'next/dynamic';
+
+const DashboardNavbar = dynamic(() => import('@/components/DashboardNavbar'), {
+  ssr: false,
+  loading: () => <div className="h-16 bg-white dark:bg-gray-900 border-b animate-pulse" />
+});
 
 // AI Agent Integration for Content Suite
 import { useUnifiedAI } from '@/contexts/UnifiedAIContext';
@@ -246,8 +250,8 @@ export default function ContentCreationSuite() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      {/* Navigation provided by root layout */}
-      <AdvancedNavigation 
+      {/* Unified Dashboard Navbar */}
+      <DashboardNavbar 
         sidebarCollapsed={sidebarCollapsed}
       />
       

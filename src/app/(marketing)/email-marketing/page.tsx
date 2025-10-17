@@ -112,7 +112,7 @@ const UnifiedSidebar = dynamic(() => import('@/components/UnifiedSidebar'), {
   loading: () => <div className="fixed left-0 top-0 h-screen w-56 bg-gray-900 animate-pulse" />
 });
 
-const AdvancedNavigation = dynamic(() => import('@/components/ui/AdvancedNavigation'), {
+const DashboardNavbar = dynamic(() => import('@/components/DashboardNavbar'), {
   ssr: false,
   loading: () => <div className="h-16 bg-white dark:bg-gray-900 border-b animate-pulse" />
 });
@@ -1015,7 +1015,7 @@ export default function EmailMarketingPlatform() {
       <UnifiedSidebar onCollapseChange={setSidebarCollapsed} />
       
       <div className={`transition-all duration-300 ${sidebarCollapsed ? 'ml-14' : 'ml-56'}`}>
-        <AdvancedNavigation sidebarCollapsed={sidebarCollapsed} />
+        <DashboardNavbar sidebarCollapsed={sidebarCollapsed} />
         
         <div className="container mx-auto px-4 py-8">
           <motion.div

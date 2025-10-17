@@ -11,7 +11,7 @@ const UnifiedSidebar = dynamic(() => import('@/components/UnifiedSidebar'), {
   loading: () => <div className="fixed left-0 top-0 h-screen w-56 bg-gray-900 animate-pulse" />
 });
 
-const AdvancedNavigation = dynamic(() => import('@/components/ui/AdvancedNavigation'), {
+const AdvancedNavigation = dynamic(() => import('@/components/DashboardNavbar'), {
   ssr: false,
   loading: () => <div className="h-16 bg-white dark:bg-gray-900 border-b animate-pulse" />
 });

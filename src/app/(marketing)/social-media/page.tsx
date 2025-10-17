@@ -62,7 +62,7 @@ const UnifiedSidebar = dynamic(() => import('@/components/UnifiedSidebar'), {
   loading: () => <div className="fixed left-0 top-0 h-screen w-56 bg-gray-900 animate-pulse" />
 });
 
-const AdvancedNavigation = dynamic(() => import('@/components/ui/AdvancedNavigation'), {
+const DashboardNavbar = dynamic(() => import('@/components/DashboardNavbar'), {
   ssr: false,
   loading: () => <div className="h-16 bg-white dark:bg-gray-900 border-b animate-pulse" />
 });
@@ -70,16 +70,6 @@ const AdvancedNavigation = dynamic(() => import('@/components/ui/AdvancedNavigat
 const AIControlChat = dynamic(() => import('@/components/AIControlChat'), {
   ssr: false,
   loading: () => <div className="fixed right-4 bottom-4 w-80 h-96 bg-white dark:bg-gray-900 rounded-lg shadow-lg animate-pulse" />
-});
-
-const MasterTerminalBreadcrumb = dynamic(() => import('@/components/MasterTerminalBreadcrumb'), {
-  ssr: false,
-  loading: () => <div className="h-8 bg-gray-100 dark:bg-gray-800 animate-pulse rounded" />
-});
-
-const NavigationTabs = dynamic(() => import('@/components/NavigationTabs'), {
-  ssr: false,
-  loading: () => <div className="h-12 bg-white dark:bg-gray-900 border-b animate-pulse" />
 });
 
 // Enhanced Components
@@ -383,17 +373,11 @@ export default function EnhancedSocialMediaPlatform() {
       <div className={`flex-1 transition-all duration-300 ${
         sidebarCollapsed ? 'ml-14' : 'ml-56'
       }`}>
-        {/* Advanced Navigation */}
-        <AdvancedNavigation sidebarCollapsed={sidebarCollapsed} />
-        
-        {/* Navigation Tabs */}
-        <NavigationTabs />
+        {/* Unified Dashboard Navbar */}
+        <DashboardNavbar sidebarCollapsed={sidebarCollapsed} />
         
         {/* Content Container */}
         <div className="container mx-auto px-4 py-6">
-          {/* Breadcrumb */}
-          <MasterTerminalBreadcrumb />
-          
           {/* Header with Real-time Status */}
           <div className="flex items-center justify-between mb-6">
             <div>

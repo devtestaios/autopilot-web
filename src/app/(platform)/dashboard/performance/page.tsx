@@ -12,7 +12,7 @@ import {
   WifiOff,
   Activity
 } from 'lucide-react';
-import AdvancedNavigation from '@/components/ui/AdvancedNavigation';
+import DashboardNavbar from '@/components/DashboardNavbar';
 import UnifiedSidebar from '@/components/UnifiedSidebar';
 import Breadcrumb from '@/components/ui/Breadcrumb';
 
@@ -103,7 +103,7 @@ export default function OptimizedPerformanceDashboard() {
       <div className={`transition-all duration-300 ${
         sidebarCollapsed ? 'lg:ml-14' : 'lg:ml-[220px]'
       }`}>
-        <AdvancedNavigation sidebarCollapsed={sidebarCollapsed} />
+        <DashboardNavbar sidebarCollapsed={sidebarCollapsed} />
         
         <main className="p-6">
           <div className="max-w-7xl mx-auto">
