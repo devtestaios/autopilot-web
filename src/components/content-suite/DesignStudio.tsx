@@ -74,8 +74,7 @@ import {
   MessageSquare,
   Bot,
   Wand2,
-  PenTool,
-  Brush
+  PenTool
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -1374,7 +1373,7 @@ export default function DesignStudio({
     }
   }, [history, historyIndex]);
 
-  const selectedElement = selectedElementId ? elements.find(el => el.id === selectedElementId) : null;
+  const selectedElement = selectedElementId ? (elements.find(el => el.id === selectedElementId) || null) : null;
 
   return (
     <div className={`flex flex-col h-full ${className}`}>
@@ -1411,6 +1410,10 @@ export default function DesignStudio({
         canRedo={historyIndex < history.length - 1}
         zoom={zoom}
         onZoomChange={setZoom}
+        onGridToggle={() => setShowGrid(!showGrid)}
+        showGrid={showGrid}
+        onRulerToggle={() => setShowRuler(!showRuler)}
+        showRuler={showRuler}
       />
 
       {/* Main Content */}
@@ -1453,8 +1456,8 @@ export default function DesignStudio({
           </div>
         </div>
 
-        {/* Properties Panel */}
-        <PropertiesPanel
+        {/* Enhanced Properties Panel */}
+        <EnhancedPropertiesPanel
           selectedElement={selectedElement}
           onElementUpdate={updateElement}
         />

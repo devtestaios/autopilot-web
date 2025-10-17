@@ -1337,3 +1337,161 @@ export async function fetchAISystemStatus(): Promise<any> {
     };
   }
 }
+
+// ====================================
+// CONTENT SUITE API ENDPOINTS
+// ====================================
+
+// Feed Posts - Instagram-style grid planner
+export async function fetchFeedPosts(options?: {
+  platform?: string;
+  status?: 'draft' | 'scheduled' | 'published';
+  limit?: number;
+}): Promise<any[]> {
+  try {
+    const params = new URLSearchParams();
+    if (options?.platform) params.append('platform', options.platform);
+    if (options?.status) params.append('status', options.status);
+    if (options?.limit) params.append('limit', options.limit.toString());
+    
+    const response = await enhancedFetch(`${API_BASE}/api/content/feed-posts?${params}`);
+    return await response.json();
+  } catch (error) {
+    console.warn('Feed Posts API fetch failed:', error);
+    return [];
+  }
+}
+
+export async function saveFeedPost(post: {
+  id?: string;
+  platform: string;
+  content: string;
+  caption?: string;
+  hashtags?: string[];
+  scheduledTime?: string;
+  status: 'draft' | 'scheduled' | 'published';
+  imageUrl?: string;
+}): Promise<any> {
+  try {
+    const method = post.id ? 'PUT' : 'POST';
+    const url = post.id ? `${API_BASE}/api/content/feed-posts/${post.id}` : `${API_BASE}/api/content/feed-posts`;
+    
+    const response = await enhancedFetch(url, {
+      method,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(post)
+    });
+    return await response.json();
+  } catch (error) {
+    console.error('Save Feed Post failed:', error);
+    throw new APIError('Failed to save feed post', 500);
+  }
+}
+
+export async function scheduleFeedPost(postId: string, scheduledTime: string): Promise<any> {
+  try {
+    const response = await enhancedFetch(`${API_BASE}/api/content/feed-posts/${postId}/schedule`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ scheduledTime })
+    });
+    return await response.json();
+  } catch (error) {
+    console.error('Schedule Feed Post failed:', error);
+    throw new APIError('Failed to schedule post', 500);
+  }
+}
+
+export async function deleteFeedPost(postId: string): Promise<void> {
+  try {
+    await enhancedFetch(`${API_BASE}/api/content/feed-posts/${postId}`, {
+      method: 'DELETE'
+    });
+  } catch (error) {
+    console.error('Delete Feed Post failed:', error);
+    throw new APIError('Failed to delete post', 500);
+  }
+}
+
+// Designs - Advanced Design Studio
+export async function saveDesign(design: {
+  id?: string;
+  name: string;
+  canvasSize: { width: number; height: number };
+  elements: any[];
+  thumbnail?: string;
+}): Promise<any> {
+  try {
+    const method = design.id ? 'PUT' : 'POST';
+    const url = design.id ? `${API_BASE}/api/content/designs/${design.id}` : `${API_BASE}/api/content/designs`;
+    
+    const response = await enhancedFetch(url, {
+      method,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(design)
+    });
+    return await response.json();
+  } catch (error) {
+    console.error('Save Design failed:', error);
+    throw new APIError('Failed to save design', 500);
+  }
+}
+
+export async function fetchDesignHistory(limit = 20): Promise<any[]> {
+  try {
+    const response = await enhancedFetch(`${API_BASE}/api/content/designs?limit=${limit}`);
+    return await response.json();
+  } catch (error) {
+    console.warn('Design History API fetch failed:', error);
+    return [];
+  }
+}
+
+export async function exportDesign(designId: string, format: 'png' | 'jpg' | 'svg' | 'pdf'): Promise<Blob> {
+  try {
+    const response = await enhancedFetch(`${API_BASE}/api/content/designs/${designId}/export?format=${format}`);
+    return await response.blob();
+  } catch (error) {
+    console.error('Export Design failed:', error);
+    throw new APIError('Failed to export design', 500);
+  }
+}
+
+// AI Content - AI Content Generator
+export async function saveAIContent(content: {
+  id?: string;
+  type: string;
+  platform: string;
+  content: string;
+  metadata: any;
+  variations?: string[];
+}): Promise<any> {
+  try {
+    const method = content.id ? 'PUT' : 'POST';
+    const url = content.id ? `${API_BASE}/api/content/ai-content/${content.id}` : `${API_BASE}/api/content/ai-content`;
+    
+    const response = await enhancedFetch(url, {
+      method,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(content)
+    });
+    return await response.json();
+  } catch (error) {
+    console.error('Save AI Content failed:', error);
+    throw new APIError('Failed to save AI content', 500);
+  }
+}
+
+export async function fetchContentHistory(type?: string, limit = 20): Promise<any[]> {
+  try {
+    const params = new URLSearchParams();
+    if (type) params.append('type', type);
+    params.append('limit', limit.toString());
+    
+    const response = await enhancedFetch(`${API_BASE}/api/content/ai-content?${params}`);
+    return await response.json();
+  } catch (error) {
+    console.warn('Content History API fetch failed:', error);
+    return [];
+  }
+}

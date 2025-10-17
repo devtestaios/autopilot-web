@@ -22,6 +22,11 @@ export interface AIDesignResponse {
 
 // Design Style Definitions
 export const DESIGN_STYLES = {
+  professional: {
+    colors: ['#1e3a8a', '#3b82f6', '#60a5fa', '#93c5fd', '#dbeafe'],
+    fonts: ['Inter, sans-serif', 'Helvetica, Arial, sans-serif'],
+    elements: ['clean', 'modern', 'structured']
+  },
   retro: {
     colors: ['#8B4513', '#D2691E', '#F4A460', '#DEB887', '#CD853F'],
     fonts: ['Georgia, serif', 'Times New Roman, serif'],

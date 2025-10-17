@@ -412,6 +412,9 @@ export default function AIContentGenerator({
           tone,
           industry,
           wordCount: aiData.content?.split(' ').length || 0,
+          readingTime: `${Math.ceil((aiData.content?.split(' ').length || 0) / 200)} min`,
+          sentiment: 'positive' as const,
+          engagementScore: (aiData.engagement_prediction || 0.75) * 100,
           readabilityScore: 85,
           seoScore: Math.floor(Math.random() * 20) + 80,
           engagementPrediction: aiData.engagement_prediction || 0.75,
@@ -420,17 +423,10 @@ export default function AIContentGenerator({
           optimalPostingTime: aiData.optimal_time
         },
         variations: [
-          {
-            title: 'Professional Version',
-            content: aiData.content,
-            tone: 'professional'
-          },
-          {
-            title: 'Casual Version', 
-            content: aiData.content?.replace(/\./g, '! ') || '',
-            tone: 'casual'
-          }
-        ]
+          aiData.content || `Professional version of ${topic}`,
+          aiData.content?.replace(/\./g, '! ') || `Casual version of ${topic}`
+        ],
+        createdAt: new Date()
       };
 
       setGeneratedContent(generatedContent);
@@ -481,34 +477,8 @@ What's your biggest challenge with ${topic}? Drop a comment below and let's solv
           aiProvider: 'Fallback'
         },
         variations: [
-          {
-            title: 'Strategy Version',
-            content: `🎯 The ${topic} strategy that's changing everything...
-
-Most people get ${topic} wrong. They focus on tactics instead of strategy.
-
-Here's what actually works:
-→ Start with your why
-→ Know your audience deeply  
-→ Create consistent value
-→ Measure what matters
-
-Ready to level up? Comment "YES" for my free ${topic} guide! 📈`,
-            tone: 'professional'
-          },
-          {
-            title: 'Personal Version',
-            content: `💡 Quick ${topic} tip that took me from zero to hero:
-
-Stop trying to be perfect. Start being consistent.
-
-Your audience doesn't need perfection - they need authenticity. Share your journey, your struggles, your wins.
-
-That's how you build real connections.
-
-What's one lesson ${topic} taught you? Share below! ⬇️`,
-            tone: 'casual'
-          }
+          `🎯 The ${topic} strategy that's changing everything... Most people get ${topic} wrong. Ready to level up?`,
+          `💡 Quick ${topic} tip: Stop trying to be perfect. Start being consistent. That's how you build real connections.`
         ],
         createdAt: new Date()
       };

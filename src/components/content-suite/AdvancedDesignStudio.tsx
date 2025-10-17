@@ -612,7 +612,9 @@ function AdvancedCanvasToolbar({
   onUploadPhoto,
   onDeleteElement,
   onDuplicateElement,
-  hasSelectedElement
+  hasSelectedElement,
+  onRemoveBackground,
+  onMagicResize
 }: {
   selectedTool: Tool;
   onToolChange: (tool: Tool) => void;
@@ -797,29 +799,35 @@ function AdvancedCanvasToolbar({
       <Separator orientation="vertical" className="h-6" />
 
       {/* AI-Powered Tools (NEW!) */}
-      <div className="flex items-center gap-1">
-        <Button
-          size="sm"
-          variant="outline"
-          onClick={onRemoveBackground}
-          disabled={!hasSelectedElement}
-          title="Remove Background (AI)"
-          className="h-8 gap-1 px-3"
-        >
-          <Scissors className="w-4 h-4" />
-          <Sparkles className="w-3 h-3 text-purple-500" />
-        </Button>
-        <Button
-          size="sm"
-          variant="outline"
-          onClick={onMagicResize}
-          title="Magic Resize - Convert to 50+ formats"
-          className="h-8 gap-1 px-3"
-        >
-          <Wand2 className="w-4 h-4" />
-          <span className="text-xs font-medium">Magic Resize</span>
-        </Button>
-      </div>
+      {(onRemoveBackground || onMagicResize) && (
+        <div className="flex items-center gap-1">
+          {onRemoveBackground && (
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={onRemoveBackground}
+              disabled={!hasSelectedElement}
+              title="Remove Background (AI)"
+              className="h-8 gap-1 px-3"
+            >
+              <Scissors className="w-4 h-4" />
+              <Sparkles className="w-3 h-3 text-purple-500" />
+            </Button>
+          )}
+          {onMagicResize && (
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={onMagicResize}
+              title="Magic Resize - Convert to 50+ formats"
+              className="h-8 gap-1 px-3"
+            >
+              <Wand2 className="w-4 h-4" />
+              <span className="text-xs font-medium">Magic Resize</span>
+            </Button>
+          )}
+        </div>
+      )}
     </div>
   );
 }
