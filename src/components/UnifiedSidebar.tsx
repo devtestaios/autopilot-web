@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useAuth } from '@/contexts/EnhancedAuthContext';
@@ -1026,60 +1027,110 @@ function SidebarContent({
           {sidebarItems.map((item) => (
             <div key={item.id}>
               {/* Main Item */}
-              <button
-                onClick={() => onItemClick(item)}
-                className={`w-full flex items-center space-x-3 p-3 rounded-lg transition-all duration-200 group ${
-                  isItemActive(item)
-                    ? theme === 'dark'
-                      ? 'bg-teal-600/20 text-teal-400 border border-teal-500/30'
-                      : 'bg-teal-50 text-teal-600 border border-teal-200'
-                    : theme === 'dark'
-                      ? 'text-gray-300 hover:bg-gray-800/60 hover:text-white'
-                      : 'text-gray-800 hover:bg-gray-100 hover:text-gray-900'
-                }`}
-                title={item.label}
-                aria-label={item.label}
-              >
-                <item.icon 
-                  size={20} 
-                  className={`flex-shrink-0 transition-colors ${
-                    isItemActive(item) ? 'text-current' : 'text-current opacity-75'
-                  }`} 
-                />
-                
-                <AnimatePresence>
-                  {!isCollapsed && (
-                    <motion.div
-                      variants={contentVariants}
-                      initial="collapsed"
-                      animate="expanded"
-                      exit="collapsed"
-                      className="flex-1 flex items-center justify-between min-w-0"
-                    >
-                      <span className="font-medium truncate">{item.label}</span>
-                      <div className="flex items-center space-x-2">
-                        {item.badge && (
-                          <span className={`px-2 py-0.5 text-xs rounded-full font-medium ${
-                            item.badge === 'Beta'
-                              ? 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300'
-                              : 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300'
-                          }`}>
-                            {item.badge}
-                          </span>
-                        )}
-                        {item.subItems && (
-                          <ChevronRight 
-                            size={16} 
-                            className={`transition-transform duration-200 ${
-                              expandedItem === item.id ? 'rotate-90' : ''
-                            }`} 
-                          />
-                        )}
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </button>
+              {item.subItems ? (
+                <button
+                  onClick={() => onItemClick(item)}
+                  className={`w-full flex items-center space-x-3 p-3 rounded-lg transition-all duration-200 group ${
+                    isItemActive(item)
+                      ? theme === 'dark'
+                        ? 'bg-teal-600/20 text-teal-400 border border-teal-500/30'
+                        : 'bg-teal-50 text-teal-600 border border-teal-200'
+                      : theme === 'dark'
+                        ? 'text-gray-300 hover:bg-gray-800/60 hover:text-white'
+                        : 'text-gray-800 hover:bg-gray-100 hover:text-gray-900'
+                  }`}
+                  title={item.label}
+                  aria-label={item.label}
+                >
+                  <item.icon 
+                    size={20} 
+                    className={`flex-shrink-0 transition-colors ${
+                      isItemActive(item) ? 'text-current' : 'text-current opacity-75'
+                    }`} 
+                  />
+                  
+                  <AnimatePresence>
+                    {!isCollapsed && (
+                      <motion.div
+                        variants={contentVariants}
+                        initial="collapsed"
+                        animate="expanded"
+                        exit="collapsed"
+                        className="flex-1 flex items-center justify-between min-w-0"
+                      >
+                        <span className="font-medium truncate">{item.label}</span>
+                        <div className="flex items-center space-x-2">
+                          {item.badge && (
+                            <span className={`px-2 py-0.5 text-xs rounded-full font-medium ${
+                              item.badge === 'Beta'
+                                ? 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300'
+                                : 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300'
+                            }`}>
+                              {item.badge}
+                            </span>
+                          )}
+                          {item.subItems && (
+                            <ChevronRight 
+                              size={16} 
+                              className={`transition-transform duration-200 ${
+                                expandedItem === item.id ? 'rotate-90' : ''
+                              }`} 
+                            />
+                          )}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </button>
+              ) : (
+                <Link
+                  href={item.path}
+                  className={`w-full flex items-center space-x-3 p-3 rounded-lg transition-all duration-200 group ${
+                    isItemActive(item)
+                      ? theme === 'dark'
+                        ? 'bg-teal-600/20 text-teal-400 border border-teal-500/30'
+                        : 'bg-teal-50 text-teal-600 border border-teal-200'
+                      : theme === 'dark'
+                        ? 'text-gray-300 hover:bg-gray-800/60 hover:text-white'
+                        : 'text-gray-800 hover:bg-gray-100 hover:text-gray-900'
+                  }`}
+                  title={item.label}
+                  aria-label={item.label}
+                  onClick={onClose}
+                >
+                  <item.icon 
+                    size={20} 
+                    className={`flex-shrink-0 transition-colors ${
+                      isItemActive(item) ? 'text-current' : 'text-current opacity-75'
+                    }`} 
+                  />
+                  
+                  <AnimatePresence>
+                    {!isCollapsed && (
+                      <motion.div
+                        variants={contentVariants}
+                        initial="collapsed"
+                        animate="expanded"
+                        exit="collapsed"
+                        className="flex-1 flex items-center justify-between min-w-0"
+                      >
+                        <span className="font-medium truncate">{item.label}</span>
+                        <div className="flex items-center space-x-2">
+                          {item.badge && (
+                            <span className={`px-2 py-0.5 text-xs rounded-full font-medium ${
+                              item.badge === 'Beta'
+                                ? 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300'
+                                : 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300'
+                            }`}>
+                              {item.badge}
+                            </span>
+                          )}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </Link>
+              )}
 
               {/* Sub Items */}
               <AnimatePresence>
@@ -1093,10 +1144,10 @@ function SidebarContent({
                   >
                     <div className="ml-8 mt-1 space-y-1">
                       {item.subItems.map((subItem) => (
-                        <button
+                        <Link
                           key={subItem.id}
-                          onClick={() => onSubItemClick(subItem.path)}
-                          className={`w-full text-left p-2 rounded-md text-sm transition-colors ${
+                          href={subItem.path}
+                          className={`block w-full text-left p-2 rounded-md text-sm transition-colors ${
                             pathname === subItem.path
                               ? theme === 'dark'
                                 ? 'bg-teal-600/30 text-teal-300'
@@ -1105,9 +1156,10 @@ function SidebarContent({
                                 ? 'text-gray-400 hover:bg-gray-800/40 hover:text-gray-200'
                                 : 'text-gray-700 hover:bg-gray-50 hover:text-gray-800'
                           }`}
+                          onClick={onClose}
                         >
                           {subItem.label}
-                        </button>
+                        </Link>
                       ))}
                     </div>
                   </motion.div>
