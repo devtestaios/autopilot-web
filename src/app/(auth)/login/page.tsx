@@ -28,11 +28,15 @@ export default function LoginPage() {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     console.log('🎯 [LOGIN PAGE] handleSubmit called!');
     e.preventDefault();
     setError('');
+    setSuccessMessage('');
+    setIsSubmitting(true);
 
     console.log('📝 [LOGIN PAGE] Form data:', { email: formData.email, passwordLength: formData.password.length });
     console.log('🔧 [LOGIN PAGE] Auth context:', { login: typeof login, isLoading });
@@ -41,12 +45,14 @@ export default function LoginPage() {
     if (!formData.email || !formData.password) {
       console.log('❌ [LOGIN PAGE] Validation failed: empty fields');
       setError('Please fill in all fields');
+      setIsSubmitting(false);
       return;
     }
 
     if (!formData.email.includes('@')) {
       console.log('❌ [LOGIN PAGE] Validation failed: invalid email');
       setError('Please enter a valid email address');
+      setIsSubmitting(false);
       return;
     }
 
@@ -59,21 +65,29 @@ export default function LoginPage() {
       if (result && result.success) {
         console.log('✅ [LOGIN PAGE] Login successful, redirecting to dashboard...');
         
-        // Use window.location for more reliable redirect
-        setTimeout(() => {
-          console.log('🔄 [LOGIN PAGE] Executing redirect to /dashboard');
-          window.location.href = '/dashboard';
-        }, 500);
+        // Show success message
+        setSuccessMessage('Login successful! Redirecting to dashboard...');
         
-        // Also try router push as backup
-        router.push('/dashboard');
+        // Check if there's a redirect parameter
+        const searchParams = new URLSearchParams(window.location.search);
+        const redirectTo = searchParams.get('redirectTo') || '/dashboard';
+        
+        console.log('🔄 [LOGIN PAGE] Redirecting to:', redirectTo);
+        
+        // Use router.push for client-side navigation with Next.js App Router
+        router.push(redirectTo);
+        
+        // Keep submitting state true during redirect
+        // Don't set setIsSubmitting(false) here
       } else {
         console.log('❌ [LOGIN PAGE] Login failed:', result?.error);
         setError(result?.error || 'Invalid email or password. Please try again.');
+        setIsSubmitting(false);
       }
     } catch (error) {
       console.error('❌ [LOGIN PAGE] Login error:', error);
       setError('Authentication service temporarily unavailable. Please try again.');
+      setIsSubmitting(false);
     }
   };
 
@@ -264,23 +278,36 @@ export default function LoginPage() {
             <div>
               <button
                 type="submit"
-                disabled={isLoading}
+                disabled={isLoading || isSubmitting}
                 className={`group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors ${
-                  isLoading
+                  (isLoading || isSubmitting)
                     ? 'bg-blue-400 cursor-not-allowed'
                     : 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700'
                 }`}
               >
-                {isLoading ? (
+                {(isLoading || isSubmitting) ? (
                   <div className="flex items-center">
                     <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                    Signing in...
+                    {successMessage ? 'Redirecting...' : 'Signing in...'}
                   </div>
                 ) : (
                   'Sign in'
                 )}
               </button>
             </div>
+
+            {/* Success Message */}
+            {successMessage && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="rounded-lg bg-green-50 dark:bg-green-900/20 p-4 border border-green-200 dark:border-green-800"
+              >
+                <p className="text-sm text-green-800 dark:text-green-200 text-center">
+                  {successMessage}
+                </p>
+              </motion.div>
+            )}
 
             {/* Sign up link */}
             <div className="text-center">
