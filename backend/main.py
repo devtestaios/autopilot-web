@@ -120,14 +120,20 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-# CORS configuration for Vercel frontend
+# CORS configuration for production + development
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
+        # Production domains
         "https://pulsebridge.ai",
+        "https://www.pulsebridge.ai",
         "https://autopilot-web-rho.vercel.app",
+        "https://autopilot-api-1.onrender.com",  # Backend itself
+        # Development
         "http://localhost:3000",
-        "http://127.0.0.1:3000"
+        "http://localhost:3001",  # Turbopack dev server
+        "http://127.0.0.1:3000",
+        "http://127.0.0.1:3001"
     ],
     allow_credentials=True,
     allow_methods=["*"],

@@ -178,10 +178,16 @@ interface SEOData {
 }
 
 export default function ContentCreationSuite() {
+  const [mounted, setMounted] = useState(false);
   const [activeTab, setActiveTab] = useState('feed-planner');
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [selectedContentType, setSelectedContentType] = useState<ContentType>(ContentType.SOCIAL_POST);
   const [selectedPlatforms, setSelectedPlatforms] = useState<Platform[]>([Platform.INSTAGRAM]);
+
+  // SSR-safe mounting
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // AI Agent Integration for Content Suite
   const { 
@@ -247,6 +253,25 @@ export default function ContentCreationSuite() {
       description: 'AI-powered content creation and SEO'
     }
   ];
+
+  // Show loading state until mounted (prevents hydration issues)
+  if (!mounted) {
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+        <div className="container mx-auto px-4 py-8">
+          <div className="animate-pulse">
+            <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded mb-4 w-64"></div>
+            <div className="flex gap-4 mb-8">
+              {[...Array(4)].map((_, i) => (
+                <div key={i} className="h-12 bg-gray-200 dark:bg-gray-700 rounded w-32"></div>
+              ))}
+            </div>
+            <div className="h-96 bg-gray-200 dark:bg-gray-700 rounded"></div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
