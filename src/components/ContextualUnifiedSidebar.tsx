@@ -159,7 +159,6 @@ const sidebarContexts: Record<string, SidebarContext> = {
         description: 'Multi-platform social media management',
         subItems: [
           { id: 'social-overview', label: 'Social Overview', path: '/social-media' },
-          { id: 'content-composer', label: 'Content Composer', path: '/social/composer' },
           { id: 'social-calendar', label: 'Content Calendar', path: '/social/calendar' },
           { id: 'social-analytics', label: 'Social Analytics', path: '/social-media/analytics' }
         ]
