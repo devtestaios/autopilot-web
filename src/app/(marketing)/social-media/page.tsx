@@ -720,10 +720,16 @@ export default function EnhancedSocialMediaPlatform() {
                                   <Button 
                                     size="sm" 
                                     variant="outline"
-                                    onClick={() => {
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      console.log('🔴🔴🔴 BUTTON CLICKED! 🔴🔴🔴');
                                       console.log('[Connected Accounts Card] Connect button clicked for:', platform);
+                                      console.log('[Connected Accounts Card] Event object:', e);
+                                      console.log('[Connected Accounts Card] handleConnectAccount exists:', typeof handleConnectAccount);
                                       handleConnectAccount(platform);
                                     }}
+                                    className="cursor-pointer"
+                                    data-testid={`connect-${platform}-button`}
                                   >
                                     Connect
                                   </Button>
