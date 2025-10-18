@@ -4,6 +4,7 @@ Complete backend server with Claude AI chat and platform control
 """
 
 import os
+import re
 from fastapi import FastAPI, HTTPException, Depends, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
@@ -14,6 +15,9 @@ from datetime import datetime, timezone, timedelta
 import logging
 from pydantic import BaseModel
 import aiohttp
+from starlette.middleware.cors import ALL_METHODS
+from starlette.responses import Response
+from starlette.types import ASGIApp, Receive, Scope, Send
 
 # Configure logging first
 logging.basicConfig(level=logging.INFO)
@@ -120,25 +124,75 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-# CORS configuration for production + development
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=[
-        # Production domains
-        "https://pulsebridge.ai",
-        "https://www.pulsebridge.ai",
-        "https://autopilot-web-rho.vercel.app",
-        "https://autopilot-api-1.onrender.com",  # Backend itself
-        # Development
-        "http://localhost:3000",
-        "http://localhost:3001",  # Turbopack dev server
-        "http://127.0.0.1:3000",
-        "http://127.0.0.1:3001"
-    ],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+# CORS configuration - Allow all Vercel deployments + production
+# Using regex pattern to allow all Vercel preview URLs
+import re
+
+def is_allowed_origin(origin: str) -> bool:
+    """Check if origin is allowed"""
+    allowed_patterns = [
+        r"^https://pulsebridge\.ai$",
+        r"^https://www\.pulsebridge\.ai$",
+        r"^https://.*\.vercel\.app$",  # All Vercel deployments
+        r"^https://autopilot-api-1\.onrender\.com$",
+        r"^http://localhost:\d+$",
+        r"^http://127\.0\.0\.1:\d+$",
+    ]
+    return any(re.match(pattern, origin) for pattern in allowed_patterns)
+
+# Custom CORS middleware to handle Vercel preview URLs
+from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.cors import ALL_METHODS
+from starlette.responses import Response
+from starlette.types import ASGIApp, Receive, Scope, Send
+
+class CustomCORSMiddleware:
+    def __init__(self, app: ASGIApp) -> None:
+        self.app = app
+
+    async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
+        if scope["type"] != "http":
+            await self.app(scope, receive, send)
+            return
+
+        # Get origin from headers
+        origin = None
+        for header_name, header_value in scope["headers"]:
+            if header_name == b"origin":
+                origin = header_value.decode("utf-8")
+                break
+
+        # Handle preflight requests
+        if scope["method"] == "OPTIONS":
+            response = Response(
+                status_code=200,
+                headers={
+                    "Access-Control-Allow-Origin": origin if origin and is_allowed_origin(origin) else "*",
+                    "Access-Control-Allow-Methods": "*",
+                    "Access-Control-Allow-Headers": "*",
+                    "Access-Control-Allow-Credentials": "true",
+                    "Access-Control-Max-Age": "600",
+                },
+            )
+            await response(scope, receive, send)
+            return
+
+        # Inject CORS headers into response
+        async def send_wrapper(message):
+            if message["type"] == "http.response.start":
+                headers = list(message.get("headers", []))
+                if origin and is_allowed_origin(origin):
+                    headers.append((b"access-control-allow-origin", origin.encode("utf-8")))
+                    headers.append((b"access-control-allow-credentials", b"true"))
+                    headers.append((b"access-control-allow-methods", b"*"))
+                    headers.append((b"access-control-allow-headers", b"*"))
+                message["headers"] = headers
+            await send(message)
+
+        await self.app(scope, receive, send_wrapper)
+
+# Apply custom CORS middleware
+app.add_middleware(CustomCORSMiddleware)
 
 # Include AI router
 app.include_router(ai_router, prefix="/api/v1")
