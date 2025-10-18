@@ -291,31 +291,59 @@ export default function EnhancedSocialMediaPlatform() {
   const handleConnectAccount = async (platform: string) => {
     console.log('Connect Account button clicked for platform:', platform);
     
-    if (platform === 'instagram') {
-      // Use Facebook SDK for Instagram API with Facebook Login (post-Dec 2024)
+    if (platform === 'instagram' || platform === 'facebook') {
+      // Use Facebook SDK for Instagram/Facebook API with Facebook Login (post-Dec 2024)
       // Instagram Basic Display API was deprecated on December 4th, 2024
       if (typeof window !== 'undefined' && window.FB) {
-        console.log('Using Facebook SDK for Instagram API with Facebook Login');
+        console.log('Using Facebook SDK for Instagram/Facebook API with Facebook Login');
         
-        window.FB.login(function(response: any) {
+        window.FB.login(async function(response: any) {
           console.log('FB.login response:', response);
           
           if (response.authResponse) {
-            console.log('Instagram API OAuth successful!');
+            console.log('Facebook/Instagram API OAuth successful!');
             console.log('Access Token:', response.authResponse.accessToken);
             
-            // Here you would typically save the access token and redirect to callback
-            // For now, let's show success
-            alert('Instagram business account connected successfully!');
-            
-            // You can also call your backend to save the token
-            // await saveInstagramToken(response.authResponse.accessToken);
-            
+            try {
+              // Save the token to backend
+              const saveResponse = await fetch('/api/v1/social-media/oauth/facebook/save-token', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  access_token: response.authResponse.accessToken,
+                  user_id: response.authResponse.userID,
+                  platform: platform
+                })
+              });
+              
+              if (saveResponse.ok) {
+                alert(`${platform.charAt(0).toUpperCase() + platform.slice(1)} business account connected successfully!`);
+                
+                // Refresh accounts data
+                const accounts = await fetchSocialMediaAccounts();
+                setConnectedAccounts(accounts);
+                
+                // Refresh posts
+                const posts = await fetchSocialMediaPosts({ limit: 20 });
+                setRecentPosts(posts);
+                
+                // Call the parent refresh function if available
+                if (refreshData) {
+                  refreshData();
+                }
+              } else {
+                const errorData = await saveResponse.json();
+                throw new Error(errorData.message || 'Failed to save connection');
+              }
+            } catch (error) {
+              console.error('Error saving connection:', error);
+              alert(`Error saving connection: ${error instanceof Error ? error.message : 'Unknown error'}`);
+            }
           } else {
-            console.log('User cancelled Instagram login or did not fully authorize.');
+            console.log('User cancelled login or did not fully authorize.');
           }
         }, {
-          scope: 'pages_show_list,pages_read_engagement,instagram_basic,instagram_content_publish',
+          scope: 'pages_show_list,pages_read_engagement,instagram_basic,instagram_content_publish,public_profile',
           return_scopes: true
         });
         
@@ -333,8 +361,33 @@ export default function EnhancedSocialMediaPlatform() {
       const authUrl = await socialMediaService.initiateOAuth(platform);
       console.log('Generated auth URL:', authUrl);
       
-      // Open OAuth window
-      window.open(authUrl, '_blank', 'width=600,height=700');
+      // Open OAuth window and listen for completion
+      const authWindow = window.open(authUrl, '_blank', 'width=600,height=700');
+      
+      // Poll for window closure (connection complete)
+      const checkWindow = setInterval(async () => {
+        if (authWindow && authWindow.closed) {
+          clearInterval(checkWindow);
+          
+          // Refresh accounts data after OAuth window closes
+          try {
+            const accounts = await fetchSocialMediaAccounts();
+            setConnectedAccounts(accounts);
+            
+            const posts = await fetchSocialMediaPosts({ limit: 20 });
+            setRecentPosts(posts);
+            
+            if (refreshData) {
+              refreshData();
+            }
+          } catch (error) {
+            console.error('Error refreshing data after OAuth:', error);
+          }
+        }
+      }, 500);
+      
+      // Clear interval after 5 minutes
+      setTimeout(() => clearInterval(checkWindow), 5 * 60 * 1000);
     } catch (error) {
       console.error('Error connecting account:', error);
       alert(`Error connecting account: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -386,7 +439,7 @@ export default function EnhancedSocialMediaPlatform() {
                   <Share2 className="h-6 w-6 text-white" />
                 </div>
                 Enhanced Social Media Management
-                <Badge outline className="ml-2 bg-green-50 text-green-700 border-green-200">
+                <Badge className="ml-2 bg-green-50 text-green-700 border-green-200 border">
                   <Activity className="h-3 w-3 mr-1" />
                   Live
                 </Badge>
@@ -401,28 +454,38 @@ export default function EnhancedSocialMediaPlatform() {
                 <RefreshCw className={`h-4 w-4 mr-2 ${dataLoading ? 'animate-spin' : ''}`} />
                 Refresh
               </Button>
+              
+              {/* PRIMARY ACTION: Create Post Button - Large & Prominent */}
+              <Button 
+                onClick={() => setShowEnhancedComposer(true)} 
+                size="lg"
+                className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 shadow-lg hover:shadow-xl transition-all font-semibold"
+              >
+                <Plus className="h-5 w-5 mr-2" />
+                Create Post
+              </Button>
+              
               <Button 
                 onClick={() => setShowContentImporter(true)}
                 variant="outline"
-                className="bg-purple-50 border-purple-200 text-purple-700 hover:bg-purple-100"
+                size="sm"
+                className="bg-purple-50 border-purple-200 text-purple-700 hover:bg-purple-100 dark:bg-purple-900/20 dark:border-purple-800 dark:text-purple-400"
               >
                 <Layers className="h-4 w-4 mr-2" />
-                Import Content
+                Import from Content Suite
               </Button>
-              <Button 
-                onClick={() => setShowEnhancedComposer(true)} 
-                className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700"
-              >
-                <Sparkles className="h-4 w-4 mr-2" />
-                Enhanced Composer
-              </Button>
-              <Button 
-                onClick={() => handleConnectAccount('instagram')} 
-                className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
-              >
-                <Plus className="h-4 w-4 mr-2" />
-                Connect Account
-              </Button>
+              
+              {connectedAccounts.length === 0 && (
+                <Button 
+                  onClick={() => handleConnectAccount('instagram')} 
+                  variant="outline"
+                  size="sm"
+                  className="border-pink-200 text-pink-700 hover:bg-pink-50 dark:border-pink-800 dark:text-pink-400 dark:hover:bg-pink-900/20"
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  Connect Instagram
+                </Button>
+              )}
             </div>
           </div>
 
@@ -526,7 +589,7 @@ export default function EnhancedSocialMediaPlatform() {
                                       <Share2 className="h-3 w-3" />
                                       {post.engagement?.shares || 0}
                                     </span>
-                                    <Badge outline className="text-xs">
+                                    <Badge className="text-xs border">
                                       {post.status}
                                     </Badge>
                                   </div>
@@ -536,14 +599,62 @@ export default function EnhancedSocialMediaPlatform() {
                           ))}
                         </div>
                       ) : (
-                        <div className="text-center py-8">
-                          <MessageCircle className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                          <p className="text-gray-600 dark:text-gray-400">No posts yet</p>
+                        <div className="text-center py-12">
+                          <div className="relative mb-6">
+                            <div className="absolute inset-0 flex items-center justify-center opacity-10">
+                              <Share2 className="h-32 w-32" />
+                            </div>
+                            <MessageCircle className="h-16 w-16 text-blue-500 mx-auto mb-4 relative" />
+                          </div>
+                          
+                          <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+                            Ready to Create Your First Post?
+                          </h3>
+                          <p className="text-gray-600 dark:text-gray-400 mb-6 max-w-md mx-auto">
+                            Start engaging with your audience on Instagram, Twitter, LinkedIn and more - all from one place!
+                          </p>
+                          
+                          {/* Quick Start Guide */}
+                          <div className="bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-lg p-6 mb-6 max-w-lg mx-auto">
+                            <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
+                              <Sparkles className="h-4 w-4 text-blue-600" />
+                              Quick Start Guide
+                            </h4>
+                            <ol className="space-y-2 text-left text-sm text-gray-700 dark:text-gray-300">
+                              <li className="flex items-start gap-2">
+                                <span className="font-semibold text-blue-600 min-w-[20px]">1.</span>
+                                <span>Click <strong>"Create Post"</strong> button above</span>
+                              </li>
+                              <li className="flex items-start gap-2">
+                                <span className="font-semibold text-blue-600 min-w-[20px]">2.</span>
+                                <span>Select your platform (Instagram, Twitter, etc.)</span>
+                              </li>
+                              <li className="flex items-start gap-2">
+                                <span className="font-semibold text-blue-600 min-w-[20px]">3.</span>
+                                <span>Upload image/video and see instant preview</span>
+                              </li>
+                              <li className="flex items-start gap-2">
+                                <span className="font-semibold text-blue-600 min-w-[20px]">4.</span>
+                                <span>Write caption and add hashtags</span>
+                              </li>
+                              <li className="flex items-start gap-2">
+                                <span className="font-semibold text-blue-600 min-w-[20px]">5.</span>
+                                <span>Publish now or schedule for later!</span>
+                              </li>
+                            </ol>
+                          </div>
+                          
                           <Button 
-                            onClick={() => setActiveView('composer')} 
-                            className="mt-4"
-                            size="sm"
+                            onClick={() => {
+                              console.log('Create Your First Post button clicked!');
+                              console.log('Current showEnhancedComposer state:', showEnhancedComposer);
+                              setShowEnhancedComposer(true);
+                              console.log('Setting showEnhancedComposer to true');
+                            }} 
+                            size="lg"
+                            className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 shadow-lg"
                           >
+                            <Plus className="h-5 w-5 mr-2" />
                             Create Your First Post
                           </Button>
                         </div>
@@ -559,7 +670,7 @@ export default function EnhancedSocialMediaPlatform() {
                       <CardTitle className="flex items-center gap-2">
                         <Users className="h-5 w-5" />
                         Connected Accounts
-                        <Badge outline className="ml-auto">
+                        <Badge className="ml-auto border">
                           {connectedAccounts.filter(acc => acc.is_connected).length}
                         </Badge>
                       </CardTitle>
@@ -680,29 +791,68 @@ export default function EnhancedSocialMediaPlatform() {
 
             {/* AI Composer View */}
             <TabsContent value="composer" className="space-y-6">
-              <div className="text-center py-8">
-                <Sparkles className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
-                  Enhanced AI Composer
+              <div className="text-center py-12">
+                <div className="relative mb-6">
+                  <div className="absolute inset-0 flex items-center justify-center opacity-10">
+                    <Sparkles className="h-32 w-32" />
+                  </div>
+                  <div className="relative">
+                    <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+                      <Sparkles className="h-10 w-10 text-white" />
+                    </div>
+                  </div>
+                </div>
+                
+                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
+                  AI-Powered Content Creation
                 </h3>
-                <p className="text-gray-600 dark:text-gray-400 mb-6">
-                  Use the Enhanced Composer for AI-powered content creation with platform optimization
+                <p className="text-gray-600 dark:text-gray-400 mb-8 max-w-2xl mx-auto">
+                  Create stunning posts with AI assistance. Upload images/videos, get smart captions, 
+                  optimize for each platform, and schedule with one click.
                 </p>
+                
+                {/* Feature Highlights */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-3xl mx-auto mb-8">
+                  <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
+                    <Image className="h-8 w-8 text-blue-500 mx-auto mb-2" />
+                    <h4 className="font-semibold text-sm mb-1">Visual Preview</h4>
+                    <p className="text-xs text-gray-600 dark:text-gray-400">
+                      See exactly how your post will look with image/video previews
+                    </p>
+                  </div>
+                  <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
+                    <Target className="h-8 w-8 text-purple-500 mx-auto mb-2" />
+                    <h4 className="font-semibold text-sm mb-1">Multi-Platform</h4>
+                    <p className="text-xs text-gray-600 dark:text-gray-400">
+                      Post to Instagram, Twitter, LinkedIn & more simultaneously
+                    </p>
+                  </div>
+                  <div className="bg-white dark:bg-gray-800 rounded-lg p-4 border border-gray-200 dark:border-gray-700">
+                    <Calendar className="h-8 w-8 text-green-500 mx-auto mb-2" />
+                    <h4 className="font-semibold text-sm mb-1">Schedule Posts</h4>
+                    <p className="text-xs text-gray-600 dark:text-gray-400">
+                      Publish now or schedule for optimal engagement times
+                    </p>
+                  </div>
+                </div>
+                
                 <div className="flex justify-center gap-4">
+                  <Button 
+                    onClick={() => setShowEnhancedComposer(true)}
+                    size="lg"
+                    className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 shadow-lg"
+                  >
+                    <Plus className="h-5 w-5 mr-2" />
+                    Create Post
+                  </Button>
                   <Button 
                     onClick={() => setShowContentImporter(true)}
                     variant="outline"
-                    className="bg-purple-50 border-purple-200 text-purple-700 hover:bg-purple-100"
+                    size="lg"
+                    className="border-purple-200 text-purple-700 hover:bg-purple-50 dark:border-purple-800 dark:text-purple-400"
                   >
                     <Layers className="h-4 w-4 mr-2" />
                     Import from Content Suite
-                  </Button>
-                  <Button 
-                    onClick={() => setShowEnhancedComposer(true)}
-                    className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700"
-                  >
-                    <Sparkles className="h-4 w-4 mr-2" />
-                    Open Enhanced Composer
                   </Button>
                 </div>
               </div>
@@ -908,7 +1058,7 @@ export default function EnhancedSocialMediaPlatform() {
                                   <MessageCircle className="h-3 w-3" />
                                   {post.engagement?.comments || 0}
                                 </span>
-                                <Badge outline className="text-xs">{/* Golden Compass Domain 4: Elegant prop usage */}
+                                <Badge className="text-xs border">
                                   {post.status}
                                 </Badge>
                               </div>

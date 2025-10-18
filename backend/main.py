@@ -2318,6 +2318,167 @@ async def complete_social_media_oauth(request: dict):
         logger.error(f"Error completing OAuth for {platform}: {e}")
         raise HTTPException(status_code=500, detail=f"OAuth completion error: {str(e)}")
 
+@app.post("/api/v1/social-media/oauth/facebook/save-token")
+async def save_facebook_oauth_token(request: dict):
+    """
+    Save Facebook/Instagram OAuth token and fetch account details
+    Called after successful OAuth via Facebook SDK popup
+    """
+    try:
+        access_token = request.get("access_token")
+        user_id = request.get("user_id")
+        platform = request.get("platform", "instagram")  # "instagram" or "facebook"
+        
+        if not access_token:
+            raise HTTPException(status_code=400, detail="Missing access_token")
+        
+        logger.info(f"Saving {platform} OAuth token for user {user_id}")
+        
+        # Step 1: Validate token and get account info from Facebook Graph API
+        async with aiohttp.ClientSession() as session:
+            # Get user's pages/accounts
+            pages_url = f"https://graph.facebook.com/v19.0/me/accounts"
+            params = {
+                "access_token": access_token,
+                "fields": "id,name,username,followers_count,profile_picture_url,access_token"
+            }
+            
+            async with session.get(pages_url, params=params) as response:
+                if response.status != 200:
+                    error_text = await response.text()
+                    logger.error(f"Facebook API error: {error_text}")
+                    raise HTTPException(status_code=400, detail=f"Invalid access token: {error_text}")
+                
+                data = await response.json()
+                pages = data.get("data", [])
+                
+                if not pages:
+                    raise HTTPException(status_code=404, detail="No Facebook pages found for this account")
+                
+                # Use the first page (in production, you might want to let user select)
+                page_data = pages[0]
+                page_id = page_data.get("id")
+                page_token = page_data.get("access_token", access_token)
+                
+                # Step 2: If Instagram, get Instagram business account
+                instagram_account = None
+                if platform == "instagram":
+                    instagram_url = f"https://graph.facebook.com/v19.0/{page_id}"
+                    instagram_params = {
+                        "access_token": page_token,
+                        "fields": "instagram_business_account{id,username,name,followers_count,media_count,profile_picture_url}"
+                    }
+                    
+                    async with session.get(instagram_url, params=instagram_params) as ig_response:
+                        if ig_response.status == 200:
+                            ig_data = await ig_response.json()
+                            instagram_account = ig_data.get("instagram_business_account")
+                            
+                            if not instagram_account:
+                                logger.warning("No Instagram business account linked to this Facebook page")
+                                raise HTTPException(
+                                    status_code=404, 
+                                    detail="No Instagram business account linked to this Facebook page. Please convert your Instagram account to a business account and link it to your Facebook page."
+                                )
+                
+                # Step 3: Prepare account data for database
+                if platform == "instagram" and instagram_account:
+                    account_data = {
+                        "platform": "instagram",
+                        "platform_account_id": instagram_account.get("id"),
+                        "username": instagram_account.get("username", ""),
+                        "display_name": instagram_account.get("name", ""),
+                        "profile_picture": instagram_account.get("profile_picture_url", ""),
+                        "followers": instagram_account.get("followers_count", 0),
+                        "is_connected": True,
+                        "access_token": page_token,  # Store page token (has access to Instagram)
+                        "token_expires_at": (datetime.now(timezone.utc) + timedelta(days=60)).isoformat(),
+                        "last_synced": datetime.now(timezone.utc).isoformat(),
+                        "created_at": datetime.now(timezone.utc).isoformat(),
+                        "updated_at": datetime.now(timezone.utc).isoformat(),
+                        "status": "active",
+                        "settings": {
+                            "auto_post": False,
+                            "auto_reply": False,
+                            "page_id": page_id,
+                            "page_token": page_token
+                        }
+                    }
+                else:
+                    # Facebook page
+                    account_data = {
+                        "platform": "facebook",
+                        "platform_account_id": page_id,
+                        "username": page_data.get("username", page_data.get("name", "")),
+                        "display_name": page_data.get("name", ""),
+                        "profile_picture": page_data.get("profile_picture_url", ""),
+                        "followers": page_data.get("followers_count", 0),
+                        "is_connected": True,
+                        "access_token": page_token,
+                        "token_expires_at": (datetime.now(timezone.utc) + timedelta(days=60)).isoformat(),
+                        "last_synced": datetime.now(timezone.utc).isoformat(),
+                        "created_at": datetime.now(timezone.utc).isoformat(),
+                        "updated_at": datetime.now(timezone.utc).isoformat(),
+                        "status": "active",
+                        "settings": {
+                            "auto_post": False,
+                            "auto_reply": False
+                        }
+                    }
+                
+                # Step 4: Save to database
+                if SUPABASE_AVAILABLE and supabase:
+                    try:
+                        # Check if account already exists
+                        existing = supabase.table("social_media_accounts")\
+                            .select("*")\
+                            .eq("platform", account_data["platform"])\
+                            .eq("platform_account_id", account_data["platform_account_id"])\
+                            .execute()
+                        
+                        if existing.data:
+                            # Update existing account
+                            logger.info(f"Updating existing {platform} account: {account_data['username']}")
+                            result = supabase.table("social_media_accounts")\
+                                .update(account_data)\
+                                .eq("id", existing.data[0]["id"])\
+                                .execute()
+                            saved_account = result.data[0] if result.data else existing.data[0]
+                        else:
+                            # Insert new account
+                            logger.info(f"Creating new {platform} account: {account_data['username']}")
+                            result = supabase.table("social_media_accounts")\
+                                .insert(account_data)\
+                                .execute()
+                            saved_account = result.data[0] if result.data else account_data
+                        
+                        logger.info(f"✅ Successfully saved {platform} account: {saved_account.get('username')}")
+                        
+                        return {
+                            "success": True,
+                            "message": f"{platform.capitalize()} account connected successfully",
+                            "account": saved_account
+                        }
+                    
+                    except Exception as db_error:
+                        logger.error(f"Database error: {db_error}")
+                        raise HTTPException(status_code=500, detail=f"Database error: {str(db_error)}")
+                else:
+                    logger.warning("Supabase not available, returning account data without saving")
+                    return {
+                        "success": True,
+                        "message": f"{platform.capitalize()} account connected (not persisted - Supabase unavailable)",
+                        "account": account_data
+                    }
+    
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error saving {platform} OAuth token: {e}")
+        import traceback
+        logger.error(traceback.format_exc())
+        raise HTTPException(status_code=500, detail=f"Failed to save OAuth token: {str(e)}")
+
 # ===============================================
 # EMAIL MARKETING API ENDPOINTS
 # ===============================================
