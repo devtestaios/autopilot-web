@@ -289,13 +289,21 @@ export default function EnhancedSocialMediaPlatform() {
 
   // Connect new social media account
   const handleConnectAccount = async (platform: string) => {
-    console.log('Connect Account button clicked for platform:', platform);
+    console.log('============================================');
+    console.log('[handleConnectAccount] CALLED');
+    console.log('[handleConnectAccount] Platform:', platform);
+    console.log('[handleConnectAccount] Timestamp:', new Date().toISOString());
+    console.log('============================================');
     
     if (platform === 'instagram' || platform === 'facebook') {
+      console.log('[OAuth Flow] Instagram/Facebook detected');
+      console.log('[OAuth Flow] window object exists:', typeof window !== 'undefined');
+      console.log('[OAuth Flow] window.FB exists:', typeof window !== 'undefined' && typeof window.FB !== 'undefined');
+      
       // Use Facebook SDK for Instagram/Facebook API with Facebook Login (post-Dec 2024)
       // Instagram Basic Display API was deprecated on December 4th, 2024
       if (typeof window !== 'undefined' && window.FB) {
-        console.log('Using Facebook SDK for Instagram/Facebook API with Facebook Login');
+        console.log('[OAuth Flow] Using Facebook SDK for Instagram/Facebook API with Facebook Login');
         
         window.FB.login(async function(response: any) {
           console.log('FB.login response:', response);
@@ -712,7 +720,10 @@ export default function EnhancedSocialMediaPlatform() {
                                   <Button 
                                     size="sm" 
                                     variant="outline"
-                                    onClick={() => handleConnectAccount(platform)}
+                                    onClick={() => {
+                                      console.log('[Connected Accounts Card] Connect button clicked for:', platform);
+                                      handleConnectAccount(platform);
+                                    }}
                                   >
                                     Connect
                                   </Button>
